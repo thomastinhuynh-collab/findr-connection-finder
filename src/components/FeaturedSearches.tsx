@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Clock, Euro, MapPin, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -67,6 +68,8 @@ const searches = [
 ];
 
 const FeaturedSearches = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="py-24 bg-secondary/50">
       <div className="container mx-auto px-4">
@@ -98,7 +101,8 @@ const FeaturedSearches = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-vintage transition-all duration-300"
+              onClick={() => navigate(`/recherche/${search.id}`)}
+              className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-vintage transition-all duration-300 cursor-pointer"
             >
               {/* Image */}
               <div className="relative h-48 overflow-hidden">
