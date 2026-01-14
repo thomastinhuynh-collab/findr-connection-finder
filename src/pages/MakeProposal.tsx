@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -14,18 +14,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus } from "lucide-react";
+import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
-// Mock data - in a real app this would come from a database
-const searchData: Record<string, { title: string; userName: string; budget: string }> = {
-  "1": { title: "Veste en cuir oversize années 80", userName: "Marie L.", budget: "100-150€" },
-  "2": { title: "Carte Dracaufeu 1ère édition", userName: "Lucas M.", budget: "50-100€" },
-  "3": { title: "Vinyle The Dark Side of the Moon pressage original", userName: "Sophie B.", budget: "80-200€" },
-  "4": { title: "Polaroid SX-70 fonctionnel", userName: "Thomas R.", budget: "150-250€" },
-  "5": { title: "Lampe Jielde vintage", userName: "Emma V.", budget: "80-150€" },
-  "6": { title: "Montre Seiko SKX007", userName: "Pierre D.", budget: "200-350€" },
-};
+interface SearchData {
+  id: string;
+  title: string;
+  budget_min: number | null;
+  budget_max: number | null;
+  user_id: string;
+  profiles: {
+    full_name: string | null;
+  } | null;
+}
 
 const conditions = [
   { value: "neuf", label: "Neuf avec étiquette" },
@@ -38,6 +41,7 @@ const conditions = [
 const MakeProposal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   
   const [images, setImages] = useState<string[]>([]);
   const [price, setPrice] = useState("");
@@ -45,8 +49,62 @@ const MakeProposal = () => {
   const [condition, setCondition] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [search, setSearch] = useState<SearchData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const search = id ? searchData[id] : null;
+  useEffect(() => {
+    if (!authLoading && !user) {
+      toast({
+        title: "Connexion requise",
+        description: "Tu dois être connecté pour faire une proposition.",
+        variant: "destructive",
+      });
+      navigate("/");
+    }
+  }, [user, authLoading, navigate]);
+
+  useEffect(() => {
+    if (id && user) {
+      fetchSearch();
+    }
+  }, [id, user]);
+
+  const fetchSearch = async () => {
+    const { data, error } = await supabase
+      .from("searches")
+      .select(`
+        id, title, budget_min, budget_max, user_id,
+        profiles!searches_user_id_fkey(full_name)
+      `)
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching search:", error);
+    } else {
+      setSearch(data as any);
+    }
+    setLoading(false);
+  };
+
+  const formatBudget = (min: number | null, max: number | null) => {
+    if (min && max) return `${min}-${max}€`;
+    if (max) return `< ${max}€`;
+    if (min) return `> ${min}€`;
+    return "Non défini";
+  };
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-24 pb-16 flex items-center justify-center">
+          <Loader2 className="w-12 h-12 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!search) {
     return (
@@ -115,7 +173,7 @@ const MakeProposal = () => {
     
     toast({
       title: "Proposition envoyée ! 🎉",
-      description: `Votre proposition a été envoyée à ${search.userName}. Vous serez notifié de sa réponse.`,
+      description: `Votre proposition a été envoyée à ${search.profiles?.full_name || "l'utilisateur"}. Vous serez notifié de sa réponse.`,
     });
     
     setIsSubmitting(false);
@@ -150,7 +208,7 @@ const MakeProposal = () => {
               Pour : <span className="text-foreground font-medium">{search.title}</span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Budget du Buyr : <span className="text-accent font-medium">{search.budget}</span>
+              Budget du Buyr : <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
             </p>
           </motion.div>
 
@@ -221,7 +279,7 @@ const MakeProposal = () => {
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Le budget du Buyr est de {search.budget}
+                Le budget du Buyr est de {formatBudget(search.budget_min, search.budget_max)}
               </p>
             </div>
 

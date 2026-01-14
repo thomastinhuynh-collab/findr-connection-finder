@@ -60,6 +60,7 @@ export type Database = {
           full_name: string | null
           id: string
           is_findr: boolean | null
+          is_premium: boolean | null
           level: number | null
           updated_at: string
           user_id: string
@@ -72,6 +73,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_findr?: boolean | null
+          is_premium?: boolean | null
           level?: number | null
           updated_at?: string
           user_id: string
@@ -84,6 +86,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_findr?: boolean | null
+          is_premium?: boolean | null
           level?: number | null
           updated_at?: string
           user_id?: string
@@ -100,6 +103,7 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          is_featured: boolean | null
           status: string | null
           title: string
           updated_at: string
@@ -114,6 +118,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean | null
           status?: string | null
           title: string
           updated_at?: string
@@ -128,6 +133,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean | null
           status?: string | null
           title?: string
           updated_at?: string

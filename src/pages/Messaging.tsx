@@ -1,29 +1,107 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send, User } from "lucide-react";
+import { ArrowLeft, Send, User, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
-// Mock data - in a real app this would come from a database
-const searchData: Record<string, { title: string; userName: string; userAvatar: string }> = {
-  "1": { title: "Veste en cuir oversize années 80", userName: "Marie L.", userAvatar: "https://i.pravatar.cc/40?img=1" },
-  "2": { title: "Carte Dracaufeu 1ère édition", userName: "Lucas M.", userAvatar: "https://i.pravatar.cc/40?img=2" },
-  "3": { title: "Vinyle The Dark Side of the Moon pressage original", userName: "Sophie B.", userAvatar: "https://i.pravatar.cc/40?img=3" },
-  "4": { title: "Polaroid SX-70 fonctionnel", userName: "Thomas R.", userAvatar: "https://i.pravatar.cc/40?img=4" },
-  "5": { title: "Lampe Jielde vintage", userName: "Emma V.", userAvatar: "https://i.pravatar.cc/40?img=5" },
-  "6": { title: "Montre Seiko SKX007", userName: "Pierre D.", userAvatar: "https://i.pravatar.cc/40?img=6" },
-};
+interface SearchData {
+  id: string;
+  title: string;
+  user_id: string;
+  profiles: {
+    full_name: string | null;
+    avatar_url: string | null;
+  } | null;
+}
 
 const Messaging = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<{ text: string; sender: "me" | "other"; time: string }[]>([]);
+  const [search, setSearch] = useState<SearchData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const search = id ? searchData[id] : null;
+  useEffect(() => {
+    if (!authLoading && !user) {
+      toast({
+        title: "Connexion requise",
+        description: "Tu dois être connecté pour accéder à la messagerie.",
+        variant: "destructive",
+      });
+      navigate("/");
+    }
+  }, [user, authLoading, navigate, toast]);
+
+  useEffect(() => {
+    if (id && user) {
+      fetchSearch();
+    }
+  }, [id, user]);
+
+  const fetchSearch = async () => {
+    const { data, error } = await supabase
+      .from("searches")
+      .select(`
+        id, title, user_id,
+        profiles!searches_user_id_fkey(full_name, avatar_url)
+      `)
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching search:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger la conversation.",
+        variant: "destructive",
+      });
+    } else {
+      setSearch(data as any);
+    }
+    setLoading(false);
+  };
+
+  const handleSend = () => {
+    if (message.trim()) {
+      setMessages([
+        ...messages,
+        { text: message, sender: "me", time: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) }
+      ]);
+      setMessage("");
+      toast({
+        title: "Message envoyé",
+        description: "Le système de messagerie complet sera bientôt disponible !",
+      });
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-24 pb-16 flex items-center justify-center">
+          <Loader2 className="w-12 h-12 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!search) {
     return (
@@ -43,23 +121,6 @@ const Messaging = () => {
       </div>
     );
   }
-
-  const handleSend = () => {
-    if (message.trim()) {
-      setMessages([
-        ...messages,
-        { text: message, sender: "me", time: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) }
-      ]);
-      setMessage("");
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -83,13 +144,21 @@ const Messaging = () => {
             </button>
 
             <div className="bg-card border border-border rounded-2xl p-4 flex items-center gap-4">
-              <img
-                src={search.userAvatar}
-                alt={search.userName}
-                className="w-12 h-12 rounded-full border-2 border-accent"
-              />
+              {search.profiles?.avatar_url ? (
+                <img
+                  src={search.profiles.avatar_url}
+                  alt={search.profiles.full_name || "User"}
+                  className="w-12 h-12 rounded-full border-2 border-accent object-cover"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-lg font-bold">
+                  {search.profiles?.full_name?.charAt(0) || "U"}
+                </div>
+              )}
               <div>
-                <p className="font-semibold text-primary">{search.userName}</p>
+                <p className="font-semibold text-primary">
+                  {search.profiles?.full_name || "Utilisateur"}
+                </p>
                 <p className="text-sm text-muted-foreground truncate max-w-md">
                   {search.title}
                 </p>
@@ -109,7 +178,7 @@ const Messaging = () => {
                 <User className="w-16 h-16 mb-4 opacity-30" />
                 <p className="text-lg font-medium">Commencez la conversation</p>
                 <p className="text-sm max-w-sm mt-2">
-                  Envoyez un message à {search.userName} pour discuter de sa recherche.
+                  Envoyez un message à {search.profiles?.full_name || "l'utilisateur"} pour discuter de sa recherche.
                 </p>
               </div>
             ) : (
