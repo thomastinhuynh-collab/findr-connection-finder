@@ -12,8 +12,9 @@ import {
   ArrowLeft, 
   Calendar,
   User,
-  Shield,
-  Star
+  Gift,
+  Star,
+  Shield
 } from "lucide-react";
 
 // Shared data - in a real app this would come from a database
@@ -285,6 +286,7 @@ const SearchDetail = () => {
                 <Button 
                   size="lg" 
                   className="w-full gap-2 bg-accent hover:bg-accent/90 text-accent-foreground"
+                  onClick={() => navigate(`/messagerie/${id}`)}
                 >
                   <MessageCircle className="w-5 h-5" />
                   Envoyer un message
@@ -293,13 +295,14 @@ const SearchDetail = () => {
                 <Button 
                   size="lg" 
                   className="w-full gap-2"
+                  onClick={() => navigate(`/proposition/${id}`)}
                 >
-                  <Shield className="w-5 h-5" />
-                  Réserver cette recherche
+                  <Gift className="w-5 h-5" />
+                  Faire une proposition
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center pt-2">
-                  En réservant, tu t'engages à trouver l'objet dans le délai imparti
+                  Proposez votre trouvaille au Buyr avec photos et prix
                 </p>
               </div>
 
