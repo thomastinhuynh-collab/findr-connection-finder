@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
 import Categories from "@/components/Categories";
+import PremiumSearches from "@/components/PremiumSearches";
 import FeaturedSearches from "@/components/FeaturedSearches";
 import BecomeFindr from "@/components/BecomeFindr";
 import Testimonials from "@/components/Testimonials";
@@ -15,6 +16,7 @@ const Index = () => {
       <Hero />
       <HowItWorks />
       <Categories />
+      <PremiumSearches />
       <FeaturedSearches />
       <BecomeFindr />
       <Testimonials />

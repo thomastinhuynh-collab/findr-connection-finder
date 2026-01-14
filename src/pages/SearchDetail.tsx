@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,139 +8,137 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Clock, 
   Euro, 
-  MapPin, 
-  MessageCircle, 
   ArrowLeft, 
   Calendar,
-  User,
+  MessageCircle, 
   Gift,
   Star,
-  Shield
+  Shield,
+  Crown,
+  Loader2
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
-// Shared data - in a real app this would come from a database
-const searches = [
-  {
-    id: 1,
-    title: "Veste en cuir oversize années 80",
-    description: "Je recherche une veste en cuir vintage style oversize des années 80. Idéalement en cuir noir ou marron foncé, avec des épaulettes et une coupe ample. Taille M/L. Je cherche un modèle en bon état, avec une patine naturelle qui lui donne du caractère. Pas de déchirures importantes, mais les petites marques d'usure sont les bienvenues pour l'authenticité.",
-    category: "Mode Vintage",
-    budget: "100-150€",
-    deadline: "5 jours",
-    location: "Paris",
-    proposals: 12,
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&h=600&fit=crop",
-    user: { 
-      name: "Marie L.", 
-      avatar: "https://i.pravatar.cc/40?img=1",
-      rating: 4.8,
-      searches: 15
-    },
-    urgent: true,
-    createdAt: "Il y a 2h",
-  },
-  {
-    id: 2,
-    title: "Carte Dracaufeu 1ère édition",
-    description: "Collectionneur passionné, je recherche une carte Dracaufeu (Charizard) de la première édition française ou anglaise. État minimum Near Mint. Je suis ouvert aux versions holographiques ou non. Un certificat d'authenticité serait un plus mais pas obligatoire si l'état est impeccable.",
-    category: "Pop Culture & TCG",
-    budget: "50-100€",
-    deadline: "2 semaines",
-    location: "Lyon",
-    proposals: 8,
-    image: "https://images.unsplash.com/photo-1613771404784-3a5686aa2be3?w=800&h=600&fit=crop",
-    user: { 
-      name: "Lucas M.", 
-      avatar: "https://i.pravatar.cc/40?img=2",
-      rating: 4.5,
-      searches: 8
-    },
-    urgent: false,
-    createdAt: "Il y a 5h",
-  },
-  {
-    id: 3,
-    title: "Vinyle The Dark Side of the Moon pressage original",
-    description: "Fan de Pink Floyd depuis toujours, je cherche un pressage original de The Dark Side of the Moon (1973). Idéalement un pressage UK ou US avec les posters et stickers d'origine. Le vinyle doit être en très bon état, jouable sans craquements excessifs. La pochette peut avoir des signes d'usure légère.",
-    category: "Vinyles & Musique",
-    budget: "80-200€",
-    deadline: "1 semaine",
-    location: "Bordeaux",
-    proposals: 5,
-    image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=800&h=600&fit=crop",
-    user: { 
-      name: "Sophie B.", 
-      avatar: "https://i.pravatar.cc/40?img=3",
-      rating: 4.9,
-      searches: 22
-    },
-    urgent: false,
-    createdAt: "Il y a 8h",
-  },
-  {
-    id: 4,
-    title: "Polaroid SX-70 fonctionnel",
-    description: "Photographe amateur, je recherche un Polaroid SX-70 en état de marche. Le modèle original chromé est préféré mais je suis ouvert aux autres versions. L'appareil doit être testé et fonctionnel. Un étui d'origine serait un bonus appréciable.",
-    category: "Photo & Électronique",
-    budget: "150-250€",
-    deadline: "3 jours",
-    location: "Marseille",
-    proposals: 15,
-    image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&h=600&fit=crop",
-    user: { 
-      name: "Thomas R.", 
-      avatar: "https://i.pravatar.cc/40?img=4",
-      rating: 4.7,
-      searches: 12
-    },
-    urgent: true,
-    createdAt: "Il y a 12h",
-  },
-  {
-    id: 5,
-    title: "Lampe Jielde vintage",
-    description: "Je cherche une lampe Jielde vintage authentique pour mon bureau. Modèle 2 ou 3 bras. Couleur originale de préférence (vert, gris industriel). Elle doit être fonctionnelle avec son système articulé en bon état. Les traces d'usure industrielle sont appréciées.",
-    category: "Déco & Mobilier",
-    budget: "80-150€",
-    deadline: "10 jours",
-    location: "Nantes",
-    proposals: 3,
-    image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&h=600&fit=crop",
-    user: { 
-      name: "Emma V.", 
-      avatar: "https://i.pravatar.cc/40?img=5",
-      rating: 4.6,
-      searches: 5
-    },
-    urgent: false,
-    createdAt: "Hier",
-  },
-  {
-    id: 6,
-    title: "Montre Seiko SKX007",
-    description: "Je recherche une Seiko SKX007 d'occasion en bon état. Le mouvement doit être précis (moins de 15s/jour de dérive). Le cadran et les aiguilles doivent être originaux. Un bracelet NATO ou jubilé serait apprécié mais je peux aussi prendre juste la montre.",
-    category: "Bijoux & Accessoires",
-    budget: "200-350€",
-    deadline: "1 semaine",
-    location: "Toulouse",
-    proposals: 7,
-    image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=800&h=600&fit=crop",
-    user: { 
-      name: "Pierre D.", 
-      avatar: "https://i.pravatar.cc/40?img=6",
-      rating: 4.4,
-      searches: 18
-    },
-    urgent: false,
-    createdAt: "Il y a 2 jours",
-  },
-];
+interface SearchWithProfile {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  budget_min: number | null;
+  budget_max: number | null;
+  urgency: string | null;
+  image_url: string | null;
+  status: string | null;
+  created_at: string;
+  user_id: string;
+  profiles: {
+    full_name: string | null;
+    avatar_url: string | null;
+    is_premium: boolean | null;
+    xp_points: number | null;
+    level: number | null;
+  } | null;
+}
+
+const urgencyLabels: Record<string, string> = {
+  "3-days": "3 jours",
+  "1-week": "1 semaine",
+  "2-weeks": "2 semaines",
+  "1-month": "1 mois",
+  "no-rush": "Pas pressé",
+  "normal": "Normal",
+};
 
 const SearchDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  const search = searches.find(s => s.id === Number(id));
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [search, setSearch] = useState<SearchWithProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (id) {
+      fetchSearch();
+    }
+  }, [id]);
+
+  const fetchSearch = async () => {
+    const { data, error } = await supabase
+      .from("searches")
+      .select(`
+        *,
+        profiles!searches_user_id_fkey(full_name, avatar_url, is_premium, xp_points, level)
+      `)
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      console.error("Error fetching search:", error);
+    } else {
+      setSearch(data as any);
+    }
+    setLoading(false);
+  };
+
+  const formatBudget = (min: number | null, max: number | null) => {
+    if (min && max) return `${min} - ${max}€`;
+    if (max) return `Jusqu'à ${max}€`;
+    if (min) return `À partir de ${min}€`;
+    return "Non défini";
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffHours < 1) return "Il y a moins d'1h";
+    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    if (diffDays === 1) return "Hier";
+    if (diffDays < 7) return `Il y a ${diffDays} jours`;
+    return date.toLocaleDateString("fr-FR");
+  };
+
+  const handleContact = () => {
+    if (!user) {
+      toast({
+        title: "Connexion requise",
+        description: "Tu dois être connecté pour contacter l'annonceur.",
+        variant: "destructive",
+      });
+      return;
+    }
+    navigate(`/messagerie/${id}`);
+  };
+
+  const handleProposal = () => {
+    if (!user) {
+      toast({
+        title: "Connexion requise",
+        description: "Tu dois être connecté pour faire une proposition.",
+        variant: "destructive",
+      });
+      return;
+    }
+    navigate(`/proposition/${id}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-24 pb-16 flex items-center justify-center">
+          <Loader2 className="w-12 h-12 animate-spin text-primary" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   
   if (!search) {
     return (
@@ -159,6 +158,8 @@ const SearchDetail = () => {
       </div>
     );
   }
+
+  const isOwner = user?.id === search.user_id;
 
   return (
     <div className="min-h-screen bg-background">
@@ -187,13 +188,19 @@ const SearchDetail = () => {
               className="lg:col-span-3"
             >
               {/* Image */}
-              <div className="relative rounded-2xl overflow-hidden mb-6">
-                <img
-                  src={search.image}
-                  alt={search.title}
-                  className="w-full h-[400px] object-cover"
-                />
-                {search.urgent && (
+              <div className="relative rounded-2xl overflow-hidden mb-6 bg-secondary">
+                {search.image_url ? (
+                  <img
+                    src={search.image_url}
+                    alt={search.title}
+                    className="w-full h-[400px] object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-[400px] flex items-center justify-center">
+                    <span className="text-8xl">🔍</span>
+                  </div>
+                )}
+                {search.urgency === "3-days" && (
                   <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground text-sm px-3 py-1">
                     Urgent
                   </Badge>
@@ -214,41 +221,37 @@ const SearchDetail = () => {
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">
                 <span className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-full">
                   <Euro className="w-4 h-4 text-accent" />
-                  {search.budget}
+                  {formatBudget(search.budget_min, search.budget_max)}
                 </span>
                 <span className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-full">
                   <Clock className="w-4 h-4 text-accent" />
-                  {search.deadline}
-                </span>
-                <span className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-full">
-                  <MapPin className="w-4 h-4 text-accent" />
-                  {search.location}
+                  {urgencyLabels[search.urgency || "normal"] || search.urgency}
                 </span>
                 <span className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-full">
                   <Calendar className="w-4 h-4 text-accent" />
-                  {search.createdAt}
+                  {formatDate(search.created_at)}
                 </span>
               </div>
 
               {/* Description */}
               <div className="bg-card border border-border rounded-2xl p-6 mb-6">
                 <h2 className="text-lg font-semibold text-primary mb-4">Description</h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  {search.description}
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                  {search.description || "Aucune description fournie."}
                 </p>
               </div>
 
               {/* Proposals */}
               <div className="bg-card border border-border rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-primary">Propositions reçues</h2>
+                  <h2 className="text-lg font-semibold text-primary">Propositions</h2>
                   <span className="flex items-center gap-2 text-accent font-medium">
                     <MessageCircle className="w-5 h-5" />
-                    {search.proposals} propositions
+                    0 propositions
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {search.proposals} findrs ont déjà proposé des trouvailles pour cette recherche.
+                  Aucune proposition pour le moment. Sois le premier à proposer une trouvaille !
                 </p>
               </div>
             </motion.div>
@@ -264,47 +267,70 @@ const SearchDetail = () => {
               <div className="bg-card border border-border rounded-2xl p-6 mb-6">
                 <h3 className="text-sm font-medium text-muted-foreground mb-4">Publié par</h3>
                 <div className="flex items-center gap-4 mb-4">
-                  <img
-                    src={search.user.avatar}
-                    alt={search.user.name}
-                    className="w-14 h-14 rounded-full border-2 border-accent"
-                  />
+                  {search.profiles?.avatar_url ? (
+                    <img
+                      src={search.profiles.avatar_url}
+                      alt={search.profiles.full_name || "User"}
+                      className="w-14 h-14 rounded-full border-2 border-accent object-cover"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold">
+                      {search.profiles?.full_name?.charAt(0) || "U"}
+                    </div>
+                  )}
                   <div>
-                    <p className="font-semibold text-primary">{search.user.name}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-primary">
+                        {search.profiles?.full_name || "Utilisateur"}
+                      </p>
+                      {search.profiles?.is_premium && (
+                        <Crown className="w-4 h-4 text-accent" />
+                      )}
+                    </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                      <span>{search.user.rating}</span>
+                      <span>Niveau {search.profiles?.level || 1}</span>
                       <span>•</span>
-                      <span>{search.user.searches} recherches</span>
+                      <span>{search.profiles?.xp_points || 0} XP</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
-                <Button 
-                  size="lg" 
-                  className="w-full gap-2 bg-accent hover:bg-accent/90 text-accent-foreground"
-                  onClick={() => navigate(`/messagerie/${id}`)}
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  Envoyer un message
-                </Button>
-                
-                <Button 
-                  size="lg" 
-                  className="w-full gap-2"
-                  onClick={() => navigate(`/proposition/${id}`)}
-                >
-                  <Gift className="w-5 h-5" />
-                  Faire une proposition
-                </Button>
+              {!isOwner && (
+                <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+                  <Button 
+                    size="lg" 
+                    className="w-full gap-2 bg-accent hover:bg-accent/90 text-accent-foreground"
+                    onClick={handleContact}
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    Envoyer un message
+                  </Button>
+                  
+                  <Button 
+                    size="lg" 
+                    className="w-full gap-2"
+                    onClick={handleProposal}
+                  >
+                    <Gift className="w-5 h-5" />
+                    Faire une proposition
+                  </Button>
 
-                <p className="text-xs text-muted-foreground text-center pt-2">
-                  Proposez votre trouvaille au Buyr avec photos et prix
-                </p>
-              </div>
+                  <p className="text-xs text-muted-foreground text-center pt-2">
+                    Proposez votre trouvaille avec photos et prix
+                  </p>
+                </div>
+              )}
+
+              {isOwner && (
+                <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6">
+                  <p className="text-sm text-center text-accent font-medium">
+                    C'est ton annonce ! Tu recevras les propositions des Findrs ici.
+                  </p>
+                </div>
+              )}
 
               {/* Trust badges */}
               <div className="mt-6 p-4 bg-secondary/30 rounded-xl">
