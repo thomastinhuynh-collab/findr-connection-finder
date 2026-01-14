@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      evaluations: {
+        Row: {
+          comment: string | null
+          created_at: string
+          from_user_id: string
+          id: string
+          rating: number
+          search_id: string | null
+          to_user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          from_user_id: string
+          id?: string
+          rating: number
+          search_id?: string | null
+          to_user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          rating?: number
+          search_id?: string | null
+          to_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluations_search_id_fkey"
+            columns: ["search_id"]
+            isOneToOne: false
+            referencedRelation: "searches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          is_findr: boolean | null
+          level: number | null
+          updated_at: string
+          user_id: string
+          xp_points: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          is_findr?: boolean | null
+          level?: number | null
+          updated_at?: string
+          user_id: string
+          xp_points?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          is_findr?: boolean | null
+          level?: number | null
+          updated_at?: string
+          user_id?: string
+          xp_points?: number | null
+        }
+        Relationships: []
+      }
+      searches: {
+        Row: {
+          budget_max: number | null
+          budget_min: number | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          urgency: string | null
+          user_id: string
+        }
+        Insert: {
+          budget_max?: number | null
+          budget_min?: number | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          urgency?: string | null
+          user_id: string
+        }
+        Update: {
+          budget_max?: number | null
+          budget_min?: number | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          urgency?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
