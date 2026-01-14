@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, Euro, Clock, MapPin, ArrowRight, Image as ImageIcon } from "lucide-react";
+import { Euro, Clock, MapPin, ArrowRight, Image as ImageIcon, X, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
   "Mode Vintage",
@@ -22,6 +25,12 @@ const categories = [
 
 const PostSearch = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -32,12 +41,116 @@ const PostSearch = () => {
     location: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Recherche publiée ! 🎉",
-      description: "Les Findrs vont se mettre en quête de ta pépite.",
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length + images.length > 5) {
+      toast({
+        title: "Trop d'images",
+        description: "Tu peux ajouter maximum 5 images.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newImages = [...images, ...files];
+    setImages(newImages);
+
+    // Create previews
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
     });
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadImages = async (): Promise<string | null> => {
+    if (images.length === 0 || !user) return null;
+
+    const file = images[0]; // Upload first image as main image
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+    const { data, error } = await supabase.storage
+      .from("search-images")
+      .upload(fileName, file);
+
+    if (error) {
+      console.error("Upload error:", error);
+      return null;
+    }
+
+    const { data: publicUrl } = supabase.storage
+      .from("search-images")
+      .getPublicUrl(data.path);
+
+    return publicUrl.publicUrl;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!user) {
+      toast({
+        title: "Connexion requise",
+        description: "Tu dois être connecté pour poster une recherche.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.title || !formData.category) {
+      toast({
+        title: "Champs requis",
+        description: "Le titre et la catégorie sont obligatoires.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Upload image first
+      const imageUrl = await uploadImages();
+
+      // Insert search into database
+      const { error } = await supabase.from("searches").insert({
+        user_id: user.id,
+        title: formData.title,
+        description: formData.description || null,
+        category: formData.category,
+        budget_min: formData.budgetMin ? parseInt(formData.budgetMin) : null,
+        budget_max: formData.budgetMax ? parseInt(formData.budgetMax) : null,
+        urgency: formData.deadline || "normal",
+        image_url: imageUrl,
+        status: "active",
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Recherche publiée ! 🎉",
+        description: "Les Findrs vont se mettre en quête de ta pépite.",
+      });
+
+      navigate("/mon-espace");
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la publication.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -113,17 +226,58 @@ const PostSearch = () => {
             {/* Image Upload */}
             <div className="space-y-2">
               <Label>Photos d'inspiration</Label>
-              <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-accent transition-colors cursor-pointer">
-                <div className="w-14 h-14 rounded-full bg-secondary mx-auto mb-4 flex items-center justify-center">
-                  <ImageIcon className="w-7 h-7 text-muted-foreground" />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              
+              {imagePreviews.length > 0 ? (
+                <div className="grid grid-cols-3 gap-3">
+                  {imagePreviews.map((preview, index) => (
+                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden">
+                      <img
+                        src={preview}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                  {imagePreviews.length < 5 && (
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="aspect-square border-2 border-dashed border-border rounded-lg flex items-center justify-center hover:border-accent transition-colors cursor-pointer"
+                    >
+                      <ImageIcon className="w-6 h-6 text-muted-foreground" />
+                    </div>
+                  )}
                 </div>
-                <p className="text-sm text-muted-foreground mb-2">
-                  Glisse tes images ici ou clique pour télécharger
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  PNG, JPG jusqu'à 5MB
-                </p>
-              </div>
+              ) : (
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-accent transition-colors cursor-pointer"
+                >
+                  <div className="w-14 h-14 rounded-full bg-secondary mx-auto mb-4 flex items-center justify-center">
+                    <ImageIcon className="w-7 h-7 text-muted-foreground" />
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Clique pour télécharger tes images
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    PNG, JPG jusqu'à 5MB - Max 5 images
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Budget */}
@@ -192,9 +346,23 @@ const PostSearch = () => {
             </div>
 
             {/* Submit */}
-            <Button type="submit" size="lg" className="w-full btn-hero h-14 text-base">
-              Publier ma recherche
-              <ArrowRight className="w-5 h-5 ml-2" />
+            <Button 
+              type="submit" 
+              size="lg" 
+              className="w-full btn-hero h-14 text-base"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Publication en cours...
+                </>
+              ) : (
+                <>
+                  Publier ma recherche
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </>
+              )}
             </Button>
 
             <p className="text-xs text-center text-muted-foreground">

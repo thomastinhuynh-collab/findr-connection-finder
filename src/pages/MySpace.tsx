@@ -25,11 +25,14 @@ interface Profile {
 interface SearchItem {
   id: string;
   title: string;
+  description: string | null;
   category: string;
   budget_min: number | null;
   budget_max: number | null;
   status: string;
   created_at: string;
+  image_url: string | null;
+  urgency: string | null;
 }
 
 interface Evaluation {
@@ -221,19 +224,39 @@ const MySpace = () => {
                     {searches.map((search) => (
                       <Card key={search.id} className="hover:shadow-md transition-shadow">
                         <CardContent className="py-4">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="font-semibold text-primary">{search.title}</h3>
-                              <p className="text-sm text-muted-foreground">{search.category}</p>
-                              {search.budget_max && (
-                                <p className="text-sm mt-1">
-                                  Budget: {search.budget_min || 0}€ - {search.budget_max}€
-                                </p>
-                              )}
+                          <div className="flex gap-4">
+                            {search.image_url ? (
+                              <img
+                                src={search.image_url}
+                                alt={search.title}
+                                className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                              />
+                            ) : (
+                              <div className="w-20 h-20 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
+                                <span className="text-2xl">🔍</span>
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex justify-between items-start gap-2">
+                                <div className="min-w-0">
+                                  <h3 className="font-semibold text-primary truncate">{search.title}</h3>
+                                  <p className="text-sm text-muted-foreground">{search.category}</p>
+                                  {search.description && (
+                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                      {search.description}
+                                    </p>
+                                  )}
+                                  {(search.budget_min || search.budget_max) && (
+                                    <p className="text-sm mt-1">
+                                      Budget: {search.budget_min || 0}€ - {search.budget_max || "∞"}€
+                                    </p>
+                                  )}
+                                </div>
+                                <Badge variant={search.status === "active" ? "default" : "secondary"} className="flex-shrink-0">
+                                  {search.status === "active" ? "Active" : search.status}
+                                </Badge>
+                              </div>
                             </div>
-                            <Badge variant={search.status === "active" ? "default" : "secondary"}>
-                              {search.status === "active" ? "Active" : search.status}
-                            </Badge>
                           </div>
                         </CardContent>
                       </Card>
