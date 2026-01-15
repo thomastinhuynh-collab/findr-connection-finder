@@ -42,18 +42,33 @@ const FeaturedSearches = () => {
   const fetchSearches = async () => {
     const { data, error } = await supabase
       .from("searches")
-      .select(`
-        *,
-        profiles!searches_user_id_fkey(full_name, avatar_url)
-      `)
+      .select("*")
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(8);
 
     if (error) {
       console.error("Error fetching searches:", error);
-    } else {
-      setSearches((data as any) || []);
+      setLoading(false);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      // Fetch profiles separately
+      const userIds = [...new Set(data.map(s => s.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, avatar_url")
+        .in("user_id", userIds);
+
+      const profilesMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+      
+      const searchesWithProfiles = data.map(search => ({
+        ...search,
+        profiles: profilesMap.get(search.user_id) || null
+      }));
+      
+      setSearches(searchesWithProfiles as any);
     }
     setLoading(false);
   };

@@ -68,18 +68,27 @@ const SearchDetail = () => {
   const fetchSearch = async () => {
     const { data, error } = await supabase
       .from("searches")
-      .select(`
-        *,
-        profiles!searches_user_id_fkey(full_name, avatar_url, is_premium, xp_points, level)
-      `)
+      .select("*")
       .eq("id", id)
       .single();
 
     if (error) {
       console.error("Error fetching search:", error);
-    } else {
-      setSearch(data as any);
+      setLoading(false);
+      return;
     }
+
+    // Fetch profile separately
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url, is_premium, xp_points, level")
+      .eq("user_id", data.user_id)
+      .single();
+
+    setSearch({
+      ...data,
+      profiles: profile
+    } as any);
     setLoading(false);
   };
 
