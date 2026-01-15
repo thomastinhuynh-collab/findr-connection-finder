@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,88 +7,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Clock, Euro, MapPin, MessageCircle, Filter, SlidersHorizontal } from "lucide-react";
+import { Search, Clock, Euro, MessageCircle, Filter, SlidersHorizontal, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const searches = [
-  {
-    id: 1,
-    title: "Veste en cuir oversize années 80",
-    category: "Mode Vintage",
-    budget: "100-150€",
-    deadline: "5 jours",
-    location: "Paris",
-    proposals: 12,
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop",
-    user: { name: "Marie L.", avatar: "https://i.pravatar.cc/40?img=1" },
-    urgent: true,
-    createdAt: "Il y a 2h",
-  },
-  {
-    id: 2,
-    title: "Carte Dracaufeu 1ère édition",
-    category: "Pop Culture & TCG",
-    budget: "50-100€",
-    deadline: "2 semaines",
-    location: "Lyon",
-    proposals: 8,
-    image: "https://images.unsplash.com/photo-1613771404784-3a5686aa2be3?w=400&h=300&fit=crop",
-    user: { name: "Lucas M.", avatar: "https://i.pravatar.cc/40?img=2" },
-    urgent: false,
-    createdAt: "Il y a 5h",
-  },
-  {
-    id: 3,
-    title: "Vinyle The Dark Side of the Moon pressage original",
-    category: "Vinyles & Musique",
-    budget: "80-200€",
-    deadline: "1 semaine",
-    location: "Bordeaux",
-    proposals: 5,
-    image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=400&h=300&fit=crop",
-    user: { name: "Sophie B.", avatar: "https://i.pravatar.cc/40?img=3" },
-    urgent: false,
-    createdAt: "Il y a 8h",
-  },
-  {
-    id: 4,
-    title: "Polaroid SX-70 fonctionnel",
-    category: "Photo & Électronique",
-    budget: "150-250€",
-    deadline: "3 jours",
-    location: "Marseille",
-    proposals: 15,
-    image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&h=300&fit=crop",
-    user: { name: "Thomas R.", avatar: "https://i.pravatar.cc/40?img=4" },
-    urgent: true,
-    createdAt: "Il y a 12h",
-  },
-  {
-    id: 5,
-    title: "Lampe Jielde vintage",
-    category: "Déco & Mobilier",
-    budget: "80-150€",
-    deadline: "10 jours",
-    location: "Nantes",
-    proposals: 3,
-    image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=300&fit=crop",
-    user: { name: "Emma V.", avatar: "https://i.pravatar.cc/40?img=5" },
-    urgent: false,
-    createdAt: "Hier",
-  },
-  {
-    id: 6,
-    title: "Montre Seiko SKX007",
-    category: "Bijoux & Accessoires",
-    budget: "200-350€",
-    deadline: "1 semaine",
-    location: "Toulouse",
-    proposals: 7,
-    image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&h=300&fit=crop",
-    user: { name: "Pierre D.", avatar: "https://i.pravatar.cc/40?img=6" },
-    urgent: false,
-    createdAt: "Il y a 2 jours",
-  },
-];
+interface SearchItem {
+  id: string;
+  title: string;
+  category: string;
+  budget_min: number | null;
+  budget_max: number | null;
+  urgency: string | null;
+  image_url: string | null;
+  created_at: string;
+  profiles: {
+    full_name: string | null;
+    avatar_url: string | null;
+  } | null;
+}
+
+const urgencyLabels: Record<string, string> = {
+  "3-days": "3 jours",
+  "1-week": "1 semaine",
+  "2-weeks": "2 semaines",
+  "1-month": "1 mois",
+  "no-rush": "Pas pressé",
+  "normal": "Normal",
+};
 
 const categories = [
   "Toutes",
@@ -102,14 +46,88 @@ const categories = [
 
 const Searches = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Toutes");
+  const [searches, setSearches] = useState<SearchItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredSearches = searches.filter((search) => {
-    const matchesQuery = search.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "Toutes" || search.category === selectedCategory;
-    return matchesQuery && matchesCategory;
-  });
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get("category");
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    fetchSearches();
+  }, [selectedCategory]);
+
+  const fetchSearches = async () => {
+    setLoading(true);
+    let query = supabase
+      .from("searches")
+      .select("id, title, category, budget_min, budget_max, urgency, image_url, created_at, user_id")
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
+
+    if (selectedCategory !== "Toutes") {
+      query = query.eq("category", selectedCategory);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("Error fetching searches:", error);
+      setLoading(false);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const userIds = [...new Set(data.map(s => s.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, avatar_url")
+        .in("user_id", userIds);
+
+      const profilesMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+      
+      const searchesWithProfiles = data.map(search => ({
+        ...search,
+        profiles: profilesMap.get(search.user_id) || null
+      }));
+      
+      setSearches(searchesWithProfiles as any);
+    } else {
+      setSearches([]);
+    }
+    setLoading(false);
+  };
+
+  const formatBudget = (min: number | null, max: number | null) => {
+    if (min && max) return `${min}-${max}€`;
+    if (max) return `< ${max}€`;
+    if (min) return `> ${min}€`;
+    return "Non défini";
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffHours < 1) return "Il y a moins d'1h";
+    if (diffHours < 24) return `Il y a ${diffHours}h`;
+    if (diffDays === 1) return "Hier";
+    if (diffDays < 7) return `Il y a ${diffDays} jours`;
+    return date.toLocaleDateString("fr-FR");
+  };
+
+  const filteredSearches = searches.filter((search) =>
+    search.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-background">
