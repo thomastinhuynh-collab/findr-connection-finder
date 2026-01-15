@@ -42,33 +42,46 @@ const PremiumSearches = () => {
     // First get featured searches, then fall back to regular ones if none exist
     const { data: featuredData, error: featuredError } = await supabase
       .from("searches")
-      .select(`
-        id, title, category, budget_min, budget_max, urgency, image_url,
-        profiles!searches_user_id_fkey(full_name, avatar_url, is_premium)
-      `)
+      .select("id, title, category, budget_min, budget_max, urgency, image_url, user_id")
       .eq("status", "active")
       .eq("is_featured", true)
       .order("created_at", { ascending: false })
       .limit(3);
 
-    if (!featuredError && featuredData && featuredData.length > 0) {
-      setSearches(featuredData as any);
-    } else {
-      // Fallback: get latest searches from premium users or just latest
+    let searchesToUse = featuredData;
+    
+    if (featuredError || !featuredData || featuredData.length === 0) {
+      // Fallback: get latest searches
       const { data, error } = await supabase
         .from("searches")
-        .select(`
-          id, title, category, budget_min, budget_max, urgency, image_url,
-          profiles!searches_user_id_fkey(full_name, avatar_url, is_premium)
-        `)
+        .select("id, title, category, budget_min, budget_max, urgency, image_url, user_id")
         .eq("status", "active")
         .order("created_at", { ascending: false })
         .limit(3);
 
       if (!error && data) {
-        setSearches(data as any);
+        searchesToUse = data;
       }
     }
+
+    if (searchesToUse && searchesToUse.length > 0) {
+      // Fetch profiles separately
+      const userIds = [...new Set(searchesToUse.map(s => s.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, avatar_url, is_premium")
+        .in("user_id", userIds);
+
+      const profilesMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+      
+      const searchesWithProfiles = searchesToUse.map(search => ({
+        ...search,
+        profiles: profilesMap.get(search.user_id) || null
+      }));
+      
+      setSearches(searchesWithProfiles as any);
+    }
+    
     setLoading(false);
   };
 
