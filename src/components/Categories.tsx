@@ -1,46 +1,53 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Shirt, Gamepad2, Disc3, Camera, Gem, Sofa } from "lucide-react";
 
 const categories = [
   {
     icon: Shirt,
     name: "Mode Vintage",
-    count: "1.2K recherches",
+    slug: "Mode Vintage",
     color: "bg-rose-500/10 text-rose-600",
   },
   {
     icon: Gamepad2,
     name: "Pop Culture & TCG",
-    count: "890 recherches",
+    slug: "Pop Culture & TCG",
     color: "bg-violet-500/10 text-violet-600",
   },
   {
     icon: Disc3,
     name: "Vinyles & Musique",
-    count: "650 recherches",
+    slug: "Vinyles & Musique",
     color: "bg-amber-500/10 text-amber-600",
   },
   {
     icon: Camera,
     name: "Photo & Électronique",
-    count: "420 recherches",
+    slug: "Photo & Électronique",
     color: "bg-cyan-500/10 text-cyan-600",
   },
   {
     icon: Gem,
     name: "Bijoux & Accessoires",
-    count: "380 recherches",
+    slug: "Bijoux & Accessoires",
     color: "bg-emerald-500/10 text-emerald-600",
   },
   {
     icon: Sofa,
     name: "Déco & Mobilier",
-    count: "520 recherches",
+    slug: "Déco & Mobilier",
     color: "bg-orange-500/10 text-orange-600",
   },
 ];
 
 const Categories = () => {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (categorySlug: string) => {
+    navigate(`/recherches?category=${encodeURIComponent(categorySlug)}`);
+  };
+
   return (
     <section className="py-24 bg-background">
       <div className="container mx-auto px-4">
@@ -72,6 +79,7 @@ const Categories = () => {
               transition={{ duration: 0.4, delay: index * 0.05 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
+              onClick={() => handleCategoryClick(category.slug)}
               className="group p-6 rounded-2xl bg-card border border-border hover:border-accent transition-all duration-300 text-center"
             >
               <div className={`w-14 h-14 rounded-xl ${category.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
@@ -80,9 +88,6 @@ const Categories = () => {
               <h3 className="font-semibold text-primary text-sm mb-1">
                 {category.name}
               </h3>
-              <p className="text-xs text-muted-foreground">
-                {category.count}
-              </p>
             </motion.button>
           ))}
         </div>
