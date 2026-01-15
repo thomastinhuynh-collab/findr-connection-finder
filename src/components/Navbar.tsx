@@ -37,21 +37,10 @@ const Navbar = () => {
               <Link to="/devenir-findr" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
                 Devenir Findr
               </Link>
-              {user && (
-                <Link to="/mon-espace" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  Mon espace
-                </Link>
-              )}
             </div>
 
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center gap-3">
-              <Button variant="ghost" size="sm" className="gap-2" asChild>
-                <Link to="/recherches">
-                  <Search className="w-4 h-4" />
-                  Rechercher
-                </Link>
-              </Button>
               {loading ? (
                 <div className="animate-pulse bg-muted h-8 w-20 rounded"></div>
               ) : user ? (
