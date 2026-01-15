@@ -188,89 +188,107 @@ const Searches = () => {
             {filteredSearches.length} recherche{filteredSearches.length > 1 ? "s" : ""} trouvée{filteredSearches.length > 1 ? "s" : ""}
           </p>
 
+          {/* Loading state */}
+          {loading && (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-12 h-12 animate-spin text-primary" />
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!loading && filteredSearches.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground mb-4">Aucune recherche trouvée</p>
+              <Button onClick={() => navigate("/poster")}>Poster ma recherche</Button>
+            </div>
+          )}
+
           {/* Search Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSearches.map((search, index) => (
-              <motion.div
-                key={search.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                onClick={() => navigate(`/recherche/${search.id}`)}
-                className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-vintage transition-all duration-300 cursor-pointer"
-              >
-                {/* Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={search.image}
-                    alt={search.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {search.urgent && (
-                    <Badge className="absolute top-3 left-3 bg-destructive text-destructive-foreground">
-                      Urgent
+          {!loading && filteredSearches.length > 0 && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredSearches.map((search, index) => (
+                <motion.div
+                  key={search.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                  onClick={() => navigate(`/recherche/${search.id}`)}
+                  className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-vintage transition-all duration-300 cursor-pointer"
+                >
+                  {/* Image */}
+                  <div className="relative h-48 overflow-hidden bg-secondary">
+                    {search.image_url ? (
+                      <img
+                        src={search.image_url}
+                        alt={search.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-4xl">🔍</span>
+                      </div>
+                    )}
+                    {search.urgency === "3-days" && (
+                      <Badge className="absolute top-3 left-3 bg-destructive text-destructive-foreground">
+                        Urgent
+                      </Badge>
+                    )}
+                    <Badge 
+                      variant="secondary" 
+                      className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm"
+                    >
+                      {search.category}
                     </Badge>
-                  )}
-                  <Badge 
-                    variant="secondary" 
-                    className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm"
-                  >
-                    {search.category}
-                  </Badge>
-                  <span className="absolute bottom-3 right-3 text-xs text-secondary bg-primary/70 backdrop-blur-sm px-2 py-1 rounded">
-                    {search.createdAt}
-                  </span>
-                </div>
-
-                {/* Content */}
-                <div className="p-5">
-                  <h3 className="font-semibold text-primary mb-3 line-clamp-2 group-hover:text-accent transition-colors">
-                    {search.title}
-                  </h3>
-
-                  <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mb-4">
-                    <span className="flex items-center gap-1">
-                      <Euro className="w-3.5 h-3.5" />
-                      {search.budget}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {search.deadline}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5" />
-                      {search.location}
+                    <span className="absolute bottom-3 right-3 text-xs text-secondary bg-primary/70 backdrop-blur-sm px-2 py-1 rounded">
+                      {formatDate(search.created_at)}
                     </span>
                   </div>
 
-                  {/* Footer */}
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={search.user.avatar}
-                        alt={search.user.name}
-                        className="w-7 h-7 rounded-full"
-                      />
-                      <span className="text-sm text-muted-foreground">
-                        {search.user.name}
+                  {/* Content */}
+                  <div className="p-5">
+                    <h3 className="font-semibold text-primary mb-3 line-clamp-2 group-hover:text-accent transition-colors">
+                      {search.title}
+                    </h3>
+
+                    <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mb-4">
+                      <span className="flex items-center gap-1">
+                        <Euro className="w-3.5 h-3.5" />
+                        {formatBudget(search.budget_min, search.budget_max)}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5" />
+                        {urgencyLabels[search.urgency || "normal"] || search.urgency}
                       </span>
                     </div>
-                    <span className="flex items-center gap-1 text-sm text-accent font-medium">
-                      <MessageCircle className="w-4 h-4" />
-                      {search.proposals} propositions
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
 
-          {/* Load More */}
-          <div className="text-center mt-12">
-            <Button variant="outline" size="lg">
-              Charger plus de recherches
-            </Button>
-          </div>
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-4 border-t border-border">
+                      <div className="flex items-center gap-2">
+                        {search.profiles?.avatar_url ? (
+                          <img
+                            src={search.profiles.avatar_url}
+                            alt={search.profiles.full_name || "User"}
+                            className="w-7 h-7 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs">
+                            {search.profiles?.full_name?.charAt(0) || "U"}
+                          </div>
+                        )}
+                        <span className="text-sm text-muted-foreground">
+                          {search.profiles?.full_name || "Utilisateur"}
+                        </span>
+                      </div>
+                      <span className="flex items-center gap-1 text-sm text-accent font-medium">
+                        <MessageCircle className="w-4 h-4" />
+                        0
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
 
