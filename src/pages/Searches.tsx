@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Clock, Euro, MessageCircle, Filter, SlidersHorizontal, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import UserBadge from "@/components/UserBadge";
 
 interface SearchItem {
   id: string;
@@ -19,6 +20,7 @@ interface SearchItem {
   urgency: string | null;
   image_url: string | null;
   created_at: string;
+  user_id: string;
   profiles: {
     full_name: string | null;
     avatar_url: string | null;
@@ -263,22 +265,12 @@ const Searches = () => {
 
                     {/* Footer */}
                     <div className="flex items-center justify-between pt-4 border-t border-border">
-                      <div className="flex items-center gap-2">
-                        {search.profiles?.avatar_url ? (
-                          <img
-                            src={search.profiles.avatar_url}
-                            alt={search.profiles.full_name || "User"}
-                            className="w-7 h-7 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs">
-                            {search.profiles?.full_name?.charAt(0) || "U"}
-                          </div>
-                        )}
-                        <span className="text-sm text-muted-foreground">
-                          {search.profiles?.full_name || "Utilisateur"}
-                        </span>
-                      </div>
+                      <UserBadge
+                        userId={search.user_id}
+                        fullName={search.profiles?.full_name || null}
+                        avatarUrl={search.profiles?.avatar_url || null}
+                        showCrown={false}
+                      />
                       <span className="flex items-center gap-1 text-sm text-accent font-medium">
                         <MessageCircle className="w-4 h-4" />
                         0
