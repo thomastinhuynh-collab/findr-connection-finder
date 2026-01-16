@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Clock, Euro, Crown, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import UserBadge from "./UserBadge";
 
 interface PremiumSearch {
   id: string;
@@ -13,6 +14,7 @@ interface PremiumSearch {
   budget_max: number | null;
   urgency: string | null;
   image_url: string | null;
+  user_id: string;
   profiles: {
     full_name: string | null;
     avatar_url: string | null;
@@ -178,24 +180,14 @@ const PremiumSearches = () => {
                 </div>
 
                 {/* User */}
-                <div className="flex items-center gap-2 pt-3 border-t border-border">
-                  {search.profiles?.avatar_url ? (
-                    <img
-                      src={search.profiles.avatar_url}
-                      alt={search.profiles.full_name || "User"}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-accent"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-accent text-accent-foreground flex items-center justify-center text-sm font-medium">
-                      {search.profiles?.full_name?.charAt(0) || "U"}
-                    </div>
-                  )}
-                  <span className="text-sm font-medium text-primary">
-                    {search.profiles?.full_name || "Utilisateur"}
-                  </span>
-                  {search.profiles?.is_premium && (
-                    <Crown className="w-4 h-4 text-accent" />
-                  )}
+                <div className="pt-3 border-t border-border">
+                  <UserBadge
+                    userId={search.user_id}
+                    fullName={search.profiles?.full_name || null}
+                    avatarUrl={search.profiles?.avatar_url || null}
+                    isPremium={search.profiles?.is_premium || false}
+                    size="lg"
+                  />
                 </div>
               </div>
             </motion.div>

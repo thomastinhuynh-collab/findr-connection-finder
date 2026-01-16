@@ -11,6 +11,7 @@ import SearchDetail from "./pages/SearchDetail";
 import Messaging from "./pages/Messaging";
 import MakeProposal from "./pages/MakeProposal";
 import MySpace from "./pages/MySpace";
+import PublicProfile from "./pages/PublicProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/proposition/:id" element={<MakeProposal />} />
             <Route path="/poster" element={<PostSearch />} />
             <Route path="/mon-espace" element={<MySpace />} />
+            <Route path="/profil/:userId" element={<PublicProfile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
