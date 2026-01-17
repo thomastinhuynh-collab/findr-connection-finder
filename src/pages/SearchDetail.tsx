@@ -275,7 +275,13 @@ const SearchDetail = () => {
               {/* User Card */}
               <div className="bg-card border border-border rounded-2xl p-6 mb-6">
                 <h3 className="text-sm font-medium text-muted-foreground mb-4">Publié par</h3>
-                <div className="flex items-center gap-4 mb-4">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/profil/${search.user_id}`);
+                  }}
+                  className="flex items-center gap-4 mb-4 w-full text-left hover:opacity-80 transition-opacity"
+                >
                   {search.profiles?.avatar_url ? (
                     <img
                       src={search.profiles.avatar_url}
@@ -289,7 +295,7 @@ const SearchDetail = () => {
                   )}
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="font-semibold text-primary">
+                      <p className="font-semibold text-primary hover:text-accent transition-colors">
                         {search.profiles?.full_name || "Utilisateur"}
                       </p>
                       {search.profiles?.is_premium && (
@@ -303,7 +309,7 @@ const SearchDetail = () => {
                       <span>{search.profiles?.xp_points || 0} XP</span>
                     </div>
                   </div>
-                </div>
+                </button>
               </div>
 
               {/* Action Buttons */}
