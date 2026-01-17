@@ -12,6 +12,7 @@ import Messaging from "./pages/Messaging";
 import MakeProposal from "./pages/MakeProposal";
 import MySpace from "./pages/MySpace";
 import PublicProfile from "./pages/PublicProfile";
+import UserEvaluations from "./pages/UserEvaluations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/poster" element={<PostSearch />} />
             <Route path="/mon-espace" element={<MySpace />} />
             <Route path="/profil/:userId" element={<PublicProfile />} />
+            <Route path="/profil/:userId/evaluations" element={<UserEvaluations />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
