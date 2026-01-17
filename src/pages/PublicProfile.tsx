@@ -225,13 +225,16 @@ const PublicProfile = () => {
                   <p className="text-2xl font-bold text-primary">{searches.length}</p>
                   <p className="text-xs text-muted-foreground">Recherches</p>
                 </div>
-                <div className="text-center">
+                <button
+                  onClick={() => navigate(`/profil/${userId}/evaluations`)}
+                  className="text-center hover:bg-secondary/50 rounded-lg transition-colors py-1 -my-1"
+                >
                   <p className="text-2xl font-bold text-primary flex items-center justify-center gap-1">
                     {averageRating.toFixed(1)}
                     <Star className="w-4 h-4 text-accent fill-accent" />
                   </p>
-                  <p className="text-xs text-muted-foreground">Note</p>
-                </div>
+                  <p className="text-xs text-muted-foreground">Note ({evaluations.length})</p>
+                </button>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">{profile.xp_points || 0}</p>
                   <p className="text-xs text-muted-foreground">XP</p>
@@ -254,8 +257,8 @@ const PublicProfile = () => {
             </div>
           </motion.div>
 
-          {/* Right column - Searches & Evaluations */}
-          <div className="lg:col-span-2 space-y-8">
+          {/* Right column - Searches only */}
+          <div className="lg:col-span-2">
             {/* Searches */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -305,69 +308,6 @@ const PublicProfile = () => {
                         <p className="text-sm text-muted-foreground mt-1">
                           {formatBudget(search.budget_min, search.budget_max)}
                         </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-
-            {/* Evaluations */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-                <Star className="w-5 h-5" />
-                Évaluations reçues ({evaluations.length})
-              </h2>
-              
-              {evaluations.length === 0 ? (
-                <div className="bg-card rounded-xl border border-border p-8 text-center">
-                  <p className="text-muted-foreground">Aucune évaluation pour le moment</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {evaluations.map((evaluation) => (
-                    <div
-                      key={evaluation.id}
-                      className="bg-card rounded-xl border border-border p-4"
-                    >
-                      <div className="flex items-start gap-3">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage src={evaluation.from_profile?.avatar_url || ""} />
-                          <AvatarFallback>
-                            {evaluation.from_profile?.full_name?.charAt(0) || "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-medium text-primary">
-                              {evaluation.from_profile?.full_name || "Utilisateur"}
-                            </span>
-                            <div className="flex items-center gap-1">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-4 h-4 ${
-                                    i < evaluation.rating
-                                      ? "text-accent fill-accent"
-                                      : "text-muted-foreground"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          {evaluation.comment && (
-                            <p className="text-sm text-muted-foreground">
-                              "{evaluation.comment}"
-                            </p>
-                          )}
-                          <p className="text-xs text-muted-foreground mt-2">
-                            {formatDate(evaluation.created_at)}
-                          </p>
-                        </div>
                       </div>
                     </div>
                   ))}
