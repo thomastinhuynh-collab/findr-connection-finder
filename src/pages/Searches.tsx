@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Clock, Euro, MessageCircle, Filter, SlidersHorizontal, Loader2 } from "lucide-react";
+import { Search, Clock, Euro, MessageCircle, Filter, SlidersHorizontal, Loader2, X, ArrowUpDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import UserBadge from "@/components/UserBadge";
 
@@ -36,6 +36,15 @@ const urgencyLabels: Record<string, string> = {
   "normal": "Normal",
 };
 
+const urgencyOrder: Record<string, number> = {
+  "3-days": 1,
+  "1-week": 2,
+  "2-weeks": 3,
+  "1-month": 4,
+  "normal": 5,
+  "no-rush": 6,
+};
+
 const categories = [
   "Toutes",
   "Mode Vintage",
@@ -46,6 +55,8 @@ const categories = [
   "Déco & Mobilier",
 ];
 
+type SortOption = "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc";
+
 const Searches = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -53,6 +64,9 @@ const Searches = () => {
   const [selectedCategory, setSelectedCategory] = useState("Toutes");
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>("recent");
+  const [selectedUrgency, setSelectedUrgency] = useState("Toutes");
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
@@ -127,9 +141,27 @@ const Searches = () => {
     return date.toLocaleDateString("fr-FR");
   };
 
-  const filteredSearches = searches.filter((search) =>
-    search.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredAndSortedSearches = searches
+    .filter((search) => {
+      const matchesQuery = search.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesUrgency = selectedUrgency === "Toutes" || search.urgency === selectedUrgency;
+      return matchesQuery && matchesUrgency;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "price-asc":
+          return (a.budget_min || 0) - (b.budget_min || 0);
+        case "price-desc":
+          return (b.budget_max || b.budget_min || 0) - (a.budget_max || a.budget_min || 0);
+        case "urgency-asc":
+          return (urgencyOrder[a.urgency || "normal"] || 5) - (urgencyOrder[b.urgency || "normal"] || 5);
+        case "urgency-desc":
+          return (urgencyOrder[b.urgency || "normal"] || 5) - (urgencyOrder[a.urgency || "normal"] || 5);
+        case "recent":
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    });
 
   return (
     <div className="min-h-screen bg-background">
@@ -179,15 +211,94 @@ const Searches = () => {
                 ))}
               </SelectContent>
             </Select>
-            <Button variant="outline" className="h-12 gap-2">
+            <Button 
+              variant={showFilters ? "default" : "outline"} 
+              className="h-12 gap-2"
+              onClick={() => setShowFilters(!showFilters)}
+            >
               <SlidersHorizontal className="w-4 h-4" />
               Plus de filtres
+              {showFilters && <X className="w-4 h-4 ml-1" />}
             </Button>
           </motion.div>
 
+          {/* Extended Filters Panel */}
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden mb-6"
+              >
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* Sort by */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                        <ArrowUpDown className="w-4 h-4" />
+                        Trier par
+                      </label>
+                      <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border">
+                          <SelectItem value="recent">Plus récent</SelectItem>
+                          <SelectItem value="price-asc">Prix croissant</SelectItem>
+                          <SelectItem value="price-desc">Prix décroissant</SelectItem>
+                          <SelectItem value="urgency-asc">Délai le plus court</SelectItem>
+                          <SelectItem value="urgency-desc">Délai le plus long</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Filter by urgency */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                        <Clock className="w-4 h-4" />
+                        Délai
+                      </label>
+                      <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border">
+                          <SelectItem value="Toutes">Tous les délais</SelectItem>
+                          <SelectItem value="3-days">3 jours (Urgent)</SelectItem>
+                          <SelectItem value="1-week">1 semaine</SelectItem>
+                          <SelectItem value="2-weeks">2 semaines</SelectItem>
+                          <SelectItem value="1-month">1 mois</SelectItem>
+                          <SelectItem value="no-rush">Pas pressé</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Reset filters */}
+                    <div className="flex items-end">
+                      <Button 
+                        variant="ghost" 
+                        className="w-full"
+                        onClick={() => {
+                          setSortBy("recent");
+                          setSelectedUrgency("Toutes");
+                          setSelectedCategory("Toutes");
+                          setSearchQuery("");
+                        }}
+                      >
+                        Réinitialiser les filtres
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Results count */}
           <p className="text-sm text-muted-foreground mb-6">
-            {filteredSearches.length} recherche{filteredSearches.length > 1 ? "s" : ""} trouvée{filteredSearches.length > 1 ? "s" : ""}
+            {filteredAndSortedSearches.length} recherche{filteredAndSortedSearches.length > 1 ? "s" : ""} trouvée{filteredAndSortedSearches.length > 1 ? "s" : ""}
           </p>
 
           {/* Loading state */}
@@ -198,7 +309,7 @@ const Searches = () => {
           )}
 
           {/* Empty state */}
-          {!loading && filteredSearches.length === 0 && (
+          {!loading && filteredAndSortedSearches.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">Aucune recherche trouvée</p>
               <Button onClick={() => navigate("/poster")}>Poster ma recherche</Button>
@@ -206,9 +317,9 @@ const Searches = () => {
           )}
 
           {/* Search Grid */}
-          {!loading && filteredSearches.length > 0 && (
+          {!loading && filteredAndSortedSearches.length > 0 && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredSearches.map((search, index) => (
+              {filteredAndSortedSearches.map((search, index) => (
                 <motion.div
                   key={search.id}
                   initial={{ opacity: 0, y: 30 }}
