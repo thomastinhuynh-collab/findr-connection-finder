@@ -37,6 +37,9 @@ const Navbar = () => {
               <Link to="/devenir-findr" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
                 Devenir Findr
               </Link>
+              <Link to="/premium" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
+                ✨ Passer Premium
+              </Link>
             </div>
 
             {/* Desktop Actions */}
@@ -84,6 +87,9 @@ const Navbar = () => {
                 </Link>
                 <Link to="/devenir-findr" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
                   Devenir Findr
+                </Link>
+                <Link to="/premium" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                  ✨ Passer Premium
                 </Link>
                 {user && (
                   <Link to="/mon-espace" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
