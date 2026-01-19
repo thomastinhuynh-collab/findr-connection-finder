@@ -22,8 +22,12 @@ const Navbar = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="findr-logo text-2xl text-primary">
-              findr
+            <Link to="/" className="flex items-center">
+              <img 
+                src="/src/assets/logo-findr.jpg" 
+                alt="Findr" 
+                className="h-10 w-auto"
+              />
             </Link>
 
             {/* Desktop Navigation */}
