@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Star, Search, Plus, Settings, LogOut } from "lucide-react";
+import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ interface Profile {
   avatar_url: string | null;
   bio: string | null;
   is_findr: boolean;
+  is_premium: boolean | null;
   xp_points: number;
   level: number;
 }
@@ -142,13 +143,19 @@ const MySpace = () => {
                     </AvatarFallback>
                   </Avatar>
                   <div className="text-center md:text-left flex-1">
-                    <h1 className="text-2xl font-display font-bold text-primary">
+                    <h1 className="text-2xl font-display font-bold text-primary flex items-center gap-2 justify-center md:justify-start">
                       {profile.full_name || "Utilisateur"}
+                      {profile.is_premium && (
+                        <Badge className="bg-accent text-accent-foreground">
+                          <Crown className="w-3 h-3 mr-1" />
+                          Premium
+                        </Badge>
+                      )}
                     </h1>
                     <p className="text-muted-foreground">{user.email}</p>
                     <div className="flex flex-wrap gap-2 mt-2 justify-center md:justify-start">
                       {profile.is_findr && (
-                        <Badge className="bg-accent text-accent-foreground">Findr</Badge>
+                        <Badge className="bg-primary text-primary-foreground">Findr</Badge>
                       )}
                       <Badge variant="outline">Niveau {profile.level}</Badge>
                       <Badge variant="outline">{profile.xp_points} XP</Badge>
