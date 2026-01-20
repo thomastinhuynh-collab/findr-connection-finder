@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import PremiumWallet from "@/components/PremiumWallet";
 
 interface Profile {
   id: string;
@@ -46,12 +47,20 @@ interface Evaluation {
   } | null;
 }
 
+// Mock transactions pour simulation
+const mockTransactions = [
+  { id: "1", type: "credit" as const, amount: 25.00, description: "Commission recherche #127", date: "15 Jan 2026" },
+  { id: "2", type: "debit" as const, amount: 15.00, description: "Abonnement Premium", date: "10 Jan 2026" },
+  { id: "3", type: "credit" as const, amount: 45.50, description: "Commission recherche #125", date: "5 Jan 2026" },
+];
+
 const MySpace = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+  const [walletBalance] = useState(155.50);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -200,9 +209,13 @@ const MySpace = () => {
 
             {/* Tabs */}
             <Tabs defaultValue="searches" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="searches">Mes Recherches</TabsTrigger>
-                <TabsTrigger value="evaluations">Mes Évaluations</TabsTrigger>
+                <TabsTrigger value="wallet" className="flex items-center gap-1.5">
+                  <Wallet className="w-4 h-4" />
+                  Portefeuille
+                </TabsTrigger>
+                <TabsTrigger value="evaluations">Évaluations</TabsTrigger>
               </TabsList>
 
               <TabsContent value="searches" className="mt-6">
@@ -270,6 +283,15 @@ const MySpace = () => {
                     ))}
                   </div>
                 )}
+              </TabsContent>
+
+              <TabsContent value="wallet" className="mt-6">
+                <PremiumWallet 
+                  balance={walletBalance}
+                  isPremium={profile?.is_premium || false}
+                  transactions={mockTransactions}
+                  onAddFunds={() => navigate("/premium")}
+                />
               </TabsContent>
 
               <TabsContent value="evaluations" className="mt-6">

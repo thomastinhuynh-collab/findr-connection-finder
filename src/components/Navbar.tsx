@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Search, User } from "lucide-react";
+import { Menu, X, User, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
+import logoFindr from "@/assets/logo-findr.jpg";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,16 +19,21 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-18">
             {/* Logo */}
-            <Link to="/" className="flex items-center">
-              <img 
-                src="/src/assets/logo-findr.jpg" 
-                alt="Findr" 
-                className="h-10 w-auto"
-              />
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="relative">
+                <img 
+                  src={logoFindr}
+                  alt="Findr" 
+                  className="h-12 w-auto rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+              <span className="hidden sm:block font-display text-xl font-bold text-primary">
+                Findr
+              </span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -41,8 +47,12 @@ const Navbar = () => {
               <Link to="/devenir-findr" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
                 Devenir Findr
               </Link>
-              <Link to="/premium" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
-                ✨ Passer Premium
+              <Link 
+                to="/premium" 
+                className="text-sm font-semibold bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent hover:opacity-80 transition-opacity flex items-center gap-1.5"
+              >
+                <Crown className="w-4 h-4 text-accent" />
+                Passer Premium
               </Link>
             </div>
 
@@ -92,8 +102,12 @@ const Navbar = () => {
                 <Link to="/devenir-findr" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
                   Devenir Findr
                 </Link>
-                <Link to="/premium" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-                  ✨ Passer Premium
+                <Link 
+                  to="/premium" 
+                  className="text-sm font-semibold text-accent hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                >
+                  <Crown className="w-4 h-4" />
+                  Passer Premium
                 </Link>
                 {user && (
                   <Link to="/mon-espace" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
