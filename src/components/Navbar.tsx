@@ -4,7 +4,7 @@ import { Menu, X, User, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
-import logoFindr from "@/assets/logo-findr.jpg";
+import logoFindr from "@/assets/logo-findr-new.jpg";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

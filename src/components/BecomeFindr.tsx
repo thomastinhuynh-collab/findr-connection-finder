@@ -6,7 +6,7 @@ const benefits = [
   {
     icon: Coins,
     title: "Gagne de l'argent",
-    description: "Touche une commission de 5-15% sur chaque objet que tu trouves et vends.",
+    description: "Fixe ta marge librement ! La plateforme prélève seulement 5% (0% en Premium) + 3% de frais d'authentification.",
   },
   {
     icon: Trophy,
