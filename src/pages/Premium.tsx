@@ -39,8 +39,8 @@ const Premium = () => {
     },
     {
       icon: Crown,
-      title: "Taux de commission plus élevé",
-      description: "Augmentez vos revenus avec un taux de commission avantageux"
+      title: "0% de frais de plateforme",
+      description: "Gardez 100% de votre marge ! Seuls les 3% de frais d'authentification restent"
     }
   ];
 
