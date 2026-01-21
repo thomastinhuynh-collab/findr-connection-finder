@@ -80,14 +80,25 @@ const ProposalList = ({
     setPaymentDialogOpen(true);
   };
 
-  const handleReject = async (proposalId: string) => {
+  const handleReject = async (proposal: Proposal) => {
     try {
       const { error } = await supabase
         .from("proposals")
         .update({ status: "rejected" })
-        .eq("id", proposalId);
+        .eq("id", proposal.id);
 
       if (error) throw error;
+
+      // Notify the Findr that their proposal was rejected
+      await supabase
+        .from("notifications")
+        .insert({
+          user_id: proposal.findr_id,
+          type: "proposal_rejected",
+          title: "Proposition refusée",
+          message: `Votre proposition pour "${proposal.title}" a été refusée.`,
+          link: "/mes-propositions"
+        });
 
       toast({
         title: "Proposition refusée",
@@ -130,6 +141,17 @@ const ProposalList = ({
 
       if (error) throw error;
 
+      // Notify the Findr that their proposal was accepted
+      await supabase
+        .from("notifications")
+        .insert({
+          user_id: selectedProposal.findr_id,
+          type: "proposal_accepted",
+          title: "Proposition acceptée ! 🎉",
+          message: `Votre proposition pour "${selectedProposal.title}" a été acceptée. Le paiement est en attente de confirmation de réception.`,
+          link: "/mes-propositions"
+        });
+
       toast({
         title: "Paiement en attente ! 💰",
         description: "Le paiement sera libéré une fois l'article reçu et vérifié.",
@@ -161,6 +183,17 @@ const ProposalList = ({
         .eq("id", selectedProposal.id);
 
       if (error) throw error;
+
+      // Notify the Findr that the transaction is complete
+      await supabase
+        .from("notifications")
+        .insert({
+          user_id: selectedProposal.findr_id,
+          type: "proposal_completed",
+          title: "Transaction finalisée ! 💰",
+          message: `Le paiement pour "${selectedProposal.title}" a été libéré. Félicitations !`,
+          link: "/mes-propositions"
+        });
 
       toast({
         title: "Transaction finalisée ! 🎉",
@@ -289,7 +322,7 @@ const ProposalList = ({
                             size="sm"
                             variant="outline"
                             className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                            onClick={() => handleReject(proposal.id)}
+                            onClick={() => handleReject(proposal)}
                           >
                             <XCircle className="w-4 h-4" />
                           </Button>
