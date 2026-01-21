@@ -4,7 +4,7 @@ import { Menu, X, User, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
-
+import NotificationBell from "@/components/NotificationBell";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -53,12 +53,15 @@ const Navbar = () => {
               {loading ? (
                 <div className="animate-pulse bg-muted h-8 w-20 rounded"></div>
               ) : user ? (
-                <Button size="sm" className="btn-hero" asChild>
-                  <Link to="/mon-espace">
-                    <User className="w-4 h-4 mr-2" />
-                    Mon espace
-                  </Link>
-                </Button>
+                <>
+                  <NotificationBell />
+                  <Button size="sm" className="btn-hero" asChild>
+                    <Link to="/mon-espace">
+                      <User className="w-4 h-4 mr-2" />
+                      Mon espace
+                    </Link>
+                  </Button>
+                </>
               ) : (
                 <>
                   <Button variant="outline" size="sm" onClick={() => openAuthModal("login")}>
@@ -110,9 +113,14 @@ const Navbar = () => {
                   {loading ? (
                     <div className="animate-pulse bg-muted h-8 w-full rounded"></div>
                   ) : user ? (
-                    <Button size="sm" className="btn-hero" asChild>
-                      <Link to="/mon-espace">Mon espace</Link>
-                    </Button>
+                    <>
+                      <div className="flex justify-center mb-2">
+                        <NotificationBell />
+                      </div>
+                      <Button size="sm" className="btn-hero" asChild>
+                        <Link to="/mon-espace">Mon espace</Link>
+                      </Button>
+                    </>
                   ) : (
                     <>
                       <Button variant="outline" size="sm" onClick={() => openAuthModal("login")}>

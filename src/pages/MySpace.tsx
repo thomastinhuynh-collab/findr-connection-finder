@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet } from "lucide-react";
+import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Edit, Package } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -178,6 +178,16 @@ const MySpace = () => {
                       <LogOut className="w-4 h-4" />
                     </Button>
                   </div>
+                  
+                  {/* Link to My Proposals for Findrs */}
+                  {profile.is_findr && (
+                    <Button variant="outline" asChild className="md:hidden mt-4 w-full">
+                      <Link to="/mes-propositions">
+                        <Package className="w-4 h-4 mr-2" />
+                        Mes propositions
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -221,12 +231,22 @@ const MySpace = () => {
               <TabsContent value="searches" className="mt-6">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold">Mes recherches en cours</h2>
-                  <Button asChild className="btn-hero">
-                    <Link to="/poster">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Nouvelle recherche
-                    </Link>
-                  </Button>
+                  <div className="flex gap-2">
+                    {profile.is_findr && (
+                      <Button variant="outline" asChild>
+                        <Link to="/mes-propositions">
+                          <Package className="w-4 h-4 mr-2" />
+                          Mes propositions
+                        </Link>
+                      </Button>
+                    )}
+                    <Button asChild className="btn-hero">
+                      <Link to="/poster">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Nouvelle recherche
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
 
                 {searches.length === 0 ? (
@@ -245,21 +265,25 @@ const MySpace = () => {
                       <Card key={search.id} className="hover:shadow-md transition-shadow">
                         <CardContent className="py-4">
                           <div className="flex gap-4">
-                            {search.image_url ? (
-                              <img
-                                src={search.image_url}
-                                alt={search.title}
-                                className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
-                              />
-                            ) : (
-                              <div className="w-20 h-20 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
-                                <span className="text-2xl">🔍</span>
-                              </div>
-                            )}
+                            <Link to={`/recherche/${search.id}`} className="flex-shrink-0">
+                              {search.image_url ? (
+                                <img
+                                  src={search.image_url}
+                                  alt={search.title}
+                                  className="w-20 h-20 rounded-lg object-cover"
+                                />
+                              ) : (
+                                <div className="w-20 h-20 rounded-lg bg-secondary flex items-center justify-center">
+                                  <span className="text-2xl">🔍</span>
+                                </div>
+                              )}
+                            </Link>
                             <div className="flex-1 min-w-0">
                               <div className="flex justify-between items-start gap-2">
-                                <div className="min-w-0">
-                                  <h3 className="font-semibold text-primary truncate">{search.title}</h3>
+                                <div className="min-w-0 flex-1">
+                                  <Link to={`/recherche/${search.id}`}>
+                                    <h3 className="font-semibold text-primary truncate hover:text-accent transition-colors">{search.title}</h3>
+                                  </Link>
                                   <p className="text-sm text-muted-foreground">{search.category}</p>
                                   {search.description && (
                                     <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
@@ -272,9 +296,17 @@ const MySpace = () => {
                                     </p>
                                   )}
                                 </div>
-                                <Badge variant={search.status === "active" ? "default" : "secondary"} className="flex-shrink-0">
-                                  {search.status === "active" ? "Active" : search.status}
-                                </Badge>
+                                <div className="flex flex-col items-end gap-2">
+                                  <Badge variant={search.status === "active" ? "default" : "secondary"} className="flex-shrink-0">
+                                    {search.status === "active" ? "Active" : search.status === "paused" ? "En pause" : search.status}
+                                  </Badge>
+                                  <Button size="sm" variant="outline" asChild>
+                                    <Link to={`/modifier-recherche/${search.id}`}>
+                                      <Edit className="w-4 h-4 mr-1" />
+                                      Modifier
+                                    </Link>
+                                  </Button>
+                                </div>
                               </div>
                             </div>
                           </div>

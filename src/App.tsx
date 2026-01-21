@@ -8,10 +8,12 @@ import BackButton from "@/components/BackButton";
 import Index from "./pages/Index";
 import Searches from "./pages/Searches";
 import PostSearch from "./pages/PostSearch";
+import EditSearch from "./pages/EditSearch";
 import SearchDetail from "./pages/SearchDetail";
 import Messaging from "./pages/Messaging";
 import MakeProposal from "./pages/MakeProposal";
 import MySpace from "./pages/MySpace";
+import MyProposals from "./pages/MyProposals";
 import PublicProfile from "./pages/PublicProfile";
 import UserEvaluations from "./pages/UserEvaluations";
 import Premium from "./pages/Premium";
@@ -31,8 +33,10 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/recherches" element={<Searches />} />
             <Route path="/recherche/:id" element={<SearchDetail />} />
+            <Route path="/modifier-recherche/:id" element={<EditSearch />} />
             <Route path="/messagerie/:id" element={<Messaging />} />
             <Route path="/proposition/:id" element={<MakeProposal />} />
+            <Route path="/mes-propositions" element={<MyProposals />} />
             <Route path="/poster" element={<PostSearch />} />
             <Route path="/mon-espace" element={<MySpace />} />
             <Route path="/profil/:userId" element={<PublicProfile />} />
