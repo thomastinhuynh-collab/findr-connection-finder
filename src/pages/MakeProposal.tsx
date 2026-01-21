@@ -72,20 +72,30 @@ const MakeProposal = () => {
   }, [id, user]);
 
   const fetchSearch = async () => {
-    const { data, error } = await supabase
+    // Fetch search first
+    const { data: searchData, error: searchError } = await supabase
       .from("searches")
-      .select(`
-        id, title, budget_min, budget_max, user_id,
-        profiles!searches_user_id_fkey(full_name)
-      `)
+      .select("id, title, budget_min, budget_max, user_id")
       .eq("id", id)
-      .single();
+      .maybeSingle();
 
-    if (error) {
-      console.error("Error fetching search:", error);
-    } else {
-      setSearch(data as any);
+    if (searchError || !searchData) {
+      console.error("Error fetching search:", searchError);
+      setLoading(false);
+      return;
     }
+
+    // Then fetch the profile separately
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("user_id", searchData.user_id)
+      .maybeSingle();
+
+    setSearch({
+      ...searchData,
+      profiles: profileData
+    });
     setLoading(false);
   };
 
