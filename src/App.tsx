@@ -12,6 +12,7 @@ import EditSearch from "./pages/EditSearch";
 import SearchDetail from "./pages/SearchDetail";
 import Messaging from "./pages/Messaging";
 import MakeProposal from "./pages/MakeProposal";
+import EditProposal from "./pages/EditProposal";
 import MySpace from "./pages/MySpace";
 import MyProposals from "./pages/MyProposals";
 import PublicProfile from "./pages/PublicProfile";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/modifier-recherche/:id" element={<EditSearch />} />
             <Route path="/messagerie/:id" element={<Messaging />} />
             <Route path="/proposition/:id" element={<MakeProposal />} />
+            <Route path="/modifier-proposition/:id" element={<EditProposal />} />
             <Route path="/mes-propositions" element={<MyProposals />} />
             <Route path="/poster" element={<PostSearch />} />
             <Route path="/mon-espace" element={<MySpace />} />
