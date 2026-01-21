@@ -224,6 +224,24 @@ const MakeProposal = () => {
         });
       
       if (error) throw error;
+
+      // Fetch current user profile to get name
+      const { data: findrProfile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      // Create notification for the search owner
+      await supabase
+        .from("notifications")
+        .insert({
+          user_id: search.user_id,
+          type: "new_proposal",
+          title: "Nouvelle proposition reçue !",
+          message: `${findrProfile?.full_name || "Un Findr"} a fait une proposition de ${price}€ pour "${search.title}"`,
+          link: `/recherche/${id}`
+        });
       
       toast({
         title: "Proposition envoyée ! 🎉",

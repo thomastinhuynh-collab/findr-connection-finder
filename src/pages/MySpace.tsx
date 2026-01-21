@@ -35,6 +35,7 @@ interface SearchItem {
   created_at: string;
   image_url: string | null;
   urgency: string | null;
+  proposal_count?: number;
 }
 
 interface Evaluation {
@@ -93,7 +94,22 @@ const MySpace = () => {
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-    if (data) setSearches(data);
+    
+    if (data) {
+      // Fetch pending proposal counts for each search
+      const searchesWithCounts = await Promise.all(
+        data.map(async (search) => {
+          const { count } = await supabase
+            .from("proposals")
+            .select("*", { count: "exact", head: true })
+            .eq("search_id", search.id)
+            .eq("status", "pending");
+          
+          return { ...search, proposal_count: count || 0 };
+        })
+      );
+      setSearches(searchesWithCounts);
+    }
   };
 
   const fetchEvaluations = async () => {
@@ -297,9 +313,18 @@ const MySpace = () => {
                                   )}
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                  <Badge variant={search.status === "active" ? "default" : "secondary"} className="flex-shrink-0">
-                                    {search.status === "active" ? "Active" : search.status === "paused" ? "En pause" : search.status}
-                                  </Badge>
+                                  <div className="flex items-center gap-2">
+                                    {search.proposal_count && search.proposal_count > 0 ? (
+                                      <Link to={`/recherche/${search.id}`}>
+                                        <Badge className="bg-accent text-accent-foreground cursor-pointer hover:bg-accent/90">
+                                          {search.proposal_count} proposition{search.proposal_count > 1 ? 's' : ''} en attente
+                                        </Badge>
+                                      </Link>
+                                    ) : null}
+                                    <Badge variant={search.status === "active" ? "default" : "secondary"} className="flex-shrink-0">
+                                      {search.status === "active" ? "Active" : search.status === "paused" ? "En pause" : search.status}
+                                    </Badge>
+                                  </div>
                                   <Button size="sm" variant="outline" asChild>
                                     <Link to={`/modifier-recherche/${search.id}`}>
                                       <Edit className="w-4 h-4 mr-1" />
