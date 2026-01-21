@@ -512,7 +512,7 @@ const ProposalList = ({
 
       {/* Proposal Detail Dialog */}
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Package className="w-5 h-5 text-accent" />
@@ -672,8 +672,8 @@ const ProposalList = ({
               </Button>
             )}
 
-            {/* Findr can edit their own pending proposal */}
-            {isCurrentUserFindr && selectedProposal?.status === "pending" && (
+            {/* Findr can edit their own pending proposal - only visible to the Findr */}
+            {!isOwner && isCurrentUserFindr && selectedProposal?.status === "pending" && (
               <Button
                 variant="outline"
                 onClick={() => {
