@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { 
   Select,
   SelectContent,
@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus, Loader2, Wallet, CreditCard, Shield, CheckCircle2, Crown } from "lucide-react";
+import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus, Loader2, Wallet, CreditCard, Shield, CheckCircle2, Crown, Link as LinkIcon, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -32,6 +32,11 @@ interface SearchData {
   } | null;
 }
 
+interface UserProfile {
+  is_premium: boolean | null;
+  xp_points: number | null;
+}
+
 const conditions = [
   { value: "neuf", label: "Neuf avec étiquette" },
   { value: "comme-neuf", label: "Comme neuf" },
@@ -45,14 +50,23 @@ const MakeProposal = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [price, setPrice] = useState("");
   const [brand, setBrand] = useState("");
   const [condition, setCondition] = useState("");
   const [description, setDescription] = useState("");
+  const [productLink, setProductLink] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [search, setSearch] = useState<SearchData | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const isPremium = userProfile?.is_premium || false;
+  const platformFee = isPremium ? 0 : 0.05;
+  const authFee = 0.03;
+  const priceNum = parseFloat(price) || 0;
+  const finalAmount = priceNum * (1 - platformFee - authFee);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -68,11 +82,11 @@ const MakeProposal = () => {
   useEffect(() => {
     if (id && user) {
       fetchSearch();
+      fetchUserProfile();
     }
   }, [id, user]);
 
   const fetchSearch = async () => {
-    // Fetch search first
     const { data: searchData, error: searchError } = await supabase
       .from("searches")
       .select("id, title, budget_min, budget_max, user_id")
@@ -85,7 +99,6 @@ const MakeProposal = () => {
       return;
     }
 
-    // Then fetch the profile separately
     const { data: profileData } = await supabase
       .from("profiles")
       .select("full_name")
@@ -99,11 +112,136 @@ const MakeProposal = () => {
     setLoading(false);
   };
 
+  const fetchUserProfile = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from("profiles")
+      .select("is_premium, xp_points")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    
+    setUserProfile(data);
+  };
+
   const formatBudget = (min: number | null, max: number | null) => {
     if (min && max) return `${min}-${max}€`;
     if (max) return `< ${max}€`;
     if (min) return `> ${min}€`;
     return "Non défini";
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newFiles = Array.from(files).slice(0, 4 - images.length);
+      setImages((prev) => [...prev, ...newFiles]);
+      
+      // Create preview URLs
+      newFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === "string") {
+            setImageUrls((prev) => [...prev, reader.result as string]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadImages = async (): Promise<string[]> => {
+    const uploadedUrls: string[] = [];
+    
+    for (const file of images) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}/${id}/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('search-images')
+        .upload(fileName, file);
+      
+      if (error) {
+        console.error("Error uploading image:", error);
+        continue;
+      }
+      
+      const { data: urlData } = supabase.storage
+        .from('search-images')
+        .getPublicUrl(fileName);
+      
+      uploadedUrls.push(urlData.publicUrl);
+    }
+    
+    return uploadedUrls;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (images.length === 0) {
+      toast({
+        title: "Photo requise",
+        description: "Veuillez ajouter au moins une photo de votre trouvaille.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!price || !brand || !condition) {
+      toast({
+        title: "Champs requis",
+        description: "Veuillez remplir tous les champs obligatoires.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!user || !search) return;
+
+    setIsSubmitting(true);
+    
+    try {
+      // Upload images first
+      const uploadedImageUrls = await uploadImages();
+      
+      // Create proposal
+      const { error } = await supabase
+        .from("proposals")
+        .insert({
+          search_id: id,
+          findr_id: user.id,
+          title: `${brand} - ${conditions.find(c => c.value === condition)?.label}`,
+          description: description || null,
+          proposed_price: parseFloat(price),
+          image_urls: uploadedImageUrls,
+          product_link: productLink || null,
+          status: 'pending'
+        });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Proposition envoyée ! 🎉",
+        description: `Votre proposition a été envoyée à ${search.profiles?.full_name || "l'utilisateur"}. Vous serez notifié de sa réponse.`,
+      });
+      
+      navigate(`/recherche/${id}`);
+    } catch (error) {
+      console.error("Error submitting proposal:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'envoyer la proposition. Réessayez.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (authLoading || loading) {
@@ -136,61 +274,6 @@ const MakeProposal = () => {
       </div>
     );
   }
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const newImages: string[] = [];
-      Array.from(files).forEach((file) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (typeof reader.result === "string") {
-            setImages((prev) => [...prev, reader.result as string]);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-  };
-
-  const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (images.length === 0) {
-      toast({
-        title: "Photo requise",
-        description: "Veuillez ajouter au moins une photo de votre trouvaille.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!price || !brand || !condition) {
-      toast({
-        title: "Champs requis",
-        description: "Veuillez remplir tous les champs obligatoires.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    toast({
-      title: "Proposition envoyée ! 🎉",
-      description: `Votre proposition a été envoyée à ${search.profiles?.full_name || "l'utilisateur"}. Vous serez notifié de sa réponse.`,
-    });
-    
-    setIsSubmitting(false);
-    navigate(`/recherche/${id}`);
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -240,15 +323,15 @@ const MakeProposal = () => {
               </Label>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                {images.map((img, index) => (
+                {imageUrls.map((img, index) => (
                   <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-border">
                     <img src={img} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
-                      className="absolute top-2 right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-xs font-bold hover:scale-110 transition-transform"
+                      className="absolute top-2 right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:scale-110 transition-transform"
                     >
-                      ×
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
@@ -287,6 +370,7 @@ const MakeProposal = () => {
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   className="pr-8 text-lg"
+                  min="1"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
               </div>
@@ -330,6 +414,24 @@ const MakeProposal = () => {
               </Select>
             </div>
 
+            {/* Product Link (optional) */}
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <Label htmlFor="productLink" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
+                <LinkIcon className="w-5 h-5 text-accent" />
+                Lien du produit (optionnel)
+              </Label>
+              <Input
+                id="productLink"
+                type="url"
+                placeholder="https://..."
+                value={productLink}
+                onChange={(e) => setProductLink(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground mt-2">
+                Ajoutez un lien vers l'annonce originale (Vinted, Leboncoin, etc.)
+              </p>
+            </div>
+
             {/* Description (optional) */}
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="description" className="text-lg font-semibold text-primary mb-4 block">
@@ -350,11 +452,14 @@ const MakeProposal = () => {
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
                   <Wallet className="w-5 h-5 text-accent" />
-                  Portefeuille & Paiement
+                  Récapitulatif financier
                 </h3>
-                <Badge variant="outline" className="text-accent border-accent">
-                  Simulation
-                </Badge>
+                {isPremium && (
+                  <Badge className="bg-accent text-accent-foreground gap-1">
+                    <Crown className="w-3 h-3" />
+                    Premium
+                  </Badge>
+                )}
               </div>
 
               {/* Wallet Balance */}
@@ -363,12 +468,12 @@ const MakeProposal = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs opacity-80">Solde disponible</p>
-                      <p className="text-2xl font-bold">125.50 €</p>
+                      <p className="text-xs opacity-80">Solde Findr</p>
+                      <p className="text-2xl font-bold">{userProfile?.xp_points || 0} XP</p>
                     </div>
-                    <div className="flex items-center gap-1 bg-accent/20 text-accent-foreground px-2 py-1 rounded-full text-xs">
-                      <Crown className="w-3 h-3" />
-                      Premium
+                    <div className="text-right">
+                      <p className="text-xs opacity-80">Gains potentiels</p>
+                      <p className="text-xl font-bold text-accent">{finalAmount.toFixed(2)} €</p>
                     </div>
                   </div>
                 </CardContent>
@@ -376,31 +481,41 @@ const MakeProposal = () => {
 
               {/* Commission Info */}
               <div className="bg-card rounded-xl p-4 space-y-3">
-                <h4 className="font-medium text-sm text-primary">Récapitulatif des frais</h4>
+                <h4 className="font-medium text-sm text-primary">Détail des frais</h4>
                 
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Prix proposé</span>
-                    <span className="font-medium">{price || "0"} €</span>
+                    <span className="font-medium">{priceNum.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Commission plateforme (5%)</span>
-                    <span className="font-medium text-destructive">-{(parseFloat(price || "0") * 0.05).toFixed(2)} €</span>
+                    <span className="text-muted-foreground">
+                      Commission plateforme ({isPremium ? "0%" : "5%"})
+                    </span>
+                    <span className={`font-medium ${isPremium ? "text-success" : "text-destructive"}`}>
+                      {isPremium ? "Gratuit" : `-${(priceNum * 0.05).toFixed(2)} €`}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Frais d'authentification (3%)</span>
-                    <span className="font-medium text-destructive">-{(parseFloat(price || "0") * 0.03).toFixed(2)} €</span>
+                    <span className="font-medium text-destructive">-{(priceNum * 0.03).toFixed(2)} €</span>
                   </div>
                   <div className="border-t border-border pt-2 flex justify-between">
                     <span className="font-semibold text-primary">Vous recevrez</span>
-                    <span className="font-bold text-accent">{(parseFloat(price || "0") * 0.92).toFixed(2)} €</span>
+                    <span className="font-bold text-lg text-accent">{finalAmount.toFixed(2)} €</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/50 rounded-lg p-2">
-                  <Crown className="w-4 h-4 text-accent" />
-                  <span>Avec <span className="font-medium text-accent">Premium</span>, économisez 5% de commission !</span>
-                </div>
+                {!isPremium && (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/premium")}
+                    className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/50 rounded-lg p-2 w-full hover:bg-secondary transition-colors"
+                  >
+                    <Crown className="w-4 h-4 text-accent" />
+                    <span>Avec <span className="font-medium text-accent">Premium</span>, économisez 5% de commission !</span>
+                  </button>
+                )}
               </div>
 
               {/* Stripe Simulation Preview */}
@@ -446,11 +561,7 @@ const MakeProposal = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-accent-foreground border-t-transparent rounded-full"
-                    />
+                    <Loader2 className="w-5 h-5 animate-spin" />
                     Envoi en cours...
                   </>
                 ) : (
@@ -460,11 +571,14 @@ const MakeProposal = () => {
                   </>
                 )}
               </Button>
-              
-              <p className="text-xs text-muted-foreground text-center mt-4">
-                En envoyant votre proposition, vous vous engagez à fournir l'objet au prix indiqué si le Buyr accepte.
-              </p>
             </motion.div>
+
+            {/* Trust message */}
+            <p className="text-center text-xs text-muted-foreground">
+              En envoyant cette proposition, vous acceptez les conditions générales de Findr.
+              <br />
+              Le paiement sera sécurisé et vous serez payé une fois l'objet livré et validé.
+            </p>
           </motion.form>
         </div>
       </main>
