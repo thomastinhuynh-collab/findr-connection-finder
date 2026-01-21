@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Clock, 
   Euro, 
-  ArrowLeft, 
   Calendar,
   MessageCircle, 
   Gift,
@@ -20,6 +19,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import ProposalList from "@/components/ProposalList";
 
 interface SearchWithProfile {
   id: string;
@@ -42,6 +42,28 @@ interface SearchWithProfile {
   } | null;
 }
 
+interface Proposal {
+  id: string;
+  title: string;
+  description: string | null;
+  proposed_price: number;
+  image_urls: string[];
+  product_link: string | null;
+  status: string;
+  created_at: string;
+  findr_id: string;
+  findr_profile?: {
+    full_name: string | null;
+    avatar_url: string | null;
+    is_premium: boolean | null;
+  };
+}
+
+interface UserProfile {
+  is_premium: boolean | null;
+  xp_points: number | null;
+}
+
 const urgencyLabels: Record<string, string> = {
   "3-days": "3 jours",
   "1-week": "1 semaine",
@@ -57,13 +79,23 @@ const SearchDetail = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [search, setSearch] = useState<SearchWithProfile | null>(null);
+  const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [walletBalance] = useState(155.50); // Mock balance
 
   useEffect(() => {
     if (id) {
       fetchSearch();
+      fetchProposals();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [user]);
 
   const fetchSearch = async () => {
     const { data, error } = await supabase
@@ -90,6 +122,49 @@ const SearchDetail = () => {
       profiles: profile
     } as any);
     setLoading(false);
+  };
+
+  const fetchProposals = async () => {
+    const { data, error } = await supabase
+      .from("proposals")
+      .select("*")
+      .eq("search_id", id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching proposals:", error);
+      return;
+    }
+
+    // Fetch findr profiles for each proposal
+    const proposalsWithProfiles = await Promise.all(
+      (data || []).map(async (proposal) => {
+        const { data: findrProfile } = await supabase
+          .from("profiles")
+          .select("full_name, avatar_url, is_premium")
+          .eq("user_id", proposal.findr_id)
+          .maybeSingle();
+
+        return {
+          ...proposal,
+          findr_profile: findrProfile
+        };
+      })
+    );
+
+    setProposals(proposalsWithProfiles as Proposal[]);
+  };
+
+  const fetchUserProfile = async () => {
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("is_premium, xp_points")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    setUserProfile(data);
   };
 
   const formatBudget = (min: number | null, max: number | null) => {
@@ -169,25 +244,14 @@ const SearchDetail = () => {
   }
 
   const isOwner = user?.id === search.user_id;
+  const pendingProposals = proposals.filter(p => p.status === "pending").length;
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="pt-24 pb-16">
+      <main className="pt-28 pb-16">
         <div className="container mx-auto px-4">
-          {/* Back Button */}
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Retour
-          </motion.button>
-
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Main Content */}
             <motion.div
@@ -256,12 +320,25 @@ const SearchDetail = () => {
                   <h2 className="text-lg font-semibold text-primary">Propositions</h2>
                   <span className="flex items-center gap-2 text-accent font-medium">
                     <MessageCircle className="w-5 h-5" />
-                    0 propositions
+                    {proposals.length} proposition{proposals.length !== 1 ? "s" : ""}
+                    {pendingProposals > 0 && isOwner && (
+                      <Badge className="bg-accent text-accent-foreground ml-2">
+                        {pendingProposals} nouvelle{pendingProposals !== 1 ? "s" : ""}
+                      </Badge>
+                    )}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Aucune proposition pour le moment. Sois le premier à proposer une trouvaille !
-                </p>
+                
+                <ProposalList
+                  proposals={proposals}
+                  isOwner={isOwner}
+                  searchId={id || ""}
+                  walletBalance={walletBalance}
+                  isPremium={userProfile?.is_premium || false}
+                  onProposalUpdate={() => {
+                    fetchProposals();
+                  }}
+                />
               </div>
             </motion.div>
 
@@ -303,7 +380,7 @@ const SearchDetail = () => {
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <Star className="w-4 h-4 text-accent fill-accent" />
                       <span>Niveau {search.profiles?.level || 1}</span>
                       <span>•</span>
                       <span>{search.profiles?.xp_points || 0} XP</span>
@@ -344,6 +421,11 @@ const SearchDetail = () => {
                   <p className="text-sm text-center text-accent font-medium">
                     C'est ton annonce ! Tu recevras les propositions des Findrs ici.
                   </p>
+                  {pendingProposals > 0 && (
+                    <p className="text-sm text-center text-primary mt-2">
+                      Tu as <span className="font-bold text-accent">{pendingProposals}</span> proposition{pendingProposals !== 1 ? "s" : ""} en attente !
+                    </p>
+                  )}
                 </div>
               )}
 
