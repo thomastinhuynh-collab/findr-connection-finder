@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Select,
   SelectContent,
@@ -14,10 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus, Loader2 } from "lucide-react";
+import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus, Loader2, Wallet, CreditCard, Shield, CheckCircle2, Crown } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { Badge } from "@/components/ui/badge";
 
 interface SearchData {
   id: string;
@@ -331,6 +333,93 @@ const MakeProposal = () => {
                 rows={4}
                 className="resize-none"
               />
+            </div>
+
+            {/* Payment & Wallet Section */}
+            <div className="bg-gradient-to-br from-primary/5 to-accent/5 border border-border rounded-2xl p-6 space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                  <Wallet className="w-5 h-5 text-accent" />
+                  Portefeuille & Paiement
+                </h3>
+                <Badge variant="outline" className="text-accent border-accent">
+                  Simulation
+                </Badge>
+              </div>
+
+              {/* Wallet Balance */}
+              <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-primary-foreground/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs opacity-80">Solde disponible</p>
+                      <p className="text-2xl font-bold">125.50 €</p>
+                    </div>
+                    <div className="flex items-center gap-1 bg-accent/20 text-accent-foreground px-2 py-1 rounded-full text-xs">
+                      <Crown className="w-3 h-3" />
+                      Premium
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Commission Info */}
+              <div className="bg-card rounded-xl p-4 space-y-3">
+                <h4 className="font-medium text-sm text-primary">Récapitulatif des frais</h4>
+                
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Prix proposé</span>
+                    <span className="font-medium">{price || "0"} €</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Commission plateforme (5%)</span>
+                    <span className="font-medium text-destructive">-{(parseFloat(price || "0") * 0.05).toFixed(2)} €</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Frais d'authentification (3%)</span>
+                    <span className="font-medium text-destructive">-{(parseFloat(price || "0") * 0.03).toFixed(2)} €</span>
+                  </div>
+                  <div className="border-t border-border pt-2 flex justify-between">
+                    <span className="font-semibold text-primary">Vous recevrez</span>
+                    <span className="font-bold text-accent">{(parseFloat(price || "0") * 0.92).toFixed(2)} €</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/50 rounded-lg p-2">
+                  <Crown className="w-4 h-4 text-accent" />
+                  <span>Avec <span className="font-medium text-accent">Premium</span>, économisez 5% de commission !</span>
+                </div>
+              </div>
+
+              {/* Stripe Simulation Preview */}
+              <div className="bg-card rounded-xl p-4 border border-border">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#635BFF] to-[#A259FF] flex items-center justify-center">
+                    <CreditCard className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">Paiement sécurisé Stripe</p>
+                    <p className="text-xs text-muted-foreground">Le Buyr paiera via Stripe</p>
+                  </div>
+                </div>
+                
+                <div className="bg-secondary/50 rounded-lg p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-success" />
+                    <span className="text-xs">Fonds sécurisés jusqu'à livraison</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-success" />
+                    <span className="text-xs">Authentification incluse</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-success" />
+                    <span className="text-xs">Protection acheteur & vendeur</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Submit Button */}
