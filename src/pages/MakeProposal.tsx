@@ -15,11 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus, Loader2, Wallet, CreditCard, Shield, CheckCircle2, Crown, Link as LinkIcon, X } from "lucide-react";
+import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus, Loader2, Shield, CheckCircle2, Crown, Link as LinkIcon, X, CreditCard } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Badge } from "@/components/ui/badge";
 
 interface SearchData {
   id: string;
@@ -447,42 +446,21 @@ const MakeProposal = () => {
               />
             </div>
 
-            {/* Payment & Wallet Section */}
-            <div className="bg-gradient-to-br from-primary/5 to-accent/5 border border-border rounded-2xl p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
-                  <Wallet className="w-5 h-5 text-accent" />
-                  Récapitulatif financier
-                </h3>
+            {/* Commission Summary */}
+            <div className="bg-gradient-to-br from-primary/5 to-accent/5 border border-border rounded-2xl p-6 space-y-4">
+              <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                <Euro className="w-5 h-5 text-accent" />
+                Récapitulatif des gains
                 {isPremium && (
-                  <Badge className="bg-accent text-accent-foreground gap-1">
+                  <span className="ml-auto text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full flex items-center gap-1">
                     <Crown className="w-3 h-3" />
                     Premium
-                  </Badge>
+                  </span>
                 )}
-              </div>
+              </h3>
 
-              {/* Wallet Balance */}
-              <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-primary-foreground/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs opacity-80">Solde Findr</p>
-                      <p className="text-2xl font-bold">{userProfile?.xp_points || 0} XP</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs opacity-80">Gains potentiels</p>
-                      <p className="text-xl font-bold text-accent">{finalAmount.toFixed(2)} €</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Commission Info */}
+              {/* Fee Breakdown */}
               <div className="bg-card rounded-xl p-4 space-y-3">
-                <h4 className="font-medium text-sm text-primary">Détail des frais</h4>
-                
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Prix proposé</span>
@@ -518,15 +496,15 @@ const MakeProposal = () => {
                 )}
               </div>
 
-              {/* Stripe Simulation Preview */}
+              {/* Payment Info */}
               <div className="bg-card rounded-xl p-4 border border-border">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#635BFF] to-[#A259FF] flex items-center justify-center">
                     <CreditCard className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="font-medium text-sm">Paiement sécurisé Stripe</p>
-                    <p className="text-xs text-muted-foreground">Le Buyr paiera via Stripe</p>
+                    <p className="font-medium text-sm">Paiement sécurisé</p>
+                    <p className="text-xs text-muted-foreground">Le Buyr paiera via Stripe si accepté</p>
                   </div>
                 </div>
                 
