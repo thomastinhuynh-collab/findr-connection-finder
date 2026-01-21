@@ -38,6 +38,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Proposal {
   id: string;
@@ -60,6 +61,7 @@ interface ProposalListProps {
   proposals: Proposal[];
   isOwner: boolean;
   searchId: string;
+  searchOwnerId: string;
   walletBalance: number;
   isPremium: boolean;
   onProposalUpdate: () => void;
@@ -68,17 +70,22 @@ interface ProposalListProps {
 const ProposalList = ({ 
   proposals, 
   isOwner, 
-  searchId, 
+  searchId,
+  searchOwnerId,
   walletBalance, 
   isPremium,
   onProposalUpdate 
 }: ProposalListProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [confirmReceiptDialog, setConfirmReceiptDialog] = useState(false);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+
+  // Check if current user is the findr of the selected proposal
+  const isCurrentUserFindr = selectedProposal && user?.id === selectedProposal.findr_id;
 
   const platformFee = isPremium ? 0 : 0.05;
   const authFee = 0.03;
@@ -650,6 +657,34 @@ const ProposalList = ({
             <Button variant="outline" onClick={() => setDetailDialogOpen(false)}>
               Fermer
             </Button>
+
+            {/* Contact button - for Buyrs to contact Findrs OR Findrs to contact Buyrs */}
+            {selectedProposal && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDetailDialogOpen(false);
+                  navigate(`/messagerie/${searchId}`);
+                }}
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                {isOwner ? "Contacter le Findr" : "Contacter le Buyr"}
+              </Button>
+            )}
+
+            {/* Findr can edit their own pending proposal */}
+            {isCurrentUserFindr && selectedProposal?.status === "pending" && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setDetailDialogOpen(false);
+                  navigate(`/modifier-proposition/${selectedProposal.id}`);
+                }}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Modifier ma proposition
+              </Button>
+            )}
             
             {isOwner && selectedProposal?.status === "pending" && (
               <>

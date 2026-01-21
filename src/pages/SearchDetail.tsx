@@ -333,6 +333,7 @@ const SearchDetail = () => {
                   proposals={proposals}
                   isOwner={isOwner}
                   searchId={id || ""}
+                  searchOwnerId={search.user_id}
                   walletBalance={walletBalance}
                   isPremium={userProfile?.is_premium || false}
                   onProposalUpdate={() => {
