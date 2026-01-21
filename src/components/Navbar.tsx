@@ -4,7 +4,6 @@ import { Menu, X, User, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
-import logoFindr from "@/assets/logo-findr-new.jpg";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,16 +21,9 @@ const Navbar = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-18">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <img 
-                  src={logoFindr}
-                  alt="Findr" 
-                  className="h-12 w-auto rounded-lg shadow-md transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              <span className="hidden sm:block font-display text-xl font-bold text-primary">
+            {/* Logo Text */}
+            <Link to="/" className="flex items-center group">
+              <span className="font-display text-2xl font-bold text-primary hover:text-accent transition-colors">
                 Findr
               </span>
             </Link>

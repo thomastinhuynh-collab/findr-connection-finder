@@ -1,11 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send, User, Loader2 } from "lucide-react";
+import { ArrowLeft, Send, User, Loader2, CheckCheck, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -20,15 +20,26 @@ interface SearchData {
   } | null;
 }
 
+interface Message {
+  id: string;
+  content: string;
+  sender_id: string;
+  receiver_id: string;
+  is_read: boolean;
+  created_at: string;
+}
+
 const Messaging = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<{ text: string; sender: "me" | "other"; time: string }[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [search, setSearch] = useState<SearchData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -44,11 +55,51 @@ const Messaging = () => {
   useEffect(() => {
     if (id && user) {
       fetchSearch();
+      fetchMessages();
     }
   }, [id, user]);
 
+  // Real-time subscription
+  useEffect(() => {
+    if (!id || !user) return;
+
+    const channel = supabase
+      .channel(`messages-${id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `search_id=eq.${id}`
+        },
+        (payload) => {
+          const newMessage = payload.new as Message;
+          setMessages((prev) => {
+            // Avoid duplicates
+            if (prev.some(m => m.id === newMessage.id)) return prev;
+            return [...prev, newMessage];
+          });
+          
+          // Mark as read if we're the receiver
+          if (newMessage.receiver_id === user.id) {
+            markAsRead(newMessage.id);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, user]);
+
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   const fetchSearch = async () => {
-    // Fetch search first
     const { data: searchData, error: searchError } = await supabase
       .from("searches")
       .select("id, title, user_id")
@@ -66,7 +117,6 @@ const Messaging = () => {
       return;
     }
 
-    // Then fetch the profile separately
     const { data: profileData } = await supabase
       .from("profiles")
       .select("full_name, avatar_url")
@@ -80,18 +130,72 @@ const Messaging = () => {
     setLoading(false);
   };
 
-  const handleSend = () => {
-    if (message.trim()) {
-      setMessages([
-        ...messages,
-        { text: message, sender: "me", time: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) }
-      ]);
-      setMessage("");
-      toast({
-        title: "Message envoyé",
-        description: "Le système de messagerie complet sera bientôt disponible !",
-      });
+  const fetchMessages = async () => {
+    const { data, error } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("search_id", id)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Error fetching messages:", error);
+      return;
     }
+
+    setMessages(data || []);
+    
+    // Mark unread messages as read
+    if (user && data) {
+      const unreadIds = data
+        .filter(m => m.receiver_id === user.id && !m.is_read)
+        .map(m => m.id);
+      
+      if (unreadIds.length > 0) {
+        await supabase
+          .from("messages")
+          .update({ is_read: true })
+          .in("id", unreadIds);
+      }
+    }
+  };
+
+  const markAsRead = async (messageId: string) => {
+    await supabase
+      .from("messages")
+      .update({ is_read: true })
+      .eq("id", messageId);
+  };
+
+  const handleSend = async () => {
+    if (!message.trim() || !user || !search) return;
+
+    setSending(true);
+    const receiverId = search.user_id === user.id ? search.user_id : search.user_id;
+    
+    // Determine the correct receiver (the other person in the conversation)
+    const actualReceiverId = search.user_id;
+
+    const { error } = await supabase
+      .from("messages")
+      .insert({
+        search_id: id,
+        sender_id: user.id,
+        receiver_id: actualReceiverId,
+        content: message.trim()
+      });
+
+    if (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'envoyer le message.",
+        variant: "destructive",
+      });
+    } else {
+      setMessage("");
+    }
+    
+    setSending(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -100,6 +204,36 @@ const Messaging = () => {
       handleSend();
     }
   };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return "Aujourd'hui";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return "Hier";
+    } else {
+      return date.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+    }
+  };
+
+  // Group messages by date
+  const groupedMessages = messages.reduce((groups, msg) => {
+    const date = new Date(msg.created_at).toDateString();
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(msg);
+    return groups;
+  }, {} as Record<string, Message[]>);
 
   if (authLoading || loading) {
     return (
@@ -165,7 +299,7 @@ const Messaging = () => {
                   {search.profiles?.full_name?.charAt(0) || "U"}
                 </div>
               )}
-              <div>
+              <div className="flex-1">
                 <p className="font-semibold text-primary">
                   {search.profiles?.full_name || "Utilisateur"}
                 </p>
@@ -173,6 +307,7 @@ const Messaging = () => {
                   {search.title}
                 </p>
               </div>
+              <div className="w-3 h-3 bg-success rounded-full animate-pulse" title="En ligne" />
             </div>
           </motion.div>
 
@@ -181,7 +316,7 @@ const Messaging = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="flex-1 bg-card border border-border rounded-2xl p-4 mb-4 min-h-[400px] overflow-y-auto"
+            className="flex-1 bg-card border border-border rounded-2xl p-4 mb-4 min-h-[400px] max-h-[500px] overflow-y-auto"
           >
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center text-muted-foreground">
@@ -192,30 +327,56 @@ const Messaging = () => {
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {messages.map((msg, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`flex ${msg.sender === "me" ? "justify-end" : "justify-start"}`}
-                  >
-                    <div
-                      className={`max-w-[70%] rounded-2xl px-4 py-3 ${
-                        msg.sender === "me"
-                          ? "bg-accent text-accent-foreground"
-                          : "bg-secondary text-secondary-foreground"
-                      }`}
-                    >
-                      <p className="text-sm">{msg.text}</p>
-                      <p className={`text-xs mt-1 ${
-                        msg.sender === "me" ? "text-accent-foreground/70" : "text-muted-foreground"
-                      }`}>
-                        {msg.time}
-                      </p>
+              <div className="space-y-6">
+                {Object.entries(groupedMessages).map(([date, dayMessages]) => (
+                  <div key={date}>
+                    {/* Date separator */}
+                    <div className="flex items-center justify-center mb-4">
+                      <span className="bg-secondary px-3 py-1 rounded-full text-xs text-muted-foreground">
+                        {formatDate(dayMessages[0].created_at)}
+                      </span>
                     </div>
-                  </motion.div>
+                    
+                    {/* Messages for this date */}
+                    <div className="space-y-3">
+                      {dayMessages.map((msg) => (
+                        <motion.div
+                          key={msg.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className={`flex ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}
+                        >
+                          <div
+                            className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                              msg.sender_id === user?.id
+                                ? "bg-accent text-accent-foreground"
+                                : "bg-secondary text-secondary-foreground"
+                            }`}
+                          >
+                            <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                            <div className={`flex items-center gap-1 mt-1 ${
+                              msg.sender_id === user?.id ? "justify-end" : "justify-start"
+                            }`}>
+                              <span className={`text-xs ${
+                                msg.sender_id === user?.id ? "text-accent-foreground/70" : "text-muted-foreground"
+                              }`}>
+                                {formatTime(msg.created_at)}
+                              </span>
+                              {msg.sender_id === user?.id && (
+                                msg.is_read ? (
+                                  <CheckCheck className="w-3.5 h-3.5 text-accent-foreground/70" />
+                                ) : (
+                                  <Check className="w-3.5 h-3.5 text-accent-foreground/50" />
+                                )
+                              )}
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
                 ))}
+                <div ref={messagesEndRef} />
               </div>
             )}
           </motion.div>
@@ -238,11 +399,15 @@ const Messaging = () => {
               />
               <Button
                 onClick={handleSend}
-                disabled={!message.trim()}
+                disabled={!message.trim() || sending}
                 size="lg"
                 className="self-end gap-2 bg-accent hover:bg-accent/90 text-accent-foreground"
               >
-                <Send className="w-5 h-5" />
+                {sending ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5" />
+                )}
               </Button>
             </div>
           </motion.div>
