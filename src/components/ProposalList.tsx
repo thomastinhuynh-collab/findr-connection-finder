@@ -11,6 +11,13 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { 
   CheckCircle2, 
   XCircle, 
@@ -22,7 +29,11 @@ import {
   Euro,
   Package,
   Clock,
-  Crown
+  Crown,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Image as ImageIcon
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -67,6 +78,7 @@ const ProposalList = ({
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [confirmReceiptDialog, setConfirmReceiptDialog] = useState(false);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
   const platformFee = isPremium ? 0 : 0.05;
   const authFee = 0.03;
@@ -258,12 +270,18 @@ const ProposalList = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="overflow-hidden hover:shadow-md transition-shadow">
+            <Card 
+              className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => {
+                setSelectedProposal(proposal);
+                setDetailDialogOpen(true);
+              }}
+            >
               <CardContent className="p-4">
                 <div className="flex gap-4">
                   {/* Images */}
                   {proposal.image_urls && proposal.image_urls.length > 0 ? (
-                    <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+                    <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 group">
                       <img
                         src={proposal.image_urls[0]}
                         alt={proposal.title}
@@ -274,6 +292,9 @@ const ProposalList = ({
                           +{proposal.image_urls.length - 1}
                         </div>
                       )}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Eye className="w-6 h-6 text-white" />
+                      </div>
                     </div>
                   ) : (
                     <div className="w-24 h-24 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
@@ -317,7 +338,7 @@ const ProposalList = ({
 
                       {/* Actions for owner */}
                       {isOwner && proposal.status === "pending" && (
-                        <div className="flex gap-2">
+                        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                           <Button
                             size="sm"
                             variant="outline"
@@ -339,16 +360,18 @@ const ProposalList = ({
 
                       {/* Confirm receipt for accepted_pending */}
                       {isOwner && proposal.status === "accepted_pending" && (
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            setSelectedProposal(proposal);
-                            setConfirmReceiptDialog(true);
-                          }}
-                        >
-                          <Package className="w-4 h-4 mr-1" />
-                          Confirmer réception
-                        </Button>
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setSelectedProposal(proposal);
+                              setConfirmReceiptDialog(true);
+                            }}
+                          >
+                            <Package className="w-4 h-4 mr-1" />
+                            Confirmer réception
+                          </Button>
+                        </div>
                       )}
 
                       {/* Link for external product */}
@@ -358,6 +381,7 @@ const ProposalList = ({
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-accent hover:underline flex items-center gap-1"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <ExternalLink className="w-3 h-3" />
                           Voir l'annonce
@@ -475,6 +499,195 @@ const ProposalList = ({
                 </>
               )}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Proposal Detail Dialog */}
+      <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Package className="w-5 h-5 text-accent" />
+              Détail de la proposition
+            </DialogTitle>
+          </DialogHeader>
+
+          {selectedProposal && (
+            <div className="space-y-6 py-4">
+              {/* Image Carousel */}
+              {selectedProposal.image_urls && selectedProposal.image_urls.length > 0 ? (
+                <div className="relative">
+                  {selectedProposal.image_urls.length === 1 ? (
+                    <div className="aspect-video rounded-xl overflow-hidden">
+                      <img
+                        src={selectedProposal.image_urls[0]}
+                        alt={selectedProposal.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <Carousel className="w-full">
+                      <CarouselContent>
+                        {selectedProposal.image_urls.map((url, index) => (
+                          <CarouselItem key={index}>
+                            <div className="aspect-video rounded-xl overflow-hidden">
+                              <img
+                                src={url}
+                                alt={`${selectedProposal.title} - Image ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-2" />
+                      <CarouselNext className="right-2" />
+                    </Carousel>
+                  )}
+                  <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                    <ImageIcon className="w-3 h-3" />
+                    {selectedProposal.image_urls.length} photo{selectedProposal.image_urls.length > 1 ? 's' : ''}
+                  </div>
+                </div>
+              ) : (
+                <div className="aspect-video rounded-xl bg-secondary flex items-center justify-center">
+                  <div className="text-center text-muted-foreground">
+                    <Package className="w-12 h-12 mx-auto mb-2" />
+                    <p>Aucune photo fournie</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Title and Price */}
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-primary">{selectedProposal.title}</h3>
+                  <button
+                    onClick={() => {
+                      setDetailDialogOpen(false);
+                      navigate(`/profil/${selectedProposal.findr_id}`);
+                    }}
+                    className="text-sm text-muted-foreground hover:text-accent transition-colors flex items-center gap-1 mt-1"
+                  >
+                    par {selectedProposal.findr_profile?.full_name || "Findr"}
+                    {selectedProposal.findr_profile?.is_premium && (
+                      <Crown className="w-3 h-3 text-accent" />
+                    )}
+                  </button>
+                </div>
+                <div className="text-right">
+                  <span className="text-2xl font-bold text-accent">
+                    {selectedProposal.proposed_price.toFixed(2)} €
+                  </span>
+                  {getStatusBadge(selectedProposal.status)}
+                </div>
+              </div>
+
+              {/* Description */}
+              {selectedProposal.description && (
+                <div className="bg-secondary/50 rounded-xl p-4">
+                  <h4 className="font-medium mb-2 flex items-center gap-2">
+                    <MessageCircle className="w-4 h-4" />
+                    Message du Findr
+                  </h4>
+                  <p className="text-muted-foreground whitespace-pre-wrap">
+                    {selectedProposal.description}
+                  </p>
+                </div>
+              )}
+
+              {/* Product Link */}
+              {selectedProposal.product_link && (
+                <a
+                  href={selectedProposal.product_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-accent hover:underline bg-accent/10 rounded-lg p-3"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Voir l'annonce originale
+                </a>
+              )}
+
+              {/* Price Breakdown Preview */}
+              {isOwner && selectedProposal.status === "pending" && (
+                <div className="bg-card border border-border rounded-lg p-4 space-y-2">
+                  <h4 className="font-medium mb-2">Récapitulatif du prix</h4>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Prix de l'article</span>
+                    <span>{selectedProposal.proposed_price.toFixed(2)} €</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      Commission plateforme ({isPremium ? "0%" : "5%"})
+                    </span>
+                    <span className={isPremium ? "text-success" : ""}>
+                      {isPremium ? "Gratuit" : `+${(selectedProposal.proposed_price * 0.05).toFixed(2)} €`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Frais d'authentification (3%)</span>
+                    <span>+{(selectedProposal.proposed_price * 0.03).toFixed(2)} €</span>
+                  </div>
+                  <div className="border-t border-border pt-2 flex justify-between font-semibold">
+                    <span>Total à payer</span>
+                    <span className="text-accent">
+                      {calculateTotal(selectedProposal.proposed_price).toFixed(2)} €
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Date */}
+              <div className="text-sm text-muted-foreground">
+                Proposition reçue le {formatDate(selectedProposal.created_at)}
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setDetailDialogOpen(false)}>
+              Fermer
+            </Button>
+            
+            {isOwner && selectedProposal?.status === "pending" && (
+              <>
+                <Button
+                  variant="outline"
+                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                  onClick={() => {
+                    handleReject(selectedProposal);
+                    setDetailDialogOpen(false);
+                  }}
+                >
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Refuser
+                </Button>
+                <Button
+                  className="bg-success hover:bg-success/90 text-success-foreground"
+                  onClick={() => {
+                    setDetailDialogOpen(false);
+                    handleAccept(selectedProposal);
+                  }}
+                >
+                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  Accepter cette proposition
+                </Button>
+              </>
+            )}
+
+            {isOwner && selectedProposal?.status === "accepted_pending" && (
+              <Button
+                onClick={() => {
+                  setDetailDialogOpen(false);
+                  setConfirmReceiptDialog(true);
+                }}
+              >
+                <Package className="w-4 h-4 mr-2" />
+                Confirmer réception
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
