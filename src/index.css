@@ -42,6 +42,9 @@
     --bone: 43 35% 89%;
     --gold: 35 80% 55%;
     --success: 142 70% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 0%;
     --vintage-cream: 43 40% 96%;
     
     /* Gradients */

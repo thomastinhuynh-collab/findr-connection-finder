@@ -65,7 +65,14 @@ export default {
         "deep-cove": "hsl(var(--deep-cove))",
         bone: "hsl(var(--bone))",
         gold: "hsl(var(--gold))",
-        success: "hsl(var(--success))",
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
         "vintage-cream": "hsl(var(--vintage-cream))",
       },
       borderRadius: {
