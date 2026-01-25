@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -25,7 +25,7 @@
     --muted: 43 25% 88%;
     --muted-foreground: 227 30% 40%;
 
-    --accent: 35 80% 55%; /* Gold accent for gamification */
+    --accent: 46 71% 52%; /* Gold #D4AF37 pour gamification */
     --accent-foreground: 227 90% 14%;
 
     --destructive: 0 84% 60%;
@@ -35,12 +35,12 @@
     --input: 227 20% 85%;
     --ring: 227 90% 14%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     /* Custom tokens */
     --deep-cove: 227 90% 14%;
     --bone: 43 35% 89%;
-    --gold: 35 80% 55%;
+    --gold: 46 71% 52%; /* #D4AF37 - Gold pour gamification */
     --success: 142 70% 45%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
@@ -87,7 +87,7 @@
     --muted: 227 50% 18%;
     --muted-foreground: 43 20% 70%;
 
-    --accent: 35 80% 55%;
+    --accent: 46 71% 52%;
     --accent-foreground: 227 90% 14%;
 
     --destructive: 0 62% 40%;
@@ -115,7 +115,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Montserrat', 'Inter', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
