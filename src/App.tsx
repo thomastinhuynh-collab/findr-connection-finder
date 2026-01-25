@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import BackButton from "@/components/BackButton";
+import VintageBackground from "@/components/VintageBackground";
 import Index from "./pages/Index";
 import Searches from "./pages/Searches";
 import PostSearch from "./pages/PostSearch";
@@ -29,6 +30,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <VintageBackground />
           <BackButton />
           <Routes>
             <Route path="/" element={<Index />} />
