@@ -6,66 +6,67 @@
 
 @layer base {
   :root {
-    /* Findr Brand Colors - Deep Cove & Bone */
-    --background: 43 35% 92%; /* Bone light variant */
+    /* Findr Brand Colors - Refined warm palette */
+    --background: 40 45% 96%; /* Warm off-white */
     --foreground: 227 90% 14%; /* Deep Cove */
 
-    --card: 43 30% 95%;
+    --card: 42 35% 97%;
     --card-foreground: 227 90% 14%;
 
-    --popover: 43 30% 95%;
+    --popover: 42 35% 97%;
     --popover-foreground: 227 90% 14%;
 
     --primary: 227 90% 14%; /* Deep Cove #040C44 */
-    --primary-foreground: 43 35% 92%;
+    --primary-foreground: 40 45% 96%;
 
-    --secondary: 43 35% 89%; /* Bone #E6DDC8 */
+    --secondary: 40 32% 90%; /* Warm Bone */
     --secondary-foreground: 227 90% 14%;
 
-    --muted: 43 25% 88%;
-    --muted-foreground: 227 30% 40%;
+    --muted: 38 25% 88%;
+    --muted-foreground: 227 35% 42%;
 
-    --accent: 46 71% 52%; /* Gold #D4AF37 pour gamification */
+    --accent: 46 71% 52%; /* Gold #D4AF37 */
     --accent-foreground: 227 90% 14%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 43 35% 92%;
+    --destructive-foreground: 40 45% 96%;
 
-    --border: 227 20% 80%;
-    --input: 227 20% 85%;
+    --border: 227 18% 82%;
+    --input: 227 18% 86%;
     --ring: 227 90% 14%;
 
     --radius: 1rem;
 
     /* Custom tokens */
     --deep-cove: 227 90% 14%;
-    --bone: 43 35% 89%;
-    --gold: 46 71% 52%; /* #D4AF37 - Gold pour gamification */
-    --success: 142 70% 45%;
+    --bone: 40 32% 90%;
+    --gold: 46 71% 52%;
+    --success: 152 60% 42%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 0%;
-    --vintage-cream: 43 40% 96%;
+    --vintage-cream: 42 45% 97%;
     
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(227 90% 14%) 0%, hsl(227 70% 25%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(43 35% 96%) 0%, hsl(43 30% 92%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(35 80% 55%) 0%, hsl(40 85% 65%) 100%);
+    /* Enhanced Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(227 90% 14%) 0%, hsl(227 75% 22%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(42 35% 98%) 0%, hsl(40 30% 95%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(46 71% 52%) 0%, hsl(42 75% 58%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(40 45% 96%) 0%, hsl(38 40% 92%) 100%);
 
-    /* Shadows */
-    --shadow-sm: 0 2px 8px -2px hsl(227 90% 14% / 0.08);
-    --shadow-md: 0 8px 24px -4px hsl(227 90% 14% / 0.12);
-    --shadow-lg: 0 16px 48px -8px hsl(227 90% 14% / 0.16);
-    --shadow-glow: 0 0 40px -10px hsl(35 80% 55% / 0.4);
+    /* Refined Shadows */
+    --shadow-sm: 0 2px 8px -2px hsl(227 90% 14% / 0.06);
+    --shadow-md: 0 8px 24px -4px hsl(227 90% 14% / 0.1);
+    --shadow-lg: 0 16px 48px -8px hsl(227 90% 14% / 0.14);
+    --shadow-glow: 0 0 40px -10px hsl(46 71% 52% / 0.35);
 
-    --sidebar-background: 43 35% 92%;
+    --sidebar-background: 40 45% 96%;
     --sidebar-foreground: 227 90% 14%;
     --sidebar-primary: 227 90% 14%;
-    --sidebar-primary-foreground: 43 35% 92%;
-    --sidebar-accent: 43 30% 88%;
+    --sidebar-primary-foreground: 40 45% 96%;
+    --sidebar-accent: 38 30% 90%;
     --sidebar-accent-foreground: 227 90% 14%;
-    --sidebar-border: 227 20% 80%;
-    --sidebar-ring: 35 80% 55%;
+    --sidebar-border: 227 18% 82%;
+    --sidebar-ring: 46 71% 52%;
   }
 
   .dark {
