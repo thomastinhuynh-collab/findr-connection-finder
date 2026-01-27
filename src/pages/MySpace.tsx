@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Edit, Package } from "lucide-react";
+import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Edit, Package, CalendarClock, Lock } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ interface SearchItem {
   image_url: string | null;
   urgency: string | null;
   proposal_count?: number;
+  reservation_count?: number;
 }
 
 interface Evaluation {
@@ -96,16 +97,26 @@ const MySpace = () => {
       .order("created_at", { ascending: false });
     
     if (data) {
-      // Fetch pending proposal counts for each search
+      // Fetch pending proposal counts and reservation counts for each search
       const searchesWithCounts = await Promise.all(
         data.map(async (search) => {
-          const { count } = await supabase
+          const { count: proposalCount } = await supabase
             .from("proposals")
             .select("*", { count: "exact", head: true })
             .eq("search_id", search.id)
             .eq("status", "pending");
+
+          const { count: reservationCount } = await supabase
+            .from("reservations")
+            .select("*", { count: "exact", head: true })
+            .eq("search_id", search.id)
+            .eq("status", "pending");
           
-          return { ...search, proposal_count: count || 0 };
+          return { 
+            ...search, 
+            proposal_count: proposalCount || 0,
+            reservation_count: reservationCount || 0
+          };
         })
       );
       setSearches(searchesWithCounts);
@@ -313,17 +324,32 @@ const MySpace = () => {
                                   )}
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                  <div className="flex items-center gap-2">
-                                    {search.proposal_count && search.proposal_count > 0 ? (
+                                  <div className="flex flex-wrap items-center gap-2 justify-end">
+                                    {search.reservation_count && search.reservation_count > 0 ? (
                                       <Link to={`/recherche/${search.id}`}>
-                                        <Badge className="bg-accent text-accent-foreground cursor-pointer hover:bg-accent/90">
-                                          {search.proposal_count} proposition{search.proposal_count > 1 ? 's' : ''} en attente
+                                        <Badge className="bg-accent/20 text-accent border border-accent/50 cursor-pointer hover:bg-accent/30 gap-1">
+                                          <CalendarClock className="w-3 h-3" />
+                                          {search.reservation_count} réservation{search.reservation_count > 1 ? 's' : ''}
                                         </Badge>
                                       </Link>
                                     ) : null}
-                                    <Badge variant={search.status === "active" ? "default" : "secondary"} className="flex-shrink-0">
-                                      {search.status === "active" ? "Active" : search.status === "paused" ? "En pause" : search.status}
-                                    </Badge>
+                                    {search.proposal_count && search.proposal_count > 0 ? (
+                                      <Link to={`/recherche/${search.id}`}>
+                                        <Badge className="bg-accent text-accent-foreground cursor-pointer hover:bg-accent/90">
+                                          {search.proposal_count} proposition{search.proposal_count > 1 ? 's' : ''}
+                                        </Badge>
+                                      </Link>
+                                    ) : null}
+                                    {search.status === "reserved" ? (
+                                      <Badge className="bg-accent/20 text-accent border border-accent/50 gap-1 flex-shrink-0">
+                                        <Lock className="w-3 h-3" />
+                                        Réservée
+                                      </Badge>
+                                    ) : (
+                                      <Badge variant={search.status === "active" ? "default" : "secondary"} className="flex-shrink-0">
+                                        {search.status === "active" ? "Active" : search.status === "paused" ? "En pause" : search.status}
+                                      </Badge>
+                                    )}
                                   </div>
                                   <Button size="sm" variant="outline" asChild>
                                     <Link to={`/modifier-recherche/${search.id}`}>
