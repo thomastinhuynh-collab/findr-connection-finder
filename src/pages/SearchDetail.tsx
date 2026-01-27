@@ -14,12 +14,16 @@ import {
   Star,
   Shield,
   Crown,
-  Loader2
+  Loader2,
+  CalendarClock,
+  Lock
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import ProposalList from "@/components/ProposalList";
+import ReservationCard from "@/components/ReservationCard";
+import ReservationBadge from "@/components/ReservationBadge";
 
 interface SearchWithProfile {
   id: string;
@@ -64,6 +68,23 @@ interface UserProfile {
   xp_points: number | null;
 }
 
+interface Reservation {
+  id: string;
+  search_id: string;
+  findr_id: string;
+  buyr_id: string;
+  justification: string;
+  requested_duration_days: number;
+  approved_duration_days: number | null;
+  status: string;
+  expires_at: string | null;
+  created_at: string;
+  findr_profile?: {
+    full_name: string | null;
+    avatar_url: string | null;
+  };
+}
+
 const urgencyLabels: Record<string, string> = {
   "3-days": "3 jours",
   "1-week": "1 semaine",
@@ -80,6 +101,7 @@ const SearchDetail = () => {
   const { toast } = useToast();
   const [search, setSearch] = useState<SearchWithProfile | null>(null);
   const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [walletBalance] = useState(155.50); // Mock balance
@@ -88,6 +110,7 @@ const SearchDetail = () => {
     if (id) {
       fetchSearch();
       fetchProposals();
+      fetchReservations();
     }
   }, [id]);
 
@@ -155,6 +178,40 @@ const SearchDetail = () => {
     setProposals(proposalsWithProfiles as Proposal[]);
   };
 
+  const fetchReservations = async () => {
+    if (!id) return;
+
+    const { data, error } = await supabase
+      .from("reservations")
+      .select("*")
+      .eq("search_id", id)
+      .in("status", ["pending", "approved"])
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching reservations:", error);
+      return;
+    }
+
+    // Fetch findr profiles
+    const reservationsWithProfiles = await Promise.all(
+      (data || []).map(async (reservation) => {
+        const { data: findrProfile } = await supabase
+          .from("profiles")
+          .select("full_name, avatar_url")
+          .eq("user_id", reservation.findr_id)
+          .maybeSingle();
+
+        return {
+          ...reservation,
+          findr_profile: findrProfile
+        };
+      })
+    );
+
+    setReservations(reservationsWithProfiles as Reservation[]);
+  };
+
   const fetchUserProfile = async () => {
     if (!user) return;
 
@@ -211,6 +268,26 @@ const SearchDetail = () => {
     }
     navigate(`/proposition/${id}`);
   };
+
+  const handleReservation = () => {
+    if (!user) {
+      toast({
+        title: "Connexion requise",
+        description: "Tu dois être connecté pour demander une réservation.",
+        variant: "destructive",
+      });
+      return;
+    }
+    navigate(`/reservation/${id}`);
+  };
+
+  // Check if user can interact (for reserved searches)
+  const activeReservation = reservations.find(r => r.status === "approved");
+  const isReserved = search?.status === "reserved" && activeReservation;
+  const canInteract = !isReserved || activeReservation?.findr_id === user?.id;
+  const hasExistingReservation = reservations.some(
+    r => r.findr_id === user?.id && (r.status === "pending" || r.status === "approved")
+  );
 
   if (loading) {
     return (
@@ -278,12 +355,17 @@ const SearchDetail = () => {
                     Urgent
                   </Badge>
                 )}
-                <Badge 
-                  variant="secondary" 
-                  className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm text-sm px-3 py-1"
-                >
-                  {search.category}
-                </Badge>
+                <div className="absolute top-4 right-4 flex gap-2">
+                  {isReserved && (
+                    <ReservationBadge expiresAt={activeReservation?.expires_at || null} />
+                  )}
+                  <Badge 
+                    variant="secondary" 
+                    className="bg-background/90 backdrop-blur-sm text-sm px-3 py-1"
+                  >
+                    {search.category}
+                  </Badge>
+                </div>
               </div>
 
               {/* Title & Meta */}
@@ -390,8 +472,27 @@ const SearchDetail = () => {
                 </button>
               </div>
 
+              {/* Reservation Status for reserved searches */}
+              {isReserved && !isOwner && (
+                <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6 mb-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Lock className="w-5 h-5 text-accent" />
+                    <h3 className="font-semibold text-accent">Annonce réservée</h3>
+                  </div>
+                  {canInteract ? (
+                    <p className="text-sm text-muted-foreground">
+                      Tu as réservé cette annonce. Tu es le seul à pouvoir interagir avec le Buyr.
+                    </p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Cette annonce est actuellement réservée par un autre Findr.
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Action Buttons */}
-              {!isOwner && (
+              {!isOwner && canInteract && (
                 <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
                   <Button 
                     size="lg" 
@@ -411,22 +512,90 @@ const SearchDetail = () => {
                     Faire une proposition
                   </Button>
 
+                  {/* Reservation Button */}
+                  {!hasExistingReservation && !isReserved && (
+                    <Button 
+                      size="lg" 
+                      variant="outline"
+                      className="w-full gap-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                      onClick={handleReservation}
+                    >
+                      <CalendarClock className="w-5 h-5" />
+                      Demander une réservation
+                    </Button>
+                  )}
+
+                  {hasExistingReservation && !isReserved && (
+                    <div className="bg-secondary/50 rounded-xl p-3 text-center">
+                      <p className="text-sm text-muted-foreground">
+                        <CalendarClock className="w-4 h-4 inline mr-1" />
+                        Tu as déjà une demande de réservation en cours
+                      </p>
+                    </div>
+                  )}
+
                   <p className="text-xs text-muted-foreground text-center pt-2">
                     Proposez votre trouvaille avec photos et prix
                   </p>
                 </div>
               )}
 
+              {/* Owner View */}
               {isOwner && (
-                <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6">
-                  <p className="text-sm text-center text-accent font-medium">
-                    C'est ton annonce ! Tu recevras les propositions des Findrs ici.
-                  </p>
-                  {pendingProposals > 0 && (
-                    <p className="text-sm text-center text-primary mt-2">
-                      Tu as <span className="font-bold text-accent">{pendingProposals}</span> proposition{pendingProposals !== 1 ? "s" : ""} en attente !
-                    </p>
+                <div className="space-y-6">
+                  {/* Pending Reservations */}
+                  {reservations.filter(r => r.status === "pending").length > 0 && (
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-primary flex items-center gap-2">
+                        <CalendarClock className="w-5 h-5 text-accent" />
+                        Demandes de réservation
+                      </h3>
+                      {reservations
+                        .filter(r => r.status === "pending")
+                        .map(reservation => (
+                          <ReservationCard
+                            key={reservation.id}
+                            reservation={reservation}
+                            isOwner={true}
+                            searchTitle={search.title}
+                            onUpdate={() => {
+                              fetchReservations();
+                              fetchSearch();
+                            }}
+                          />
+                        ))}
+                    </div>
                   )}
+
+                  {/* Active Reservation */}
+                  {activeReservation && (
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-primary flex items-center gap-2">
+                        <Lock className="w-5 h-5 text-accent" />
+                        Réservation active
+                      </h3>
+                      <ReservationCard
+                        reservation={activeReservation}
+                        isOwner={true}
+                        searchTitle={search.title}
+                        onUpdate={() => {
+                          fetchReservations();
+                          fetchSearch();
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6">
+                    <p className="text-sm text-center text-accent font-medium">
+                      C'est ton annonce ! Tu recevras les propositions des Findrs ici.
+                    </p>
+                    {pendingProposals > 0 && (
+                      <p className="text-sm text-center text-primary mt-2">
+                        Tu as <span className="font-bold text-accent">{pendingProposals}</span> proposition{pendingProposals !== 1 ? "s" : ""} en attente !
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
 

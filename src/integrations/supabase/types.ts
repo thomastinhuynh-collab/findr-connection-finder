@@ -215,6 +215,56 @@ export type Database = {
           },
         ]
       }
+      reservations: {
+        Row: {
+          approved_duration_days: number | null
+          buyr_id: string
+          created_at: string
+          expires_at: string | null
+          findr_id: string
+          id: string
+          justification: string
+          requested_duration_days: number
+          search_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          approved_duration_days?: number | null
+          buyr_id: string
+          created_at?: string
+          expires_at?: string | null
+          findr_id: string
+          id?: string
+          justification: string
+          requested_duration_days?: number
+          search_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          approved_duration_days?: number | null
+          buyr_id?: string
+          created_at?: string
+          expires_at?: string | null
+          findr_id?: string
+          id?: string
+          justification?: string
+          requested_duration_days?: number
+          search_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_search_id_fkey"
+            columns: ["search_id"]
+            isOneToOne: false
+            referencedRelation: "searches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       searches: {
         Row: {
           budget_max: number | null
