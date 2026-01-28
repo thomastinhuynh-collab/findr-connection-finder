@@ -34,11 +34,11 @@ const badges = [
 
 const BecomeFindr = () => {
   return (
-    <section className="py-24 bg-primary text-secondary relative overflow-hidden">
+    <section className="py-24 bg-primary relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-accent blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-secondary blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full blur-3xl" style={{ backgroundColor: 'hsl(42 33% 94%)' }} />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -50,13 +50,13 @@ const BecomeFindr = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="text-sm font-medium text-accent uppercase tracking-wider">
+            <span className="text-sm font-medium uppercase tracking-wider" style={{ color: 'hsl(38 52% 69%)' }}>
               Rejoins la communauté
             </span>
-            <h2 className="text-3xl md:text-5xl font-serif font-bold mt-4 mb-6">
+            <h2 className="text-3xl md:text-5xl font-barlow font-bold mt-4 mb-6" style={{ color: 'hsl(42 33% 94%)' }}>
               Deviens Findr et <span className="text-gradient">gagne en chinant</span>
             </h2>
-            <p className="text-secondary/80 text-lg mb-8">
+            <p className="text-lg mb-8" style={{ color: 'hsl(42 33% 94% / 0.8)' }}>
               Tu adores les brocantes, les friperies, les trouvailles rares ? 
               Rejoins notre communauté de chasseurs de trésors et monétise ta passion.
             </p>
@@ -71,12 +71,12 @@ const BecomeFindr = () => {
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                   className="flex gap-4"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                    <benefit.icon className="w-5 h-5 text-accent" />
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'hsl(42 33% 94% / 0.1)' }}>
+                    <benefit.icon className="w-5 h-5" style={{ color: 'hsl(38 52% 69%)' }} />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1">{benefit.title}</h4>
-                    <p className="text-sm text-secondary/60">{benefit.description}</p>
+                    <h4 className="font-semibold mb-1" style={{ color: 'hsl(42 33% 94%)' }}>{benefit.title}</h4>
+                    <p className="text-sm" style={{ color: 'hsl(42 33% 94% / 0.6)' }}>{benefit.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -97,36 +97,36 @@ const BecomeFindr = () => {
             className="relative"
           >
             {/* Card preview */}
-            <div className="bg-secondary/10 backdrop-blur-sm rounded-3xl p-8 border border-secondary/20">
+            <div className="backdrop-blur-sm rounded-3xl p-8 border" style={{ backgroundColor: 'hsl(42 33% 94% / 0.1)', borderColor: 'hsl(42 33% 94% / 0.2)' }}>
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-accent to-amber-400 flex items-center justify-center">
                   <span className="text-2xl font-bold text-primary">M</span>
                 </div>
                 <div>
-                  <h4 className="text-xl font-serif font-bold">@MarieChineuse</h4>
-                  <p className="text-secondary/60">Findr Expert • Paris</p>
+                  <h4 className="text-xl font-barlow font-bold" style={{ color: 'hsl(42 33% 94%)' }}>@MarieChineuse</h4>
+                  <p style={{ color: 'hsl(42 33% 94% / 0.6)' }}>Findr Expert • Paris</p>
                 </div>
               </div>
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="text-center p-4 rounded-xl bg-secondary/10">
-                  <p className="text-2xl font-bold text-accent">156</p>
-                  <p className="text-xs text-secondary/60">Objets trouvés</p>
+                <div className="text-center p-4 rounded-xl" style={{ backgroundColor: 'hsl(42 33% 94% / 0.1)' }}>
+                  <p className="text-2xl font-bold" style={{ color: 'hsl(38 52% 69%)' }}>156</p>
+                  <p className="text-xs" style={{ color: 'hsl(42 33% 94% / 0.6)' }}>Objets trouvés</p>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-secondary/10">
-                  <p className="text-2xl font-bold text-accent">4.9</p>
-                  <p className="text-xs text-secondary/60">Note moyenne</p>
+                <div className="text-center p-4 rounded-xl" style={{ backgroundColor: 'hsl(42 33% 94% / 0.1)' }}>
+                  <p className="text-2xl font-bold" style={{ color: 'hsl(38 52% 69%)' }}>4.9</p>
+                  <p className="text-xs" style={{ color: 'hsl(42 33% 94% / 0.6)' }}>Note moyenne</p>
                 </div>
-                <div className="text-center p-4 rounded-xl bg-secondary/10">
-                  <p className="text-2xl font-bold text-accent">2.4K</p>
-                  <p className="text-xs text-secondary/60">XP Total</p>
+                <div className="text-center p-4 rounded-xl" style={{ backgroundColor: 'hsl(42 33% 94% / 0.1)' }}>
+                  <p className="text-2xl font-bold" style={{ color: 'hsl(38 52% 69%)' }}>2.4K</p>
+                  <p className="text-xs" style={{ color: 'hsl(42 33% 94% / 0.6)' }}>XP Total</p>
                 </div>
               </div>
 
               {/* Badges */}
               <div>
-                <p className="text-sm text-secondary/60 mb-3">Badges obtenus</p>
+                <p className="text-sm mb-3" style={{ color: 'hsl(42 33% 94% / 0.6)' }}>Badges obtenus</p>
                 <div className="flex flex-wrap gap-2">
                   {badges.map((badge, index) => (
                     <span
@@ -139,13 +139,12 @@ const BecomeFindr = () => {
                 </div>
               </div>
 
-              {/* XP bar */}
               <div className="mt-6">
                 <div className="flex justify-between text-sm mb-2">
-                  <span className="text-secondary/60">Niveau 12</span>
-                  <span className="text-accent">2,400 / 3,000 XP</span>
+                  <span style={{ color: 'hsl(42 33% 94% / 0.6)' }}>Niveau 12</span>
+                  <span style={{ color: 'hsl(38 52% 69%)' }}>2,400 / 3,000 XP</span>
                 </div>
-                <div className="h-3 bg-secondary/20 rounded-full overflow-hidden">
+                <div className="h-3 rounded-full overflow-hidden" style={{ backgroundColor: 'hsl(42 33% 94% / 0.2)' }}>
                   <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: "80%" }}
