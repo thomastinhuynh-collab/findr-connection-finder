@@ -81,19 +81,19 @@ const Hero = () => {
             </div>
           </motion.div>
 
-          {/* Badge */}
+          {/* Badge Marketplace Inversé */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-barlow font-semibold mb-8"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-barlow font-bold mb-6 uppercase tracking-wider"
             style={{ 
-              backgroundColor: 'hsla(42, 33%, 94%, 0.15)',
-              color: 'hsl(42 33% 94%)'
+              backgroundColor: 'hsl(38 52% 69%)',
+              color: 'hsl(224 67% 19%)'
             }}
           >
             <Sparkles className="w-4 h-4" />
-            PREMIUM COMMUNITY
+            Marketplace Inversé
           </motion.div>
 
           {/* Main Headline */}
@@ -114,18 +114,50 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-base md:text-lg max-w-2xl mx-auto mb-10"
+            className="text-base md:text-lg max-w-2xl mx-auto mb-8"
             style={{ color: 'hsla(42, 33%, 94%, 0.85)' }}
           >
             La plateforme premium de chinage collaboratif où les findr 
             passionnés trouvent pour les buyr leurs pépites vintage et objets pop culture.
           </motion.p>
 
-          {/* CTA Buttons */}
+          {/* Search/Post Bar */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
+            className="w-full max-w-2xl mx-auto mb-8"
+          >
+            <Link to="/poster-recherche">
+              <div 
+                className="flex items-center gap-3 px-6 py-4 rounded-full cursor-pointer transition-all duration-300 hover:scale-[1.02]"
+                style={{ 
+                  backgroundColor: 'hsla(42, 33%, 94%, 0.95)',
+                  boxShadow: '0 8px 32px -8px hsla(224, 67%, 19%, 0.3)'
+                }}
+              >
+                <Search className="w-5 h-5 text-muted-foreground" />
+                <span className="flex-1 text-left text-muted-foreground font-medium">
+                  Décris ce que tu recherches...
+                </span>
+                <span 
+                  className="px-4 py-2 rounded-full text-sm font-barlow font-semibold"
+                  style={{ 
+                    backgroundColor: 'hsl(224 67% 19%)',
+                    color: 'hsl(42 33% 94%)'
+                  }}
+                >
+                  Poster
+                </span>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Button 
@@ -139,7 +171,7 @@ const Hero = () => {
             >
               <Link to="/recherches">
                 <Search className="w-5 h-5 mr-2" />
-                Devenir buyr
+                Voir les recherches
               </Link>
             </Button>
             <Button 
