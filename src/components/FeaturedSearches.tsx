@@ -189,12 +189,12 @@ const FeaturedSearches = () => {
                   {search.title}
                 </h3>
 
-                <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mb-4">
-                  <span className="flex items-center gap-1">
+                <div className="flex flex-wrap gap-3 text-xs mb-4">
+                  <span className="flex items-center gap-1 text-accent font-medium">
                     <Euro className="w-3.5 h-3.5" />
                     {formatBudget(search.budget_min, search.budget_max)}
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 text-accent font-medium">
                     <Clock className="w-3.5 h-3.5" />
                     {urgencyLabels[search.urgency || "normal"] || search.urgency}
                   </span>
