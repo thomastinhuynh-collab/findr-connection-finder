@@ -30,11 +30,10 @@ const Logo = ({
       <div className="flex items-center">
         <span 
           className={cn(
-            "font-serif font-normal tracking-tight",
+            "font-barlow font-semibold tracking-tight",
             sizes.text,
             textColor
           )}
-          style={{ fontFamily: "'Playfair Display', serif" }}
         >
           f
           <span className="relative inline-block">
@@ -57,11 +56,10 @@ const Logo = ({
       {showTagline && (
         <span 
           className={cn(
-            "font-light italic tracking-wide mt-0.5",
+            "font-sans font-light italic tracking-wide mt-0.5",
             sizes.tagline,
             taglineColor
           )}
-          style={{ fontFamily: "'Playfair Display', serif" }}
         >
           let others search for you
         </span>
