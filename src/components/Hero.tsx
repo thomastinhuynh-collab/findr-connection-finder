@@ -3,7 +3,7 @@ import { ArrowRight, Search, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Logo from "@/components/Logo";
-import heroBackground from "@/assets/hero-vintage.jpg";
+import heroBackground from "@/assets/hero-background.png";
 
 const Hero = () => {
   return (
@@ -55,9 +55,9 @@ const Hero = () => {
                   >
                     f
                     <span className="relative inline-block">
-                      <span className="invisible">i</span>
+                      ı
                       <svg 
-                        className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 md:w-4 md:h-4"
+                        className="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 md:w-4 md:h-4"
                         viewBox="0 0 24 24" 
                         fill="none" 
                         stroke="currentColor" 
