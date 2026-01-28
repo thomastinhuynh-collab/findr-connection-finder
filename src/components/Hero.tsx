@@ -50,11 +50,8 @@ const Hero = () => {
               <div className="w-36 h-36 md:w-44 md:h-44 rounded-full bg-primary flex items-center justify-center shadow-2xl border-4 border-cream/20">
                 <div className="flex flex-col items-center">
                   <span 
-                    className="text-3xl md:text-4xl font-serif font-normal tracking-tight"
-                    style={{ 
-                      fontFamily: "'Playfair Display', serif",
-                      color: 'hsl(38 52% 69%)'
-                    }}
+                    className="text-3xl md:text-4xl font-barlow font-semibold tracking-tight"
+                    style={{ color: 'hsl(38 52% 69%)' }}
                   >
                     f
                     <span className="relative inline-block">
@@ -74,11 +71,8 @@ const Hero = () => {
                     ndr
                   </span>
                   <span 
-                    className="text-[8px] md:text-[10px] font-light italic tracking-wide mt-1"
-                    style={{ 
-                      fontFamily: "'Playfair Display', serif",
-                      color: 'hsl(38 52% 69% / 0.8)'
-                    }}
+                    className="text-[8px] md:text-[10px] font-sans font-light italic tracking-wide mt-1"
+                    style={{ color: 'hsl(38 52% 69% / 0.8)' }}
                   >
                     let others search for you
                   </span>
@@ -92,7 +86,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-barlow font-semibold mb-8"
             style={{ 
               backgroundColor: 'hsla(38, 52%, 69%, 0.25)',
               color: 'hsl(38 52% 75%)'
@@ -107,11 +101,8 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight italic"
-            style={{ 
-              fontFamily: "'Playfair Display', serif",
-              color: 'hsl(42 33% 94%)'
-            }}
+            className="text-4xl md:text-5xl lg:text-6xl font-barlow font-bold mb-6 leading-tight"
+            style={{ color: 'hsl(42 33% 94%)' }}
           >
             Trouvez l'introuvable,
             <br />
@@ -177,7 +168,7 @@ const Hero = () => {
           >
             <div className="text-center">
               <p 
-                className="text-3xl font-serif font-bold"
+                className="text-3xl font-barlow font-bold"
                 style={{ color: 'hsl(38 52% 75%)' }}
               >
                 2.5K+
@@ -191,7 +182,7 @@ const Hero = () => {
             </div>
             <div className="text-center">
               <p 
-                className="text-3xl font-serif font-bold"
+                className="text-3xl font-barlow font-bold"
                 style={{ color: 'hsl(38 52% 75%)' }}
               >
                 850+
@@ -205,7 +196,7 @@ const Hero = () => {
             </div>
             <div className="text-center">
               <p 
-                className="text-3xl font-serif font-bold"
+                className="text-3xl font-barlow font-bold"
                 style={{ color: 'hsl(38 52% 75%)' }}
               >
                 98%
