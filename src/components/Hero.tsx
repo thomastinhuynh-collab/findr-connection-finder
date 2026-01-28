@@ -244,11 +244,11 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Bottom gradient fade */}
+      {/* Subtle bottom separator */}
       <div 
-        className="absolute bottom-0 left-0 right-0 h-32"
+        className="absolute bottom-0 left-0 right-0 h-1"
         style={{
-          background: 'linear-gradient(to top, hsl(42 33% 94%) 0%, transparent 100%)'
+          backgroundColor: 'hsl(42 33% 94%)'
         }}
       />
     </section>
