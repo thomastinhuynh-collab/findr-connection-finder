@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["'Playfair Display'", "Georgia", "serif"],
-        sans: ["'Inter'", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+        barlow: ["Barlow", "sans-serif"],
+        sans: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -61,10 +61,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Premium brand colors
-        "deep-cove": "hsl(var(--deep-cove))",
-        bone: "hsl(var(--bone))",
+        // Findr custom colors
+        "navy-primary": "hsl(var(--navy-primary))",
+        "navy-secondary": "hsl(var(--navy-secondary))",
+        cream: "hsl(var(--cream))",
         gold: "hsl(var(--gold))",
+        "warm-neutral": "hsl(var(--warm-neutral))",
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
@@ -73,11 +75,13 @@ export default {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
         },
+        "vintage-cream": "hsl(var(--vintage-cream))",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        findr: "1.5rem",
       },
       keyframes: {
         "accordion-down": {
@@ -100,10 +104,6 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
-        ticker: {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -111,13 +111,10 @@ export default {
         "slide-up": "slide-up 0.6s ease-out forwards",
         "fade-in": "fade-in 0.8s ease-out forwards",
         float: "float 6s ease-in-out infinite",
-        ticker: "ticker 20s linear infinite",
       },
       boxShadow: {
-        sm: "var(--shadow-sm)",
-        md: "var(--shadow-md)",
-        lg: "var(--shadow-lg)",
-        glow: "var(--shadow-glow)",
+        vintage: "0 8px 24px -4px hsl(227 90% 14% / 0.12)",
+        glow: "0 0 40px -10px hsl(35 80% 55% / 0.4)",
       },
     },
   },

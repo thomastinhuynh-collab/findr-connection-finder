@@ -2,108 +2,119 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
 @layer base {
   :root {
-    /* Premium Brand Colors */
-    /* #040C44 - Deep Cove (Hero/Footer) */
-    /* #E6DDC8 - Bone (Content Background) */
-    /* #C4A962 - Gold Accent */
+    /* Findr Brand Colors - Official Palette */
+    /* #112150 - Navy Primary */
+    /* #3B507D - Navy Secondary */
+    /* #F5F0EA - Cream Background */
+    /* #D9BD8B - Gold Accent */
+    /* #DACAC2 - Warm Neutral */
 
-    --background: 40 30% 85%; /* #E6DDC8 Bone */
-    --foreground: 230 84% 14%; /* #040C44 Deep Cove */
+    --background: 42 33% 94%; /* #F5F0EA Cream */
+    --foreground: 224 67% 19%; /* #112150 Navy */
 
-    --card: 40 25% 88%;
-    --card-foreground: 230 84% 14%;
+    --card: 42 25% 96%;
+    --card-foreground: 224 67% 19%;
 
-    --popover: 40 25% 90%;
-    --popover-foreground: 230 84% 14%;
+    --popover: 42 25% 96%;
+    --popover-foreground: 224 67% 19%;
 
-    --primary: 230 84% 14%; /* #040C44 Deep Cove */
-    --primary-foreground: 40 30% 85%;
+    --primary: 224 67% 19%; /* #112150 Navy */
+    --primary-foreground: 42 33% 94%;
 
-    --secondary: 230 50% 25%;
-    --secondary-foreground: 40 30% 90%;
+    --secondary: 222 37% 36%; /* #3B507D Navy Secondary */
+    --secondary-foreground: 42 33% 94%;
 
-    --muted: 40 20% 75%;
-    --muted-foreground: 230 30% 35%;
+    --muted: 22 22% 81%; /* #DACAC2 Warm Neutral */
+    --muted-foreground: 224 40% 40%;
 
-    --accent: 43 49% 58%; /* #C4A962 Gold */
-    --accent-foreground: 230 84% 14%;
+    --accent: 38 52% 69%; /* #D9BD8B Gold */
+    --accent-foreground: 224 67% 19%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 40 30% 90%;
+    --destructive-foreground: 42 33% 94%;
 
-    --border: 230 15% 75%;
-    --input: 230 15% 80%;
-    --ring: 230 84% 14%;
+    --border: 224 20% 80%;
+    --input: 224 20% 85%;
+    --ring: 224 67% 19%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
     /* Custom tokens */
-    --deep-cove: 230 84% 14%; /* #040C44 */
-    --bone: 40 30% 85%; /* #E6DDC8 */
-    --gold: 43 49% 58%; /* #C4A962 */
+    --navy-primary: 224 67% 19%; /* #112150 */
+    --navy-secondary: 222 37% 36%; /* #3B507D */
+    --cream: 42 33% 94%; /* #F5F0EA */
+    --gold: 38 52% 69%; /* #D9BD8B */
+    --warm-neutral: 22 22% 81%; /* #DACAC2 */
     
     --success: 152 60% 42%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 0%;
+    --vintage-cream: 42 33% 94%;
+    
+    /* Enhanced Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(224 67% 19%) 0%, hsl(222 37% 36%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(42 25% 98%) 0%, hsl(42 20% 95%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(38 52% 69%) 0%, hsl(38 60% 75%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(42 33% 94%) 0%, hsl(22 22% 88%) 100%);
 
-    /* Enhanced Shadows for Premium feel */
-    --shadow-sm: 0 2px 8px -2px hsl(230 84% 14% / 0.04);
-    --shadow-md: 0 8px 24px -4px hsl(230 84% 14% / 0.08);
-    --shadow-lg: 0 16px 48px -8px hsl(230 84% 14% / 0.12);
-    --shadow-glow: 0 0 40px -10px hsl(43 49% 58% / 0.3);
+    /* Refined Shadows */
+    --shadow-sm: 0 2px 8px -2px hsl(224 67% 19% / 0.06);
+    --shadow-md: 0 8px 24px -4px hsl(224 67% 19% / 0.1);
+    --shadow-lg: 0 16px 48px -8px hsl(224 67% 19% / 0.14);
+    --shadow-glow: 0 0 40px -10px hsl(38 52% 69% / 0.35);
 
-    --sidebar-background: 40 30% 85%;
-    --sidebar-foreground: 230 84% 14%;
-    --sidebar-primary: 230 84% 14%;
-    --sidebar-primary-foreground: 40 30% 85%;
-    --sidebar-accent: 40 20% 80%;
-    --sidebar-accent-foreground: 230 84% 14%;
-    --sidebar-border: 230 15% 75%;
-    --sidebar-ring: 43 49% 58%;
+    --sidebar-background: 42 33% 94%;
+    --sidebar-foreground: 224 67% 19%;
+    --sidebar-primary: 224 67% 19%;
+    --sidebar-primary-foreground: 42 33% 94%;
+    --sidebar-accent: 22 22% 88%;
+    --sidebar-accent-foreground: 224 67% 19%;
+    --sidebar-border: 224 20% 80%;
+    --sidebar-ring: 38 52% 69%;
   }
 
   .dark {
-    --background: 230 84% 8%;
-    --foreground: 40 30% 90%;
+    --background: 224 67% 10%;
+    --foreground: 42 33% 92%;
 
-    --card: 230 70% 12%;
-    --card-foreground: 40 30% 90%;
+    --card: 224 60% 14%;
+    --card-foreground: 42 33% 92%;
 
-    --popover: 230 70% 12%;
-    --popover-foreground: 40 30% 90%;
+    --popover: 224 60% 14%;
+    --popover-foreground: 42 33% 92%;
 
-    --primary: 40 30% 88%;
-    --primary-foreground: 230 84% 14%;
+    --primary: 42 33% 90%;
+    --primary-foreground: 224 67% 19%;
 
-    --secondary: 230 50% 20%;
-    --secondary-foreground: 40 30% 90%;
+    --secondary: 222 37% 28%;
+    --secondary-foreground: 42 33% 92%;
 
-    --muted: 230 50% 18%;
-    --muted-foreground: 40 15% 65%;
+    --muted: 224 50% 20%;
+    --muted-foreground: 42 20% 70%;
 
-    --accent: 43 49% 58%;
-    --accent-foreground: 230 84% 14%;
+    --accent: 38 52% 69%;
+    --accent-foreground: 224 67% 19%;
 
     --destructive: 0 62% 40%;
-    --destructive-foreground: 40 30% 90%;
+    --destructive-foreground: 42 33% 92%;
 
-    --border: 230 50% 18%;
-    --input: 230 50% 18%;
-    --ring: 40 30% 88%;
+    --border: 224 50% 22%;
+    --input: 224 50% 22%;
+    --ring: 42 33% 90%;
 
-    --sidebar-background: 230 84% 10%;
-    --sidebar-foreground: 40 30% 90%;
-    --sidebar-primary: 43 49% 58%;
-    --sidebar-primary-foreground: 230 84% 14%;
-    --sidebar-accent: 230 50% 16%;
-    --sidebar-accent-foreground: 40 30% 90%;
-    --sidebar-border: 230 50% 18%;
-    --sidebar-ring: 43 49% 58%;
+    --sidebar-background: 224 67% 12%;
+    --sidebar-foreground: 42 33% 92%;
+    --sidebar-primary: 38 52% 69%;
+    --sidebar-primary-foreground: 224 67% 19%;
+    --sidebar-accent: 224 50% 18%;
+    --sidebar-accent-foreground: 42 33% 92%;
+    --sidebar-border: 224 50% 20%;
+    --sidebar-ring: 38 52% 69%;
   }
 }
 
@@ -114,73 +125,77 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
-  /* Serif for headings - Premium/Elegant feel */
+  h1, h2, h3, h4, h5, h6, .font-barlow {
+    font-family: 'Barlow', sans-serif;
+  }
+
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', Georgia, serif;
-  }
-
-  /* Sans-serif for body - Clean/Modern feel */
-  p, span, a, button, input, textarea, label {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Playfair Display', serif;
   }
 }
 
 @layer components {
-  .section-bone {
-    background-color: hsl(40 30% 85%);
+  .findr-logo {
+    font-family: 'Playfair Display', serif;
+    @apply font-bold tracking-tight;
   }
 
-  .section-deep-cove {
-    background-color: hsl(230 84% 14%);
+  .text-gradient {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  .text-bone {
-    color: hsl(40 30% 85%);
-  }
-
-  .text-deep-cove {
-    color: hsl(230 84% 14%);
-  }
-
-  .card-premium {
-    @apply bg-card/80 backdrop-blur-sm border border-border/30 rounded-2xl;
+  .card-vintage {
+    background: var(--gradient-card);
     box-shadow: var(--shadow-md);
+    @apply border border-border/50 backdrop-blur-sm;
   }
 
-  .card-premium:hover {
+  .card-elevated {
+    @apply bg-card/95 backdrop-blur-sm border border-border/40;
+    box-shadow: 
+      0 4px 6px -1px hsl(227 90% 14% / 0.08),
+      0 10px 20px -5px hsl(227 90% 14% / 0.12),
+      0 0 0 1px hsl(227 20% 80% / 0.3);
+  }
+
+  .card-elevated:hover {
+    box-shadow: 
+      0 8px 12px -2px hsl(227 90% 14% / 0.12),
+      0 16px 32px -8px hsl(227 90% 14% / 0.18),
+      0 0 0 1px hsl(46 71% 52% / 0.3);
+    transform: translateY(-2px);
+  }
+
+  .btn-hero {
+    background: var(--gradient-hero);
+    box-shadow: var(--shadow-md);
+    @apply text-secondary transition-all duration-300;
+  }
+
+  .btn-hero:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-2px);
-    transition: all 0.3s ease;
-  }
-
-  .btn-premium {
-    @apply bg-primary text-primary-foreground font-medium px-8 py-4 rounded-lg transition-all duration-300;
-  }
-
-  .btn-premium:hover {
-    @apply bg-primary/90;
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
   }
 
   .btn-gold {
-    background-color: hsl(43 49% 58%);
-    color: hsl(230 84% 14%);
-    @apply font-semibold px-8 py-4 rounded-lg transition-all duration-300;
+    background: var(--gradient-gold);
+    box-shadow: var(--shadow-glow);
+    @apply text-primary font-semibold transition-all duration-300;
   }
 
   .btn-gold:hover {
-    background-color: hsl(43 49% 52%);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-glow);
+    transform: scale(1.02);
   }
 
   .badge-xp {
-    background: linear-gradient(135deg, hsl(43 49% 58%) 0%, hsl(43 60% 65%) 100%);
-    @apply text-primary text-xs font-bold px-3 py-1 rounded-full;
+    background: var(--gradient-gold);
+    @apply text-primary text-xs font-bold px-2 py-0.5 rounded-full;
   }
 }
 
@@ -220,15 +235,5 @@
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
-  }
-
-  /* Ticker animation for live missions */
-  .animate-ticker {
-    animation: ticker 20s linear infinite;
-  }
-
-  @keyframes ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
   }
 }

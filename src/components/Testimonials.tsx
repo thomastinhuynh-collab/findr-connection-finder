@@ -27,36 +27,24 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section 
-      className="py-32"
-      style={{ backgroundColor: 'hsl(40 30% 85%)' }} // Bone
-    >
+    <section className="py-24 bg-card">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          className="text-center mb-16"
         >
-          <p 
-            className="text-sm uppercase tracking-widest font-medium mb-4"
-            style={{ color: 'hsl(43 49% 58%)' }}
-          >
+          <span className="text-sm font-medium text-accent uppercase tracking-wider">
             Témoignages
-          </p>
-          <h2 
-            className="text-3xl md:text-5xl font-bold"
-            style={{ 
-              color: 'hsl(230 84% 14%)',
-              fontFamily: "'Playfair Display', Georgia, serif"
-            }}
-          >
-            Ce qu'ils disent <span className="italic">de Findr</span>
+          </span>
+          <h2 className="text-3xl md:text-5xl font-serif font-bold text-primary mt-4 mb-6">
+            Ce qu'ils disent de Findr
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={index}
@@ -64,31 +52,17 @@ const Testimonials = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="p-8 rounded-2xl border transition-all duration-300 hover:shadow-lg"
-              style={{ 
-                backgroundColor: 'hsl(40 30% 90%)',
-                borderColor: 'hsl(230 15% 80%)'
-              }}
+              className="bg-background rounded-2xl p-8 shadow-vintage"
             >
               {/* Stars */}
-              <div className="flex gap-1 mb-6">
+              <div className="flex gap-1 mb-4">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star 
-                    key={i} 
-                    className="w-5 h-5" 
-                    style={{ 
-                      fill: 'hsl(43 49% 58%)',
-                      color: 'hsl(43 49% 58%)'
-                    }}
-                  />
+                  <Star key={i} className="w-5 h-5 fill-accent text-accent" />
                 ))}
               </div>
 
               {/* Quote */}
-              <p 
-                className="mb-8 leading-relaxed text-base"
-                style={{ color: 'hsl(230 50% 35%)' }}
-              >
+              <p className="text-muted-foreground mb-6 leading-relaxed">
                 "{testimonial.quote}"
               </p>
 
@@ -100,21 +74,8 @@ const Testimonials = () => {
                   className="w-12 h-12 rounded-full"
                 />
                 <div>
-                  <p 
-                    className="font-bold"
-                    style={{ 
-                      color: 'hsl(230 84% 14%)',
-                      fontFamily: "'Playfair Display', Georgia, serif"
-                    }}
-                  >
-                    {testimonial.author}
-                  </p>
-                  <p 
-                    className="text-sm"
-                    style={{ color: 'hsl(230 50% 45%)' }}
-                  >
-                    {testimonial.role}
-                  </p>
+                  <p className="font-semibold text-primary">{testimonial.author}</p>
+                  <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                 </div>
               </div>
             </motion.div>
