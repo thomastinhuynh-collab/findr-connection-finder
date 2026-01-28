@@ -42,10 +42,10 @@ const CallToAction = () => {
 
           {/* Content */}
           <div className="relative z-10 py-20 px-8 md:px-16 text-center">
-            <h2 className="text-3xl md:text-5xl font-serif font-bold text-secondary mb-6">
+            <h2 className="text-3xl md:text-5xl font-barlow font-bold mb-6" style={{ color: 'hsl(42 33% 94%)' }}>
               Prêt à trouver tes pépites ?
             </h2>
-            <p className="text-secondary/80 text-lg max-w-xl mx-auto mb-10">
+            <p className="text-lg max-w-xl mx-auto mb-10" style={{ color: 'hsl(42 33% 94% / 0.85)' }}>
               Rejoins la liste d'attente et sois parmi les premiers 
               à accéder à la plateforme de chinage communautaire.
             </p>
@@ -76,7 +76,7 @@ const CallToAction = () => {
               </Button>
             </form>
 
-            <p className="text-sm text-secondary/50 mt-6">
+            <p className="text-sm mt-6" style={{ color: 'hsl(42 33% 94% / 0.6)' }}>
               Pas de spam, promis. Juste des pépites. 💎
             </p>
           </div>
