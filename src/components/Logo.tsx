@@ -37,10 +37,10 @@ const Logo = ({
         >
           f
           <span className="relative inline-block">
-            <span className="invisible">i</span>
-            {/* Loupe/magnifying glass icon replacing the 'i' dot */}
+            ı
+            {/* Loupe/magnifying glass icon replacing the dot of 'i' */}
             <svg 
-              className={cn("absolute top-0 left-1/2 -translate-x-1/2", sizes.loupe)}
+              className={cn("absolute -top-1 left-1/2 -translate-x-1/2", sizes.loupe)}
               viewBox="0 0 24 24" 
               fill="none" 
               stroke="currentColor" 
