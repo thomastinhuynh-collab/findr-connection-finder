@@ -47,22 +47,22 @@ const Hero = () => {
           >
             <div className="relative">
               {/* Circular logo with cream text on navy */}
-              <div className="w-36 h-36 md:w-44 md:h-44 rounded-full bg-primary flex items-center justify-center shadow-2xl border-4 border-cream/20">
+              <div className="w-36 h-36 md:w-44 md:h-44 rounded-full bg-primary flex items-center justify-center shadow-2xl border-4 border-[hsl(42_33%_94%)]/20">
                 <div className="flex flex-col items-center">
                   <span 
                     className="text-3xl md:text-4xl font-barlow font-semibold tracking-tight"
-                    style={{ color: 'hsl(38 52% 69%)' }}
+                    style={{ color: 'hsl(42 33% 94%)' }}
                   >
                     f
                     <span className="relative inline-block">
-                      i
+                      <span className="invisible">i</span>
                       <svg 
-                        className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-3 h-3 md:w-4 md:h-4"
+                        className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 md:w-4 md:h-4"
                         viewBox="0 0 24 24" 
                         fill="none" 
                         stroke="currentColor" 
-                        strokeWidth="2"
-                        style={{ color: 'hsl(38 52% 69%)' }}
+                        strokeWidth="2.5"
+                        style={{ color: 'hsl(42 33% 94%)' }}
                       >
                         <circle cx="10" cy="10" r="6" />
                         <path d="M14.5 14.5L20 20" strokeLinecap="round" />
@@ -72,7 +72,7 @@ const Hero = () => {
                   </span>
                   <span 
                     className="text-[8px] md:text-[10px] font-sans font-light italic tracking-wide mt-1"
-                    style={{ color: 'hsl(38 52% 69% / 0.8)' }}
+                    style={{ color: 'hsl(42 33% 94% / 0.8)' }}
                   >
                     let others search for you
                   </span>
@@ -88,8 +88,8 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-barlow font-semibold mb-8"
             style={{ 
-              backgroundColor: 'hsla(38, 52%, 69%, 0.25)',
-              color: 'hsl(38 52% 75%)'
+              backgroundColor: 'hsla(42, 33%, 94%, 0.15)',
+              color: 'hsl(42 33% 94%)'
             }}
           >
             <Sparkles className="w-4 h-4" />
@@ -169,7 +169,7 @@ const Hero = () => {
             <div className="text-center">
               <p 
                 className="text-3xl font-barlow font-bold"
-                style={{ color: 'hsl(38 52% 75%)' }}
+                style={{ color: 'hsl(42 33% 94%)' }}
               >
                 2.5K+
               </p>
@@ -183,7 +183,7 @@ const Hero = () => {
             <div className="text-center">
               <p 
                 className="text-3xl font-barlow font-bold"
-                style={{ color: 'hsl(38 52% 75%)' }}
+                style={{ color: 'hsl(42 33% 94%)' }}
               >
                 850+
               </p>
@@ -197,7 +197,7 @@ const Hero = () => {
             <div className="text-center">
               <p 
                 className="text-3xl font-barlow font-bold"
-                style={{ color: 'hsl(38 52% 75%)' }}
+                style={{ color: 'hsl(42 33% 94%)' }}
               >
                 98%
               </p>
