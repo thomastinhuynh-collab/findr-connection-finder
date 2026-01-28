@@ -41,17 +41,17 @@ const floatingIcons = [
 const VintageBackground = () => {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-      {/* Base warm gradient */}
+      {/* Base warm gradient using brand colors */}
       <div 
         className="absolute inset-0"
         style={{
           background: `
             linear-gradient(135deg, 
-              hsl(40 45% 96%) 0%, 
-              hsl(43 35% 93%) 25%,
-              hsl(38 40% 95%) 50%,
-              hsl(45 30% 92%) 75%,
-              hsl(42 38% 94%) 100%
+              hsl(42 33% 94%) 0%, 
+              hsl(42 25% 92%) 25%,
+              hsl(22 22% 90%) 50%,
+              hsl(42 30% 93%) 75%,
+              hsl(42 33% 94%) 100%
             )
           `,
         }}
@@ -65,14 +65,14 @@ const VintageBackground = () => {
         }}
       />
       
-      {/* Elegant radial accents */}
+      {/* Elegant radial accents with brand gold */}
       <div 
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse 80% 50% at 10% 20%, hsl(46 71% 52% / 0.04) 0%, transparent 50%),
-            radial-gradient(ellipse 60% 40% at 85% 75%, hsl(46 71% 52% / 0.03) 0%, transparent 45%),
-            radial-gradient(ellipse 100% 60% at 50% 100%, hsl(227 90% 14% / 0.02) 0%, transparent 40%)
+            radial-gradient(ellipse 80% 50% at 10% 20%, hsl(38 52% 69% / 0.04) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 85% 75%, hsl(38 52% 69% / 0.03) 0%, transparent 45%),
+            radial-gradient(ellipse 100% 60% at 50% 100%, hsl(224 67% 19% / 0.02) 0%, transparent 40%)
           `,
         }}
       />
@@ -86,8 +86,8 @@ const VintageBackground = () => {
               45deg,
               transparent,
               transparent 80px,
-              hsl(227 90% 14%) 80px,
-              hsl(227 90% 14%) 81px
+              hsl(224 67% 19%) 80px,
+              hsl(224 67% 19%) 81px
             )
           `,
         }}
@@ -98,7 +98,7 @@ const VintageBackground = () => {
         className="absolute inset-0 opacity-[0.015]"
         style={{
           backgroundImage: `
-            radial-gradient(circle at center, hsl(227 90% 14%) 1px, transparent 1px)
+            radial-gradient(circle at center, hsl(224 67% 19%) 1px, transparent 1px)
           `,
           backgroundSize: '24px 24px',
         }}
@@ -133,20 +133,20 @@ const VintageBackground = () => {
 
       {/* Art deco corner accents */}
       <svg className="absolute top-0 left-0 w-40 h-40 opacity-[0.025]" viewBox="0 0 100 100">
-        <path d="M0 0 L30 0 L30 3 L3 3 L3 30 L0 30 Z" fill="hsl(227 90% 14%)" />
-        <path d="M0 0 L15 0 L15 1.5 L1.5 1.5 L1.5 15 L0 15 Z" fill="hsl(46 71% 52%)" />
+        <path d="M0 0 L30 0 L30 3 L3 3 L3 30 L0 30 Z" fill="hsl(224 67% 19%)" />
+        <path d="M0 0 L15 0 L15 1.5 L1.5 1.5 L1.5 15 L0 15 Z" fill="hsl(38 52% 69%)" />
       </svg>
       <svg className="absolute top-0 right-0 w-40 h-40 opacity-[0.025] scale-x-[-1]" viewBox="0 0 100 100">
-        <path d="M0 0 L30 0 L30 3 L3 3 L3 30 L0 30 Z" fill="hsl(227 90% 14%)" />
-        <path d="M0 0 L15 0 L15 1.5 L1.5 1.5 L1.5 15 L0 15 Z" fill="hsl(46 71% 52%)" />
+        <path d="M0 0 L30 0 L30 3 L3 3 L3 30 L0 30 Z" fill="hsl(224 67% 19%)" />
+        <path d="M0 0 L15 0 L15 1.5 L1.5 1.5 L1.5 15 L0 15 Z" fill="hsl(38 52% 69%)" />
       </svg>
       <svg className="absolute bottom-0 left-0 w-40 h-40 opacity-[0.025] scale-y-[-1]" viewBox="0 0 100 100">
-        <path d="M0 0 L30 0 L30 3 L3 3 L3 30 L0 30 Z" fill="hsl(227 90% 14%)" />
-        <path d="M0 0 L15 0 L15 1.5 L1.5 1.5 L1.5 15 L0 15 Z" fill="hsl(46 71% 52%)" />
+        <path d="M0 0 L30 0 L30 3 L3 3 L3 30 L0 30 Z" fill="hsl(224 67% 19%)" />
+        <path d="M0 0 L15 0 L15 1.5 L1.5 1.5 L1.5 15 L0 15 Z" fill="hsl(38 52% 69%)" />
       </svg>
       <svg className="absolute bottom-0 right-0 w-40 h-40 opacity-[0.025] scale-[-1]" viewBox="0 0 100 100">
-        <path d="M0 0 L30 0 L30 3 L3 3 L3 30 L0 30 Z" fill="hsl(227 90% 14%)" />
-        <path d="M0 0 L15 0 L15 1.5 L1.5 1.5 L1.5 15 L0 15 Z" fill="hsl(46 71% 52%)" />
+        <path d="M0 0 L30 0 L30 3 L3 3 L3 30 L0 30 Z" fill="hsl(224 67% 19%)" />
+        <path d="M0 0 L15 0 L15 1.5 L1.5 1.5 L1.5 15 L0 15 Z" fill="hsl(38 52% 69%)" />
       </svg>
 
       {/* Soft vignette effect */}
@@ -154,7 +154,7 @@ const VintageBackground = () => {
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, hsl(43 35% 92% / 0.4) 100%)
+            radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, hsl(42 25% 92% / 0.4) 100%)
           `,
         }}
       />

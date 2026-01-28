@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Instagram, Twitter } from "lucide-react";
+import Logo from "@/components/Logo";
 
 const Footer = () => {
   return (
@@ -8,18 +9,18 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link to="/" className="findr-logo text-3xl text-primary mb-4 block">
-              findr
+            <Link to="/" className="block mb-4">
+              <Logo size="lg" variant="dark" showTagline />
             </Link>
             <p className="text-muted-foreground text-sm mb-6">
               La première plateforme communautaire de chinage collaboratif. 
               Tu demandes, la communauté trouve.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center hover:bg-primary hover:text-secondary transition-colors">
+              <a href="#" className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center hover:bg-primary hover:text-secondary transition-colors">
+              <a href="#" className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
             </div>
