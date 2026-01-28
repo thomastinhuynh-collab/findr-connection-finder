@@ -62,9 +62,11 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         // Findr custom colors
-        "deep-cove": "hsl(var(--deep-cove))",
-        bone: "hsl(var(--bone))",
+        "navy-primary": "hsl(var(--navy-primary))",
+        "navy-secondary": "hsl(var(--navy-secondary))",
+        cream: "hsl(var(--cream))",
         gold: "hsl(var(--gold))",
+        "warm-neutral": "hsl(var(--warm-neutral))",
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",

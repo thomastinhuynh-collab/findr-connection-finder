@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
 import NotificationBell from "@/components/NotificationBell";
+import Logo from "@/components/Logo";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -21,11 +23,9 @@ const Navbar = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-18">
-            {/* Logo Text */}
+            {/* Logo */}
             <Link to="/" className="flex items-center group">
-              <span className="font-display text-2xl font-bold text-primary hover:text-accent transition-colors">
-                Findr
-              </span>
+              <Logo size="md" variant="dark" />
             </Link>
 
             {/* Desktop Navigation */}
@@ -41,9 +41,10 @@ const Navbar = () => {
               </Link>
               <Link 
                 to="/premium" 
-                className="text-sm font-semibold bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                className="text-sm font-semibold hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                style={{ color: 'hsl(38 52% 55%)' }}
               >
-                <Crown className="w-4 h-4 text-accent" />
+                <Crown className="w-4 h-4" style={{ color: 'hsl(38 52% 55%)' }} />
                 Passer Premium
               </Link>
             </div>
@@ -99,7 +100,8 @@ const Navbar = () => {
                 </Link>
                 <Link 
                   to="/premium" 
-                  className="text-sm font-semibold text-accent hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                  className="text-sm font-semibold hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                  style={{ color: 'hsl(38 52% 55%)' }}
                 >
                   <Crown className="w-4 h-4" />
                   Passer Premium
