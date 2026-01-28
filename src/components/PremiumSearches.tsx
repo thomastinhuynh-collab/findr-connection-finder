@@ -168,13 +168,13 @@ const PremiumSearches = () => {
                   {search.title}
                 </h3>
 
-                <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mb-4">
-                  <span className="flex items-center gap-1.5 bg-secondary px-2 py-1 rounded-md">
-                    <Euro className="w-4 h-4 text-accent" />
+                <div className="flex flex-wrap gap-3 text-sm mb-4">
+                  <span className="flex items-center gap-1.5 bg-secondary/50 px-2 py-1 rounded-md text-accent font-medium">
+                    <Euro className="w-4 h-4" />
                     {formatBudget(search.budget_min, search.budget_max)}
                   </span>
-                  <span className="flex items-center gap-1.5 bg-secondary px-2 py-1 rounded-md">
-                    <Clock className="w-4 h-4 text-accent" />
+                  <span className="flex items-center gap-1.5 bg-secondary/50 px-2 py-1 rounded-md text-accent font-medium">
+                    <Clock className="w-4 h-4" />
                     {urgencyLabels[search.urgency || "normal"] || search.urgency}
                   </span>
                 </div>

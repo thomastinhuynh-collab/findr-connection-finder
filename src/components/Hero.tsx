@@ -3,38 +3,15 @@ import { ArrowRight, Search, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Logo from "@/components/Logo";
-import heroBackground from "@/assets/hero-background.png";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-      {/* Background image with blue overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${heroBackground})`,
-        }}
-      />
-      
-      {/* Blue overlay gradient matching branding */}
-      <div 
-        className="absolute inset-0"
-        style={{
-          background: `linear-gradient(135deg, 
-            hsla(222, 37%, 36%, 0.92) 0%, 
-            hsla(224, 67%, 19%, 0.95) 50%,
-            hsla(224, 67%, 19%, 0.98) 100%
-          )`,
-        }}
-      />
-
-      {/* Subtle texture overlay */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-        }}
-      />
+    <section 
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16"
+      style={{
+        backgroundColor: 'hsl(224 67% 19%)'
+      }}
+    >
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -195,7 +172,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-wrap items-center justify-center gap-8 md:gap-16 mt-16 pt-8"
+            className="flex flex-wrap items-center justify-center gap-8 md:gap-16 mt-10 pt-6"
             style={{ borderTop: '1px solid hsla(42, 33%, 94%, 0.2)' }}
           >
             <div className="text-center">
