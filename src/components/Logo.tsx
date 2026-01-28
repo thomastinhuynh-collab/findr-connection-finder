@@ -8,10 +8,10 @@ interface LogoProps {
 }
 
 const sizeClasses = {
-  sm: "text-xl",
-  md: "text-2xl",
-  lg: "text-3xl",
-  xl: "text-4xl",
+  sm: { text: "text-xl", loupe: "w-2 h-2", tagline: "text-xs" },
+  md: { text: "text-2xl", loupe: "w-2.5 h-2.5", tagline: "text-xs" },
+  lg: { text: "text-3xl", loupe: "w-3 h-3", tagline: "text-sm" },
+  xl: { text: "text-4xl", loupe: "w-4 h-4", tagline: "text-sm" },
 };
 
 const Logo = ({ 
@@ -20,33 +20,35 @@ const Logo = ({
   showTagline = false,
   size = "md" 
 }: LogoProps) => {
+  // Cream/beige color for dark backgrounds, primary navy for light backgrounds
   const textColor = variant === "dark" ? "text-primary" : "text-cream";
   const taglineColor = variant === "dark" ? "text-muted-foreground" : "text-cream/80";
+  const sizes = sizeClasses[size];
 
   return (
     <div className={cn("flex flex-col", className)}>
       <div className="flex items-center">
         <span 
           className={cn(
-            "font-serif font-bold tracking-tight",
-            sizeClasses[size],
+            "font-serif font-normal tracking-tight",
+            sizes.text,
             textColor
           )}
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
           f
           <span className="relative inline-block">
-            î
-            {/* Loupe icon on the i */}
+            i
+            {/* Loupe/magnifying glass icon positioned on top of the 'i' dot */}
             <svg 
-              className="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3"
+              className={cn("absolute -top-0.5 left-1/2 -translate-x-1/2", sizes.loupe)}
               viewBox="0 0 24 24" 
               fill="none" 
               stroke="currentColor" 
-              strokeWidth="2.5"
+              strokeWidth="2"
             >
-              <circle cx="11" cy="11" r="6" />
-              <path d="m21 21-4.35-4.35" />
+              <circle cx="10" cy="10" r="6" />
+              <path d="M14.5 14.5L20 20" strokeLinecap="round" />
             </svg>
           </span>
           ndr
@@ -55,7 +57,8 @@ const Logo = ({
       {showTagline && (
         <span 
           className={cn(
-            "text-sm font-light italic tracking-wide mt-1",
+            "font-light italic tracking-wide mt-0.5",
+            sizes.tagline,
             taglineColor
           )}
           style={{ fontFamily: "'Playfair Display', serif" }}
