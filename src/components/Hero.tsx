@@ -3,6 +3,7 @@ import { ArrowRight, Search, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Logo from "@/components/Logo";
+import heroVintageMarket from "@/assets/hero-vintage-market.png";
 
 const Hero = () => {
   return (
@@ -12,6 +13,24 @@ const Hero = () => {
         backgroundColor: 'hsl(224 67% 19%)'
       }}
     >
+      {/* Background image with transparency */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url(${heroVintageMarket})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.15
+        }}
+      />
+      
+      {/* Dark overlay to ensure text readability */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          background: 'linear-gradient(180deg, hsl(224 67% 19% / 0.3) 0%, hsl(224 67% 19% / 0.6) 100%)'
+        }}
+      />
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
