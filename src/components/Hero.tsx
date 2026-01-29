@@ -165,16 +165,6 @@ const Hero = () => {
                 >
                   Chercher
                 </button>
-                <Link 
-                  to="/poster-recherche"
-                  className="px-4 py-2 rounded-full text-sm font-barlow font-semibold transition-all hover:scale-105"
-                  style={{ 
-                    backgroundColor: 'hsl(38 52% 69%)',
-                    color: 'hsl(224 67% 19%)'
-                  }}
-                >
-                  Poster
-                </Link>
               </div>
             </form>
           </motion.div>
