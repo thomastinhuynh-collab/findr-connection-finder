@@ -22,39 +22,34 @@ const Hero = () => {
             transition={{ duration: 0.6 }}
             className="flex justify-center mb-8"
           >
-            <div className="relative">
-              {/* Circular logo with cream text on navy */}
-              <div className="w-36 h-36 md:w-44 md:h-44 rounded-full bg-primary flex items-center justify-center shadow-2xl border-4 border-[hsl(42_33%_94%)]/20">
-                <div className="flex flex-col items-center">
-                  <span 
-                    className="text-3xl md:text-4xl font-barlow font-semibold tracking-tight"
+            <div className="flex flex-col items-center">
+              <span 
+                className="text-6xl md:text-7xl lg:text-8xl font-barlow font-bold tracking-tight"
+                style={{ color: 'hsl(42 33% 94%)' }}
+              >
+                f
+                <span className="relative inline-block">
+                  ı
+                  <svg 
+                    className="absolute -top-1.5 md:-top-2 left-1/2 -translate-x-1/2 w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2.5"
                     style={{ color: 'hsl(42 33% 94%)' }}
                   >
-                    f
-                    <span className="relative inline-block">
-                      ı
-                      <svg 
-                        className="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 md:w-4 md:h-4"
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        strokeWidth="2.5"
-                        style={{ color: 'hsl(42 33% 94%)' }}
-                      >
-                        <circle cx="10" cy="10" r="6" />
-                        <path d="M14.5 14.5L20 20" strokeLinecap="round" />
-                      </svg>
-                    </span>
-                    ndr
-                  </span>
-                  <span 
-                    className="text-[8px] md:text-[10px] font-sans font-light italic tracking-wide mt-1"
-                    style={{ color: 'hsl(42 33% 94% / 0.8)' }}
-                  >
-                    let others search for you
-                  </span>
-                </div>
-              </div>
+                    <circle cx="10" cy="10" r="6" />
+                    <path d="M14.5 14.5L20 20" strokeLinecap="round" />
+                  </svg>
+                </span>
+                ndr
+              </span>
+              <span 
+                className="text-sm md:text-base lg:text-lg font-barlow font-medium tracking-wide mt-2"
+                style={{ color: 'hsl(42 33% 94% / 0.9)' }}
+              >
+                let others search for you
+              </span>
             </div>
           </motion.div>
 
