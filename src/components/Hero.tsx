@@ -1,11 +1,30 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Search, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
 import heroVintageMarket from "@/assets/hero-vintage-market.png";
 
 const Hero = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/recherches?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate("/recherches");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch(e);
+    }
+  };
+
   return (
     <section 
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 pb-24"
@@ -119,29 +138,45 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="w-full max-w-2xl mx-auto mb-8"
           >
-            <Link to="/poster-recherche">
+            <form onSubmit={handleSearch}>
               <div 
-                className="flex items-center gap-3 px-6 py-4 rounded-full cursor-pointer transition-all duration-300 hover:scale-[1.02]"
+                className="flex items-center gap-3 px-6 py-4 rounded-full transition-all duration-300"
                 style={{ 
                   backgroundColor: 'hsla(42, 33%, 94%, 0.95)',
                   boxShadow: '0 8px 32px -8px hsla(224, 67%, 19%, 0.3)'
                 }}
               >
-                <Search className="w-5 h-5 text-muted-foreground" />
-                <span className="flex-1 text-left text-muted-foreground font-medium">
-                  Décris ce que tu recherches...
-                </span>
-                <span 
-                  className="px-4 py-2 rounded-full text-sm font-barlow font-semibold"
+                <Search className="w-5 h-5 text-muted-foreground flex-shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Rechercher une annonce..."
+                  className="flex-1 bg-transparent border-none outline-none text-primary placeholder:text-muted-foreground font-medium"
+                />
+                <button 
+                  type="submit"
+                  className="px-4 py-2 rounded-full text-sm font-barlow font-semibold transition-all hover:scale-105"
                   style={{ 
                     backgroundColor: 'hsl(224 67% 19%)',
                     color: 'hsl(42 33% 94%)'
                   }}
                 >
+                  Chercher
+                </button>
+                <Link 
+                  to="/poster-recherche"
+                  className="px-4 py-2 rounded-full text-sm font-barlow font-semibold transition-all hover:scale-105"
+                  style={{ 
+                    backgroundColor: 'hsl(38 52% 69%)',
+                    color: 'hsl(224 67% 19%)'
+                  }}
+                >
                   Poster
-                </span>
+                </Link>
               </div>
-            </Link>
+            </form>
           </motion.div>
 
           {/* CTA Buttons */}
