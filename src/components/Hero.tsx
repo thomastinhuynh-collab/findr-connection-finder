@@ -31,7 +31,7 @@ const Hero = () => {
                 <span className="relative inline-block">
                   ı
                   <svg 
-                    className="absolute -top-1.5 md:-top-2 left-1/2 -translate-x-1/2 w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
+                    className="absolute top-0 md:top-0.5 left-1/2 -translate-x-1/2 w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
                     viewBox="0 0 24 24" 
                     fill="none" 
                     stroke="currentColor" 
