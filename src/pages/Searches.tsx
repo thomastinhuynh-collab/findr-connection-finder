@@ -70,8 +70,13 @@ const Searches = () => {
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
+    const queryFromUrl = searchParams.get("q");
+    
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl);
+    }
+    if (queryFromUrl) {
+      setSearchQuery(queryFromUrl);
     }
   }, [searchParams]);
 
