@@ -169,12 +169,12 @@ const Hero = () => {
             </form>
           </motion.div>
 
-          {/* CTA Buttons */}
+          {/* CTA Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex items-center justify-center"
           >
             <Button 
               size="lg" 
@@ -188,35 +188,6 @@ const Hero = () => {
               <Link to="/poster">
                 <ArrowRight className="w-5 h-5 mr-2" />
                 Poster une recherche
-              </Link>
-            </Button>
-            <Button 
-              size="lg" 
-              className="text-base px-8 py-6 rounded-full font-semibold"
-              style={{ 
-                backgroundColor: 'hsl(222 37% 55%)',
-                color: 'hsl(42 33% 94%)'
-              }}
-              asChild
-            >
-              <Link to="/recherches">
-                <Search className="w-5 h-5 mr-2" />
-                Voir les recherches
-              </Link>
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="text-base px-8 py-6 rounded-full font-semibold border-2"
-              style={{ 
-                borderColor: 'hsl(42 33% 94%)',
-                color: 'hsl(42 33% 94%)',
-                backgroundColor: 'transparent'
-              }}
-              asChild
-            >
-              <Link to="/comment-ca-marche">
-                Comment ça marche ?
               </Link>
             </Button>
           </motion.div>
