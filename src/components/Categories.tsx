@@ -58,14 +58,11 @@ const Categories = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-accent uppercase tracking-wider">
+          <h2 className="text-3xl md:text-5xl font-barlow font-bold text-primary mb-6">
             Catégories
-          </span>
-          <h2 className="text-3xl md:text-5xl font-serif font-bold text-primary mt-4 mb-6">
-            Trouve tout ce qui te fait vibrer
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Du vêtement années 80 à la carte Pokémon 1ère édition, notre communauté chine dans toutes les catégories
+            laisse les autres chercher pour toi
           </p>
         </motion.div>
 
