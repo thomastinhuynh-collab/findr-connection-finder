@@ -58,7 +58,7 @@ const Categories = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-barlow font-medium text-accent uppercase tracking-wider">
+          <span className="text-sm font-barlow font-medium text-primary uppercase tracking-wider">
             Catégories
           </span>
           <h2 className="text-3xl md:text-5xl font-barlow font-bold text-primary mt-4 mb-6">
