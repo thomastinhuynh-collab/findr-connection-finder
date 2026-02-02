@@ -177,7 +177,7 @@ const PublicProfile = () => {
         {/* Back button */}
         <Button
           variant="ghost"
-          onClick={() => navigate(-1)}
+          onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")}
           className="mb-6 -ml-2"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
