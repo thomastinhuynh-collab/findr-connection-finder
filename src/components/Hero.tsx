@@ -180,6 +180,20 @@ const Hero = () => {
               size="lg" 
               className="text-base px-8 py-6 rounded-full font-semibold"
               style={{ 
+                backgroundColor: 'hsl(38 52% 69%)',
+                color: 'hsl(224 67% 19%)'
+              }}
+              asChild
+            >
+              <Link to="/poster">
+                <ArrowRight className="w-5 h-5 mr-2" />
+                Poster une recherche
+              </Link>
+            </Button>
+            <Button 
+              size="lg" 
+              className="text-base px-8 py-6 rounded-full font-semibold"
+              style={{ 
                 backgroundColor: 'hsl(222 37% 55%)',
                 color: 'hsl(42 33% 94%)'
               }}
@@ -192,16 +206,17 @@ const Hero = () => {
             </Button>
             <Button 
               size="lg" 
-              className="text-base px-8 py-6 rounded-full font-semibold"
+              variant="outline"
+              className="text-base px-8 py-6 rounded-full font-semibold border-2"
               style={{ 
-                backgroundColor: 'hsl(38 52% 69%)',
-                color: 'hsl(224 67% 19%)'
+                borderColor: 'hsl(42 33% 94%)',
+                color: 'hsl(42 33% 94%)',
+                backgroundColor: 'transparent'
               }}
               asChild
             >
-              <Link to="/devenir-findr">
-                Devenir findr
-                <ArrowRight className="w-5 h-5 ml-2" />
+              <Link to="/comment-ca-marche">
+                Comment ça marche ?
               </Link>
             </Button>
           </motion.div>
