@@ -176,8 +176,7 @@ const FeaturedSearches = () => {
                   </Badge>
                 )}
                 <Badge 
-                  variant="secondary" 
-                  className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm"
+                  className="absolute top-3 right-3 bg-accent text-accent-foreground font-medium"
                 >
                   {search.category}
                 </Badge>

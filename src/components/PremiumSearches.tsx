@@ -155,8 +155,7 @@ const PremiumSearches = () => {
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <Badge 
-                  variant="secondary" 
-                  className="absolute bottom-3 right-3 bg-background/90 backdrop-blur-sm"
+                  className="absolute bottom-3 right-3 bg-accent text-accent-foreground font-medium"
                 >
                   {search.category}
                 </Badge>
