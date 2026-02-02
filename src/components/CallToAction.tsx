@@ -14,7 +14,7 @@ const CallToAction = () => {
     if (email) {
       toast({
         title: "Inscription réussie ! 🎉",
-        description: "Tu seras notifié dès le lancement de Findr.",
+        description: "Tu seras notifié dès le lancement de findr.",
       });
       setEmail("");
     }

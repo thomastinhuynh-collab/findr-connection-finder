@@ -31,7 +31,7 @@ const HowItWorksPage = () => {
               Comment ça marche ?
             </h1>
             <p className="text-lg md:text-xl" style={{ color: 'hsl(42 33% 94% / 0.85)' }}>
-              Découvre le fonctionnement de Findr, la plateforme de chinage collaboratif 
+              Découvre le fonctionnement de findr, la plateforme de chinage collaboratif 
               qui connecte les chercheurs de trésors avec les dénicheurs passionnés.
             </p>
           </motion.div>
@@ -56,7 +56,7 @@ const HowItWorksPage = () => {
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* BuyR Card */}
+            {/* buyr Card */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -68,7 +68,7 @@ const HowItWorksPage = () => {
                   <div className="w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mx-auto mb-4">
                     <ShoppingBag className="w-10 h-10 text-accent" />
                   </div>
-                  <CardTitle className="text-2xl font-barlow text-primary">Le BuyR</CardTitle>
+                  <CardTitle className="text-2xl font-barlow text-primary">Le buyr</CardTitle>
                   <p className="text-muted-foreground">L'acheteur, le chercheur de trésors</p>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -78,7 +78,7 @@ const HowItWorksPage = () => {
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <p className="text-foreground"><strong>Reçoit des propositions</strong> de FindRs qui ont trouvé l'objet</p>
+                    <p className="text-foreground"><strong>Reçoit des propositions</strong> de findrs qui ont trouvé l'objet</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -86,13 +86,13 @@ const HowItWorksPage = () => {
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <p className="text-foreground"><strong>Évalue le FindR</strong> après réception pour aider la communauté</p>
+                    <p className="text-foreground"><strong>Évalue le findr</strong> après réception pour aider la communauté</p>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
 
-            {/* FindR Card */}
+            {/* findr Card */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -104,7 +104,7 @@ const HowItWorksPage = () => {
                   <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                     <Search className="w-10 h-10 text-primary" />
                   </div>
-                  <CardTitle className="text-2xl font-barlow text-primary">Le FindR</CardTitle>
+                  <CardTitle className="text-2xl font-barlow text-primary">Le findr</CardTitle>
                   <p className="text-muted-foreground">Le dénicheur, le chineur passionné</p>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -152,43 +152,43 @@ const HowItWorksPage = () => {
             {[
               {
                 step: "1",
-                title: "Le BuyR poste sa recherche",
+                title: "Le buyr poste sa recherche",
                 description: "Description détaillée de l'objet recherché, photos d'inspiration, fourchette de budget, niveau d'urgence. Plus la recherche est précise, plus les propositions seront pertinentes.",
                 icon: Search,
                 color: "bg-blue-500"
               },
               {
                 step: "2",
-                title: "Les FindRs découvrent et réservent",
+                title: "Les findrs découvrent et réservent",
                 description: "Les chineurs passionnés consultent les recherches. S'ils pensent pouvoir trouver l'objet, ils peuvent demander une réservation exclusive pour éviter la concurrence pendant leur recherche.",
                 icon: Clock,
                 color: "bg-purple-500"
               },
               {
                 step: "3",
-                title: "Le FindR fait sa proposition",
-                description: "Une fois l'objet trouvé, le FindR soumet sa proposition avec photos réelles, prix proposé (incluant sa commission), description de l'état, et lien vers la source si applicable.",
+                title: "Le findr fait sa proposition",
+                description: "Une fois l'objet trouvé, le findr soumet sa proposition avec photos réelles, prix proposé (incluant sa commission), description de l'état, et lien vers la source si applicable.",
                 icon: Package,
                 color: "bg-green-500"
               },
               {
                 step: "4",
                 title: "Négociation et validation",
-                description: "Le BuyR et le FindR échangent via la messagerie intégrée. Le BuyR peut demander des photos supplémentaires, négocier, ou valider directement la proposition.",
+                description: "Le buyr et le findr échangent via la messagerie intégrée. Le buyr peut demander des photos supplémentaires, négocier, ou valider directement la proposition.",
                 icon: MessageSquare,
                 color: "bg-orange-500"
               },
               {
                 step: "5",
                 title: "Paiement sécurisé",
-                description: "Le BuyR procède au paiement sécurisé. Les fonds sont conservés jusqu'à réception et validation de l'objet. Protection pour les deux parties.",
+                description: "Le buyr procède au paiement sécurisé. Les fonds sont conservés jusqu'à réception et validation de l'objet. Protection pour les deux parties.",
                 icon: CreditCard,
                 color: "bg-teal-500"
               },
               {
                 step: "6",
                 title: "Envoi et réception",
-                description: "Le FindR envoie l'objet avec suivi. À réception, le BuyR confirme que tout est conforme. Les fonds sont alors libérés au FindR.",
+                description: "Le findr envoie l'objet avec suivi. À réception, le buyr confirme que tout est conforme. Les fonds sont alors libérés au findr.",
                 icon: CheckCircle,
                 color: "bg-emerald-500"
               },
@@ -253,7 +253,7 @@ const HowItWorksPage = () => {
                     <ul className="space-y-3 text-muted-foreground">
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Éviter que plusieurs FindRs cherchent le même objet</span>
+                        <span>Éviter que plusieurs findrs cherchent le même objet</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -261,7 +261,7 @@ const HowItWorksPage = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Montrer son engagement au BuyR</span>
+                        <span>Montrer son engagement au buyr</span>
                       </li>
                     </ul>
                   </div>
@@ -273,11 +273,11 @@ const HowItWorksPage = () => {
                     <ul className="space-y-3 text-muted-foreground">
                       <li className="flex items-start gap-2">
                         <ArrowRight className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Le FindR demande une réservation avec une durée</span>
+                        <span>Le findr demande une réservation avec une durée</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ArrowRight className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span>Le BuyR approuve, modifie ou refuse la demande</span>
+                        <span>Le buyr approuve, modifie ou refuse la demande</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ArrowRight className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
@@ -321,12 +321,12 @@ const HowItWorksPage = () => {
                   <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                     <CreditCard className="w-8 h-8 text-green-600" />
                   </div>
-                  <CardTitle className="text-xl font-barlow">Commission FindR</CardTitle>
+                  <CardTitle className="text-xl font-barlow">Commission findr</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-3xl font-barlow font-bold text-green-600 mb-4">10-30%</p>
                   <p className="text-muted-foreground">
-                    Le FindR fixe sa commission dans sa proposition. Elle est ajoutée au prix de l'objet trouvé.
+                    Le findr fixe sa commission dans sa proposition. Elle est ajoutée au prix de l'objet trouvé.
                   </p>
                 </CardContent>
               </Card>
@@ -343,12 +343,12 @@ const HowItWorksPage = () => {
                   <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto mb-4">
                     <Shield className="w-8 h-8 text-accent" />
                   </div>
-                  <CardTitle className="text-xl font-barlow">Frais Findr</CardTitle>
+                  <CardTitle className="text-xl font-barlow">Frais findr</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-3xl font-barlow font-bold text-accent mb-4">5%</p>
                   <p className="text-muted-foreground">
-                    Findr prélève une commission de 5% sur chaque transaction pour maintenir la plateforme et la sécurité.
+                    findr prélève une commission de 5% sur chaque transaction pour maintenir la plateforme et la sécurité.
                   </p>
                 </CardContent>
               </Card>
@@ -390,9 +390,9 @@ const HowItWorksPage = () => {
                   <div>
                     <h4 className="font-barlow font-semibold text-primary mb-2">Exemple concret</h4>
                     <p className="text-muted-foreground">
-                      Un FindR trouve un vinyle rare à 50€. Il ajoute 20% de commission (10€). 
-                      Le BuyR paie donc 60€ + 5% de frais Findr = <strong>63€ au total</strong>. 
-                      Le FindR reçoit 60€ - 5% = <strong>57€</strong>.
+                      Un findr trouve un vinyle rare à 50€. Il ajoute 20% de commission (10€). 
+                      Le buyr paie donc 60€ + 5% de frais findr = <strong>63€ au total</strong>. 
+                      Le findr reçoit 60€ - 5% = <strong>57€</strong>.
                     </p>
                   </div>
                 </div>
@@ -415,7 +415,7 @@ const HowItWorksPage = () => {
               Notre communauté
             </span>
             <h2 className="text-3xl md:text-4xl font-barlow font-bold text-primary mt-4">
-              Le savoir-vivre Findr
+              Le savoir-vivre findr
             </h2>
             <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
               Pour que l'expérience soit agréable pour tous, quelques règles de bonne conduite.
@@ -452,7 +452,7 @@ const HowItWorksPage = () => {
               {
                 icon: Handshake,
                 title: "Pas de transactions externes",
-                description: "Toutes les transactions doivent passer par Findr pour garantir la protection de chacun."
+                description: "Toutes les transactions doivent passer par findr pour garantir la protection de chacun."
               }
             ].map((item, index) => (
               <motion.div
@@ -491,7 +491,7 @@ const HowItWorksPage = () => {
               Prêt à commencer ?
             </h2>
             <p className="text-lg mb-8 max-w-xl mx-auto" style={{ color: 'hsl(42 33% 94% / 0.85)' }}>
-              Rejoins la communauté Findr et trouve tes pépites ou aide d'autres passionnés à trouver les leurs.
+              Rejoins la communauté findr et trouve tes pépites ou aide d'autres passionnés à trouver les leurs.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button 

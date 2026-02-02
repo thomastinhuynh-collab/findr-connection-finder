@@ -158,13 +158,13 @@ const RequestReservation = () => {
         user_id: search.user_id,
         type: "reservation_request",
         title: "Demande de réservation",
-        message: `Un Findr souhaite réserver ton annonce "${search.title}" pendant ${formData.duration} jours.`,
+        message: `Un findr souhaite réserver ton annonce "${search.title}" pendant ${formData.duration} jours.`,
         link: `/recherche/${search.id}`,
       });
 
       toast({
         title: "Demande envoyée !",
-        description: "Le Buyr va examiner ta demande de réservation.",
+        description: "Le buyr va examiner ta demande de réservation.",
       });
 
       navigate(`/recherche/${id}`);
@@ -327,7 +327,7 @@ const RequestReservation = () => {
                     </Label>
                     <Textarea
                       id="justification"
-                      placeholder="Explique au Buyr pourquoi tu souhaites réserver cette annonce. Par exemple : tu as repéré l'article parfait et tu as besoin de temps pour finaliser la transaction..."
+                      placeholder="Explique au buyr pourquoi tu souhaites réserver cette annonce. Par exemple : tu as repéré l'article parfait et tu as besoin de temps pour finaliser la transaction..."
                       className="min-h-[150px] resize-none"
                       {...register("justification")}
                     />
@@ -347,12 +347,12 @@ const RequestReservation = () => {
                       Comment ça marche ?
                     </h4>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Le Buyr recevra ta demande de réservation</li>
+                      <li>• Le buyr recevra ta demande de réservation</li>
                       <li>• Il peut accepter, refuser ou ajuster la durée</li>
                       <li>
-                        • Si acceptée, l'annonce sera masquée aux autres Findrs
+                        • Si acceptée, l'annonce sera masquée aux autres findrs
                       </li>
-                      <li>• Tu seras le seul à pouvoir interagir avec le Buyr</li>
+                      <li>• Tu seras le seul à pouvoir interagir avec le buyr</li>
                     </ul>
                   </div>
 

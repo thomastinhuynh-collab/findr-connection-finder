@@ -191,7 +191,7 @@ const MySpace = () => {
                     <p className="text-muted-foreground">{user.email}</p>
                     <div className="flex flex-wrap gap-2 mt-2 justify-center md:justify-start">
                       {profile.is_findr && (
-                        <Badge className="bg-primary text-primary-foreground">Findr</Badge>
+                        <Badge className="bg-primary text-primary-foreground">findr</Badge>
                       )}
                       <Badge variant="outline">Niveau {profile.level}</Badge>
                       <Badge variant="outline">{profile.xp_points} XP</Badge>

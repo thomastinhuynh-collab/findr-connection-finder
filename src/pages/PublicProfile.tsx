@@ -213,7 +213,7 @@ const PublicProfile = () => {
                   {profile.is_findr && (
                     <Badge variant="outline" className="border-accent text-accent">
                       <Award className="w-3 h-3 mr-1" />
-                      Findr
+                      findr
                     </Badge>
                   )}
                 </div>
