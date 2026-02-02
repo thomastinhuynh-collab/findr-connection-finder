@@ -11,12 +11,22 @@ const BackButton = () => {
     return null;
   }
 
+  const handleBack = () => {
+    // Check if there's history to go back to
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      // If no history, go to home page
+      navigate("/");
+    }
+  };
+
   return (
     <motion.button
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.2 }}
-      onClick={() => navigate(-1)}
+      onClick={handleBack}
       className="fixed top-[88px] left-4 z-40 flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary bg-background/80 backdrop-blur-sm border border-border rounded-full shadow-sm hover:shadow-md transition-all"
     >
       <ArrowLeft className="w-4 h-4" />
