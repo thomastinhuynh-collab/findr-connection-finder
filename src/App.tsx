@@ -20,6 +20,7 @@ import PublicProfile from "./pages/PublicProfile";
 import UserEvaluations from "./pages/UserEvaluations";
 import Premium from "./pages/Premium";
 import RequestReservation from "./pages/RequestReservation";
+import HowItWorksPage from "./pages/HowItWorksPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/profil/:userId/evaluations" element={<UserEvaluations />} />
             <Route path="/premium" element={<Premium />} />
             <Route path="/reservation/:id" element={<RequestReservation />} />
+            <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
