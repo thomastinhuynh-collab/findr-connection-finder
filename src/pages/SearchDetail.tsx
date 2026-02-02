@@ -481,11 +481,11 @@ const SearchDetail = () => {
                   </div>
                   {canInteract ? (
                     <p className="text-sm text-muted-foreground">
-                      Tu as réservé cette annonce. Tu es le seul à pouvoir interagir avec le Buyr.
+                      Tu as réservé cette annonce. Tu es le seul à pouvoir interagir avec le buyr.
                     </p>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      Cette annonce est actuellement réservée par un autre Findr.
+                      Cette annonce est actuellement réservée par un autre findr.
                     </p>
                   )}
                 </div>

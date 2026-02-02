@@ -3,23 +3,23 @@ import { Star } from "lucide-react";
 
 const testimonials = [
   {
-    quote: "J'ai trouvé ma veste Levi's 70s en 3 jours grâce à un Findr de Lille. Exactement ce que je cherchais depuis des mois !",
+    quote: "J'ai trouvé ma veste Levi's 70s en 3 jours grâce à un findr de Lille. Exactement ce que je cherchais depuis des mois !",
     author: "Camille D.",
-    role: "Buyr",
+    role: "buyr",
     avatar: "https://i.pravatar.cc/60?img=5",
     rating: 5,
   },
   {
     quote: "Je chine depuis toujours. Maintenant je suis payé pour le faire. C'est le job de rêve !",
     author: "Antoine M.",
-    role: "Findr Expert",
+    role: "findr Expert",
     avatar: "https://i.pravatar.cc/60?img=12",
     rating: 5,
   },
   {
-    quote: "Carte Pokémon 1ère édition, état mint. Le Findr l'a trouvée à une brocante à 30€. Incroyable.",
+    quote: "Carte Pokémon 1ère édition, état mint. Le findr l'a trouvée à une brocante à 30€. Incroyable.",
     author: "Julien R.",
-    role: "Buyr",
+    role: "buyr",
     avatar: "https://i.pravatar.cc/60?img=8",
     rating: 5,
   },
@@ -40,7 +40,7 @@ const Testimonials = () => {
             Témoignages
           </span>
           <h2 className="text-3xl md:text-5xl font-serif font-bold text-primary mt-4 mb-6">
-            Ce qu'ils disent de Findr
+            Ce qu'ils disent de findr
           </h2>
         </motion.div>
 

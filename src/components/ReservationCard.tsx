@@ -208,7 +208,7 @@ const ReservationCard = ({
               {reservation.findr_profile?.avatar_url ? (
                 <img
                   src={reservation.findr_profile.avatar_url}
-                  alt={reservation.findr_profile.full_name || "Findr"}
+                  alt={reservation.findr_profile.full_name || "findr"}
                   className="w-10 h-10 rounded-full object-cover border border-border"
                 />
               ) : (
@@ -218,7 +218,7 @@ const ReservationCard = ({
               )}
               <div>
                 <p className="font-medium text-primary">
-                  {reservation.findr_profile?.full_name || "Findr"}
+                  {reservation.findr_profile?.full_name || "findr"}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Demandé le {formatDate(reservation.created_at)}
@@ -325,7 +325,7 @@ const ReservationCard = ({
             <div className="bg-accent/10 border border-accent/30 rounded-xl p-4">
               <p className="text-sm text-muted-foreground">
                 <strong className="text-accent">Important :</strong> Pendant la
-                réservation, ton annonce sera masquée et seul ce Findr pourra
+                réservation, ton annonce sera masquée et seul ce findr pourra
                 interagir avec toi.
               </p>
             </div>

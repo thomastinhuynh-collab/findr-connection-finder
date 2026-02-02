@@ -239,7 +239,7 @@ const MakeProposal = () => {
           user_id: search.user_id,
           type: "new_proposal",
           title: "Nouvelle proposition reçue !",
-          message: `${findrProfile?.full_name || "Un Findr"} a fait une proposition de ${price}€ pour "${search.title}"`,
+          message: `${findrProfile?.full_name || "Un findr"} a fait une proposition de ${price}€ pour "${search.title}"`,
           link: `/recherche/${id}`
         });
       
@@ -320,7 +320,7 @@ const MakeProposal = () => {
               Pour : <span className="text-foreground font-medium">{search.title}</span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Budget du Buyr : <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
+              Budget du buyr : <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
             </p>
           </motion.div>
 
@@ -392,7 +392,7 @@ const MakeProposal = () => {
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Le budget du Buyr est de {formatBudget(search.budget_min, search.budget_max)}
+                Le budget du buyr est de {formatBudget(search.budget_min, search.budget_max)}
               </p>
             </div>
 

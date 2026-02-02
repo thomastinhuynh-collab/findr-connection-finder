@@ -216,7 +216,7 @@ const ProposalList = ({
 
       toast({
         title: "Transaction finalisée ! 🎉",
-        description: "Le paiement a été libéré au Findr. Merci pour votre confiance !",
+        description: "Le paiement a été libéré au findr. Merci pour votre confiance !",
       });
 
       setConfirmReceiptDialog(false);
@@ -318,7 +318,7 @@ const ProposalList = ({
                           onClick={() => navigate(`/profil/${proposal.findr_id}`)}
                           className="text-sm text-muted-foreground hover:text-accent transition-colors flex items-center gap-1"
                         >
-                          {proposal.findr_profile?.full_name || "Findr"}
+                          {proposal.findr_profile?.full_name || "findr"}
                           {proposal.findr_profile?.is_premium && (
                             <Crown className="w-3 h-3 text-accent" />
                           )}
@@ -412,7 +412,7 @@ const ProposalList = ({
               Confirmer le paiement
             </DialogTitle>
             <DialogDescription>
-              Payez avec votre portefeuille Findr. Le paiement sera en attente jusqu'à réception de l'article.
+              Payez avec votre portefeuille findr. Le paiement sera en attente jusqu'à réception de l'article.
             </DialogDescription>
           </DialogHeader>
 
@@ -431,7 +431,7 @@ const ProposalList = ({
                   <div>
                     <p className="font-medium">{selectedProposal.title}</p>
                     <p className="text-sm text-muted-foreground">
-                      par {selectedProposal.findr_profile?.full_name || "Findr"}
+                      par {selectedProposal.findr_profile?.full_name || "findr"}
                     </p>
                   </div>
                 </div>
@@ -577,7 +577,7 @@ const ProposalList = ({
                     }}
                     className="text-sm text-muted-foreground hover:text-accent transition-colors flex items-center gap-1 mt-1"
                   >
-                    par {selectedProposal.findr_profile?.full_name || "Findr"}
+                    par {selectedProposal.findr_profile?.full_name || "findr"}
                     {selectedProposal.findr_profile?.is_premium && (
                       <Crown className="w-3 h-3 text-accent" />
                     )}
@@ -596,7 +596,7 @@ const ProposalList = ({
                 <div className="bg-secondary/50 rounded-xl p-4">
                   <h4 className="font-medium mb-2 flex items-center gap-2">
                     <MessageCircle className="w-4 h-4" />
-                    Message du Findr
+                    Message du findr
                   </h4>
                   <p className="text-muted-foreground whitespace-pre-wrap">
                     {selectedProposal.description}
@@ -668,7 +668,7 @@ const ProposalList = ({
                 }}
               >
                 <MessageCircle className="w-4 h-4 mr-2" />
-                {isOwner ? "Contacter le Findr" : "Contacter le Buyr"}
+                {isOwner ? "Contacter le findr" : "Contacter le buyr"}
               </Button>
             )}
 
@@ -749,7 +749,7 @@ const ProposalList = ({
                     Attention : Action irréversible
                   </p>
                   <p className="text-muted-foreground mt-1">
-                    Une fois confirmé, le paiement sera libéré au Findr. Assurez-vous que l'article correspond bien à vos attentes.
+                    Une fois confirmé, le paiement sera libéré au findr. Assurez-vous que l'article correspond bien à vos attentes.
                   </p>
                 </div>
               </div>

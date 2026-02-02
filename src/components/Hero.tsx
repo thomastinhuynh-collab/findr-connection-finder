@@ -225,7 +225,7 @@ const Hero = () => {
                 className="text-sm"
                 style={{ color: 'hsla(42, 33%, 94%, 0.7)' }}
               >
-                Findrs actifs
+                findrs actifs
               </p>
             </div>
             <div className="text-center">

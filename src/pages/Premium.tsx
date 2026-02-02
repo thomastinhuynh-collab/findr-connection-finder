@@ -48,7 +48,7 @@ const Premium = () => {
     {
       icon: Star,
       title: "Priorité sur vos demandes",
-      description: "Vos recherches sont traitées en priorité par notre communauté de Findrs"
+      description: "Vos recherches sont traitées en priorité par notre communauté de findrs"
     },
     {
       icon: Headphones,
@@ -137,7 +137,7 @@ const Premium = () => {
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4">
               <Search className="w-3 h-3 mr-1" />
-              Pour les Findrs
+              Pour les findrs
             </Badge>
             <h2 className="text-3xl font-bold text-foreground mb-4">
               Boostez vos performances de chineur

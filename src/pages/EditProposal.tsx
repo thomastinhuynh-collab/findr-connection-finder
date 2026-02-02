@@ -283,7 +283,7 @@ const EditProposal = () => {
           user_id: search.user_id,
           type: "proposal_updated",
           title: "Proposition mise à jour",
-          message: `Un Findr a mis à jour sa proposition pour "${search.title}"`,
+          message: `Un findr a mis à jour sa proposition pour "${search.title}"`,
           link: `/recherche/${search.id}`
         });
       
@@ -366,7 +366,7 @@ const EditProposal = () => {
               Pour : <span className="text-foreground font-medium">{search.title}</span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Budget du Buyr : <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
+              Budget du buyr : <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
             </p>
           </motion.div>
 
@@ -456,7 +456,7 @@ const EditProposal = () => {
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Le budget du Buyr est de {formatBudget(search.budget_min, search.budget_max)}
+                Le budget du buyr est de {formatBudget(search.budget_min, search.budget_max)}
               </p>
             </div>
 

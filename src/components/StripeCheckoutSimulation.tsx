@@ -91,7 +91,7 @@ const StripeCheckoutSimulation = ({ plan, onClose, onSuccess }: StripeCheckoutSi
             </div>
             <h2 className="text-2xl font-bold text-foreground mb-2">Paiement réussi !</h2>
             <p className="text-muted-foreground mb-4">
-              Bienvenue dans la communauté Findr Premium !
+              Bienvenue dans la communauté findr Premium !
             </p>
             <Badge className="bg-primary text-primary-foreground">
               <Crown className="w-3 h-3 mr-1" />
