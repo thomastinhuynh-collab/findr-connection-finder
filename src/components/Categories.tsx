@@ -58,12 +58,12 @@ const Categories = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-barlow font-bold text-primary mb-6">
+          <span className="text-sm font-barlow font-medium text-accent uppercase tracking-wider">
             Catégories
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          </span>
+          <h2 className="text-3xl md:text-5xl font-barlow font-bold text-primary mt-4 mb-6">
             laisse les autres chercher pour toi
-          </p>
+          </h2>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
