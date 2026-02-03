@@ -158,23 +158,23 @@ const HowItWorks = () => {
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                {/* Step number */}
-                <span 
-                  className="absolute -top-3 -right-3 w-10 h-10 rounded-full text-sm font-barlow font-bold flex items-center justify-center"
-                  style={{ 
-                    backgroundColor: 'hsl(38 52% 69%)',
-                    color: 'hsl(224 67% 19%)'
-                  }}
-                >
-                  {step.step}
-                </span>
-                
-                {/* Icon */}
+                {/* Icon/Number circle with hover transition */}
                 <div 
-                  className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform"
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-all duration-300 relative overflow-hidden"
                   style={{ backgroundColor: 'hsl(38 52% 69% / 0.2)' }}
                 >
-                  <step.icon className="w-7 h-7" style={{ color: 'hsl(38 52% 69%)' }} />
+                  {/* Number - visible by default, hidden on hover */}
+                  <span 
+                    className="text-xl font-barlow font-bold absolute transition-all duration-300 group-hover:opacity-0 group-hover:scale-75"
+                    style={{ color: 'hsl(224 67% 19%)' }}
+                  >
+                    {step.step}
+                  </span>
+                  {/* Icon - hidden by default, visible on hover */}
+                  <step.icon 
+                    className="w-7 h-7 absolute transition-all duration-300 opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100" 
+                    style={{ color: 'hsl(38 52% 69%)' }} 
+                  />
                 </div>
                 
                 <h3 
