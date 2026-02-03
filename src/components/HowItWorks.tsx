@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, Users, Package, CheckCircle, X } from "lucide-react";
+import { motion } from "framer-motion";
+import { PenLine, Compass, Gem, Trophy, CheckCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
 
 const steps = [
   {
-    icon: Search,
+    icon: PenLine,
     step: "01",
     title: "Poste ta recherche",
     description: "Décris ce que tu cherches : veste vintage, carte Pokémon, vinyle rare... Ajoute une photo d'inspiration et ton budget.",
@@ -27,7 +27,7 @@ const steps = [
     }
   },
   {
-    icon: Users,
+    icon: Compass,
     step: "02",
     title: "Les Findrs cherchent",
     description: "Notre communauté de chineurs passionnés se met en quête. Brocantes, friperies, Vinted... Ils scrutent partout.",
@@ -43,7 +43,7 @@ const steps = [
     }
   },
   {
-    icon: Package,
+    icon: Gem,
     step: "03",
     title: "Reçois des propositions",
     description: "Compare les trouvailles proposées. Prix, état, photos réelles. Choisis celle qui te correspond.",
@@ -59,7 +59,7 @@ const steps = [
     }
   },
   {
-    icon: CheckCircle,
+    icon: Trophy,
     step: "04",
     title: "Valide et reçois",
     description: "Paiement sécurisé, livraison suivie. Le Findr envoie, tu reçois ta pépite. Simple comme bonjour.",
@@ -128,7 +128,7 @@ const HowItWorks = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative group cursor-pointer"
+              className="relative group cursor-pointer h-full"
               onClick={() => setSelectedStep(index)}
             >
               {/* Connector line */}
@@ -140,11 +140,12 @@ const HowItWorks = () => {
               )}
               
               <div 
-                className="relative rounded-2xl p-6 transition-all duration-300 border-2"
+                className="relative rounded-2xl p-6 transition-all duration-300 border-2 h-full flex flex-col"
                 style={{ 
                   backgroundColor: 'hsl(42 33% 94%)',
                   borderColor: 'transparent',
-                  boxShadow: '0 4px 20px -4px hsl(224 67% 19% / 0.3)'
+                  boxShadow: '0 4px 20px -4px hsl(224 67% 19% / 0.3)',
+                  minHeight: '280px'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = 'hsl(38 52% 69%)';
@@ -171,9 +172,9 @@ const HowItWorks = () => {
                 {/* Icon */}
                 <div 
                   className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform"
-                  style={{ backgroundColor: 'hsl(224 67% 19% / 0.1)' }}
+                  style={{ backgroundColor: 'hsl(38 52% 69% / 0.2)' }}
                 >
-                  <step.icon className="w-7 h-7" style={{ color: 'hsl(224 67% 19%)' }} />
+                  <step.icon className="w-7 h-7" style={{ color: 'hsl(38 52% 69%)' }} />
                 </div>
                 
                 <h3 
@@ -183,7 +184,7 @@ const HowItWorks = () => {
                   {step.title}
                 </h3>
                 <p 
-                  className="text-sm leading-relaxed"
+                  className="text-sm leading-relaxed flex-grow"
                   style={{ color: 'hsl(224 67% 19% / 0.75)' }}
                 >
                   {step.description}
@@ -192,7 +193,7 @@ const HowItWorks = () => {
                 {/* Click indicator */}
                 <div 
                   className="mt-4 text-xs font-barlow font-medium flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity"
-                  style={{ color: 'hsl(224 67% 19%)' }}
+                  style={{ color: 'hsl(38 52% 69%)' }}
                 >
                   <span>En savoir plus</span>
                   <span>→</span>
