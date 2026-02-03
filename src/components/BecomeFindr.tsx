@@ -11,7 +11,7 @@ const benefits = [
   {
     icon: Trophy,
     title: "Grimpe les classements",
-    description: "Accumule de l'XP, débloque des badges et deviens un Findr légendaire.",
+    description: "Accumule de l'XP, débloque des badges et deviens un findr légendaire.",
   },
   {
     icon: Star,
@@ -54,7 +54,7 @@ const BecomeFindr = () => {
               Rejoins la communauté
             </span>
             <h2 className="text-3xl md:text-5xl font-barlow font-bold mt-4 mb-6" style={{ color: 'hsl(42 33% 94%)' }}>
-              Deviens Findr et <span className="text-gradient">gagne en chinant</span>
+              Deviens findr et <span className="text-gradient">gagne en chinant</span>
             </h2>
             <p className="text-lg mb-8" style={{ color: 'hsl(42 33% 94% / 0.8)' }}>
               Tu adores les brocantes, les friperies, les trouvailles rares ? 
@@ -83,7 +83,7 @@ const BecomeFindr = () => {
             </div>
 
             <Button size="lg" className="btn-gold text-base px-8 py-6 rounded-full">
-              Devenir Findr
+              Devenir findr
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </motion.div>
@@ -104,7 +104,7 @@ const BecomeFindr = () => {
                 </div>
                 <div>
                   <h4 className="text-xl font-barlow font-bold" style={{ color: 'hsl(42 33% 94%)' }}>@MarieChineuse</h4>
-                  <p style={{ color: 'hsl(42 33% 94% / 0.6)' }}>Findr Expert • Paris</p>
+                  <p style={{ color: 'hsl(42 33% 94% / 0.6)' }}>findr Expert • Paris</p>
                 </div>
               </div>
 

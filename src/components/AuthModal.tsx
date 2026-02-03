@@ -36,7 +36,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
       } else {
         toast({
           title: "Inscription réussie !",
-          description: "Bienvenue sur Findr !",
+          description: "Bienvenue sur findr !",
         });
         onClose();
       }

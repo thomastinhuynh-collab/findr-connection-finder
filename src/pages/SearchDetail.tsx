@@ -588,7 +588,7 @@ const SearchDetail = () => {
 
                   <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6">
                     <p className="text-sm text-center text-accent font-medium">
-                      C'est ton annonce ! Tu recevras les propositions des Findrs ici.
+                      C'est ton annonce ! Tu recevras les propositions des findrs ici.
                     </p>
                     {pendingProposals > 0 && (
                       <p className="text-sm text-center text-primary mt-2">
@@ -603,7 +603,7 @@ const SearchDetail = () => {
               <div className="mt-6 p-4 bg-secondary/30 rounded-xl">
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <Shield className="w-5 h-5 text-accent" />
-                  <span>Paiement sécurisé via Findr</span>
+                  <span>Paiement sécurisé via findr</span>
                 </div>
               </div>
             </motion.div>
