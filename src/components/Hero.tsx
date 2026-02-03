@@ -246,13 +246,6 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Subtle bottom separator */}
-      <div 
-        className="absolute bottom-0 left-0 right-0 h-1"
-        style={{
-          backgroundColor: 'hsl(42 33% 94%)'
-        }}
-      />
     </section>
   );
 };
