@@ -137,7 +137,7 @@ const PostSearch = () => {
 
       toast({
         title: "Recherche publiée ! 🎉",
-        description: "Les Findrs vont se mettre en quête de ta pépite.",
+        description: "Les findrs vont se mettre en quête de ta pépite.",
       });
 
       navigate("/mon-espace");

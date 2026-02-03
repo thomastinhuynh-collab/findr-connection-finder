@@ -32,8 +32,8 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li><Link to="/recherches" className="hover:text-primary transition-colors">Recherches actives</Link></li>
               <li><Link to="/poster" className="hover:text-primary transition-colors">Poster une recherche</Link></li>
-              <li><Link to="/devenir-findr" className="hover:text-primary transition-colors">Devenir Findr</Link></li>
-              <li><Link to="/premium" className="hover:text-primary transition-colors">Findr Premium</Link></li>
+              <li><Link to="/devenir-findr" className="hover:text-primary transition-colors">Devenir findr</Link></li>
+              <li><Link to="/premium" className="hover:text-primary transition-colors">findr Premium</Link></li>
             </ul>
           </div>
 
@@ -61,7 +61,7 @@ const Footer = () => {
         {/* Bottom */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2025 Findr. Tous droits réservés.
+            © 2025 findr. Tous droits réservés.
           </p>
           <p className="text-sm text-muted-foreground">
             Fait avec ❤️ à Paris

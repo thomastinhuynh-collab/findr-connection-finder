@@ -85,7 +85,7 @@ const PremiumWallet = ({ balance, isPremium, transactions, onAddFunds }: Premium
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Wallet className="w-5 h-5" />
-              <CardTitle className="text-lg">Portefeuille Findr</CardTitle>
+              <CardTitle className="text-lg">Portefeuille findr</CardTitle>
             </div>
             {isPremium && (
               <Badge className="bg-accent text-accent-foreground">

@@ -29,10 +29,10 @@ const steps = [
   {
     icon: Compass,
     step: "02",
-    title: "Les Findrs cherchent",
+    title: "Les findrs cherchent",
     description: "Notre communauté de chineurs passionnés se met en quête. Brocantes, friperies, Vinted... Ils scrutent partout.",
     details: {
-      title: "Qui sont les Findrs ?",
+      title: "Qui sont les findrs ?",
       content: [
         "Des chineurs passionnés et experts dans leur domaine",
         "Ils parcourent brocantes, friperies, vide-greniers et marchés aux puces",
@@ -62,7 +62,7 @@ const steps = [
     icon: Trophy,
     step: "04",
     title: "Valide et reçois",
-    description: "Paiement sécurisé, livraison suivie. Le Findr envoie, tu reçois ta pépite. Simple comme bonjour.",
+    description: "Paiement sécurisé, livraison suivie. Le findr envoie, tu reçois ta pépite. Simple comme bonjour.",
     details: {
       title: "Comment se passe la transaction ?",
       content: [
@@ -161,7 +161,7 @@ const HowItWorks = () => {
                 {/* Icon/Number circle with hover transition */}
                 <div 
                   className="w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-all duration-300 relative overflow-hidden"
-                  style={{ backgroundColor: 'hsl(38 52% 69% / 0.2)' }}
+                  style={{ backgroundColor: '#d9bb87' }}
                 >
                   {/* Number - visible by default, hidden on hover */}
                   <span 

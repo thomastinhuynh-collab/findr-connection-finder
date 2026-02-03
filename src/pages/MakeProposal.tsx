@@ -571,7 +571,7 @@ const MakeProposal = () => {
 
             {/* Trust message */}
             <p className="text-center text-xs text-muted-foreground">
-              En envoyant cette proposition, vous acceptez les conditions générales de Findr.
+              En envoyant cette proposition, vous acceptez les conditions générales de findr.
               <br />
               Le paiement sera sécurisé et vous serez payé une fois l'objet livré et validé.
             </p>

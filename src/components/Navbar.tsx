@@ -37,7 +37,7 @@ const Navbar = () => {
                 Comment ça marche
               </Link>
               <Link to="/devenir-findr" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                Devenir Findr
+                Devenir findr
               </Link>
               <Link 
                 to="/premium" 
@@ -96,7 +96,7 @@ const Navbar = () => {
                   Comment ça marche
                 </Link>
                 <Link to="/devenir-findr" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  Devenir Findr
+                  Devenir findr
                 </Link>
                 <Link 
                   to="/premium" 
