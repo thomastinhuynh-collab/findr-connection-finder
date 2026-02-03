@@ -173,7 +173,7 @@ const HowItWorks = () => {
                   {/* Icon - hidden by default, visible on hover */}
                   <step.icon 
                     className="w-7 h-7 absolute transition-all duration-300 opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100" 
-                    style={{ color: 'hsl(38 52% 69%)' }} 
+                    style={{ color: 'hsl(224 67% 19%)' }} 
                   />
                 </div>
                 
