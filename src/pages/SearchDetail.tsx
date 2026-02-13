@@ -19,6 +19,8 @@ import {
   Lock
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import ProposalList from "@/components/ProposalList";
@@ -397,32 +399,40 @@ const SearchDetail = () => {
               </div>
 
               {/* Proposals */}
-              <div className="bg-card border border-border rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-primary">Propositions</h2>
-                  <span className="flex items-center gap-2 text-accent font-medium">
-                    <MessageCircle className="w-5 h-5" />
-                    {proposals.length} proposition{proposals.length !== 1 ? "s" : ""}
+              <Collapsible defaultOpen={proposals.length > 0} className="bg-card border border-border rounded-2xl overflow-hidden">
+                <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
+                  <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+                    <MessageCircle className="w-5 h-5 text-accent" />
+                    Propositions
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-accent font-medium">
+                      {proposals.length} proposition{proposals.length !== 1 ? "s" : ""}
+                    </span>
                     {pendingProposals > 0 && isOwner && (
-                      <Badge className="bg-accent text-accent-foreground ml-2">
+                      <Badge className="bg-accent text-accent-foreground">
                         {pendingProposals} nouvelle{pendingProposals !== 1 ? "s" : ""}
                       </Badge>
                     )}
-                  </span>
-                </div>
-                
-                <ProposalList
-                  proposals={proposals}
-                  isOwner={isOwner}
-                  searchId={id || ""}
-                  searchOwnerId={search.user_id}
-                  walletBalance={walletBalance}
-                  isPremium={userProfile?.is_premium || false}
-                  onProposalUpdate={() => {
-                    fetchProposals();
-                  }}
-                />
-              </div>
+                    <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="px-6 pb-6">
+                    <ProposalList
+                      proposals={proposals}
+                      isOwner={isOwner}
+                      searchId={id || ""}
+                      searchOwnerId={search.user_id}
+                      walletBalance={walletBalance}
+                      isPremium={userProfile?.is_premium || false}
+                      onProposalUpdate={() => {
+                        fetchProposals();
+                      }}
+                    />
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             </motion.div>
 
             {/* Sidebar */}
