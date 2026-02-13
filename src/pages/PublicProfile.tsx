@@ -160,7 +160,11 @@ const PublicProfile = () => {
         <Navbar />
         <div className="container mx-auto px-4 py-32 text-center">
           <h1 className="text-2xl font-bold text-primary mb-4">Profil introuvable</h1>
-          <Button onClick={() => navigate(-1)}>Retour</Button>
+          <Button onClick={() => {
+            const idx = (window.history.state as any)?.idx;
+            if (typeof idx === "number" && idx > 0) navigate(-1);
+            else navigate("/");
+          }}>Retour</Button>
         </div>
         <Footer />
       </div>
@@ -177,7 +181,11 @@ const PublicProfile = () => {
         {/* Back button */}
         <Button
           variant="ghost"
-          onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")}
+          onClick={() => {
+            const idx = (window.history.state as any)?.idx;
+            if (typeof idx === "number" && idx > 0) navigate(-1);
+            else navigate("/");
+          }}
           className="mb-6 -ml-2"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

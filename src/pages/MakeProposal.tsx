@@ -306,7 +306,11 @@ const MakeProposal = () => {
             className="mb-8"
           >
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => {
+                const idx = (window.history.state as any)?.idx;
+                if (typeof idx === "number" && idx > 0) navigate(-1);
+                else navigate(`/recherche/${id}`);
+              }}
               className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
             >
               <ArrowLeft className="w-5 h-5" />
