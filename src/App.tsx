@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import BackButton from "@/components/BackButton";
 import VintageBackground from "@/components/VintageBackground";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Searches from "./pages/Searches";
 import PostSearch from "./pages/PostSearch";
@@ -32,6 +33,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <VintageBackground />
           <BackButton />
           <Routes>
