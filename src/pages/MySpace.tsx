@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import PremiumWallet from "@/components/PremiumWallet";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
+import heroVintageMarket from "@/assets/hero-vintage-market.png";
 
 interface Profile {
   id: string;
@@ -159,10 +160,28 @@ const MySpace = () => {
     : "N/A";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen relative" style={{ backgroundColor: 'hsl(224 67% 19%)' }}>
+      {/* Background image */}
+      <div 
+        className="fixed inset-0 z-0"
+        style={{
+          backgroundImage: `url(${heroVintageMarket})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.15
+        }}
+      />
+      {/* Dark overlay */}
+      <div 
+        className="fixed inset-0 z-0"
+        style={{
+          background: 'linear-gradient(180deg, hsl(224 67% 19% / 0.3) 0%, hsl(224 67% 19% / 0.6) 100%)'
+        }}
+      />
+      
       <Navbar />
       
-      <main className="pt-24 pb-16">
+      <main className="pt-24 pb-16 relative z-10">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
