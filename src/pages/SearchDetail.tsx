@@ -398,41 +398,38 @@ const SearchDetail = () => {
                 </p>
               </div>
 
-              {/* Proposals */}
-              <Collapsible defaultOpen={proposals.length > 0} className="bg-card border border-border rounded-2xl overflow-hidden">
-                <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
-                  <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
-                    <MessageCircle className="w-5 h-5 text-accent" />
-                    Propositions
-                  </h2>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-accent font-medium">
-                      {proposals.length} proposition{proposals.length !== 1 ? "s" : ""}
-                    </span>
-                    {pendingProposals > 0 && isOwner && (
-                      <Badge className="bg-accent text-accent-foreground">
-                        {pendingProposals} nouvelle{pendingProposals !== 1 ? "s" : ""}
-                      </Badge>
-                    )}
-                    <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div className="px-6 pb-6">
-                    <ProposalList
-                      proposals={proposals}
-                      isOwner={isOwner}
-                      searchId={id || ""}
-                      searchOwnerId={search.user_id}
-                      walletBalance={walletBalance}
-                      isPremium={userProfile?.is_premium || false}
-                      onProposalUpdate={() => {
-                        fetchProposals();
-                      }}
-                    />
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+              {/* Proposals - only show here for non-owners */}
+              {!isOwner && (
+                <Collapsible defaultOpen={proposals.length > 0} className="bg-card border border-border rounded-2xl overflow-hidden">
+                  <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
+                    <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+                      <MessageCircle className="w-5 h-5 text-accent" />
+                      Propositions
+                    </h2>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-accent font-medium">
+                        {proposals.length} proposition{proposals.length !== 1 ? "s" : ""}
+                      </span>
+                      <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                    </div>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="px-6 pb-6">
+                      <ProposalList
+                        proposals={proposals}
+                        isOwner={isOwner}
+                        searchId={id || ""}
+                        searchOwnerId={search.user_id}
+                        walletBalance={walletBalance}
+                        isPremium={userProfile?.is_premium || false}
+                        onProposalUpdate={() => {
+                          fetchProposals();
+                        }}
+                      />
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
             </motion.div>
 
             {/* Sidebar */}
@@ -606,16 +603,41 @@ const SearchDetail = () => {
                     </Collapsible>
                   )}
 
-                  <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6">
-                    <p className="text-sm text-center text-accent font-medium">
-                      C'est ton annonce ! Tu recevras les propositions des findrs ici.
-                    </p>
-                    {pendingProposals > 0 && (
-                      <p className="text-sm text-center text-primary mt-2">
-                        Tu as <span className="font-bold text-accent">{pendingProposals}</span> proposition{pendingProposals !== 1 ? "s" : ""} en attente !
-                      </p>
-                    )}
-                  </div>
+                  {/* Proposals Collapsible for Owner */}
+                  <Collapsible defaultOpen={proposals.length > 0} className="bg-card border border-border rounded-2xl overflow-hidden">
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
+                      <h3 className="font-semibold text-primary flex items-center gap-2">
+                        <MessageCircle className="w-5 h-5 text-accent" />
+                        Propositions
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-accent font-medium">
+                          {proposals.length} proposition{proposals.length !== 1 ? "s" : ""}
+                        </span>
+                        {pendingProposals > 0 && (
+                          <Badge className="bg-accent text-accent-foreground">
+                            {pendingProposals} nouvelle{pendingProposals !== 1 ? "s" : ""}
+                          </Badge>
+                        )}
+                        <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                      </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="px-6 pb-6">
+                        <ProposalList
+                          proposals={proposals}
+                          isOwner={isOwner}
+                          searchId={id || ""}
+                          searchOwnerId={search.user_id}
+                          walletBalance={walletBalance}
+                          isPremium={userProfile?.is_premium || false}
+                          onProposalUpdate={() => {
+                            fetchProposals();
+                          }}
+                        />
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </div>
               )}
 
