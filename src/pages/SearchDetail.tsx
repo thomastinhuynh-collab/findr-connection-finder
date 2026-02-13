@@ -553,47 +553,57 @@ const SearchDetail = () => {
               {/* Owner View */}
               {isOwner && (
                 <div className="space-y-6">
-                  {/* Pending Reservations */}
-                  {reservations.filter(r => r.status === "pending").length > 0 && (
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-primary flex items-center gap-2">
-                        <CalendarClock className="w-5 h-5 text-accent" />
-                        Demandes de réservation
-                      </h3>
-                      {reservations
-                        .filter(r => r.status === "pending")
-                        .map(reservation => (
-                          <ReservationCard
-                            key={reservation.id}
-                            reservation={reservation}
-                            isOwner={true}
-                            searchTitle={search.title}
-                            onUpdate={() => {
-                              fetchReservations();
-                              fetchSearch();
-                            }}
-                          />
-                        ))}
-                    </div>
-                  )}
-
-                  {/* Active Reservation */}
-                  {activeReservation && (
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-primary flex items-center gap-2">
-                        <Lock className="w-5 h-5 text-accent" />
-                        Réservation active
-                      </h3>
-                      <ReservationCard
-                        reservation={activeReservation}
-                        isOwner={true}
-                        searchTitle={search.title}
-                        onUpdate={() => {
-                          fetchReservations();
-                          fetchSearch();
-                        }}
-                      />
-                    </div>
+                  {/* Reservations Collapsible */}
+                  {(reservations.filter(r => r.status === "pending").length > 0 || activeReservation) && (
+                    <Collapsible defaultOpen className="bg-card border border-border rounded-2xl overflow-hidden">
+                      <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
+                        <h3 className="font-semibold text-primary flex items-center gap-2">
+                          <CalendarClock className="w-5 h-5 text-accent" />
+                          Demandes de réservation
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-accent font-medium">
+                            {reservations.filter(r => r.status === "pending" || r.status === "approved").length} réservation{reservations.filter(r => r.status === "pending" || r.status === "approved").length !== 1 ? "s" : ""}
+                          </span>
+                          <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <div className="px-6 pb-6 space-y-4">
+                          {reservations
+                            .filter(r => r.status === "pending")
+                            .map(reservation => (
+                              <ReservationCard
+                                key={reservation.id}
+                                reservation={reservation}
+                                isOwner={true}
+                                searchTitle={search.title}
+                                onUpdate={() => {
+                                  fetchReservations();
+                                  fetchSearch();
+                                }}
+                              />
+                            ))}
+                          {activeReservation && (
+                            <>
+                              <h4 className="font-medium text-primary flex items-center gap-2 pt-2">
+                                <Lock className="w-4 h-4 text-accent" />
+                                Réservation active
+                              </h4>
+                              <ReservationCard
+                                reservation={activeReservation}
+                                isOwner={true}
+                                searchTitle={search.title}
+                                onUpdate={() => {
+                                  fetchReservations();
+                                  fetchSearch();
+                                }}
+                              />
+                            </>
+                          )}
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
                   )}
 
                   <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6">
