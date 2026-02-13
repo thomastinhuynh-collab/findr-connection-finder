@@ -285,10 +285,10 @@ const ProposalList = ({
               }}
             >
               <CardContent className="p-4">
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                   {/* Images */}
                   {proposal.image_urls && proposal.image_urls.length > 0 ? (
-                    <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 group">
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 group">
                       <img
                         src={proposal.image_urls[0]}
                         alt={proposal.title}
@@ -300,102 +300,107 @@ const ProposalList = ({
                         </div>
                       )}
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Eye className="w-6 h-6 text-white" />
+                        <Eye className="w-5 h-5 text-white" />
                       </div>
                     </div>
                   ) : (
-                    <div className="w-24 h-24 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
-                      <Package className="w-8 h-8 text-muted-foreground" />
+                    <div className="w-20 h-20 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
+                      <Package className="w-7 h-7 text-muted-foreground" />
                     </div>
                   )}
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <div>
-                        <h4 className="font-semibold text-primary truncate">{proposal.title}</h4>
-                        <button
-                          onClick={() => navigate(`/profil/${proposal.findr_id}`)}
-                          className="text-sm text-muted-foreground hover:text-accent transition-colors flex items-center gap-1"
-                        >
-                          {proposal.findr_profile?.full_name || "findr"}
-                          {proposal.findr_profile?.is_premium && (
-                            <Crown className="w-3 h-3 text-accent" />
-                          )}
-                        </button>
-                      </div>
+                    <div className="flex items-start justify-between gap-1 mb-1">
+                      <h4 className="font-semibold text-primary text-sm leading-tight line-clamp-2">{proposal.title}</h4>
                       {getStatusBadge(proposal.status)}
                     </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); navigate(`/profil/${proposal.findr_id}`); }}
+                      className="text-xs text-muted-foreground hover:text-accent transition-colors flex items-center gap-1 mb-1"
+                    >
+                      {proposal.findr_profile?.full_name || "findr"}
+                      {proposal.findr_profile?.is_premium && (
+                        <Crown className="w-3 h-3 text-accent" />
+                      )}
+                    </button>
 
                     {proposal.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-1.5">
                         {proposal.description}
                       </p>
                     )}
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="text-lg font-bold text-accent">
-                          {proposal.proposed_price.toFixed(2)} €
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {formatDate(proposal.created_at)}
-                        </span>
-                      </div>
-
-                      {/* Actions for owner */}
-                      {isOwner && proposal.status === "pending" && (
-                        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                            onClick={() => handleReject(proposal)}
-                          >
-                            <XCircle className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            className="bg-success hover:bg-success/90 text-success-foreground"
-                            onClick={() => handleAccept(proposal)}
-                          >
-                            <CheckCircle2 className="w-4 h-4 mr-1" />
-                            Accepter
-                          </Button>
-                        </div>
-                      )}
-
-                      {/* Confirm receipt for accepted_pending */}
-                      {isOwner && proposal.status === "accepted_pending" && (
-                        <div onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              setSelectedProposal(proposal);
-                              setConfirmReceiptDialog(true);
-                            }}
-                          >
-                            <Package className="w-4 h-4 mr-1" />
-                            Confirmer réception
-                          </Button>
-                        </div>
-                      )}
-
-                      {/* Link for external product */}
-                      {proposal.product_link && (
-                        <a
-                          href={proposal.product_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-accent hover:underline flex items-center gap-1"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          Voir l'annonce
-                        </a>
-                      )}
+                    <div className="flex items-center gap-2">
+                      <span className="text-base font-bold text-accent">
+                        {proposal.proposed_price.toFixed(2)} €
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatDate(proposal.created_at)}
+                      </span>
                     </div>
                   </div>
+                </div>
+
+                {/* Action buttons - full width below */}
+                <div className="mt-3 flex flex-wrap items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                  {isOwner && proposal.status === "pending" && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        onClick={() => handleReject(proposal)}
+                      >
+                        <XCircle className="w-4 h-4 mr-1" />
+                        Refuser
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="bg-success hover:bg-success/90 text-success-foreground"
+                        onClick={() => handleAccept(proposal)}
+                      >
+                        <CheckCircle2 className="w-4 h-4 mr-1" />
+                        Accepter
+                      </Button>
+                    </>
+                  )}
+
+                  {isOwner && proposal.status === "accepted_pending" && (
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setSelectedProposal(proposal);
+                        setConfirmReceiptDialog(true);
+                      }}
+                    >
+                      <Package className="w-4 h-4 mr-1" />
+                      Confirmer réception
+                    </Button>
+                  )}
+
+                  {proposal.product_link && (
+                    <a
+                      href={proposal.product_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-accent hover:underline flex items-center gap-1"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      Voir l'annonce
+                    </a>
+                  )}
+
+                  {/* Edit button for findr */}
+                  {user?.id === proposal.findr_id && proposal.status === "pending" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => navigate(`/modifier-proposition/${proposal.id}`)}
+                    >
+                      Modifier
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
