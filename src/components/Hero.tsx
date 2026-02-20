@@ -1,30 +1,9 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Search, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
-import Logo from "@/components/Logo";
-
+import { Link } from "react-router-dom";
 
 const Hero = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/recherches?q=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      navigate("/recherches");
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch(e);
-    }
-  };
-
   return (
     <section 
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 pb-24"
@@ -113,43 +92,7 @@ const Hero = () => {
             passionnés trouvent pour les buyr leurs pépites vintage et objets pop culture.
           </motion.p>
 
-          {/* Search/Post Bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="w-full max-w-2xl mx-auto mb-8"
-          >
-            <form onSubmit={handleSearch}>
-              <div 
-                className="flex items-center gap-3 px-6 py-4 rounded-full transition-all duration-300"
-                style={{ 
-                  backgroundColor: 'hsla(42, 33%, 94%, 0.95)',
-                  boxShadow: '0 8px 32px -8px hsla(224, 67%, 19%, 0.3)'
-                }}
-              >
-                <Search className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Rechercher une annonce..."
-                  className="flex-1 bg-transparent border-none outline-none text-primary placeholder:text-muted-foreground font-medium"
-                />
-                <button 
-                  type="submit"
-                  className="px-4 py-2 rounded-full text-sm font-barlow font-semibold transition-all hover:scale-105"
-                  style={{ 
-                    backgroundColor: 'hsl(224 67% 19%)',
-                    color: 'hsl(42 33% 94%)'
-                  }}
-                >
-                  Chercher
-                </button>
-              </div>
-            </form>
-          </motion.div>
+
 
           {/* CTA Button */}
           <motion.div
