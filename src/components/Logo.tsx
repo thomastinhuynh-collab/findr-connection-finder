@@ -56,7 +56,7 @@ const Logo = ({
       {showTagline && (
         <span 
           className={cn(
-            "font-sans font-light italic tracking-wide mt-0.5",
+            "font-barlow font-medium tracking-wide mt-0.5",
             sizes.tagline,
             taglineColor
           )}
