@@ -53,17 +53,6 @@ const Logo = ({
           ndr
         </span>
       </div>
-      {showTagline && (
-        <span 
-          className={cn(
-            "font-barlow font-medium tracking-wide mt-0.5",
-            sizes.tagline,
-            taglineColor
-          )}
-        >
-          let others search for you
-        </span>
-      )}
     </div>
   );
 };
