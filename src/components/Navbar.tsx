@@ -36,7 +36,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center group">
-              <Logo size="md" variant="dark" />
+              <Logo size="lg" variant="dark" showTagline />
             </Link>
 
             {/* Desktop Search Bar */}
