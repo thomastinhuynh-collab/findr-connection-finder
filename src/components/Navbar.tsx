@@ -34,9 +34,9 @@ const Navbar = () => {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-[hsl(224_67%_25%)] shadow-sm" style={{ backgroundColor: 'hsl(224 67% 19%)' }}>
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center group ml-4">
+            <Link to="/" className="flex items-center group ml-8">
               <Logo size="lg" variant="light" showTagline />
             </Link>
 
@@ -155,7 +155,7 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-      <div className="fixed top-20 left-0 right-0 z-40">
+      <div className="fixed top-16 left-0 right-0 z-40">
         <CategoryNav />
       </div>
 
