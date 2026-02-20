@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
 import NotificationBell from "@/components/NotificationBell";
 import Logo from "@/components/Logo";
+import CategoryNav from "@/components/CategoryNav";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -154,6 +155,9 @@ const Navbar = () => {
           )}
         </div>
       </nav>
+      <div className="fixed top-20 left-0 right-0 z-40">
+        <CategoryNav />
+      </div>
 
       <AuthModal 
         isOpen={authModalOpen} 
