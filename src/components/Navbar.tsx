@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Crown } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Menu, X, User, Crown, Search } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
 import NotificationBell from "@/components/NotificationBell";
@@ -11,34 +11,50 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [searchQuery, setSearchQuery] = useState("");
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   const openAuthModal = (mode: "login" | "signup") => {
     setAuthMode(mode);
     setAuthModalOpen(true);
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/recherches?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate("/recherches");
+    }
+  };
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-18">
+          <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center group">
               <Logo size="md" variant="dark" />
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8">
-              <Link to="/recherches" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                Recherches
-              </Link>
-              <Link to="/comment-ca-marche" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                Comment ça marche
-              </Link>
-              <Link to="/devenir-findr" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                Devenir findr
-              </Link>
+            {/* Desktop Search Bar */}
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-6">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-muted/50 w-full transition-all focus-within:border-primary/50">
+                <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Rechercher une annonce..."
+                  className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+            </form>
+
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center gap-3">
               <Link 
                 to="/premium" 
                 className="text-sm font-semibold hover:opacity-80 transition-opacity flex items-center gap-1.5"
@@ -47,10 +63,6 @@ const Navbar = () => {
                 <Crown className="w-4 h-4" style={{ color: 'hsl(38 52% 55%)' }} />
                 Passer Premium
               </Link>
-            </div>
-
-            {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-3">
               {loading ? (
                 <div className="animate-pulse bg-muted h-8 w-20 rounded"></div>
               ) : user ? (
@@ -89,15 +101,18 @@ const Navbar = () => {
           {isOpen && (
             <div className="md:hidden py-4 border-t border-border animate-slide-up">
               <div className="flex flex-col gap-4">
-                <Link to="/recherches" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  Recherches
-                </Link>
-                <Link to="/comment-ca-marche" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  Comment ça marche
-                </Link>
-                <Link to="/devenir-findr" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  Devenir findr
-                </Link>
+                <form onSubmit={handleSearch} className="flex">
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-muted/50 w-full">
+                    <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Rechercher une annonce..."
+                      className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                </form>
                 <Link 
                   to="/premium" 
                   className="text-sm font-semibold hover:opacity-80 transition-opacity flex items-center gap-1.5"
