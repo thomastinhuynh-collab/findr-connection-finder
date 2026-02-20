@@ -2,15 +2,24 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import heroBackground from "@/assets/hero-vintage-market.png";
 
 const Hero = () => {
   return (
     <section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 pb-24"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-24"
       style={{
         backgroundColor: 'hsl(224 67% 19%)'
       }}
     >
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${heroBackground})`,
+          opacity: 0.15
+        }}
+      />
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
@@ -75,9 +84,7 @@ const Hero = () => {
             className="text-4xl md:text-5xl lg:text-6xl font-barlow font-bold mb-6 leading-tight"
             style={{ color: 'hsl(42 33% 94%)' }}
           >
-            Trouvez l'introuvable,
-            <br />
-            <span className="not-italic">avec findr & buyr</span>
+            Trouvez l'introuvable
           </motion.h1>
 
           {/* Subtitle */}
