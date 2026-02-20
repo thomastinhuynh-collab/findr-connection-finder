@@ -81,6 +81,28 @@ const Testimonials = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Key Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="flex flex-wrap items-center justify-center gap-8 md:gap-16 mt-16 pt-8 border-t border-border"
+        >
+          <div className="text-center">
+            <p className="text-3xl font-barlow font-bold text-primary">2.5K+</p>
+            <p className="text-sm text-muted-foreground">Objets trouvés</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-barlow font-bold text-primary">850+</p>
+            <p className="text-sm text-muted-foreground">findrs actifs</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-barlow font-bold text-primary">98%</p>
+            <p className="text-sm text-muted-foreground">Satisfaction</p>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

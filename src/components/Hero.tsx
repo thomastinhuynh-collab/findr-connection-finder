@@ -124,57 +124,6 @@ const Hero = () => {
             </Button>
           </motion.div>
 
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-wrap items-center justify-center gap-8 md:gap-16 mt-10 pt-6"
-            style={{ borderTop: '1px solid hsla(42, 33%, 94%, 0.2)' }}
-          >
-            <div className="text-center">
-              <p 
-                className="text-3xl font-barlow font-bold"
-                style={{ color: 'hsl(42 33% 94%)' }}
-              >
-                2.5K+
-              </p>
-              <p 
-                className="text-sm"
-                style={{ color: 'hsla(42, 33%, 94%, 0.7)' }}
-              >
-                Objets trouvés
-              </p>
-            </div>
-            <div className="text-center">
-              <p 
-                className="text-3xl font-barlow font-bold"
-                style={{ color: 'hsl(42 33% 94%)' }}
-              >
-                850+
-              </p>
-              <p 
-                className="text-sm"
-                style={{ color: 'hsla(42, 33%, 94%, 0.7)' }}
-              >
-                findrs actifs
-              </p>
-            </div>
-            <div className="text-center">
-              <p 
-                className="text-3xl font-barlow font-bold"
-                style={{ color: 'hsl(42 33% 94%)' }}
-              >
-                98%
-              </p>
-              <p 
-                className="text-sm"
-                style={{ color: 'hsla(42, 33%, 94%, 0.7)' }}
-              >
-                Satisfaction
-              </p>
-            </div>
-          </motion.div>
         </div>
       </div>
 
