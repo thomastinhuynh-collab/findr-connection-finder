@@ -30,7 +30,7 @@ const Logo = ({
       <div className="flex items-center">
         <span 
           className={cn(
-            "font-barlow font-semibold tracking-tight",
+            "font-barlow font-bold tracking-tight",
             sizes.text,
             textColor
           )}

@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        barlow: ["Barlow", "sans-serif"],
-        sans: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+        barlow: ["Space Grotesk", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"],
+        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
