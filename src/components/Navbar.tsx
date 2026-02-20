@@ -32,24 +32,24 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-[hsl(224_67%_25%)] shadow-sm" style={{ backgroundColor: 'hsl(224 67% 19%)' }}>
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center group ml-4">
-              <Logo size="lg" variant="dark" showTagline />
+              <Logo size="lg" variant="light" showTagline />
             </Link>
 
             {/* Desktop Search Bar */}
             <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-6">
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-muted/50 w-full transition-all focus-within:border-primary/50">
-                <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-[hsl(42_33%_94%/0.3)] bg-[hsl(42_33%_94%/0.1)] w-full transition-all focus-within:border-[hsl(42_33%_94%/0.6)]">
+                <Search className="w-4 h-4 text-[hsl(42_33%_94%/0.6)] flex-shrink-0" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Rechercher une annonce..."
-                  className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground"
+                  className="flex-1 bg-transparent border-none outline-none text-sm text-[hsl(42_33%_94%)] placeholder:text-[hsl(42_33%_94%/0.5)]"
                 />
               </div>
             </form>
@@ -78,7 +78,7 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <Button variant="outline" size="sm" onClick={() => openAuthModal("login")}>
+                  <Button variant="outline" size="sm" className="border-[hsl(42_33%_94%/0.4)] text-[hsl(42_33%_94%)] hover:bg-[hsl(42_33%_94%/0.1)] hover:text-[hsl(42_33%_94%)]" onClick={() => openAuthModal("login")}>
                     Connexion
                   </Button>
                   <Button size="sm" className="btn-hero" onClick={() => openAuthModal("signup")}>
@@ -91,7 +91,7 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2"
+              className="md:hidden p-2 text-[hsl(42_33%_94%)]"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -100,7 +100,7 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           {isOpen && (
-            <div className="md:hidden py-4 border-t border-border animate-slide-up">
+            <div className="md:hidden py-4 border-t border-[hsl(42_33%_94%/0.2)] animate-slide-up">
               <div className="flex flex-col gap-4">
                 <form onSubmit={handleSearch} className="flex">
                   <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-muted/50 w-full">

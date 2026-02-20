@@ -99,7 +99,7 @@ const CategoryNav = () => {
   };
 
   return (
-    <div className="hidden md:block bg-background border-b border-border">
+    <div className="hidden md:block border-b border-[hsl(224_67%_25%)]" style={{ backgroundColor: 'hsl(224 67% 19%)' }}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center gap-0">
           {categories.map((category) => (
@@ -111,7 +111,7 @@ const CategoryNav = () => {
             >
               <button
                 onClick={() => handleCategoryClick(category.slug)}
-                className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-muted-foreground hover:text-primary transition-colors whitespace-nowrap"
+                className="flex items-center gap-1 px-4 py-3 text-sm font-medium text-[hsl(42_33%_94%/0.8)] hover:text-[hsl(42_33%_94%)] transition-colors whitespace-nowrap"
               >
                 {category.name}
                 <ChevronDown className="w-3 h-3" />
