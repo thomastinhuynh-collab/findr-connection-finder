@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Clock, Heart, ExternalLink, Users } from "lucide-react";
+import { Clock, Heart, ExternalLink, Users, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -184,7 +184,7 @@ const FeaturedSearches = () => {
 
                 {/* Urgency badge bottom-left */}
                 {search.urgency && search.urgency !== "no-rush" && search.urgency !== "normal" && (
-                  <Badge className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm text-primary font-medium text-xs px-3 py-1.5 shadow-sm border-0 gap-1.5">
+                  <Badge className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm text-primary font-medium text-xs px-3 py-1.5 shadow-sm border-0 gap-1.5 !transition-none !transform-none">
                     <Clock className="w-3.5 h-3.5" />
                     {urgencyLabels[search.urgency] || search.urgency}
                   </Badge>
@@ -217,6 +217,10 @@ const FeaturedSearches = () => {
                   <span className="flex items-center gap-1.5">
                     <Users className="w-4 h-4" />
                     {proposalCounts[search.id] || 0} offres
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4" />
+                    France
                   </span>
                 </div>
 
