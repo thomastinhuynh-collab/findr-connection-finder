@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Clock, Heart, ExternalLink, Users, MapPin } from "lucide-react";
+import { Clock, ExternalLink, Users, MapPin } from "lucide-react";
+import FavoriteButton from "./FavoriteButton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -188,12 +189,7 @@ const FeaturedSearches = () => {
                 </Badge>
 
                 {/* Heart icon top-right */}
-                <button
-                  className="absolute top-3 right-3 w-10 h-10 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-card transition-colors"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Heart className="w-5 h-5 text-primary" />
-                </button>
+                <FavoriteButton searchId={search.id} className="absolute top-3 right-3" />
 
                 {/* Urgency badge bottom-left */}
                 {search.urgency && search.urgency !== "no-rush" && search.urgency !== "normal" && (

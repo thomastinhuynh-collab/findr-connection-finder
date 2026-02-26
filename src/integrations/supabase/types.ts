@@ -52,6 +52,35 @@ export type Database = {
           },
         ]
       }
+      favorites: {
+        Row: {
+          created_at: string
+          id: string
+          search_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          search_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          search_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_search_id_fkey"
+            columns: ["search_id"]
+            isOneToOne: false
+            referencedRelation: "searches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
