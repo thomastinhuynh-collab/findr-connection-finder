@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Clock, Euro, MessageCircle, Filter, SlidersHorizontal, Loader2, X, ArrowUpDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import UserBadge from "@/components/UserBadge";
+import SearchImageCarousel from "@/components/SearchImageCarousel";
 
 interface SearchItem {
   id: string;
@@ -19,6 +20,7 @@ interface SearchItem {
   budget_max: number | null;
   urgency: string | null;
   image_url: string | null;
+  image_urls: string[] | null;
   created_at: string;
   user_id: string;
   profiles: {
@@ -88,7 +90,7 @@ const Searches = () => {
     setLoading(true);
     let query = supabase
       .from("searches")
-      .select("id, title, category, budget_min, budget_max, urgency, image_url, created_at, user_id")
+      .select("id, title, category, budget_min, budget_max, urgency, image_url, image_urls, created_at, user_id")
       .eq("status", "active")
       .order("created_at", { ascending: false });
 
@@ -335,17 +337,12 @@ const Searches = () => {
                 >
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden bg-secondary">
-                    {search.image_url ? (
-                      <img
-                        src={search.image_url}
-                        alt={search.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-4xl">🔍</span>
-                      </div>
-                    )}
+                    <SearchImageCarousel
+                      images={[
+                        ...(search.image_urls?.length ? search.image_urls : search.image_url ? [search.image_url] : []),
+                      ]}
+                      alt={search.title}
+                    />
                     {search.urgency === "3-days" && (
                       <Badge className="absolute top-3 left-3 bg-destructive text-destructive-foreground">
                         Urgent

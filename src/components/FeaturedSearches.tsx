@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Clock, ExternalLink, Users, MapPin } from "lucide-react";
 import FavoriteButton from "./FavoriteButton";
+import SearchImageCarousel from "./SearchImageCarousel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +17,7 @@ interface SearchWithProfile {
   budget_max: number | null;
   urgency: string | null;
   image_url: string | null;
+  image_urls: string[] | null;
   created_at: string;
   user_id: string;
 }
@@ -43,7 +45,7 @@ const FeaturedSearches = () => {
   const fetchSearches = async () => {
     const { data, error } = await supabase
       .from("searches")
-      .select("id, title, description, category, budget_min, budget_max, urgency, image_url, created_at, user_id")
+      .select("id, title, description, category, budget_min, budget_max, urgency, image_url, image_urls, created_at, user_id")
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(6);
@@ -170,17 +172,12 @@ const FeaturedSearches = () => {
               {/* Image */}
               <div className="relative h-56 overflow-hidden bg-secondary">
                 <div className="absolute inset-0 overflow-hidden">
-                  {search.image_url ? (
-                    <img
-                      src={search.image_url}
-                      alt={search.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary to-muted">
-                      <span className="text-5xl">🔍</span>
-                    </div>
-                  )}
+                  <SearchImageCarousel
+                    images={[
+                      ...(search.image_urls?.length ? search.image_urls : search.image_url ? [search.image_url] : []),
+                    ]}
+                    alt={search.title}
+                  />
                 </div>
 
                 {/* Category badge top-left */}
