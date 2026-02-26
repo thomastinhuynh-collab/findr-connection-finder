@@ -140,17 +140,19 @@ const PremiumSearches = () => {
             >
               {/* Image */}
               <div className="relative h-56 overflow-hidden bg-secondary">
-                {search.image_url ? (
-                  <img
-                    src={search.image_url}
-                    alt={search.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center">
-                    <span className="text-5xl">✨</span>
-                  </div>
-                )}
+                <div className="absolute inset-0 overflow-hidden">
+                  {search.image_url ? (
+                    <img
+                      src={search.image_url}
+                      alt={search.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center">
+                      <span className="text-5xl">✨</span>
+                    </div>
+                  )}
+                </div>
 
                 {/* Category badge top-left */}
                 <Badge className="absolute top-3 left-3 bg-card text-primary font-medium text-xs px-3 py-1 shadow-sm border-0">
