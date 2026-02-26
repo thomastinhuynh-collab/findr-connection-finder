@@ -32,6 +32,7 @@ const PremiumSearches = () => {
   const [searches, setSearches] = useState<PremiumSearch[]>([]);
   const [loading, setLoading] = useState(true);
   const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
+  const [profileCities, setProfileCities] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchPremiumSearches();
@@ -64,18 +65,28 @@ const PremiumSearches = () => {
     if (searchesToUse && searchesToUse.length > 0) {
       setSearches(searchesToUse);
 
+      const userIds = [...new Set(searchesToUse.map(s => s.user_id))];
       const searchIds = searchesToUse.map(s => s.id);
-      const { data: proposals } = await supabase
-        .from("proposals")
-        .select("search_id")
-        .in("search_id", searchIds);
 
-      if (proposals) {
+      const [proposalsRes, profilesRes] = await Promise.all([
+        supabase.from("proposals").select("search_id").in("search_id", searchIds),
+        supabase.from("profiles").select("user_id, city").in("user_id", userIds),
+      ]);
+
+      if (proposalsRes.data) {
         const counts: Record<string, number> = {};
-        proposals.forEach(p => {
+        proposalsRes.data.forEach(p => {
           counts[p.search_id] = (counts[p.search_id] || 0) + 1;
         });
         setProposalCounts(counts);
+      }
+
+      if (profilesRes.data) {
+        const cities: Record<string, string> = {};
+        profilesRes.data.forEach(p => {
+          if (p.city) cities[p.user_id] = p.city;
+        });
+        setProfileCities(cities);
       }
     }
 
@@ -198,7 +209,7 @@ const PremiumSearches = () => {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin className="w-4 h-4" />
-                    France
+                    {profileCities[search.user_id] || "France"}
                   </span>
                 </div>
 
