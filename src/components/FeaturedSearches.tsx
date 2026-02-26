@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Clock, Euro, MessageCircle } from "lucide-react";
+import { Clock, Heart, ExternalLink, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import UserBadge from "./UserBadge";
 
 interface SearchWithProfile {
   id: string;
   title: string;
+  description: string | null;
   category: string;
   budget_min: number | null;
   budget_max: number | null;
@@ -17,17 +17,13 @@ interface SearchWithProfile {
   image_url: string | null;
   created_at: string;
   user_id: string;
-  profiles: {
-    full_name: string | null;
-    avatar_url: string | null;
-  } | null;
 }
 
 const urgencyLabels: Record<string, string> = {
-  "3-days": "3 jours",
-  "1-week": "1 semaine",
-  "2-weeks": "2 semaines",
-  "1-month": "1 mois",
+  "3-days": "3 jours restants",
+  "1-week": "1 semaine restante",
+  "2-weeks": "2 semaines restantes",
+  "1-month": "1 mois restant",
   "no-rush": "Pas pressé",
   "normal": "Normal",
 };
@@ -36,6 +32,7 @@ const FeaturedSearches = () => {
   const navigate = useNavigate();
   const [searches, setSearches] = useState<SearchWithProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     fetchSearches();
@@ -44,10 +41,10 @@ const FeaturedSearches = () => {
   const fetchSearches = async () => {
     const { data, error } = await supabase
       .from("searches")
-      .select("*")
+      .select("id, title, description, category, budget_min, budget_max, urgency, image_url, created_at, user_id")
       .eq("status", "active")
       .order("created_at", { ascending: false })
-      .limit(8);
+      .limit(6);
 
     if (error) {
       console.error("Error fetching searches:", error);
@@ -56,29 +53,31 @@ const FeaturedSearches = () => {
     }
 
     if (data && data.length > 0) {
-      // Fetch profiles separately
-      const userIds = [...new Set(data.map(s => s.user_id))];
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, full_name, avatar_url")
-        .in("user_id", userIds);
+      setSearches(data);
 
-      const profilesMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
-      
-      const searchesWithProfiles = data.map(search => ({
-        ...search,
-        profiles: profilesMap.get(search.user_id) || null
-      }));
-      
-      setSearches(searchesWithProfiles as any);
+      // Fetch proposal counts
+      const searchIds = data.map(s => s.id);
+      const { data: proposals } = await supabase
+        .from("proposals")
+        .select("search_id")
+        .in("search_id", searchIds);
+
+      if (proposals) {
+        const counts: Record<string, number> = {};
+        proposals.forEach(p => {
+          counts[p.search_id] = (counts[p.search_id] || 0) + 1;
+        });
+        setProposalCounts(counts);
+      }
     }
     setLoading(false);
   };
 
   const formatBudget = (min: number | null, max: number | null) => {
-    if (min && max) return `${min}-${max}€`;
-    if (max) return `< ${max}€`;
-    if (min) return `> ${min}€`;
+    const fmt = (n: number) => n.toLocaleString("fr-FR");
+    if (min && max) return `${fmt(min)}€ – ${fmt(max)}€`;
+    if (max) return `< ${fmt(max)}€`;
+    if (min) return `> ${fmt(min)}€`;
     return "Non défini";
   };
 
@@ -122,7 +121,7 @@ const FeaturedSearches = () => {
       </section>
     );
   }
-  
+
   return (
     <section className="py-24 bg-secondary/50">
       <div className="container mx-auto px-4">
@@ -146,7 +145,7 @@ const FeaturedSearches = () => {
           </Button>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {searches.map((search, index) => (
             <motion.div
               key={search.id}
@@ -154,11 +153,10 @@ const FeaturedSearches = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              onClick={() => navigate(`/recherche/${search.id}`)}
-              className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-vintage transition-all duration-300 cursor-pointer"
+              className="group bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-vintage transition-all duration-300 border border-border"
             >
               {/* Image */}
-              <div className="relative h-48 overflow-hidden bg-secondary">
+              <div className="relative h-56 overflow-hidden bg-secondary">
                 {search.image_url ? (
                   <img
                     src={search.image_url}
@@ -166,52 +164,70 @@ const FeaturedSearches = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-4xl">🔍</span>
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary to-muted">
+                    <span className="text-5xl">🔍</span>
                   </div>
                 )}
-                {search.urgency === "3-days" && (
-                  <Badge className="absolute top-3 left-3 bg-destructive text-destructive-foreground">
-                    Urgent
-                  </Badge>
-                )}
-                <Badge 
-                  className="absolute top-3 right-3 bg-accent text-accent-foreground font-medium"
-                >
+
+                {/* Category badge top-left */}
+                <Badge className="absolute top-3 left-3 bg-card text-primary font-medium text-xs px-3 py-1 shadow-sm border-0">
                   {search.category}
                 </Badge>
+
+                {/* Heart icon top-right */}
+                <button
+                  className="absolute top-3 right-3 w-10 h-10 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-card transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Heart className="w-5 h-5 text-primary" />
+                </button>
+
+                {/* Urgency badge bottom-left */}
+                {search.urgency && search.urgency !== "no-rush" && search.urgency !== "normal" && (
+                  <Badge className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm text-primary font-medium text-xs px-3 py-1.5 shadow-sm border-0 gap-1.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    {urgencyLabels[search.urgency] || search.urgency}
+                  </Badge>
+                )}
               </div>
 
               {/* Content */}
-              <div className="p-5">
-                <h3 className="font-semibold text-primary mb-3 line-clamp-2 group-hover:text-accent transition-colors">
+              <div className="p-5 flex flex-col">
+                <h3 className="font-bold text-xl text-primary mb-1.5 line-clamp-1">
                   {search.title}
                 </h3>
+                {search.description && (
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    {search.description}
+                  </p>
+                )}
 
-                <div className="flex flex-wrap gap-3 text-xs mb-4">
-                  <span className="flex items-center gap-1 text-accent font-medium">
-                    <Euro className="w-3.5 h-3.5" />
+                {/* Budget */}
+                <div className="mb-4">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                    Budget
+                  </p>
+                  <p className="text-xl font-bold text-primary">
                     {formatBudget(search.budget_min, search.budget_max)}
-                  </span>
-                  <span className="flex items-center gap-1 text-accent font-medium">
-                    <Clock className="w-3.5 h-3.5" />
-                    {urgencyLabels[search.urgency || "normal"] || search.urgency}
+                  </p>
+                </div>
+
+                {/* Stats */}
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-5 pt-3 border-t border-border">
+                  <span className="flex items-center gap-1.5">
+                    <Users className="w-4 h-4" />
+                    {proposalCounts[search.id] || 0} offres
                   </span>
                 </div>
 
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t border-border">
-                  <UserBadge
-                    userId={search.user_id}
-                    fullName={search.profiles?.full_name || null}
-                    avatarUrl={search.profiles?.avatar_url || null}
-                    showCrown={false}
-                  />
-                  <span className="flex items-center gap-1 text-sm text-accent font-medium">
-                    <MessageCircle className="w-4 h-4" />
-                    0
-                  </span>
-                </div>
+                {/* CTA Button */}
+                <Button
+                  onClick={() => navigate(`/recherche/${search.id}`)}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-5 rounded-xl gap-2"
+                >
+                  Voir les détails
+                  <ExternalLink className="w-4 h-4" />
+                </Button>
               </div>
             </motion.div>
           ))}

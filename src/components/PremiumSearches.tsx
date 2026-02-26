@@ -1,32 +1,28 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Clock, Euro, Crown, Sparkles } from "lucide-react";
+import { Clock, Heart, ExternalLink, Users, Crown, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import UserBadge from "./UserBadge";
 
 interface PremiumSearch {
   id: string;
   title: string;
+  description: string | null;
   category: string;
   budget_min: number | null;
   budget_max: number | null;
   urgency: string | null;
   image_url: string | null;
   user_id: string;
-  profiles: {
-    full_name: string | null;
-    avatar_url: string | null;
-    is_premium: boolean | null;
-  } | null;
 }
 
 const urgencyLabels: Record<string, string> = {
-  "3-days": "3 jours",
-  "1-week": "1 semaine",
-  "2-weeks": "2 semaines",
-  "1-month": "1 mois",
+  "3-days": "3 jours restants",
+  "1-week": "1 semaine restante",
+  "2-weeks": "2 semaines restantes",
+  "1-month": "1 mois restant",
   "no-rush": "Pas pressé",
   "normal": "Normal",
 };
@@ -35,28 +31,27 @@ const PremiumSearches = () => {
   const navigate = useNavigate();
   const [searches, setSearches] = useState<PremiumSearch[]>([]);
   const [loading, setLoading] = useState(true);
+  const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     fetchPremiumSearches();
   }, []);
 
   const fetchPremiumSearches = async () => {
-    // First get featured searches, then fall back to regular ones if none exist
     const { data: featuredData, error: featuredError } = await supabase
       .from("searches")
-      .select("id, title, category, budget_min, budget_max, urgency, image_url, user_id")
+      .select("id, title, description, category, budget_min, budget_max, urgency, image_url, user_id")
       .eq("status", "active")
       .eq("is_featured", true)
       .order("created_at", { ascending: false })
       .limit(3);
 
     let searchesToUse = featuredData;
-    
+
     if (featuredError || !featuredData || featuredData.length === 0) {
-      // Fallback: get latest searches
       const { data, error } = await supabase
         .from("searches")
-        .select("id, title, category, budget_min, budget_max, urgency, image_url, user_id")
+        .select("id, title, description, category, budget_min, budget_max, urgency, image_url, user_id")
         .eq("status", "active")
         .order("created_at", { ascending: false })
         .limit(3);
@@ -67,30 +62,31 @@ const PremiumSearches = () => {
     }
 
     if (searchesToUse && searchesToUse.length > 0) {
-      // Fetch profiles separately
-      const userIds = [...new Set(searchesToUse.map(s => s.user_id))];
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, full_name, avatar_url, is_premium")
-        .in("user_id", userIds);
+      setSearches(searchesToUse);
 
-      const profilesMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
-      
-      const searchesWithProfiles = searchesToUse.map(search => ({
-        ...search,
-        profiles: profilesMap.get(search.user_id) || null
-      }));
-      
-      setSearches(searchesWithProfiles as any);
+      const searchIds = searchesToUse.map(s => s.id);
+      const { data: proposals } = await supabase
+        .from("proposals")
+        .select("search_id")
+        .in("search_id", searchIds);
+
+      if (proposals) {
+        const counts: Record<string, number> = {};
+        proposals.forEach(p => {
+          counts[p.search_id] = (counts[p.search_id] || 0) + 1;
+        });
+        setProposalCounts(counts);
+      }
     }
-    
+
     setLoading(false);
   };
 
   const formatBudget = (min: number | null, max: number | null) => {
-    if (min && max) return `${min}-${max}€`;
-    if (max) return `< ${max}€`;
-    if (min) return `> ${min}€`;
+    const fmt = (n: number) => n.toLocaleString("fr-FR");
+    if (min && max) return `${fmt(min)}€ – ${fmt(max)}€`;
+    if (max) return `< ${fmt(max)}€`;
+    if (min) return `> ${fmt(min)}€`;
     return "Non défini";
   };
 
@@ -121,7 +117,7 @@ const PremiumSearches = () => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-8">
           {searches.map((search, index) => (
             <motion.div
               key={search.id}
@@ -129,65 +125,87 @@ const PremiumSearches = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
-              onClick={() => navigate(`/recherche/${search.id}`)}
-              className="group relative bg-card rounded-2xl overflow-hidden border-2 border-accent/30 hover:border-accent hover:shadow-xl transition-all duration-300 cursor-pointer"
+              className="group bg-card rounded-2xl overflow-hidden border-2 border-accent/30 hover:border-accent shadow-sm hover:shadow-xl transition-all duration-300"
             >
-              {/* Premium badge */}
-              <div className="absolute top-3 left-3 z-10">
-                <Badge className="bg-accent text-accent-foreground gap-1">
-                  <Crown className="w-3 h-3" />
-                  Premium
-                </Badge>
-              </div>
-
               {/* Image */}
-              <div className="relative h-52 overflow-hidden">
+              <div className="relative h-56 overflow-hidden bg-secondary">
                 {search.image_url ? (
                   <img
                     src={search.image_url}
                     alt={search.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center">
                     <span className="text-5xl">✨</span>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <Badge 
-                  className="absolute bottom-3 right-3 bg-accent text-accent-foreground font-medium"
-                >
+
+                {/* Category badge top-left */}
+                <Badge className="absolute top-3 left-3 bg-card text-primary font-medium text-xs px-3 py-1 shadow-sm border-0">
                   {search.category}
+                </Badge>
+
+                {/* Heart icon top-right */}
+                <button
+                  className="absolute top-3 right-3 w-10 h-10 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-card transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Heart className="w-5 h-5 text-primary" />
+                </button>
+
+                {/* Urgency badge bottom-left */}
+                {search.urgency && search.urgency !== "no-rush" && search.urgency !== "normal" && (
+                  <Badge className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm text-primary font-medium text-xs px-3 py-1.5 shadow-sm border-0 gap-1.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    {urgencyLabels[search.urgency] || search.urgency}
+                  </Badge>
+                )}
+
+                {/* Premium indicator */}
+                <Badge className="absolute bottom-3 right-3 bg-accent text-accent-foreground gap-1 border-0">
+                  <Crown className="w-3 h-3" />
+                  Premium
                 </Badge>
               </div>
 
               {/* Content */}
-              <div className="p-5">
-                <h3 className="font-semibold text-lg text-primary mb-3 line-clamp-2 group-hover:text-accent transition-colors">
+              <div className="p-5 flex flex-col">
+                <h3 className="font-bold text-xl text-primary mb-1.5 line-clamp-1">
                   {search.title}
                 </h3>
+                {search.description && (
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    {search.description}
+                  </p>
+                )}
 
-                <div className="flex flex-wrap gap-3 text-sm mb-4">
-                  <span className="flex items-center gap-1.5 bg-secondary/50 px-2 py-1 rounded-md text-accent font-medium">
-                    <Euro className="w-4 h-4" />
+                {/* Budget */}
+                <div className="mb-4">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                    Budget
+                  </p>
+                  <p className="text-xl font-bold text-primary">
                     {formatBudget(search.budget_min, search.budget_max)}
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-secondary/50 px-2 py-1 rounded-md text-accent font-medium">
-                    <Clock className="w-4 h-4" />
-                    {urgencyLabels[search.urgency || "normal"] || search.urgency}
+                  </p>
+                </div>
+
+                {/* Stats */}
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-5 pt-3 border-t border-border">
+                  <span className="flex items-center gap-1.5">
+                    <Users className="w-4 h-4" />
+                    {proposalCounts[search.id] || 0} offres
                   </span>
                 </div>
 
-                {/* User */}
-                <div className="pt-3 border-t border-border">
-                  <UserBadge
-                    userId={search.user_id}
-                    fullName={search.profiles?.full_name || null}
-                    avatarUrl={search.profiles?.avatar_url || null}
-                    isPremium={search.profiles?.is_premium || false}
-                    size="lg"
-                  />
-                </div>
+                {/* CTA Button */}
+                <Button
+                  onClick={() => navigate(`/recherche/${search.id}`)}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-5 rounded-xl gap-2"
+                >
+                  Voir les détails
+                  <ExternalLink className="w-4 h-4" />
+                </Button>
               </div>
             </motion.div>
           ))}
