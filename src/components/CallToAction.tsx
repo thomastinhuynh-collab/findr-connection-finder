@@ -62,7 +62,7 @@ const CallToAction = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ton@email.com"
-                  className="w-full h-14 pl-12 pr-4 rounded-full bg-secondary text-primary placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full h-14 pl-12 pr-4 rounded-full bg-secondary text-primary placeholder:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                   required
                 />
               </div>
@@ -76,9 +76,6 @@ const CallToAction = () => {
               </Button>
             </form>
 
-            <p className="text-sm mt-6" style={{ color: 'hsl(42 33% 94% / 0.6)' }}>
-              Pas de spam, promis. Juste des pépites. 💎
-            </p>
           </div>
         </motion.div>
       </div>
