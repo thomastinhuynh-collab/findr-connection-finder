@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Package } from "lucide-react";
+import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Package, Heart, Clock, Euro, ExternalLink, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -64,6 +64,7 @@ const MySpace = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+  const [favorites, setFavorites] = useState<any[]>([]);
   const [walletBalance] = useState(155.50);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ const MySpace = () => {
       fetchProfile();
       fetchSearches();
       fetchEvaluations();
+      fetchFavorites();
     }
   }, [user]);
 
@@ -136,6 +138,41 @@ const MySpace = () => {
       .eq("to_user_id", user.id)
       .order("created_at", { ascending: false });
     if (data) setEvaluations(data as any);
+  };
+
+  const fetchFavorites = async () => {
+    if (!user) return;
+    const { data: favData } = await supabase
+      .from("favorites")
+      .select("search_id, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (favData && favData.length > 0) {
+      const searchIds = favData.map(f => f.search_id);
+      const { data: searchesData } = await supabase
+        .from("searches")
+        .select("id, title, description, category, budget_min, budget_max, urgency, image_url, user_id")
+        .in("id", searchIds);
+
+      if (searchesData) {
+        const userIds = [...new Set(searchesData.map(s => s.user_id))];
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, city")
+          .in("user_id", userIds);
+
+        const cityMap = new Map(profiles?.map(p => [p.user_id, p.city]) || []);
+        
+        const enriched = searchesData.map(s => ({
+          ...s,
+          city: cityMap.get(s.user_id) || "France",
+        }));
+        setFavorites(enriched);
+      }
+    } else {
+      setFavorites([]);
+    }
   };
 
   const handleSignOut = async () => {
@@ -266,8 +303,12 @@ const MySpace = () => {
 
             {/* Tabs */}
             <Tabs defaultValue="searches" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="searches">Mes Recherches</TabsTrigger>
+                <TabsTrigger value="favorites" className="flex items-center gap-1.5">
+                  <Heart className="w-4 h-4" />
+                  Favoris
+                </TabsTrigger>
                 <TabsTrigger value="wallet" className="flex items-center gap-1.5">
                   <Wallet className="w-4 h-4" />
                   Portefeuille
@@ -326,6 +367,69 @@ const MySpace = () => {
                   transactions={mockTransactions}
                   onAddFunds={() => navigate("/premium")}
                 />
+              </TabsContent>
+
+              <TabsContent value="favorites" className="mt-6">
+                <h2 className="text-xl font-semibold mb-4">Mes favoris</h2>
+
+                {favorites.length === 0 ? (
+                  <Card>
+                    <CardContent className="py-12 text-center">
+                      <Heart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                      <p className="text-muted-foreground">Aucun favori pour le moment</p>
+                      <Button asChild className="mt-4 btn-hero">
+                        <Link to="/recherches">Parcourir les annonces</Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {favorites.map((search) => (
+                      <Card
+                        key={search.id}
+                        className="overflow-hidden cursor-pointer hover:shadow-vintage transition-all"
+                        onClick={() => navigate(`/recherche/${search.id}`)}
+                      >
+                        <div className="flex">
+                          {search.image_url && (
+                            <div className="w-32 h-32 flex-shrink-0">
+                              <img
+                                src={search.image_url}
+                                alt={search.title}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          )}
+                          <CardContent className="p-4 flex-1">
+                            <Badge className="mb-2 bg-accent text-accent-foreground text-xs">
+                              {search.category}
+                            </Badge>
+                            <h3 className="font-semibold text-primary line-clamp-1 mb-1">
+                              {search.title}
+                            </h3>
+                            {search.description && (
+                              <p className="text-xs text-muted-foreground line-clamp-1 mb-2">
+                                {search.description}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Euro className="w-3 h-3" />
+                                {search.budget_min && search.budget_max
+                                  ? `${search.budget_min.toLocaleString("fr-FR")}€ – ${search.budget_max.toLocaleString("fr-FR")}€`
+                                  : "Non défini"}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <MapPin className="w-3 h-3" />
+                                {search.city}
+                              </span>
+                            </div>
+                          </CardContent>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="evaluations" className="mt-6">
