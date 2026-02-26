@@ -56,7 +56,7 @@ const CallToAction = () => {
               className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
             >
               <div className="relative flex-1">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-foreground" />
                 <input
                   type="email"
                   value={email}
