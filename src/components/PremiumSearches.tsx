@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Clock, ExternalLink, Users, Crown, Sparkles, MapPin } from "lucide-react";
 import FavoriteButton from "./FavoriteButton";
+import SearchImageCarousel from "./SearchImageCarousel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +17,7 @@ interface PremiumSearch {
   budget_max: number | null;
   urgency: string | null;
   image_url: string | null;
+  image_urls: string[] | null;
   user_id: string;
 }
 
@@ -42,7 +44,7 @@ const PremiumSearches = () => {
   const fetchPremiumSearches = async () => {
     const { data: featuredData, error: featuredError } = await supabase
       .from("searches")
-      .select("id, title, description, category, budget_min, budget_max, urgency, image_url, user_id")
+      .select("id, title, description, category, budget_min, budget_max, urgency, image_url, image_urls, user_id")
       .eq("status", "active")
       .eq("is_featured", true)
       .order("created_at", { ascending: false })
@@ -53,7 +55,7 @@ const PremiumSearches = () => {
     if (featuredError || !featuredData || featuredData.length === 0) {
       const { data, error } = await supabase
         .from("searches")
-        .select("id, title, description, category, budget_min, budget_max, urgency, image_url, user_id")
+        .select("id, title, description, category, budget_min, budget_max, urgency, image_url, image_urls, user_id")
         .eq("status", "active")
         .order("created_at", { ascending: false })
         .limit(3);
@@ -142,17 +144,12 @@ const PremiumSearches = () => {
               {/* Image */}
               <div className="relative h-56 overflow-hidden bg-secondary">
                 <div className="absolute inset-0 overflow-hidden">
-                  {search.image_url ? (
-                    <img
-                      src={search.image_url}
-                      alt={search.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-accent/20 to-primary/20 flex items-center justify-center">
-                      <span className="text-5xl">✨</span>
-                    </div>
-                  )}
+                  <SearchImageCarousel
+                    images={[
+                      ...(search.image_urls?.length ? search.image_urls : search.image_url ? [search.image_url] : []),
+                    ]}
+                    alt={search.title}
+                  />
                 </div>
 
                 {/* Category badge top-left */}
