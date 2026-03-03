@@ -7,7 +7,7 @@ import heroBackground from "@/assets/hero-vintage-market.png";
 const Hero = () => {
   return (
     <section 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-24"
+      className="relative flex items-center justify-center overflow-hidden pt-32 pb-16"
       style={{
         backgroundColor: 'hsl(224 67% 19%)'
       }}
