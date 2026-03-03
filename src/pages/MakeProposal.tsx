@@ -435,23 +435,6 @@ const MakeProposal = () => {
               </Select>
             </div>
 
-            {/* Product Link (optional) */}
-            <div className="bg-card border border-border rounded-2xl p-6">
-              <Label htmlFor="productLink" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
-                <LinkIcon className="w-5 h-5 text-accent" />
-                Lien du produit (optionnel)
-              </Label>
-              <Input
-                id="productLink"
-                type="url"
-                placeholder="https://..."
-                value={productLink}
-                onChange={(e) => setProductLink(e.target.value)}
-              />
-              <p className="text-xs text-muted-foreground mt-2">
-                Ajoutez un lien vers l'annonce originale (Vinted, Leboncoin, etc.)
-              </p>
-            </div>
 
             {/* Description (optional) */}
             <div className="bg-card border border-border rounded-2xl p-6">
