@@ -7,7 +7,7 @@ import heroBackground from "@/assets/hero-vintage-market.png";
 const Hero = () => {
   return (
     <section 
-      className="relative flex items-center justify-center overflow-hidden pt-32 pb-16"
+      className="relative flex items-center justify-center overflow-hidden pt-32 pb-20"
       style={{
         backgroundColor: 'hsl(224 67% 19%)'
       }}
@@ -88,7 +88,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-barlow font-bold mb-6 leading-tight"
+            className="text-4xl md:text-5xl lg:text-6xl font-barlow font-bold mb-6 mt-6 leading-tight"
             style={{ color: 'hsl(42 33% 94%)' }}
           >
             Trouvez l'introuvable
