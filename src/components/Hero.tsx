@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-vintage-market.png";
@@ -61,19 +61,26 @@ const Hero = () => {
             </div>
           </motion.div>
 
-          {/* Badge Marketplace Inversé */}
+          {/* CTA Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-barlow font-bold mb-6 uppercase tracking-wider"
-            style={{ 
-              backgroundColor: 'hsl(38 52% 69%)',
-              color: 'hsl(224 67% 19%)'
-            }}
           >
-            <Sparkles className="w-4 h-4" />
-            Marketplace Inversé
+            <Button 
+              size="lg" 
+              className="text-base px-8 py-6 rounded-full font-semibold"
+              style={{ 
+                backgroundColor: 'hsl(38 52% 69%)',
+                color: 'hsl(224 67% 19%)'
+              }}
+              asChild
+            >
+              <Link to="/poster">
+                <ArrowRight className="w-5 h-5 mr-2" />
+                Poster une recherche
+              </Link>
+            </Button>
           </motion.div>
 
           {/* Main Headline */}
@@ -101,28 +108,6 @@ const Hero = () => {
 
 
 
-          {/* CTA Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex items-center justify-center"
-          >
-            <Button 
-              size="lg" 
-              className="text-base px-8 py-6 rounded-full font-semibold"
-              style={{ 
-                backgroundColor: 'hsl(38 52% 69%)',
-                color: 'hsl(224 67% 19%)'
-              }}
-              asChild
-            >
-              <Link to="/poster">
-                <ArrowRight className="w-5 h-5 mr-2" />
-                Poster une recherche
-              </Link>
-            </Button>
-          </motion.div>
 
         </div>
       </div>
