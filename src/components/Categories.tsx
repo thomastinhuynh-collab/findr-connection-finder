@@ -22,7 +22,7 @@ const categories = [
   },
   {
     name: "Décoration Vintage",
-    slug: "Déco & Mobilier",
+    slug: "Décoration Vintage",
     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
     description: "Mobilier mid-century, affiches, luminaires",
   },
