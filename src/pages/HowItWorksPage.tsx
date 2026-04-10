@@ -69,7 +69,7 @@ const HowItWorksPage = () => {
                     <ShoppingBag className="w-10 h-10 text-accent" />
                   </div>
                   <CardTitle className="text-2xl font-barlow text-primary">Le buyr</CardTitle>
-                  <p className="text-muted-foreground">L'acheteur, le chercheur de trésors</p>
+                  <p className="text-muted-foreground">Le chercheur de trésors</p>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-start gap-3">
@@ -105,7 +105,7 @@ const HowItWorksPage = () => {
                     <Search className="w-10 h-10 text-primary" />
                   </div>
                   <CardTitle className="text-2xl font-barlow text-primary">Le findr</CardTitle>
-                  <p className="text-muted-foreground">Le dénicheur, le chineur passionné</p>
+                  <p className="text-muted-foreground">Le dénicheur passionné</p>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-start gap-3">
@@ -160,7 +160,7 @@ const HowItWorksPage = () => {
               {
                 step: "2",
                 title: "Les findrs découvrent et réservent",
-                description: "Les chineurs passionnés consultent les recherches. S'ils pensent pouvoir trouver l'objet, ils peuvent demander une réservation exclusive pour éviter la concurrence pendant leur recherche.",
+                description: "Les findrs passionnés consultent les recherches. S'ils pensent pouvoir trouver l'objet, ils peuvent demander une réservation exclusive pour éviter la concurrence pendant leur recherche.",
                 icon: Clock,
                 color: "bg-purple-500"
               },

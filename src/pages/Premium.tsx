@@ -25,7 +25,7 @@ const Premium = () => {
     {
       icon: Star,
       title: "Mise en avant des propositions",
-      description: "Vos propositions apparaissent en priorité auprès des acheteurs"
+      description: "Vos propositions apparaissent en priorité auprès des buyrs"
     },
     {
       icon: Bell,
@@ -140,7 +140,7 @@ const Premium = () => {
               Pour les findrs
             </Badge>
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Boostez vos performances de chineur
+              Boostez vos performances de findr
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Des outils puissants pour trouver plus vite et gagner plus
@@ -167,7 +167,7 @@ const Premium = () => {
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4">
               <Crown className="w-3 h-3 mr-1" />
-              Pour les Acheteurs
+              Pour les buyrs
             </Badge>
             <h2 className="text-3xl font-bold text-foreground mb-4">
               Une expérience d'achat privilégiée
