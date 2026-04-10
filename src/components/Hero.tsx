@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-vintage-market.png";
@@ -7,7 +7,7 @@ import heroBackground from "@/assets/hero-vintage-market.png";
 const Hero = () => {
   return (
     <section 
-      className="relative flex items-center justify-center overflow-hidden pt-32 pb-20"
+      className="relative flex items-center justify-center overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32"
       style={{
         backgroundColor: 'hsl(224 67% 19%)'
       }}
@@ -17,59 +17,84 @@ const Hero = () => {
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url(${heroBackground})`,
-          opacity: 0.15
+          opacity: 0.12
+        }}
+      />
+
+      {/* Warm gradient overlay */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 60% at 50% 40%, hsl(38 52% 69% / 0.08) 0%, transparent 60%),
+            linear-gradient(180deg, hsl(224 67% 19% / 0.3) 0%, hsl(224 67% 15% / 0.6) 100%)
+          `
+        }}
+      />
+
+      {/* Subtle texture pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage: `radial-gradient(circle at center, hsl(42 33% 94%) 1px, transparent 1px)`,
+          backgroundSize: '20px 20px',
         }}
       />
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Logo Circle */}
+          {/* Small brand tag */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="flex justify-center mb-8"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border"
+            style={{ 
+              backgroundColor: 'hsl(38 52% 69% / 0.15)',
+              borderColor: 'hsl(38 52% 69% / 0.3)',
+              color: 'hsl(38 52% 69%)'
+            }}
           >
-            <div className="flex flex-col items-center">
-              <span 
-                className="text-6xl md:text-7xl lg:text-8xl font-barlow font-bold tracking-tight"
-                style={{ color: 'hsl(42 33% 94%)' }}
-              >
-                f
-                <span className="relative inline-block">
-                  ı
-                  <svg 
-                    className="absolute top-0 md:top-0.5 left-1/2 -translate-x-1/2 w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2.5"
-                    style={{ color: 'hsl(42 33% 94%)' }}
-                  >
-                    <circle cx="10" cy="10" r="6" />
-                    <path d="M14.5 14.5L20 20" strokeLinecap="round" />
-                  </svg>
-                </span>
-                ndr
-              </span>
-              <span 
-                className="text-sm md:text-base lg:text-lg font-barlow font-medium tracking-wide mt-2"
-                style={{ color: 'hsl(42 33% 94% / 0.9)' }}
-              >
-                let others search for you
-              </span>
-            </div>
+            <Search className="w-3.5 h-3.5" />
+            <span className="text-sm font-medium font-barlow">La marketplace inversée du vintage</span>
           </motion.div>
 
-          {/* CTA Button */}
+          {/* Main Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="text-3xl md:text-5xl lg:text-6xl font-poppins font-bold mb-6 leading-tight"
+            style={{ color: 'hsl(42 33% 94%)' }}
+          >
+            Tu cherches un objet rare ?{" "}
+            <span style={{ color: 'hsl(38 52% 69%)' }}>
+              Publie ta demande,
+            </span>{" "}
+            la communauté le trouve pour toi.
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10"
+            style={{ color: 'hsl(42 33% 94% / 0.8)' }}
+          >
+            Findr est la première marketplace inversée du vintage : tu décris l'objet, les chineurs le dénichent.
+          </motion.p>
+
+          {/* CTA Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.45 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Button 
               size="lg" 
-              className="text-base px-8 py-6 rounded-full font-semibold"
+              className="text-base px-8 py-6 rounded-full font-semibold w-full sm:w-auto"
               style={{ 
                 backgroundColor: 'hsl(38 52% 69%)',
                 color: 'hsl(224 67% 19%)'
@@ -77,41 +102,30 @@ const Hero = () => {
               asChild
             >
               <Link to="/poster">
+                <Search className="w-5 h-5 mr-2" />
+                Je cherche un objet
+              </Link>
+            </Button>
+
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="text-base px-8 py-6 rounded-full font-semibold w-full sm:w-auto border-2"
+              style={{ 
+                borderColor: 'hsl(42 33% 94% / 0.5)',
+                color: 'hsl(42 33% 94%)',
+                backgroundColor: 'transparent'
+              }}
+              asChild
+            >
+              <Link to="/recherches">
                 <ArrowRight className="w-5 h-5 mr-2" />
-                Poster une recherche
+                Je suis chineur
               </Link>
             </Button>
           </motion.div>
-
-          {/* Main Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-barlow font-bold mb-6 mt-6 leading-tight"
-            style={{ color: 'hsl(42 33% 94%)' }}
-          >
-            Trouvez l'introuvable
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-base md:text-lg max-w-2xl mx-auto mb-8"
-            style={{ color: 'hsla(42, 33%, 94%, 0.85)' }}
-          >
-            La plateforme premium de chinage collaboratif où les findr 
-            passionnés trouvent pour les buyr leurs pépites vintage et objets pop culture.
-          </motion.p>
-
-
-
-
         </div>
       </div>
-
     </section>
   );
 };
