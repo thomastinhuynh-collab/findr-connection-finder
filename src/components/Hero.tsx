@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Search } from "lucide-react";
+import { Search, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-vintage-market.png";
@@ -37,15 +37,27 @@ const Hero = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Small brand tag */}
+          {/* Premium badge */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border border-accent/30 bg-accent/15 text-accent"
+            className="inline-flex items-center mb-8"
           >
-            <Search className="w-3.5 h-3.5" />
-            <span className="text-sm font-medium font-barlow">La marketplace inversée du vintage</span>
+            <span
+              className="font-poppins uppercase"
+              style={{
+                fontSize: '11px',
+                letterSpacing: '2px',
+                color: 'hsl(var(--gold))',
+                background: 'hsl(var(--gold) / 0.2)',
+                border: '1px solid hsl(var(--gold))',
+                borderRadius: '20px',
+                padding: '6px 16px',
+              }}
+            >
+              ✦ PREMIUM COMMUNITY
+            </span>
           </motion.div>
 
           {/* Main Headline */}
@@ -53,13 +65,11 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="text-3xl md:text-5xl lg:text-6xl font-poppins font-bold mb-6 leading-tight text-cream"
+            className="text-3xl md:text-5xl lg:text-6xl font-poppins font-extrabold mb-6 leading-tight text-cream"
           >
-            Tu cherches un objet rare ?{" "}
-            <span className="text-accent">
-              Publie ta demande,
-            </span>{" "}
-            la communauté le trouve pour toi.
+            Trouvez l'introuvable, avec{" "}
+            <span className="text-accent">findr</span> &{" "}
+            <span className="text-accent">buyr</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -67,9 +77,9 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10 text-cream/80"
+            className="text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10 text-cream/85 font-normal"
           >
-            findr est la première marketplace inversée du vintage : tu décris l'objet, les findrs le dénichent.
+            La marketplace inversée où les findr passionnés dénichent pour les buyr leurs pépites vintage et objets pop culture.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -86,7 +96,7 @@ const Hero = () => {
             >
               <Link to="/poster">
                 <Search className="w-5 h-5 mr-2" />
-                Je deviens buyr
+                Devenir buyr
               </Link>
             </Button>
 
@@ -98,10 +108,20 @@ const Hero = () => {
             >
               <Link to="/recherches">
                 <ArrowRight className="w-5 h-5 mr-2" />
-                Je deviens findr
+                Devenir findr
               </Link>
             </Button>
           </motion.div>
+
+          {/* Reassurance line */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="mt-6 text-sm text-cream/60 font-normal"
+          >
+            🔒 Gratuit · Sans engagement · Accès anticipé
+          </motion.p>
         </div>
       </div>
     </section>
