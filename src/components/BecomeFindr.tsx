@@ -77,7 +77,7 @@ const BecomeFindr = () => {
           {/* findr Card */}
           <div
             ref={rightCardRef}
-            className="scroll-reveal-right rounded-3xl p-8 md:p-10 flex flex-col border border-warm-neutral/50 bg-warm-neutral/40"
+            className="scroll-reveal-right rounded-3xl p-8 md:p-10 flex flex-col border border-secondary/40 bg-secondary"
           >
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-accent/12">
               <Heart className="w-7 h-7 text-accent" />
