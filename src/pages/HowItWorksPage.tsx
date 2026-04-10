@@ -302,53 +302,34 @@ const HowItWorksPage = () => {
             className="text-center mb-16"
           >
             <span className="text-sm font-medium text-accent uppercase tracking-wider">
-              Rémunération
+              Transparence
             </span>
             <h2 className="text-3xl md:text-4xl font-barlow font-bold text-primary mt-4">
-              Le système de commissions
+              Les frais de la plateforme
             </h2>
+            <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
+              findr prélève une commission unique sur chaque transaction pour maintenir la plateforme, garantir la sécurité des paiements et accompagner la communauté.
+            </p>
           </motion.div>
 
-          <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+          <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <Card className="h-full text-center">
-                <CardHeader>
-                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                    <CreditCard className="w-8 h-8 text-green-600" />
-                  </div>
-                  <CardTitle className="text-xl font-barlow">Commission findr</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-3xl font-barlow font-bold text-green-600 mb-4">10-30%</p>
-                  <p className="text-muted-foreground">
-                    Le findr fixe sa commission dans sa proposition. Elle est ajoutée au prix de l'objet trouvé.
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <Card className="h-full text-center border-2 border-accent">
+              <Card className="h-full text-center border-2 border-border">
                 <CardHeader>
                   <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto mb-4">
                     <Shield className="w-8 h-8 text-accent" />
                   </div>
-                  <CardTitle className="text-xl font-barlow">Frais findr</CardTitle>
+                  <CardTitle className="text-xl font-barlow">Frais standard</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-barlow font-bold text-accent mb-4">5%</p>
+                  <p className="text-4xl font-barlow font-bold text-accent mb-4">5%</p>
                   <p className="text-muted-foreground">
-                    findr prélève une commission de 5% sur chaque transaction pour maintenir la plateforme et la sécurité.
+                    Commission prélevée sur chaque transaction pour tous les utilisateurs.
                   </p>
                 </CardContent>
               </Card>
@@ -358,20 +339,25 @@ const HowItWorksPage = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
             >
-              <Card className="h-full text-center">
+              <Card className="h-full text-center border-2 border-accent">
                 <CardHeader>
-                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                    <UserCheck className="w-8 h-8 text-blue-600" />
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <UserCheck className="w-8 h-8 text-primary" />
                   </div>
-                  <CardTitle className="text-xl font-barlow">Premium</CardTitle>
+                  <CardTitle className="text-xl font-barlow">Frais Premium</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-barlow font-bold text-blue-600 mb-4">3%</p>
+                  <p className="text-4xl font-barlow font-bold text-primary mb-4">3%</p>
                   <p className="text-muted-foreground">
                     Les membres Premium bénéficient de frais réduits à 3% et d'avantages exclusifs.
                   </p>
+                  <Link to="/premium">
+                    <Button variant="outline" className="mt-4 border-accent text-accent hover:bg-accent/10">
+                      Découvrir Premium
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </motion.div>
@@ -390,9 +376,9 @@ const HowItWorksPage = () => {
                   <div>
                     <h4 className="font-barlow font-semibold text-primary mb-2">Exemple concret</h4>
                     <p className="text-muted-foreground">
-                      Un findr trouve un vinyle rare à 50€. Il ajoute 20% de commission (10€). 
-                      Le buyr paie donc 60€ + 5% de frais findr = <strong>63€ au total</strong>. 
-                      Le findr reçoit 60€ - 5% = <strong>57€</strong>.
+                      Un findr trouve un vinyle rare à 50€ et le propose au buyr. 
+                      Le buyr paie 50€ + 5% de frais findr = <strong>52,50€ au total</strong>. 
+                      Avec Premium, ce serait 50€ + 3% = <strong>51,50€</strong>.
                     </p>
                   </div>
                 </div>
