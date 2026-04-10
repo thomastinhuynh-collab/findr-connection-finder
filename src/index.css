@@ -236,4 +236,66 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
+
+  /* Scroll-reveal animations */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Staggered children - each child delays 0.1s more */
+  .stagger-group .stagger-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+
+  .stagger-group.revealed .stagger-item:nth-child(1) { transition-delay: 0s; opacity: 1; transform: translateY(0); }
+  .stagger-group.revealed .stagger-item:nth-child(2) { transition-delay: 0.1s; opacity: 1; transform: translateY(0); }
+  .stagger-group.revealed .stagger-item:nth-child(3) { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
+  .stagger-group.revealed .stagger-item:nth-child(4) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+  .stagger-group.revealed .stagger-item:nth-child(5) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+  .stagger-group.revealed .stagger-item:nth-child(6) { transition-delay: 0.5s; opacity: 1; transform: translateY(0); }
+
+  /* Slide from left/right */
+  .scroll-reveal-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .scroll-reveal-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .scroll-reveal-left.revealed,
+  .scroll-reveal-right.revealed {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* CTA button hover */
+  .cta-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .cta-hover:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 30px -6px hsl(var(--gold) / 0.4);
+  }
+
+  /* Pulse animation for badge */
+  @keyframes badge-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 hsl(var(--gold) / 0.4); }
+    50% { box-shadow: 0 0 16px 4px hsl(var(--gold) / 0.15); }
+  }
+
+  .badge-pulse {
+    animation: badge-pulse 3s ease-in-out infinite;
+  }
 }
