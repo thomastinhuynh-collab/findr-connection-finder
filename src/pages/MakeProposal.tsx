@@ -524,7 +524,7 @@ const MakeProposal = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-success" />
-                    <span className="text-xs">Protection acheteur & vendeur</span>
+                    <span className="text-xs">Protection buyr & findr</span>
                   </div>
                 </div>
               </div>

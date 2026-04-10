@@ -15,9 +15,12 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link to="/" className="block mb-4">
+            <Link to="/" className="block mb-2">
               <Logo size="lg" variant="light" />
             </Link>
+            <p className="text-cream/40 text-xs italic mb-4">
+              let others search for you
+            </p>
             <p className="text-cream/60 text-sm mb-6">
               La marketplace inversée du vintage.
             </p>
@@ -36,8 +39,8 @@ const Footer = () => {
             <h4 className="font-poppins font-semibold text-cream mb-4">Plateforme</h4>
             <ul className="space-y-3 text-sm text-cream/60">
               <li><Link to="/comment-ca-marche" className="hover:text-accent transition-colors">Comment ça marche</Link></li>
-              <li><Link to="/recherches" className="hover:text-accent transition-colors">Je chine</Link></li>
-              <li><Link to="/poster" className="hover:text-accent transition-colors">Je cherche</Link></li>
+              <li><Link to="/recherches" className="hover:text-accent transition-colors">Je deviens findr</Link></li>
+              <li><Link to="/poster" className="hover:text-accent transition-colors">Je deviens buyr</Link></li>
               <li><Link to="/premium" className="hover:text-accent transition-colors">findr Premium</Link></li>
             </ul>
           </div>

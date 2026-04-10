@@ -4,9 +4,9 @@ import { Search, ArrowRight, Gem, Clock, ShieldCheck, Send, Coins, Heart, Trendi
 import { Link } from "react-router-dom";
 
 const buyerBenefits = [
-  { icon: Gem, text: "Trouvez des pièces introuvables" },
-  { icon: Send, text: "Publiez gratuitement votre recherche" },
-  { icon: Clock, text: "Recevez des propositions en 24h" },
+  { icon: Gem, text: "Trouve des pièces introuvables" },
+  { icon: Send, text: "Publie gratuitement ta recherche" },
+  { icon: Clock, text: "Reçois des propositions en 24h" },
   { icon: ShieldCheck, text: "Paiement 100% sécurisé" },
 ];
 
@@ -37,7 +37,7 @@ const BecomeFindr = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Buyer Card */}
+          {/* buyr Card */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -50,10 +50,10 @@ const BecomeFindr = () => {
             </div>
 
             <h3 className="text-2xl font-poppins font-bold mb-2 text-cream">
-              Tu cherches un objet rare
+              Tu es buyr
             </h3>
             <p className="text-sm mb-8 text-cream/60">
-              Publie ta demande et laisse les chineurs trouver pour toi.
+              Publie ta demande et laisse les findrs trouver pour toi.
             </p>
 
             <ul className="space-y-4 mb-10 flex-grow">
@@ -73,13 +73,13 @@ const BecomeFindr = () => {
               asChild
             >
               <Link to="/poster">
-                Publier une recherche
+                Je deviens buyr
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
           </motion.div>
 
-          {/* Finder Card */}
+          {/* findr Card */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -92,10 +92,10 @@ const BecomeFindr = () => {
             </div>
 
             <h3 className="text-2xl font-poppins font-bold mb-2 text-foreground">
-              Tu es chineur ou passionné
+              Tu es findr
             </h3>
             <p className="text-sm mb-8 text-foreground/60">
-              Transforme ta passion du chinage en source de revenus.
+              Transforme ta passion du dénichage en source de revenus.
             </p>
 
             <ul className="space-y-4 mb-10 flex-grow">
@@ -116,7 +116,7 @@ const BecomeFindr = () => {
               asChild
             >
               <Link to="/recherches">
-                Devenir chineur
+                Je deviens findr
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>

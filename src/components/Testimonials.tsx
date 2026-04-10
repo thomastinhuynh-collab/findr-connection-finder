@@ -3,29 +3,29 @@ import { Star, Lock, ShieldCheck, BadgeCheck, Users } from "lucide-react";
 
 const guarantees = [
   { icon: Lock, label: "Paiement sécurisé" },
-  { icon: ShieldCheck, label: "Protection acheteur" },
+  { icon: ShieldCheck, label: "Protection buyr" },
   { icon: BadgeCheck, label: "Communauté vérifiée" },
 ];
 
 const testimonials = [
   {
-    quote: "J'ai trouvé ma veste Levi's 70s en 3 jours grâce à un chineur de Lille. Exactement ce que je cherchais depuis des mois !",
+    quote: "J'ai trouvé ma veste Levi's 70s en 3 jours grâce à un findr de Lille. Exactement ce que je cherchais depuis des mois !",
     author: "Camille Dupont",
-    role: "Chercheuse d'objets",
+    role: "buyr",
     avatar: "https://i.pravatar.cc/60?img=5",
     rating: 5,
   },
   {
-    quote: "Je chine depuis toujours dans les brocantes. Maintenant je suis payé pour le faire. Le concept est génial !",
+    quote: "Je déniche depuis toujours dans les brocantes. Maintenant je suis payé pour le faire. Le concept est génial !",
     author: "Antoine Marchand",
-    role: "Chineur passionné",
+    role: "findr",
     avatar: "https://i.pravatar.cc/60?img=12",
     rating: 5,
   },
   {
-    quote: "Carte Pokémon 1ère édition, état mint. Le chineur l'a dénichée à un vide-grenier pour 30€. Je n'y croyais pas.",
+    quote: "Carte Pokémon 1ère édition, état mint. Le findr l'a dénichée à un vide-grenier pour 30€. Je n'y croyais pas.",
     author: "Julien Renard",
-    role: "Collectionneur",
+    role: "buyr",
     avatar: "https://i.pravatar.cc/60?img=8",
     rating: 5,
   },
@@ -67,7 +67,7 @@ const Testimonials = () => {
             Témoignages
           </span>
           <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4 text-foreground">
-            Ce qu'ils disent de Findr
+            Ce qu'ils disent de findr
           </h2>
         </motion.div>
 

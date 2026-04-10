@@ -8,8 +8,8 @@ import CategoryNav from "@/components/CategoryNav";
 
 const navLinks = [
   { label: "Comment ça marche", to: "/comment-ca-marche" },
-  { label: "Je cherche", to: "/poster" },
-  { label: "Je chine", to: "/recherches" },
+  { label: "Je deviens buyr", to: "/poster" },
+  { label: "Je deviens findr", to: "/recherches" },
   { label: "Blog", to: "/blog" },
 ];
 

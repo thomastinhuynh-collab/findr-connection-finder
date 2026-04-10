@@ -19,7 +19,7 @@ const steps = [
       title: "Comment publier ta recherche ?",
       content: [
         "Décris précisément l'objet que tu recherches (marque, modèle, époque, état souhaité)",
-        "Ajoute une ou plusieurs photos d'inspiration pour guider les chineurs",
+        "Ajoute une ou plusieurs photos d'inspiration pour guider les findrs",
         "Indique ton budget minimum et maximum",
         "Choisis la catégorie appropriée (Mode vintage, Vinyles, Pop culture, etc.)",
         "Précise le niveau d'urgence de ta recherche"
@@ -29,16 +29,16 @@ const steps = [
   {
     icon: Compass,
     step: "02",
-    title: "Les chineurs partent à la chasse",
+    title: "Les findrs partent à la chasse",
     description: "Notre communauté recherche en ligne et dans les brocantes, friperies, marchés.",
     details: {
-      title: "Qui sont les chineurs ?",
+      title: "Qui sont les findrs ?",
       content: [
         "Des passionnés et experts dans leur domaine",
         "Ils parcourent brocantes, friperies, vide-greniers et marchés aux puces",
         "Ils ont accès à des réseaux et sources exclusives",
-        "Chaque chineur a un profil avec ses spécialités et évaluations",
-        "Tu peux réserver un chineur pour une recherche exclusive"
+        "Chaque findr a un profil avec ses spécialités et évaluations",
+        "Tu peux réserver un findr pour une recherche exclusive"
       ]
     }
   },
@@ -50,10 +50,10 @@ const steps = [
     details: {
       title: "Comment fonctionnent les propositions ?",
       content: [
-        "Reçois des notifications dès qu'un chineur trouve quelque chose",
+        "Reçois des notifications dès qu'un findr trouve quelque chose",
         "Chaque proposition inclut des photos réelles et détaillées",
         "Compare les prix, l'état et les conditions de chaque trouvaille",
-        "Communique directement avec le chineur via la messagerie",
+        "Communique directement avec le findr via la messagerie",
         "Tu es libre d'accepter ou de refuser chaque proposition"
       ]
     }
@@ -62,7 +62,7 @@ const steps = [
     icon: ShieldCheck,
     step: "04",
     title: "La transaction est sécurisée",
-    description: "Paiement sécurisé, protection acheteur incluse.",
+    description: "Paiement sécurisé, protection buyr incluse.",
     details: {
       title: "Comment se passe la transaction ?",
       content: [
@@ -70,7 +70,7 @@ const steps = [
         "Les fonds sont bloqués jusqu'à réception et validation",
         "Livraison suivie avec numéro de tracking",
         "Tu disposes de 48h pour vérifier l'objet à réception",
-        "Évalue le chineur pour aider la communauté"
+        "Évalue le findr pour aider la communauté"
       ]
     }
   },

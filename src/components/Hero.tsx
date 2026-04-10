@@ -69,7 +69,7 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10 text-cream/80"
           >
-            Findr est la première marketplace inversée du vintage : tu décris l'objet, les chineurs le dénichent.
+            findr est la première marketplace inversée du vintage : tu décris l'objet, les findrs le dénichent.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -86,7 +86,7 @@ const Hero = () => {
             >
               <Link to="/poster">
                 <Search className="w-5 h-5 mr-2" />
-                Je cherche un objet
+                Je deviens buyr
               </Link>
             </Button>
 
@@ -98,7 +98,7 @@ const Hero = () => {
             >
               <Link to="/recherches">
                 <ArrowRight className="w-5 h-5 mr-2" />
-                Je suis chineur
+                Je deviens findr
               </Link>
             </Button>
           </motion.div>
