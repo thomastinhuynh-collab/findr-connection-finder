@@ -1,33 +1,29 @@
 import { useNavigate } from "react-router-dom";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
-import catModeVintage from "@/assets/cat-mode-vintage.jpg";
-import catPopCulture from "@/assets/cat-pop-culture.jpg";
-import catObjetsCollection from "@/assets/cat-objets-collection.jpg";
-import catDecoVintage from "@/assets/cat-deco-vintage.jpg";
 
 const categories = [
   {
     name: "Mode Vintage",
     slug: "Mode Vintage",
-    image: catModeVintage,
+    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=800&q=80",
     description: "Vestes en cuir, denim, fripes 70s-90s",
   },
   {
     name: "Pop Culture & Collector",
     slug: "Pop Culture & TCG",
-    image: catPopCulture,
+    image: "https://images.unsplash.com/photo-1608889175638-9322300c46e8?auto=format&fit=crop&w=800&q=80",
     description: "Figurines, comics, cartes, vinyles",
   },
   {
     name: "Objets de Collection",
     slug: "Bijoux & Accessoires",
-    image: catObjetsCollection,
+    image: "https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=800&q=80",
     description: "Montres, appareils photo, curiosités",
   },
   {
     name: "Décoration Vintage",
     slug: "Déco & Mobilier",
-    image: catDecoVintage,
+    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
     description: "Mobilier mid-century, affiches, luminaires",
   },
 ];
