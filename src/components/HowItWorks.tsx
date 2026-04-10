@@ -81,14 +81,15 @@ const HowItWorks = () => {
 
   return (
     <section 
-      className="py-24 relative overflow-hidden grain-texture"
-      style={{ backgroundColor: 'hsl(0 0% 10%)' }}
+      className="py-24 relative overflow-hidden"
+      style={{ backgroundColor: 'hsl(30 25% 95%)' }}
     >
-      {/* Subtle gradient */}
+      {/* Warm texture */}
       <div 
-        className="absolute inset-0 opacity-30"
+        className="absolute inset-0 opacity-[0.03]"
         style={{
-          background: 'radial-gradient(ellipse 60% 50% at 30% 50%, hsl(18 66% 47% / 0.08) 0%, transparent 60%)'
+          backgroundImage: `radial-gradient(circle at center, hsl(25 40% 45%) 1px, transparent 1px)`,
+          backgroundSize: '18px 18px',
         }}
       />
       
@@ -102,19 +103,19 @@ const HowItWorks = () => {
         >
           <span 
             className="text-sm font-barlow font-medium uppercase tracking-wider"
-            style={{ color: 'hsl(18 66% 55%)' }}
+            style={{ color: 'hsl(25 50% 45%)' }}
           >
             Simple et efficace
           </span>
           <h2 
-            className="text-3xl md:text-5xl font-serif font-bold mt-4 mb-6"
-            style={{ color: 'hsl(38 33% 93%)' }}
+            className="text-3xl md:text-5xl font-poppins font-bold mt-4 mb-6"
+            style={{ color: 'hsl(224 67% 19%)' }}
           >
             Comment ça marche ?
           </h2>
           <p 
             className="max-w-2xl mx-auto text-lg"
-            style={{ color: 'hsl(38 33% 93% / 0.65)' }}
+            style={{ color: 'hsl(224 67% 19% / 0.7)' }}
           >
             En 4 étapes, passe de "j'aimerais trouver" à "j'ai trouvé"
           </p>
@@ -122,10 +123,10 @@ const HowItWorks = () => {
 
         {/* Horizontal stepper */}
         <div className="relative">
-          {/* Connector line */}
+          {/* Connector line - desktop only */}
           <div 
             className="hidden lg:block absolute top-12 left-[12%] right-[12%] h-0.5"
-            style={{ backgroundColor: 'hsl(38 33% 93% / 0.12)' }}
+            style={{ backgroundColor: 'hsl(25 40% 45% / 0.2)' }}
           />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
@@ -143,53 +144,58 @@ const HowItWorks = () => {
                 <div 
                   className="w-24 h-24 rounded-full flex items-center justify-center mb-6 relative z-10 transition-all duration-300 border-4 group-hover:scale-110"
                   style={{ 
-                    backgroundColor: 'hsl(0 0% 10%)',
-                    borderColor: 'hsl(18 66% 47%)',
-                    boxShadow: '0 4px 20px -4px hsl(18 66% 47% / 0.3)',
+                    backgroundColor: 'hsl(30 25% 95%)',
+                    borderColor: 'hsl(25 50% 45%)',
+                    boxShadow: '0 4px 20px -4px hsl(25 40% 45% / 0.25)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'hsl(18 66% 47%)';
+                    e.currentTarget.style.backgroundColor = 'hsl(25 50% 45%)';
                     const icon = e.currentTarget.querySelector('.step-icon') as HTMLElement;
                     const num = e.currentTarget.querySelector('.step-num') as HTMLElement;
-                    if (icon) { icon.style.color = 'hsl(38 33% 95%)'; icon.style.opacity = '1'; icon.style.transform = 'scale(1)'; }
+                    if (icon) icon.style.color = 'hsl(42 33% 94%)';
                     if (num) { num.style.opacity = '0'; num.style.transform = 'scale(0.5)'; }
+                    if (icon) { icon.style.opacity = '1'; icon.style.transform = 'scale(1)'; }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'hsl(0 0% 10%)';
+                    e.currentTarget.style.backgroundColor = 'hsl(30 25% 95%)';
                     const icon = e.currentTarget.querySelector('.step-icon') as HTMLElement;
                     const num = e.currentTarget.querySelector('.step-num') as HTMLElement;
-                    if (icon) { icon.style.color = 'hsl(18 66% 55%)'; icon.style.opacity = '0'; icon.style.transform = 'scale(0.5)'; }
+                    if (icon) icon.style.color = 'hsl(25 50% 45%)';
                     if (num) { num.style.opacity = '1'; num.style.transform = 'scale(1)'; }
+                    if (icon) { icon.style.opacity = '0'; icon.style.transform = 'scale(0.5)'; }
                   }}
                 >
+                  {/* Number */}
                   <span 
                     className="step-num text-2xl font-barlow font-bold absolute transition-all duration-300"
-                    style={{ color: 'hsl(18 66% 55%)' }}
+                    style={{ color: 'hsl(25 50% 45%)' }}
                   >
                     {step.step}
                   </span>
+                  {/* Icon */}
                   <step.icon 
                     className="step-icon w-9 h-9 absolute transition-all duration-300" 
-                    style={{ color: 'hsl(18 66% 55%)', opacity: 0, transform: 'scale(0.5)' }} 
+                    style={{ color: 'hsl(25 50% 45%)', opacity: 0, transform: 'scale(0.5)' }} 
                   />
                 </div>
                 
                 <h3 
-                  className="text-lg font-serif font-semibold mb-2"
-                  style={{ color: 'hsl(38 33% 93%)' }}
+                  className="text-lg font-poppins font-semibold mb-2"
+                  style={{ color: 'hsl(224 67% 19%)' }}
                 >
                   {step.title}
                 </h3>
                 <p 
                   className="text-sm leading-relaxed max-w-[220px]"
-                  style={{ color: 'hsl(38 33% 93% / 0.55)' }}
+                  style={{ color: 'hsl(224 67% 19% / 0.65)' }}
                 >
                   {step.description}
                 </p>
                 
+                {/* Click hint */}
                 <div 
                   className="mt-3 text-xs font-barlow font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ color: 'hsl(18 66% 55%)' }}
+                  style={{ color: 'hsl(25 50% 45%)' }}
                 >
                   <span>En savoir plus →</span>
                 </div>
@@ -199,11 +205,14 @@ const HowItWorks = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal for step details */}
       <Dialog open={selectedStep !== null} onOpenChange={() => setSelectedStep(null)}>
         <DialogContent 
           className="max-w-md"
-          style={{ backgroundColor: 'hsl(38 33% 93%)', borderColor: 'hsl(18 66% 47% / 0.2)' }}
+          style={{ 
+            backgroundColor: 'hsl(30 25% 95%)',
+            borderColor: 'hsl(25 50% 45% / 0.3)'
+          }}
         >
           {selectedStep !== null && (
             <>
@@ -211,29 +220,42 @@ const HowItWorks = () => {
                 <div className="flex items-center gap-4 mb-2">
                   <div 
                     className="w-12 h-12 rounded-xl flex items-center justify-center"
-                    style={{ backgroundColor: 'hsl(18 66% 47% / 0.1)' }}
+                    style={{ backgroundColor: 'hsl(25 50% 45% / 0.12)' }}
                   >
                     {(() => {
                       const StepIcon = steps[selectedStep].icon;
-                      return <StepIcon className="w-6 h-6" style={{ color: 'hsl(18 66% 47%)' }} />;
+                      return <StepIcon className="w-6 h-6" style={{ color: 'hsl(25 50% 45%)' }} />;
                     })()}
                   </div>
                   <span 
                     className="px-3 py-1 rounded-full text-sm font-barlow font-bold"
-                    style={{ backgroundColor: 'hsl(18 66% 47%)', color: 'hsl(38 33% 95%)' }}
+                    style={{ 
+                      backgroundColor: 'hsl(25 50% 45%)',
+                      color: 'hsl(42 33% 94%)'
+                    }}
                   >
                     Étape {steps[selectedStep].step}
                   </span>
                 </div>
-                <DialogTitle className="text-xl font-serif font-bold" style={{ color: 'hsl(0 0% 10%)' }}>
+                <DialogTitle 
+                  className="text-xl font-poppins font-bold"
+                  style={{ color: 'hsl(224 67% 19%)' }}
+                >
                   {steps[selectedStep].details.title}
                 </DialogTitle>
               </DialogHeader>
               <DialogDescription asChild>
                 <ul className="space-y-3 mt-4">
                   {steps[selectedStep].details.content.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm" style={{ color: 'hsl(0 0% 10% / 0.8)' }}>
-                      <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'hsl(18 66% 47%)' }} />
+                    <li 
+                      key={i} 
+                      className="flex items-start gap-3 text-sm"
+                      style={{ color: 'hsl(224 67% 19% / 0.85)' }}
+                    >
+                      <CheckCircle 
+                        className="w-5 h-5 flex-shrink-0 mt-0.5" 
+                        style={{ color: 'hsl(25 50% 45%)' }} 
+                      />
                       <span>{item}</span>
                     </li>
                   ))}

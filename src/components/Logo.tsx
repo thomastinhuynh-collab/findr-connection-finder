@@ -20,7 +20,9 @@ const Logo = ({
   showTagline = false,
   size = "md" 
 }: LogoProps) => {
-  const textColor = variant === "dark" ? "text-foreground" : "text-[hsl(38_33%_93%)]";
+  // Cream/beige color for dark backgrounds, primary navy for light backgrounds
+  const textColor = variant === "dark" ? "text-primary" : "text-[hsl(42_33%_94%)]";
+  const taglineColor = variant === "dark" ? "text-muted-foreground" : "text-[hsl(42_33%_94%)]/80";
   const sizes = sizeClasses[size];
 
   return (
@@ -36,6 +38,7 @@ const Logo = ({
           f
           <span className="relative inline-block">
             ı
+            {/* Loupe/magnifying glass icon replacing the dot of 'i' */}
             <svg 
               className={cn("absolute top-0 left-1/2 -translate-x-1/2", sizes.loupe)}
               viewBox="0 0 24 24" 
