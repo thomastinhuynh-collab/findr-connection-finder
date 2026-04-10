@@ -1,24 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, Users } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useWaitlist } from "@/hooks/useWaitlist";
 import heroImage from "@/assets/hero-vintage.jpg";
 
 const CallToAction = () => {
   const [email, setEmail] = useState("");
-  const { toast } = useToast();
   const sectionRef = useScrollReveal();
+  const { count, loading, submitted, submit } = useWaitlist();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      toast({
-        title: "Inscription réussie ! 🎉",
-        description: "Tu seras notifié dès le lancement de findr.",
-      });
-      setEmail("");
-    }
+    const ok = await submit(email);
+    if (ok) setEmail("");
   };
 
   return (
@@ -28,7 +23,6 @@ const CallToAction = () => {
           ref={sectionRef}
           className="scroll-reveal relative rounded-3xl overflow-hidden"
         >
-          {/* Background Image */}
           <div className="absolute inset-0">
             <img
               src={heroImage}
@@ -38,8 +32,13 @@ const CallToAction = () => {
             <div className="absolute inset-0 bg-primary/85" />
           </div>
 
-          {/* Content */}
           <div className="relative z-10 py-20 px-8 md:px-16 text-center">
+            {count !== null && (
+              <p className="text-sm font-poppins mb-4 flex items-center justify-center gap-2" style={{ color: 'hsl(42 33% 94% / 0.7)' }}>
+                <Users className="w-4 h-4" />
+                Déjà {count} personne{count !== 1 ? "s" : ""} sur la liste d'attente
+              </p>
+            )}
             <h2 className="text-3xl md:text-5xl font-barlow font-bold mb-6" style={{ color: 'hsl(42 33% 94%)' }}>
               Prêt à trouver tes pépites ?
             </h2>
@@ -48,31 +47,37 @@ const CallToAction = () => {
               à accéder à la plateforme de chinage communautaire.
             </p>
 
-            {/* Email Form */}
-            <form 
-              onSubmit={handleSubmit}
-              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-            >
-              <div className="relative flex-1">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-foreground" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ton@email.com"
-                  className="w-full h-14 pl-12 pr-4 rounded-full bg-secondary text-primary placeholder:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-accent"
-                  required
-                />
-              </div>
-              <Button 
-                type="submit"
-                size="lg" 
-                className="cta-hover btn-gold h-14 px-8 rounded-full whitespace-nowrap"
+            {submitted ? (
+              <p className="text-xl font-poppins font-semibold" style={{ color: 'hsl(42 33% 94%)' }}>
+                🎉 C'est noté ! On te prévient dès l'ouverture.
+              </p>
+            ) : (
+              <form 
+                onSubmit={handleSubmit}
+                className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
               >
-                Je m'inscris
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </form>
+                <div className="relative flex-1">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-foreground" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="ton@email.com"
+                    className="w-full h-14 pl-12 pr-4 rounded-full bg-secondary text-primary placeholder:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                    required
+                  />
+                </div>
+                <Button 
+                  type="submit"
+                  size="lg" 
+                  disabled={loading}
+                  className="cta-hover btn-gold h-14 px-8 rounded-full whitespace-nowrap"
+                >
+                  {loading ? "..." : "Je m'inscris"}
+                  {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
+                </Button>
+              </form>
+            )}
           </div>
         </div>
       </div>
