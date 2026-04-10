@@ -6,32 +6,57 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import Logo from "@/components/Logo";
-import { Lock, CheckCircle } from "lucide-react";
+import { Lock, CheckCircle, CircleAlert } from "lucide-react";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [isRecovery, setIsRecovery] = useState(false);
+  const [status, setStatus] = useState<"checking" | "ready" | "invalid" | "success">("checking");
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for PASSWORD_RECOVERY event
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") {
-        setIsRecovery(true);
+    let mounted = true;
+
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const hasRecoveryContext =
+      hashParams.get("type") === "recovery" ||
+      searchParams.get("type") === "recovery" ||
+      hashParams.has("access_token") ||
+      hashParams.has("refresh_token") ||
+      searchParams.has("access_token") ||
+      searchParams.has("refresh_token") ||
+      searchParams.has("token_hash") ||
+      searchParams.has("code");
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN" || session) {
+        setStatus("ready");
       }
     });
 
-    // Also check hash for type=recovery
-    const hash = window.location.hash;
-    if (hash.includes("type=recovery")) {
-      setIsRecovery(true);
-    }
+    const checkRecoveryAccess = async () => {
+      if (hasRecoveryContext && mounted) {
+        setStatus("ready");
+      }
 
-    return () => subscription.unsubscribe();
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!mounted) return;
+      setStatus(session || hasRecoveryContext ? "ready" : "invalid");
+    };
+
+    void checkRecoveryAccess();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,30 +90,16 @@ const ResetPassword = () => {
         variant: "destructive",
       });
     } else {
-      setSuccess(true);
+      setStatus("success");
       toast({
         title: "Mot de passe mis à jour !",
         description: "Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
       });
       setTimeout(() => navigate("/"), 3000);
     }
+
     setLoading(false);
   };
-
-  if (!isRecovery && !success) {
-    return (
-      <div className="flex min-h-screen items-center justify-center px-4" style={{ backgroundColor: "#112150" }}>
-        <div className="text-center max-w-md">
-          <div className="flex justify-center mb-8">
-            <Logo variant="light" />
-          </div>
-          <p className="text-cream/70 font-body text-lg">
-            Chargement de la page de réinitialisation...
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4" style={{ backgroundColor: "#112150" }}>
@@ -98,23 +109,38 @@ const ResetPassword = () => {
         </div>
 
         <div className="bg-card rounded-2xl p-8 shadow-vintage">
-          {success ? (
+          {status === "checking" && (
+            <div className="text-center space-y-4">
+              <p className="text-muted-foreground text-lg">Chargement de la page de réinitialisation...</p>
+            </div>
+          )}
+
+          {status === "invalid" && (
+            <div className="text-center space-y-4">
+              <CircleAlert className="w-16 h-16 text-accent mx-auto" />
+              <h1 className="text-2xl font-display font-bold text-primary">Lien invalide ou expiré</h1>
+              <p className="text-muted-foreground">
+                Redemandez un email de réinitialisation depuis la page de connexion.
+              </p>
+              <Button type="button" className="w-full btn-hero" onClick={() => navigate("/")}>
+                Retour à l'accueil
+              </Button>
+            </div>
+          )}
+
+          {status === "success" && (
             <div className="text-center space-y-4">
               <CheckCircle className="w-16 h-16 text-accent mx-auto" />
-              <h1 className="text-2xl font-display font-bold text-primary">
-                Mot de passe modifié !
-              </h1>
-              <p className="text-muted-foreground">
-                Redirection vers l'accueil...
-              </p>
+              <h1 className="text-2xl font-display font-bold text-primary">Mot de passe modifié !</h1>
+              <p className="text-muted-foreground">Redirection vers l'accueil...</p>
             </div>
-          ) : (
+          )}
+
+          {status === "ready" && (
             <>
               <div className="text-center mb-6">
                 <Lock className="w-12 h-12 text-accent mx-auto mb-4" />
-                <h1 className="text-2xl font-display font-bold text-primary">
-                  Nouveau mot de passe
-                </h1>
+                <h1 className="text-2xl font-display font-bold text-primary">Nouveau mot de passe</h1>
                 <p className="text-muted-foreground mt-2">
                   Choisissez un nouveau mot de passe pour votre compte.
                 </p>
@@ -158,3 +184,4 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
+
