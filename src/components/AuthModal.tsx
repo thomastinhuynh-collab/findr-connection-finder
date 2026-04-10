@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -108,6 +109,37 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
           <Button type="submit" className="w-full btn-hero" disabled={loading}>
             {loading ? "Chargement..." : mode === "login" ? "Se connecter" : "S'inscrire"}
           </Button>
+          {mode === "login" && (
+            <p className="text-center">
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!email) {
+                    toast({
+                      title: "Email requis",
+                      description: "Entrez votre email ci-dessus pour recevoir le lien de réinitialisation.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/reset-password`,
+                  });
+                  if (error) {
+                    toast({ title: "Erreur", description: error.message, variant: "destructive" });
+                  } else {
+                    toast({
+                      title: "Email envoyé !",
+                      description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+                    });
+                  }
+                }}
+                className="text-sm text-muted-foreground hover:text-primary hover:underline"
+              >
+                Mot de passe oublié ?
+              </button>
+            </p>
+          )}
           <p className="text-center text-sm text-muted-foreground">
             {mode === "login" ? "Pas encore de compte ?" : "Déjà un compte ?"}{" "}
             <button
