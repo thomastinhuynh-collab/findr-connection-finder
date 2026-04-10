@@ -1,55 +1,28 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, ArrowRight, CheckCircle } from "lucide-react";
+import { Mail, Lock, ArrowRight, CheckCircle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { useWaitlist } from "@/hooks/useWaitlist";
 
 const WaitlistSignup = () => {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const { count, loading, submitted, submit } = useWaitlist();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = email.trim().toLowerCase();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      toast.error("Merci d'entrer une adresse email valide.");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const { error } = await supabase.from("waitlist").insert({ email: trimmed });
-      if (error) {
-        if (error.code === "23505") {
-          toast.info("Tu es déjà inscrit(e) sur la liste d'attente !");
-          setSubmitted(true);
-        } else {
-          toast.error("Une erreur est survenue. Réessaie plus tard.");
-        }
-      } else {
-        setSubmitted(true);
-      }
-    } catch {
-      toast.error("Une erreur est survenue.");
-    } finally {
-      setLoading(false);
-    }
+    const ok = await submit(email);
+    if (ok) setEmail("");
   };
 
   return (
     <section className="py-24 relative overflow-hidden">
-      {/* Warm gradient background */}
       <div
         className="absolute inset-0"
         style={{
           background: `linear-gradient(135deg, hsl(var(--navy-primary)) 0%, hsl(var(--navy-secondary)) 40%, hsl(var(--gold) / 0.6) 100%)`,
         }}
       />
-
-      {/* Subtle texture */}
       <div
         className="absolute inset-0 opacity-[0.04]"
         style={{
@@ -66,6 +39,12 @@ const WaitlistSignup = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
+            {count !== null && (
+              <p className="text-sm font-poppins text-cream/70 mb-4 flex items-center justify-center gap-2">
+                <Users className="w-4 h-4" />
+                Déjà {count} personne{count !== 1 ? "s" : ""} sur la liste d'attente
+              </p>
+            )}
             <h2 className="text-3xl md:text-4xl font-poppins font-bold mb-4 leading-tight text-cream">
               Sois parmi les premiers à rejoindre Findr
             </h2>
