@@ -7,18 +7,12 @@ import heroBackground from "@/assets/hero-vintage-market.png";
 const Hero = () => {
   return (
     <section 
-      className="relative flex items-center justify-center overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32"
-      style={{
-        backgroundColor: 'hsl(224 67% 19%)'
-      }}
+      className="relative flex items-center justify-center overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32 bg-navy-primary"
     >
       {/* Background image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${heroBackground})`,
-          opacity: 0.12
-        }}
+        className="absolute inset-0 bg-cover bg-center opacity-[0.12]"
+        style={{ backgroundImage: `url(${heroBackground})` }}
       />
 
       {/* Warm gradient overlay */}
@@ -26,8 +20,8 @@ const Hero = () => {
         className="absolute inset-0"
         style={{
           background: `
-            radial-gradient(ellipse 80% 60% at 50% 40%, hsl(38 52% 69% / 0.08) 0%, transparent 60%),
-            linear-gradient(180deg, hsl(224 67% 19% / 0.3) 0%, hsl(224 67% 15% / 0.6) 100%)
+            radial-gradient(ellipse 80% 60% at 50% 40%, hsl(var(--gold) / 0.08) 0%, transparent 60%),
+            linear-gradient(180deg, hsl(var(--navy-primary) / 0.3) 0%, hsl(var(--navy-primary) / 0.6) 100%)
           `
         }}
       />
@@ -36,7 +30,7 @@ const Hero = () => {
       <div 
         className="absolute inset-0 opacity-[0.04]"
         style={{
-          backgroundImage: `radial-gradient(circle at center, hsl(42 33% 94%) 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle at center, hsl(var(--cream)) 1px, transparent 1px)`,
           backgroundSize: '20px 20px',
         }}
       />
@@ -48,12 +42,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border"
-            style={{ 
-              backgroundColor: 'hsl(38 52% 69% / 0.15)',
-              borderColor: 'hsl(38 52% 69% / 0.3)',
-              color: 'hsl(38 52% 69%)'
-            }}
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 border border-accent/30 bg-accent/15 text-accent"
           >
             <Search className="w-3.5 h-3.5" />
             <span className="text-sm font-medium font-barlow">La marketplace inversée du vintage</span>
@@ -64,11 +53,10 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="text-3xl md:text-5xl lg:text-6xl font-poppins font-bold mb-6 leading-tight"
-            style={{ color: 'hsl(42 33% 94%)' }}
+            className="text-3xl md:text-5xl lg:text-6xl font-poppins font-bold mb-6 leading-tight text-cream"
           >
             Tu cherches un objet rare ?{" "}
-            <span style={{ color: 'hsl(38 52% 69%)' }}>
+            <span className="text-accent">
               Publie ta demande,
             </span>{" "}
             la communauté le trouve pour toi.
@@ -79,8 +67,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10"
-            style={{ color: 'hsl(42 33% 94% / 0.8)' }}
+            className="text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10 text-cream/80"
           >
             Findr est la première marketplace inversée du vintage : tu décris l'objet, les chineurs le dénichent.
           </motion.p>
@@ -94,11 +81,7 @@ const Hero = () => {
           >
             <Button 
               size="lg" 
-              className="text-base px-8 py-6 rounded-full font-semibold w-full sm:w-auto"
-              style={{ 
-                backgroundColor: 'hsl(38 52% 69%)',
-                color: 'hsl(224 67% 19%)'
-              }}
+              className="text-base px-8 py-6 rounded-full font-poppins font-semibold w-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
               asChild
             >
               <Link to="/poster">
@@ -110,12 +93,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               variant="outline"
-              className="text-base px-8 py-6 rounded-full font-semibold w-full sm:w-auto border-2"
-              style={{ 
-                borderColor: 'hsl(42 33% 94% / 0.5)',
-                color: 'hsl(42 33% 94%)',
-                backgroundColor: 'transparent'
-              }}
+              className="text-base px-8 py-6 rounded-full font-poppins font-semibold w-full sm:w-auto border-2 border-cream/50 text-cream bg-transparent hover:bg-cream/10"
               asChild
             >
               <Link to="/recherches">

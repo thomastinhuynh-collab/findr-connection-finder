@@ -19,7 +19,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-[hsl(224_67%_25%)] shadow-sm" style={{ backgroundColor: 'hsl(224 67% 19%)' }}>
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-secondary/30 shadow-sm bg-navy-primary">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -33,7 +33,7 @@ const Navbar = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="text-sm font-medium text-[hsl(42_33%_94%/0.8)] hover:text-[hsl(42_33%_94%)] transition-colors"
+                  className="text-sm font-medium text-cream/80 hover:text-cream transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -44,7 +44,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center">
               <Button
                 size="sm"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+                className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full"
                 onClick={() => setAuthModalOpen(true)}
               >
                 Rejoindre la beta
@@ -53,7 +53,7 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 text-[hsl(42_33%_94%)]"
+              className="md:hidden p-2 text-cream"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -62,13 +62,13 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           {isOpen && (
-            <div className="md:hidden py-4 border-t border-[hsl(42_33%_94%/0.2)] animate-slide-up">
+            <div className="md:hidden py-4 border-t border-cream/20 animate-slide-up">
               <div className="flex flex-col gap-4">
                 {navLinks.map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
-                    className="text-sm font-medium text-[hsl(42_33%_94%/0.8)] hover:text-[hsl(42_33%_94%)] transition-colors"
+                    className="text-sm font-medium text-cream/80 hover:text-cream transition-colors"
                     onClick={() => setIsOpen(false)}
                   >
                     {link.label}
@@ -76,7 +76,7 @@ const Navbar = () => {
                 ))}
                 <Button
                   size="sm"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold w-full mt-2"
+                  className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full w-full mt-2"
                   onClick={() => {
                     setIsOpen(false);
                     setAuthModalOpen(true);

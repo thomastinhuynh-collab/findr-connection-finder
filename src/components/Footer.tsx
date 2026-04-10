@@ -10,22 +10,22 @@ const TikTokIcon = () => (
 
 const Footer = () => {
   return (
-    <footer className="bg-card border-t border-border py-16">
+    <footer className="bg-navy-primary border-t border-secondary/30 py-16">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="md:col-span-1">
             <Link to="/" className="block mb-4">
-              <Logo size="lg" variant="dark" />
+              <Logo size="lg" variant="light" />
             </Link>
-            <p className="text-muted-foreground text-sm mb-6">
+            <p className="text-cream/60 text-sm mb-6">
               La marketplace inversée du vintage.
             </p>
             <div className="flex gap-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center text-cream/70 hover:bg-accent hover:text-accent-foreground transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors">
+              <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center text-cream/70 hover:bg-accent hover:text-accent-foreground transition-colors">
                 <TikTokIcon />
               </a>
             </div>
@@ -33,44 +33,44 @@ const Footer = () => {
 
           {/* Plateforme */}
           <div>
-            <h4 className="font-semibold text-primary mb-4">Plateforme</h4>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li><Link to="/comment-ca-marche" className="hover:text-primary transition-colors">Comment ça marche</Link></li>
-              <li><Link to="/recherches" className="hover:text-primary transition-colors">Je chine</Link></li>
-              <li><Link to="/poster" className="hover:text-primary transition-colors">Je cherche</Link></li>
-              <li><Link to="/premium" className="hover:text-primary transition-colors">findr Premium</Link></li>
+            <h4 className="font-poppins font-semibold text-cream mb-4">Plateforme</h4>
+            <ul className="space-y-3 text-sm text-cream/60">
+              <li><Link to="/comment-ca-marche" className="hover:text-accent transition-colors">Comment ça marche</Link></li>
+              <li><Link to="/recherches" className="hover:text-accent transition-colors">Je chine</Link></li>
+              <li><Link to="/poster" className="hover:text-accent transition-colors">Je cherche</Link></li>
+              <li><Link to="/premium" className="hover:text-accent transition-colors">findr Premium</Link></li>
             </ul>
           </div>
 
           {/* Catégories */}
           <div>
-            <h4 className="font-semibold text-primary mb-4">Catégories</h4>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Mode Vintage</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Pop Culture & TCG</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Vinyles & Musique</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Déco & Mobilier</a></li>
+            <h4 className="font-poppins font-semibold text-cream mb-4">Catégories</h4>
+            <ul className="space-y-3 text-sm text-cream/60">
+              <li><a href="#" className="hover:text-accent transition-colors">Mode Vintage</a></li>
+              <li><a href="#" className="hover:text-accent transition-colors">Pop Culture & TCG</a></li>
+              <li><a href="#" className="hover:text-accent transition-colors">Vinyles & Musique</a></li>
+              <li><a href="#" className="hover:text-accent transition-colors">Déco & Mobilier</a></li>
             </ul>
           </div>
 
           {/* Légal */}
           <div>
-            <h4 className="font-semibold text-primary mb-4">Légal</h4>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li><Link to="/mentions-legales" className="hover:text-primary transition-colors">Mentions légales</Link></li>
-              <li><Link to="/cgu" className="hover:text-primary transition-colors">CGU</Link></li>
-              <li><Link to="/confidentialite" className="hover:text-primary transition-colors">Politique de confidentialité</Link></li>
-              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+            <h4 className="font-poppins font-semibold text-cream mb-4">Légal</h4>
+            <ul className="space-y-3 text-sm text-cream/60">
+              <li><Link to="/mentions-legales" className="hover:text-accent transition-colors">Mentions légales</Link></li>
+              <li><Link to="/cgu" className="hover:text-accent transition-colors">CGU</Link></li>
+              <li><Link to="/confidentialite" className="hover:text-accent transition-colors">Politique de confidentialité</Link></li>
+              <li><Link to="/contact" className="hover:text-accent transition-colors">Contact</Link></li>
             </ul>
           </div>
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
+        <div className="pt-8 border-t border-secondary/30 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-cream/50">
             © 2025 findr. Tous droits réservés.
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-cream/50">
             Made with ❤️ in France
           </p>
         </div>
