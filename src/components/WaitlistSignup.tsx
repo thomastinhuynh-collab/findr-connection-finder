@@ -45,7 +45,7 @@ const WaitlistSignup = () => {
       <div
         className="absolute inset-0"
         style={{
-          background: `linear-gradient(135deg, hsl(224 67% 19%) 0%, hsl(222 37% 30%) 40%, hsl(25 40% 30%) 80%, hsl(25 50% 35%) 100%)`,
+          background: `linear-gradient(135deg, hsl(var(--navy-primary)) 0%, hsl(var(--navy-secondary)) 40%, hsl(var(--gold) / 0.6) 100%)`,
         }}
       />
 
@@ -53,7 +53,7 @@ const WaitlistSignup = () => {
       <div
         className="absolute inset-0 opacity-[0.04]"
         style={{
-          backgroundImage: `radial-gradient(circle at center, hsl(42 33% 94%) 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle at center, hsl(var(--cream)) 1px, transparent 1px)`,
           backgroundSize: "20px 20px",
         }}
       />
@@ -66,16 +66,10 @@ const WaitlistSignup = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2
-              className="text-3xl md:text-4xl font-poppins font-bold mb-4 leading-tight"
-              style={{ color: "hsl(42 33% 94%)" }}
-            >
+            <h2 className="text-3xl md:text-4xl font-poppins font-bold mb-4 leading-tight text-cream">
               Sois parmi les premiers à rejoindre Findr
             </h2>
-            <p
-              className="text-base md:text-lg mb-10"
-              style={{ color: "hsl(42 33% 94% / 0.75)" }}
-            >
+            <p className="text-base md:text-lg mb-10 text-cream/75">
               Lance-toi en avant-première et façonne la plateforme avec nous.
             </p>
           </motion.div>
@@ -88,37 +82,23 @@ const WaitlistSignup = () => {
           >
             {submitted ? (
               <div className="flex flex-col items-center gap-3 py-4">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: "hsl(38 52% 69% / 0.2)" }}
-                >
-                  <CheckCircle className="w-8 h-8" style={{ color: "hsl(38 52% 69%)" }} />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center bg-accent/20">
+                  <CheckCircle className="w-8 h-8 text-accent" />
                 </div>
-                <p
-                  className="text-xl font-poppins font-semibold"
-                  style={{ color: "hsl(42 33% 94%)" }}
-                >
+                <p className="text-xl font-poppins font-semibold text-cream">
                   C'est noté ! On te prévient dès l'ouverture 🎉
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
                 <div className="relative flex-1">
-                  <Mail
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5"
-                    style={{ color: "hsl(42 33% 94% / 0.5)" }}
-                  />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cream/50" />
                   <Input
                     type="email"
                     placeholder="ton@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-12 h-14 rounded-full text-base border-2"
-                    style={{
-                      backgroundColor: "hsl(42 33% 94% / 0.1)",
-                      borderColor: "hsl(42 33% 94% / 0.25)",
-                      color: "hsl(42 33% 94%)",
-                    }}
+                    className="pl-12 h-14 rounded-full text-base border-2 bg-cream/10 border-cream/25 text-cream placeholder:text-cream/40"
                     required
                   />
                 </div>
@@ -126,11 +106,7 @@ const WaitlistSignup = () => {
                   type="submit"
                   size="lg"
                   disabled={loading}
-                  className="h-14 px-8 rounded-full text-base font-semibold"
-                  style={{
-                    backgroundColor: "hsl(38 52% 69%)",
-                    color: "hsl(224 67% 19%)",
-                  }}
+                  className="h-14 px-8 rounded-full text-base font-poppins font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
                 >
                   {loading ? "..." : "Rejoindre la liste d'attente"}
                   {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
@@ -145,8 +121,7 @@ const WaitlistSignup = () => {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="mt-5 text-sm flex items-center justify-center gap-1.5"
-              style={{ color: "hsl(42 33% 94% / 0.5)" }}
+              className="mt-5 text-sm flex items-center justify-center gap-1.5 text-cream/50"
             >
               <Lock className="w-3.5 h-3.5" />
               Pas de spam. Juste les vraies nouvelles de Findr.

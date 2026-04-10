@@ -19,7 +19,7 @@ const finderBenefits = [
 
 const BecomeFindr = () => {
   return (
-    <section className="py-24 relative overflow-hidden" style={{ backgroundColor: 'hsl(42 33% 94%)' }}>
+    <section className="py-24 relative overflow-hidden bg-navy-primary">
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -28,10 +28,10 @@ const BecomeFindr = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-14"
         >
-          <span className="text-sm font-barlow font-medium uppercase tracking-wider" style={{ color: 'hsl(25 50% 45%)' }}>
+          <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Deux profils, une communauté
           </span>
-          <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4" style={{ color: 'hsl(224 67% 19%)' }}>
+          <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4 text-cream">
             Quel est ton rôle ?
           </h2>
         </motion.div>
@@ -43,38 +43,33 @@ const BecomeFindr = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="rounded-3xl p-8 md:p-10 flex flex-col border"
-            style={{
-              backgroundColor: 'hsl(224 67% 19%)',
-              borderColor: 'hsl(222 37% 36%)',
-            }}
+            className="rounded-3xl p-8 md:p-10 flex flex-col border border-secondary/40 bg-secondary"
           >
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6" style={{ backgroundColor: 'hsl(38 52% 69% / 0.15)' }}>
-              <Search className="w-7 h-7" style={{ color: 'hsl(38 52% 69%)' }} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-accent/15">
+              <Search className="w-7 h-7 text-accent" />
             </div>
 
-            <h3 className="text-2xl font-poppins font-bold mb-2" style={{ color: 'hsl(42 33% 94%)' }}>
+            <h3 className="text-2xl font-poppins font-bold mb-2 text-cream">
               Tu cherches un objet rare
             </h3>
-            <p className="text-sm mb-8" style={{ color: 'hsl(42 33% 94% / 0.6)' }}>
+            <p className="text-sm mb-8 text-cream/60">
               Publie ta demande et laisse les chineurs trouver pour toi.
             </p>
 
             <ul className="space-y-4 mb-10 flex-grow">
               {buyerBenefits.map((b, i) => (
                 <li key={i} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'hsl(38 52% 69% / 0.12)' }}>
-                    <b.icon className="w-4 h-4" style={{ color: 'hsl(38 52% 69%)' }} />
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-accent/12">
+                    <b.icon className="w-4 h-4 text-accent" />
                   </div>
-                  <span className="text-sm font-medium" style={{ color: 'hsl(42 33% 94% / 0.9)' }}>{b.text}</span>
+                  <span className="text-sm font-medium text-cream/90">{b.text}</span>
                 </li>
               ))}
             </ul>
 
             <Button
               size="lg"
-              className="w-full text-base py-6 rounded-full font-semibold"
-              style={{ backgroundColor: 'hsl(38 52% 69%)', color: 'hsl(224 67% 19%)' }}
+              className="w-full text-base py-6 rounded-full font-poppins font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
               asChild
             >
               <Link to="/poster">
@@ -90,30 +85,26 @@ const BecomeFindr = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="rounded-3xl p-8 md:p-10 flex flex-col border"
-            style={{
-              backgroundColor: 'hsl(25 30% 92%)',
-              borderColor: 'hsl(25 40% 45% / 0.2)',
-            }}
+            className="rounded-3xl p-8 md:p-10 flex flex-col border border-warm-neutral/50 bg-warm-neutral/40"
           >
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6" style={{ backgroundColor: 'hsl(25 50% 45% / 0.12)' }}>
-              <Heart className="w-7 h-7" style={{ color: 'hsl(25 50% 45%)' }} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-accent/12">
+              <Heart className="w-7 h-7 text-accent" />
             </div>
 
-            <h3 className="text-2xl font-poppins font-bold mb-2" style={{ color: 'hsl(224 67% 19%)' }}>
+            <h3 className="text-2xl font-poppins font-bold mb-2 text-foreground">
               Tu es chineur ou passionné
             </h3>
-            <p className="text-sm mb-8" style={{ color: 'hsl(224 67% 19% / 0.6)' }}>
+            <p className="text-sm mb-8 text-foreground/60">
               Transforme ta passion du chinage en source de revenus.
             </p>
 
             <ul className="space-y-4 mb-10 flex-grow">
               {finderBenefits.map((b, i) => (
                 <li key={i} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'hsl(25 50% 45% / 0.1)' }}>
-                    <b.icon className="w-4 h-4" style={{ color: 'hsl(25 50% 45%)' }} />
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-accent/10">
+                    <b.icon className="w-4 h-4 text-accent" />
                   </div>
-                  <span className="text-sm font-medium" style={{ color: 'hsl(224 67% 19% / 0.85)' }}>{b.text}</span>
+                  <span className="text-sm font-medium text-foreground/85">{b.text}</span>
                 </li>
               ))}
             </ul>
@@ -121,8 +112,7 @@ const BecomeFindr = () => {
             <Button
               size="lg"
               variant="outline"
-              className="w-full text-base py-6 rounded-full font-semibold border-2"
-              style={{ borderColor: 'hsl(25 50% 45%)', color: 'hsl(25 50% 45%)', backgroundColor: 'transparent' }}
+              className="w-full text-base py-6 rounded-full font-poppins font-semibold border-2 border-foreground text-foreground bg-transparent hover:bg-foreground/5"
               asChild
             >
               <Link to="/recherches">

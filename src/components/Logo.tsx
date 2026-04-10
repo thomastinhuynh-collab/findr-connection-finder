@@ -20,9 +20,7 @@ const Logo = ({
   showTagline = false,
   size = "md" 
 }: LogoProps) => {
-  // Cream/beige color for dark backgrounds, primary navy for light backgrounds
-  const textColor = variant === "dark" ? "text-primary" : "text-[hsl(42_33%_94%)]";
-  const taglineColor = variant === "dark" ? "text-muted-foreground" : "text-[hsl(42_33%_94%)]/80";
+  const textColor = variant === "dark" ? "text-foreground" : "text-cream";
   const sizes = sizeClasses[size];
 
   return (
