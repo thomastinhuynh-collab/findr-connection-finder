@@ -7,6 +7,7 @@ import FeaturedSearches from "@/components/FeaturedSearches";
 import BecomeFindr from "@/components/BecomeFindr";
 import Testimonials from "@/components/Testimonials";
 import CallToAction from "@/components/CallToAction";
+import WaitlistSignup from "@/components/WaitlistSignup";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -20,6 +21,7 @@ const Index = () => {
       <HowItWorks />
       <Testimonials />
       <BecomeFindr />
+      <WaitlistSignup />
       <CallToAction />
       <Footer />
     </div>
