@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
 import { Star, Lock, ShieldCheck, BadgeCheck, Users } from "lucide-react";
+import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
+import { useEffect, useRef, useState } from "react";
 
 const guarantees = [
   { icon: Lock, label: "Paiement sécurisé" },
@@ -35,64 +36,68 @@ const WAITLIST_COUNT = 1_247;
 const WAITLIST_GOAL = 2_000;
 
 const Testimonials = () => {
+  const guaranteesRef = useScrollReveal();
+  const headingRef = useScrollReveal();
+  const cardsRef = useScrollRevealGroup();
+  const waitlistRef = useScrollReveal();
+  const progressRef = useRef<HTMLDivElement>(null);
+  const [progressRevealed, setProgressRevealed] = useState(false);
+
+  useEffect(() => {
+    const el = progressRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setProgressRevealed(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className="py-24 bg-cream">
       <div className="container mx-auto px-4">
 
         {/* Guarantees badges */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-16"
-        >
+        <div ref={guaranteesRef} className="scroll-reveal flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-16">
           {guarantees.map((g, i) => (
             <div key={i} className="flex items-center gap-3 px-6 py-3 rounded-full border border-foreground/12 bg-background">
               <g.icon className="w-5 h-5 text-accent" />
               <span className="text-sm font-semibold text-foreground">{g.label}</span>
             </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
+        <div ref={headingRef} className="scroll-reveal text-center mb-14">
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Témoignages
           </span>
           <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4 text-foreground">
             Ce qu'ils disent de findr
           </h2>
-        </motion.div>
+        </div>
 
         {/* Testimonial cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+        <div ref={cardsRef} className="stagger-group grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
           {testimonials.map((t, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="rounded-2xl p-7 border border-foreground/8 bg-background"
+              className="stagger-item rounded-2xl p-7 border border-foreground/8 bg-background"
             >
-              {/* Stars */}
               <div className="flex gap-1 mb-4">
                 {Array.from({ length: t.rating }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 text-accent fill-accent" />
                 ))}
               </div>
-
               <p className="text-sm leading-relaxed mb-6 text-foreground/80">
                 "{t.quote}"
               </p>
-
               <div className="flex items-center gap-3">
                 <img src={t.avatar} alt={t.author} loading="lazy" className="w-10 h-10 rounded-full" />
                 <div>
@@ -100,18 +105,12 @@ const Testimonials = () => {
                   <p className="text-xs text-foreground/50">{t.role}</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* Waitlist counter */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-lg mx-auto rounded-2xl p-8 border border-secondary/40 text-center bg-navy-primary"
-        >
+        <div ref={waitlistRef} className="scroll-reveal max-w-lg mx-auto rounded-2xl p-8 border border-secondary/40 text-center bg-navy-primary">
           <div className="flex items-center justify-center gap-2 mb-3">
             <Users className="w-5 h-5 text-accent" />
             <span className="text-sm font-barlow font-medium text-cream/70">Liste d'attente</span>
@@ -125,16 +124,13 @@ const Testimonials = () => {
           </p>
 
           {/* Progress bar */}
-          <div className="h-3 rounded-full overflow-hidden bg-cream/15">
-            <motion.div
-              initial={{ width: 0 }}
-              whileInView={{ width: `${(WAITLIST_COUNT / WAITLIST_GOAL) * 100}%` }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
-              className="h-full rounded-full bg-gradient-to-r from-accent to-accent/70"
+          <div ref={progressRef} className="h-3 rounded-full overflow-hidden bg-cream/15">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-accent to-accent/70 transition-all duration-1000 ease-out"
+              style={{ width: progressRevealed ? `${(WAITLIST_COUNT / WAITLIST_GOAL) * 100}%` : '0%' }}
             />
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

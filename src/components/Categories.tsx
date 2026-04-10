@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import catModeVintage from "@/assets/cat-mode-vintage.jpg";
 import catPopCulture from "@/assets/cat-pop-culture.jpg";
 import catObjetsCollection from "@/assets/cat-objets-collection.jpg";
@@ -34,6 +34,8 @@ const categories = [
 
 const Categories = () => {
   const navigate = useNavigate();
+  const headingRef = useScrollReveal();
+  const gridRef = useScrollRevealGroup();
 
   const handleCategoryClick = (slug: string) => {
     navigate(`/recherches?category=${encodeURIComponent(slug)}`);
@@ -42,33 +44,22 @@ const Categories = () => {
   return (
     <section className="py-24 bg-cream">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
+        <div ref={headingRef} className="scroll-reveal text-center mb-14">
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Catégories
           </span>
           <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4 text-foreground">
             Qu'est-ce qu'on trouve sur Findr ?
           </h2>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+        <div ref={gridRef} className="stagger-group grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
           {categories.map((cat, index) => (
-            <motion.button
+            <button
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
               onClick={() => handleCategoryClick(cat.slug)}
-              className="group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer"
+              className="stagger-item group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer"
             >
-              {/* Background image */}
               <img
                 src={cat.image}
                 alt={cat.name}
@@ -78,7 +69,6 @@ const Categories = () => {
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
 
-              {/* Dark overlay */}
               <div
                 className="absolute inset-0 transition-opacity duration-300"
                 style={{
@@ -86,7 +76,6 @@ const Categories = () => {
                 }}
               />
 
-              {/* Hover glow */}
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 style={{
@@ -94,7 +83,6 @@ const Categories = () => {
                 }}
               />
 
-              {/* Text content */}
               <div className="absolute inset-0 flex flex-col justify-end p-6">
                 <h3 className="text-xl font-poppins font-bold mb-1 text-cream">
                   {cat.name}
@@ -102,13 +90,11 @@ const Categories = () => {
                 <p className="text-sm text-cream/80 group-hover:text-cream transition-opacity">
                   {cat.description}
                 </p>
-
-                {/* Arrow indicator */}
                 <div className="mt-3 text-xs font-barlow font-medium flex items-center gap-1 text-accent opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                   <span>Voir les recherches →</span>
                 </div>
               </div>
-            </motion.button>
+            </button>
           ))}
         </div>
       </div>
