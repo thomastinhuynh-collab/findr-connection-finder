@@ -7,11 +7,12 @@ import { useWaitlist } from "@/hooks/useWaitlist";
 
 const WaitlistSignup = () => {
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"buyr" | "findr">("buyr");
   const { count, loading, submitted, submit } = useWaitlist();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await submit(email);
+    const ok = await submit(email, role);
     if (ok) setEmail("");
   };
 
@@ -48,7 +49,7 @@ const WaitlistSignup = () => {
             <h2 className="text-3xl md:text-4xl font-poppins font-bold mb-4 leading-tight text-cream">
               Sois parmi les premiers à rejoindre Findr
             </h2>
-            <p className="text-base md:text-lg mb-10 text-cream/75">
+            <p className="text-base md:text-lg mb-8 text-cream/75">
               Lance-toi en avant-première et façonne la plateforme avec nous.
             </p>
           </motion.div>
@@ -69,28 +70,60 @@ const WaitlistSignup = () => {
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-                <div className="relative flex-1">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cream/50" />
-                  <Input
-                    type="email"
-                    placeholder="ton@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-12 h-14 rounded-full text-base border-2 bg-cream/10 border-cream/25 text-cream placeholder:text-cream/40"
-                    required
-                  />
+              <div className="space-y-5">
+                {/* Role toggle */}
+                <div>
+                  <p className="text-sm font-poppins text-cream/60 mb-3">Je suis plutôt...</p>
+                  <div className="inline-flex rounded-full p-1 bg-cream/10 border border-cream/20">
+                    <button
+                      type="button"
+                      onClick={() => setRole("buyr")}
+                      className={`px-5 py-2 rounded-full text-sm font-poppins font-medium transition-all duration-200 ${
+                        role === "buyr"
+                          ? "bg-accent text-accent-foreground shadow-sm"
+                          : "text-cream/70 hover:text-cream"
+                      }`}
+                    >
+                      🔍 Un buyr
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRole("findr")}
+                      className={`px-5 py-2 rounded-full text-sm font-poppins font-medium transition-all duration-200 ${
+                        role === "findr"
+                          ? "bg-accent text-accent-foreground shadow-sm"
+                          : "text-cream/70 hover:text-cream"
+                      }`}
+                    >
+                      🧭 Un findr
+                    </button>
+                  </div>
                 </div>
-                <Button
-                  type="submit"
-                  size="lg"
-                  disabled={loading}
-                  className="h-14 px-8 rounded-full text-base font-poppins font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
-                >
-                  {loading ? "..." : "Rejoindre la liste d'attente"}
-                  {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
-                </Button>
-              </form>
+
+                {/* Email form */}
+                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+                  <div className="relative flex-1">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cream/50" />
+                    <Input
+                      type="email"
+                      placeholder="ton@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-12 h-14 rounded-full text-base border-2 bg-cream/10 border-cream/25 text-cream placeholder:text-cream/40"
+                      required
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={loading}
+                    className="h-14 px-8 rounded-full text-base font-poppins font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
+                  >
+                    {loading ? "..." : "Rejoindre la liste d'attente"}
+                    {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
+                  </Button>
+                </form>
+              </div>
             )}
           </motion.div>
 
