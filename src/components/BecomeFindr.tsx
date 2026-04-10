@@ -77,26 +77,26 @@ const BecomeFindr = () => {
           {/* findr Card */}
           <div
             ref={rightCardRef}
-            className="scroll-reveal-right rounded-3xl p-8 md:p-10 flex flex-col border border-warm-neutral/50 bg-warm-neutral/40"
+            className="scroll-reveal-right rounded-3xl p-8 md:p-10 flex flex-col border border-secondary/40 bg-secondary"
           >
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-accent/12">
               <Heart className="w-7 h-7 text-accent" />
             </div>
 
-            <h3 className="text-2xl font-poppins font-bold mb-2 text-foreground">
+            <h3 className="text-2xl font-poppins font-bold mb-2 text-cream">
               Tu es findr
             </h3>
-            <p className="text-sm mb-8 text-foreground/60">
+            <p className="text-sm mb-8 text-cream/60">
               Transforme ta passion du dénichage en source de revenus.
             </p>
 
             <ul className="space-y-4 mb-10 flex-grow">
               {finderBenefits.map((b, i) => (
                 <li key={i} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-accent/10">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-accent/12">
                     <b.icon className="w-4 h-4 text-accent" />
                   </div>
-                  <span className="text-sm font-medium text-foreground/85">{b.text}</span>
+                  <span className="text-sm font-medium text-cream/90">{b.text}</span>
                 </li>
               ))}
             </ul>
@@ -104,7 +104,7 @@ const BecomeFindr = () => {
             <Button
               size="lg"
               variant="outline"
-              className="cta-hover w-full text-base py-6 rounded-full font-poppins font-semibold border-2 border-foreground text-foreground bg-transparent hover:bg-foreground/5"
+              className="cta-hover w-full text-base py-6 rounded-full font-poppins font-semibold border-2 border-cream text-cream bg-transparent hover:bg-cream/5"
               asChild
             >
               <Link to="/recherches">
