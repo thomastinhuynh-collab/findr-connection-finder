@@ -37,15 +37,15 @@ const CallToAction = () => {
               alt="Brocante vintage"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-primary/85" />
+            <div className="absolute inset-0" style={{ backgroundColor: 'hsl(0 0% 10% / 0.88)' }} />
           </div>
 
           {/* Content */}
-          <div className="relative z-10 py-20 px-8 md:px-16 text-center">
-            <h2 className="text-3xl md:text-5xl font-barlow font-bold mb-6" style={{ color: 'hsl(42 33% 94%)' }}>
+          <div className="relative z-10 py-20 px-8 md:px-16 text-center grain-texture">
+            <h2 className="text-3xl md:text-5xl font-serif font-bold mb-6" style={{ color: 'hsl(38 33% 93%)' }}>
               Prêt à trouver tes pépites ?
             </h2>
-            <p className="text-lg max-w-xl mx-auto mb-10" style={{ color: 'hsl(42 33% 94% / 0.85)' }}>
+            <p className="text-lg max-w-xl mx-auto mb-10" style={{ color: 'hsl(38 33% 93% / 0.75)' }}>
               Rejoins la liste d'attente et sois parmi les premiers 
               à accéder à la plateforme de chinage communautaire.
             </p>
@@ -56,26 +56,27 @@ const CallToAction = () => {
               className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
             >
               <div className="relative flex-1">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-foreground" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'hsl(38 33% 93% / 0.5)' }} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ton@email.com"
-                  className="w-full h-14 pl-12 pr-4 rounded-full bg-secondary text-primary placeholder:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full h-14 pl-12 pr-4 rounded-full focus:outline-none focus:ring-2"
+                  style={{ backgroundColor: 'hsl(38 33% 93% / 0.1)', color: 'hsl(38 33% 93%)', border: '1px solid hsl(38 33% 93% / 0.2)' }}
                   required
                 />
               </div>
               <Button 
                 type="submit"
                 size="lg" 
-                className="btn-gold h-14 px-8 rounded-full whitespace-nowrap"
+                className="h-14 px-8 rounded-full whitespace-nowrap font-semibold"
+                style={{ backgroundColor: 'hsl(18 66% 47%)', color: 'hsl(38 33% 95%)' }}
               >
                 Je m'inscris
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </form>
-
           </div>
         </motion.div>
       </div>
