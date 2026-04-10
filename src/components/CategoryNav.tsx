@@ -72,14 +72,13 @@ const categories: Category[] = [
     ],
   },
   {
-    name: "Déco & Mobilier",
-    slug: "Déco & Mobilier",
+    name: "Décoration Vintage",
+    slug: "Décoration Vintage",
     subcategories: [
-      { name: "Luminaires", slug: "Déco & Mobilier&sub=Luminaires" },
-      { name: "Affiches & Art", slug: "Déco & Mobilier&sub=Affiches & Art" },
-      { name: "Vaisselle & Céramique", slug: "Déco & Mobilier&sub=Vaisselle & Céramique" },
-      { name: "Mobilier vintage", slug: "Déco & Mobilier&sub=Mobilier vintage" },
-      { name: "Miroirs & Cadres", slug: "Déco & Mobilier&sub=Miroirs & Cadres" },
+      { name: "Luminaires", slug: "Décoration Vintage&sub=Luminaires" },
+      { name: "Affiches & Art", slug: "Décoration Vintage&sub=Affiches & Art" },
+      { name: "Vaisselle & Céramique", slug: "Décoration Vintage&sub=Vaisselle & Céramique" },
+      { name: "Miroirs & Cadres", slug: "Décoration Vintage&sub=Miroirs & Cadres" },
     ],
   },
 ];
