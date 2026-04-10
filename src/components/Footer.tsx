@@ -10,56 +10,37 @@ const TikTokIcon = () => (
 
 const Footer = () => {
   return (
-    <footer className="bg-navy-primary border-t border-secondary/30 py-16">
+    <footer className="bg-primary py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-12 mb-12">
-          {/* Brand */}
-          <div className="md:col-span-1">
+        <div className="grid md:grid-cols-3 gap-12 mb-12">
+          {/* Left - Brand */}
+          <div>
             <Link to="/" className="block mb-2">
               <Logo size="lg" variant="light" />
             </Link>
-            <p className="text-cream/40 text-xs italic mb-4">
+            <p className="text-cream/70 text-sm italic mb-4">
               let others search for you
             </p>
-            <p className="text-cream/60 text-sm mb-6">
-              La marketplace inversée du vintage.
+            <p className="text-cream/70 text-sm">
+              Made with ❤️ in France
             </p>
-            <div className="flex gap-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center text-cream/70 hover:bg-accent hover:text-accent-foreground transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-secondary/30 flex items-center justify-center text-cream/70 hover:bg-accent hover:text-accent-foreground transition-colors">
-                <TikTokIcon />
-              </a>
-            </div>
           </div>
 
-          {/* Plateforme */}
+          {/* Middle - Plateforme */}
           <div>
             <h4 className="font-poppins font-semibold text-cream mb-4">Plateforme</h4>
-            <ul className="space-y-3 text-sm text-cream/60">
+            <ul className="space-y-3 text-sm text-cream/70">
               <li><Link to="/comment-ca-marche" className="hover:text-accent transition-colors">Comment ça marche</Link></li>
-              <li><Link to="/recherches" className="hover:text-accent transition-colors">Je deviens findr</Link></li>
-              <li><Link to="/poster" className="hover:text-accent transition-colors">Je deviens buyr</Link></li>
-              <li><Link to="/premium" className="hover:text-accent transition-colors">findr Premium</Link></li>
+              <li><Link to="/poster" className="hover:text-accent transition-colors">Devenir buyr</Link></li>
+              <li><Link to="/recherches" className="hover:text-accent transition-colors">Devenir findr</Link></li>
+              <li><Link to="/recherches" className="hover:text-accent transition-colors">Les catégories</Link></li>
             </ul>
           </div>
 
-          {/* Catégories */}
-          <div>
-            <h4 className="font-poppins font-semibold text-cream mb-4">Catégories</h4>
-            <ul className="space-y-3 text-sm text-cream/60">
-              <li><a href="#" className="hover:text-accent transition-colors">Mode Vintage</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Pop Culture & TCG</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Vinyles & Musique</a></li>
-              <li><a href="#" className="hover:text-accent transition-colors">Déco & Mobilier</a></li>
-            </ul>
-          </div>
-
-          {/* Légal */}
+          {/* Right - Légal */}
           <div>
             <h4 className="font-poppins font-semibold text-cream mb-4">Légal</h4>
-            <ul className="space-y-3 text-sm text-cream/60">
+            <ul className="space-y-3 text-sm text-cream/70">
               <li><Link to="/mentions-legales" className="hover:text-accent transition-colors">Mentions légales</Link></li>
               <li><Link to="/cgu" className="hover:text-accent transition-colors">CGU</Link></li>
               <li><Link to="/confidentialite" className="hover:text-accent transition-colors">Politique de confidentialité</Link></li>
@@ -68,14 +49,19 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="pt-8 border-t border-secondary/30 flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* Bottom bar */}
+        <div className="border-t border-secondary pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-cream/50">
-            © 2025 findr. Tous droits réservés.
+            © 2025 findr — Tous droits réservés
           </p>
-          <p className="text-sm text-cream/50">
-            Made with ❤️ in France
-          </p>
+          <div className="flex gap-4">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-cream/70 hover:text-accent transition-colors">
+              <Instagram className="w-5 h-5" />
+            </a>
+            <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="text-cream/70 hover:text-accent transition-colors">
+              <TikTokIcon />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
