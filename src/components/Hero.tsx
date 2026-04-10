@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Search, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-vintage-market.png";
 
@@ -37,15 +36,13 @@ const Hero = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Premium badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center mb-8"
+          {/* Premium badge with pulse */}
+          <div
+            className="inline-flex items-center mb-8 animate-fade-in"
+            style={{ animationDelay: '0.1s', animationFillMode: 'both' }}
           >
             <span
-              className="font-poppins uppercase"
+              className="font-poppins uppercase badge-pulse"
               style={{
                 fontSize: '11px',
                 letterSpacing: '2px',
@@ -58,40 +55,34 @@ const Hero = () => {
             >
               ✦ PREMIUM COMMUNITY
             </span>
-          </motion.div>
+          </div>
 
           {/* Main Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="text-3xl md:text-5xl lg:text-6xl font-poppins font-extrabold mb-6 leading-tight text-cream"
+          <h1
+            className="text-3xl md:text-5xl lg:text-6xl font-poppins font-extrabold mb-6 leading-tight text-cream animate-slide-up"
+            style={{ animationDelay: '0.15s', animationFillMode: 'both' }}
           >
             Trouvez l'introuvable, avec{" "}
             <span className="text-accent">findr</span> &{" "}
             <span className="text-accent">buyr</span>
-          </motion.h1>
+          </h1>
 
           {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10 text-cream/85 font-normal"
+          <p
+            className="text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10 text-cream/85 font-normal animate-slide-up"
+            style={{ animationDelay: '0.3s', animationFillMode: 'both' }}
           >
             La marketplace inversée où les findr passionnés dénichent pour les buyr leurs pépites vintage et objets pop culture.
-          </motion.p>
+          </p>
 
           {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.45 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up"
+            style={{ animationDelay: '0.45s', animationFillMode: 'both' }}
           >
             <Button 
               size="lg" 
-              className="text-base px-8 py-6 rounded-full font-poppins font-semibold w-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
+              className="cta-hover text-base px-8 py-6 rounded-full font-poppins font-semibold w-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
               asChild
             >
               <Link to="/poster">
@@ -103,7 +94,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               variant="outline"
-              className="text-base px-8 py-6 rounded-full font-poppins font-semibold w-full sm:w-auto border-2 border-cream/50 text-cream bg-transparent hover:bg-cream/10"
+              className="cta-hover text-base px-8 py-6 rounded-full font-poppins font-semibold w-full sm:w-auto border-2 border-cream/50 text-cream bg-transparent hover:bg-cream/10"
               asChild
             >
               <Link to="/recherches">
@@ -111,17 +102,15 @@ const Hero = () => {
                 Devenir findr
               </Link>
             </Button>
-          </motion.div>
+          </div>
 
           {/* Reassurance line */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="mt-6 text-sm text-cream/60 font-normal"
+          <p
+            className="mt-6 text-sm text-cream/60 font-normal animate-fade-in"
+            style={{ animationDelay: '0.6s', animationFillMode: 'both' }}
           >
             🔒 Gratuit · Sans engagement · Accès anticipé
-          </motion.p>
+          </p>
         </div>
       </div>
     </section>

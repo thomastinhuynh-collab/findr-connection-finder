@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Search, Compass, CheckCircle, ShieldCheck } from "lucide-react";
 import {
   Dialog,
@@ -8,6 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 
 const steps = [
   {
@@ -78,6 +78,8 @@ const steps = [
 
 const HowItWorks = () => {
   const [selectedStep, setSelectedStep] = useState<number | null>(null);
+  const headingRef = useScrollReveal();
+  const cardsRef = useScrollRevealGroup();
 
   return (
     <section className="py-24 relative overflow-hidden bg-cream">
@@ -91,13 +93,7 @@ const HowItWorks = () => {
       />
       
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+        <div ref={headingRef} className="scroll-reveal text-center mb-16">
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Simple et efficace
           </span>
@@ -107,22 +103,18 @@ const HowItWorks = () => {
           <p className="max-w-2xl mx-auto text-lg text-foreground/70">
             En 4 étapes, passe de "j'aimerais trouver" à "j'ai trouvé"
           </p>
-        </motion.div>
+        </div>
 
         {/* Horizontal stepper */}
         <div className="relative">
           {/* Connector line - desktop only */}
           <div className="hidden lg:block absolute top-12 left-[12%] right-[12%] h-0.5 bg-accent/20" />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+          <div ref={cardsRef} className="stagger-group grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
             {steps.map((step, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.12 }}
-                className="relative group cursor-pointer flex flex-col items-center text-center"
+                className="stagger-item relative group cursor-pointer flex flex-col items-center text-center"
                 onClick={() => setSelectedStep(index)}
               >
                 {/* Step circle */}
@@ -130,11 +122,9 @@ const HowItWorks = () => {
                   className="w-24 h-24 rounded-full flex items-center justify-center mb-6 relative z-10 transition-all duration-300 border-4 border-accent bg-cream group-hover:scale-110 group-hover:bg-accent"
                   style={{ boxShadow: '0 4px 20px -4px hsl(var(--gold) / 0.25)' }}
                 >
-                  {/* Number */}
                   <span className="step-num text-2xl font-barlow font-bold absolute transition-all duration-300 text-accent group-hover:opacity-0 group-hover:scale-50">
                     {step.step}
                   </span>
-                  {/* Icon */}
                   <step.icon className="step-icon w-9 h-9 absolute transition-all duration-300 text-accent opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 group-hover:text-cream" />
                 </div>
                 
@@ -145,11 +135,10 @@ const HowItWorks = () => {
                   {step.description}
                 </p>
                 
-                {/* Click hint */}
                 <div className="mt-3 text-xs font-barlow font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity text-accent">
                   <span>En savoir plus →</span>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

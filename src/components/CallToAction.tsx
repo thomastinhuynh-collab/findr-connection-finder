@@ -1,13 +1,14 @@
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Mail } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 import heroImage from "@/assets/hero-vintage.jpg";
 
 const CallToAction = () => {
   const [email, setEmail] = useState("");
   const { toast } = useToast();
+  const sectionRef = useScrollReveal();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,12 +24,9 @@ const CallToAction = () => {
   return (
     <section className="py-24 bg-background relative overflow-hidden">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="relative rounded-3xl overflow-hidden"
+        <div
+          ref={sectionRef}
+          className="scroll-reveal relative rounded-3xl overflow-hidden"
         >
           {/* Background Image */}
           <div className="absolute inset-0">
@@ -69,15 +67,14 @@ const CallToAction = () => {
               <Button 
                 type="submit"
                 size="lg" 
-                className="btn-gold h-14 px-8 rounded-full whitespace-nowrap"
+                className="cta-hover btn-gold h-14 px-8 rounded-full whitespace-nowrap"
               >
                 Je m'inscris
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </form>
-
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

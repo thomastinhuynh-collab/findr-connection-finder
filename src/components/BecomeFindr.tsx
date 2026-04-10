@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowRight, Gem, Clock, ShieldCheck, Send, Coins, Heart, TrendingUp, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const buyerBenefits = [
   { icon: Gem, text: "Trouve des pièces introuvables" },
@@ -18,32 +18,27 @@ const finderBenefits = [
 ];
 
 const BecomeFindr = () => {
+  const headingRef = useScrollReveal();
+  const leftCardRef = useScrollReveal();
+  const rightCardRef = useScrollReveal();
+
   return (
     <section className="py-24 relative overflow-hidden bg-navy-primary">
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
+        <div ref={headingRef} className="scroll-reveal text-center mb-14">
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Deux profils, une communauté
           </span>
           <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4 text-cream">
             Quel est ton rôle ?
           </h2>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {/* buyr Card */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="rounded-3xl p-8 md:p-10 flex flex-col border border-secondary/40 bg-secondary"
+          <div
+            ref={leftCardRef}
+            className="scroll-reveal-left rounded-3xl p-8 md:p-10 flex flex-col border border-secondary/40 bg-secondary"
           >
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-accent/15">
               <Search className="w-7 h-7 text-accent" />
@@ -69,7 +64,7 @@ const BecomeFindr = () => {
 
             <Button
               size="lg"
-              className="w-full text-base py-6 rounded-full font-poppins font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
+              className="cta-hover w-full text-base py-6 rounded-full font-poppins font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
               asChild
             >
               <Link to="/poster">
@@ -77,15 +72,12 @@ const BecomeFindr = () => {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
-          </motion.div>
+          </div>
 
           {/* findr Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="rounded-3xl p-8 md:p-10 flex flex-col border border-warm-neutral/50 bg-warm-neutral/40"
+          <div
+            ref={rightCardRef}
+            className="scroll-reveal-right rounded-3xl p-8 md:p-10 flex flex-col border border-warm-neutral/50 bg-warm-neutral/40"
           >
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-accent/12">
               <Heart className="w-7 h-7 text-accent" />
@@ -112,7 +104,7 @@ const BecomeFindr = () => {
             <Button
               size="lg"
               variant="outline"
-              className="w-full text-base py-6 rounded-full font-poppins font-semibold border-2 border-foreground text-foreground bg-transparent hover:bg-foreground/5"
+              className="cta-hover w-full text-base py-6 rounded-full font-poppins font-semibold border-2 border-foreground text-foreground bg-transparent hover:bg-foreground/5"
               asChild
             >
               <Link to="/recherches">
@@ -120,7 +112,7 @@ const BecomeFindr = () => {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
