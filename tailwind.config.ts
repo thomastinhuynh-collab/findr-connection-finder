@@ -15,8 +15,8 @@ export default {
     extend: {
       fontFamily: {
         barlow: ["Space Grotesk", "sans-serif"],
-        poppins: ["Poppins", "sans-serif"],
-        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+        serif: ["Playfair Display", "Georgia", "serif"],
+        sans: ["DM Sans", "system-ui", "-apple-system", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -62,12 +62,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Findr custom colors
-        "navy-primary": "hsl(var(--navy-primary))",
-        "navy-secondary": "hsl(var(--navy-secondary))",
+        // Custom colors
+        terracotta: "hsl(var(--terracotta))",
+        ochre: "hsl(var(--ochre))",
         cream: "hsl(var(--cream))",
-        gold: "hsl(var(--gold))",
-        "warm-neutral": "hsl(var(--warm-neutral))",
+        dark: "hsl(var(--dark))",
+        sage: "hsl(var(--sage))",
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
@@ -76,7 +76,6 @@ export default {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
         },
-        "vintage-cream": "hsl(var(--vintage-cream))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -114,8 +113,8 @@ export default {
         float: "float 6s ease-in-out infinite",
       },
       boxShadow: {
-        vintage: "0 8px 24px -4px hsl(227 90% 14% / 0.12)",
-        glow: "0 0 40px -10px hsl(35 80% 55% / 0.4)",
+        vintage: "0 8px 24px -4px hsl(0 0% 10% / 0.12)",
+        glow: "0 0 40px -10px hsl(18 66% 47% / 0.4)",
       },
     },
   },
