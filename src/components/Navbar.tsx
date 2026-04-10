@@ -1,34 +1,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, Crown, Search } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
-import AuthModal from "@/components/AuthModal";
-import NotificationBell from "@/components/NotificationBell";
+import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 import Logo from "@/components/Logo";
+import AuthModal from "@/components/AuthModal";
 import CategoryNav from "@/components/CategoryNav";
+
+const navLinks = [
+  { label: "Comment ça marche", to: "/comment-ca-marche" },
+  { label: "Je cherche", to: "/poster" },
+  { label: "Je chine", to: "/recherches" },
+  { label: "Blog", to: "/blog" },
+];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
-  const [searchQuery, setSearchQuery] = useState("");
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
-
-  const openAuthModal = (mode: "login" | "signup") => {
-    setAuthMode(mode);
-    setAuthModalOpen(true);
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/recherches?q=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      navigate("/recherches");
-    }
-  };
 
   return (
     <>
@@ -37,56 +24,31 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center group ml-8">
-              <Logo size="lg" variant="light" showTagline />
+              <Logo size="lg" variant="light" />
             </Link>
 
-            {/* Desktop Search Bar */}
-            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-6">
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-[hsl(42_33%_94%/0.3)] bg-[hsl(42_33%_94%/0.1)] w-full transition-all focus-within:border-[hsl(42_33%_94%/0.6)]">
-                <Search className="w-4 h-4 text-[hsl(42_33%_94%/0.6)] flex-shrink-0" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Rechercher une annonce..."
-                  className="flex-1 bg-transparent border-none outline-none text-sm text-[hsl(42_33%_94%)] placeholder:text-[hsl(42_33%_94%/0.5)]"
-                />
-              </div>
-            </form>
+            {/* Desktop Nav Links */}
+            <div className="hidden md:flex items-center gap-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="text-sm font-medium text-[hsl(42_33%_94%/0.8)] hover:text-[hsl(42_33%_94%)] transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
 
-            {/* Desktop Actions */}
-            <div className="hidden md:flex items-center gap-3">
-              <Link 
-                to="/premium" 
-                className="text-sm font-semibold hover:opacity-80 transition-opacity flex items-center gap-1.5"
-                style={{ color: 'hsl(38 52% 55%)' }}
+            {/* Desktop CTA */}
+            <div className="hidden md:flex items-center">
+              <Button
+                size="sm"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+                onClick={() => setAuthModalOpen(true)}
               >
-                <Crown className="w-4 h-4" style={{ color: 'hsl(38 52% 55%)' }} />
-                Passer Premium
-              </Link>
-              {loading ? (
-                <div className="animate-pulse bg-muted h-8 w-20 rounded"></div>
-              ) : user ? (
-                <>
-                  <NotificationBell />
-                  <Button size="sm" className="btn-hero" asChild>
-                    <Link to="/mon-espace">
-                      <User className="w-4 h-4 mr-2" />
-                      Mon espace
-                    </Link>
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="outline" size="sm" className="border-[hsl(42_33%_94%/0.4)] text-[hsl(42_33%_94%)] hover:bg-[hsl(42_33%_94%/0.1)] hover:text-[hsl(42_33%_94%)]" onClick={() => openAuthModal("login")}>
-                    Connexion
-                  </Button>
-                  <Button size="sm" className="btn-hero" onClick={() => openAuthModal("signup")}>
-                    <User className="w-4 h-4 mr-2" />
-                    Inscription
-                  </Button>
-                </>
-              )}
+                Rejoindre la beta
+              </Button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -102,54 +64,26 @@ const Navbar = () => {
           {isOpen && (
             <div className="md:hidden py-4 border-t border-[hsl(42_33%_94%/0.2)] animate-slide-up">
               <div className="flex flex-col gap-4">
-                <form onSubmit={handleSearch} className="flex">
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-muted/50 w-full">
-                    <Search className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Rechercher une annonce..."
-                      className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground"
-                    />
-                  </div>
-                </form>
-                <Link 
-                  to="/premium" 
-                  className="text-sm font-semibold hover:opacity-80 transition-opacity flex items-center gap-1.5"
-                  style={{ color: 'hsl(38 52% 55%)' }}
-                >
-                  <Crown className="w-4 h-4" />
-                  Passer Premium
-                </Link>
-                {user && (
-                  <Link to="/mon-espace" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                    Mon espace
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className="text-sm font-medium text-[hsl(42_33%_94%/0.8)] hover:text-[hsl(42_33%_94%)] transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.label}
                   </Link>
-                )}
-                <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                  {loading ? (
-                    <div className="animate-pulse bg-muted h-8 w-full rounded"></div>
-                  ) : user ? (
-                    <>
-                      <div className="flex justify-center mb-2">
-                        <NotificationBell />
-                      </div>
-                      <Button size="sm" className="btn-hero" asChild>
-                        <Link to="/mon-espace">Mon espace</Link>
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button variant="outline" size="sm" onClick={() => openAuthModal("login")}>
-                        Connexion
-                      </Button>
-                      <Button size="sm" className="btn-hero" onClick={() => openAuthModal("signup")}>
-                        Inscription
-                      </Button>
-                    </>
-                  )}
-                </div>
+                ))}
+                <Button
+                  size="sm"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold w-full mt-2"
+                  onClick={() => {
+                    setIsOpen(false);
+                    setAuthModalOpen(true);
+                  }}
+                >
+                  Rejoindre la beta
+                </Button>
               </div>
             </div>
           )}
@@ -159,10 +93,10 @@ const Navbar = () => {
         <CategoryNav />
       </div>
 
-      <AuthModal 
-        isOpen={authModalOpen} 
-        onClose={() => setAuthModalOpen(false)} 
-        defaultMode={authMode}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        defaultMode="signup"
       />
     </>
   );
