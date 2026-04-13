@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Search, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-vintage-market.png";
 
