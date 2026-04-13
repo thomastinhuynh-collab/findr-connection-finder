@@ -4,7 +4,16 @@ import { Clock, Users, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-const mockUsers = {
+interface MockUser {
+  name: string;
+  avatar: string;
+  level: number;
+  xp: number;
+  city: string;
+  badge?: string;
+}
+
+const mockUsers: Record<string, MockUser> = {
   sophie: {
     name: "Sophie Marchand",
     avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=100&q=80",
