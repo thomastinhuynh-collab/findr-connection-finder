@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import catModeVintage from "@/assets/cat-mode-vintage.jpg";
 import catPopCulture from "@/assets/cat-pop-culture.jpg";
+import catObjetsDivers from "@/assets/cat-objets-divers.jpg";
 
 const categories = [
   {
@@ -17,9 +18,9 @@ const categories = [
     description: "Figurines, comics, cartes, vinyles",
   },
   {
-    name: "Objets de Collection",
+    name: "Objets Divers",
     slug: "Bijoux & Accessoires",
-    image: "https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=800&q=80",
+    image: catObjetsDivers,
     description: "Montres, appareils photo, curiosités",
   },
   {
