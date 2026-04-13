@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import ProposalList from "@/components/ProposalList";
@@ -341,43 +341,8 @@ const SearchDetail = () => {
               transition={{ duration: 0.5 }}
               className="lg:col-span-3"
             >
-              {/* Image */}
-              <div className="relative rounded-2xl overflow-hidden mb-6 bg-secondary">
-                {search.image_url ? (
-                  <img
-                    src={search.image_url}
-                    alt={search.title}
-                    className="w-full h-[400px] object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-[400px] flex items-center justify-center">
-                    <span className="text-8xl">🔍</span>
-                  </div>
-                )}
-                {search.urgency === "3-days" && (
-                  <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground text-sm px-3 py-1">
-                    Urgent
-                  </Badge>
-                )}
-                <div className="absolute top-3 right-3 flex gap-2">
-                  {isReserved && (
-                    <ReservationBadge expiresAt={activeReservation?.expires_at || null} />
-                  )}
-                  <span
-                    style={{
-                      backgroundColor: 'rgba(27, 42, 74, 0.92)',
-                      color: '#C9A84C',
-                      fontSize: '12px',
-                      fontWeight: 500,
-                      letterSpacing: '0.05em',
-                      borderRadius: '20px',
-                      padding: '6px 14px',
-                    }}
-                  >
-                    {search.category}
-                  </span>
-                </div>
-              </div>
+              {/* Image Carousel */}
+              <SearchDetailCarousel search={search} activeReservation={activeReservation} isReserved={isReserved} />
 
               {/* Title & Meta */}
               <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary mb-4">
