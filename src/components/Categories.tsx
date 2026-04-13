@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import catModeVintage from "@/assets/cat-mode-vintage.jpg";
+import catPopCulture from "@/assets/cat-pop-culture.jpg";
 
 const categories = [
   {
@@ -10,9 +11,9 @@ const categories = [
     description: "Vestes en cuir, denim, fripes 70s-90s",
   },
   {
-    name: "Pop Culture & Collector",
+    name: "Pop Culture",
     slug: "Pop Culture & TCG",
-    image: "https://images.unsplash.com/photo-1608889175638-9322300c46e8?auto=format&fit=crop&w=800&q=80",
+    image: catPopCulture,
     description: "Figurines, comics, cartes, vinyles",
   },
   {
