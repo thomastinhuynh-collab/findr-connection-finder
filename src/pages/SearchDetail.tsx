@@ -487,14 +487,24 @@ const SearchDetail = () => {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2 text-sm" title="Les niveaux récompensent l'activité et la fiabilité des membres">
                       <Star className="w-4 h-4 text-accent fill-accent" />
-                      <span>Niveau {search.profiles?.level || 1}</span>
-                      <span>•</span>
-                      <span>{search.profiles?.xp_points || 0} XP</span>
+                      <span style={{ fontWeight: 500, color: '#1B2A4A' }}>Niveau {search.profiles?.level || 1}</span>
+                      <span style={{ color: '#8A8070' }}>•</span>
+                      <span style={{ color: '#8A8070' }}>{search.profiles?.xp_points || 0} XP</span>
                     </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/profil/${search.user_id}`);
+                      }}
+                      className="mt-1 hover:underline"
+                      style={{ fontSize: '12px', color: '#C9A84C' }}
+                    >
+                      Voir le profil complet →
+                    </button>
                   </div>
-                </button>
+                </div>
               </div>
 
               {/* Reservation Status for reserved searches */}
