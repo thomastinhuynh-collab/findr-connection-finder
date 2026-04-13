@@ -10,7 +10,7 @@ import {
   Euro, 
   Calendar,
   MessageCircle, 
-  Gift,
+  Tag,
   Star,
   Shield,
   Crown,
