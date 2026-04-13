@@ -16,7 +16,8 @@ import {
   Crown,
   Loader2,
   CalendarClock,
-  Lock
+  Lock,
+  HelpCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
