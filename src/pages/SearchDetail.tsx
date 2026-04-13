@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import ProposalList from "@/components/ProposalList";
@@ -37,6 +37,7 @@ interface SearchWithProfile {
   budget_max: number | null;
   urgency: string | null;
   image_url: string | null;
+  image_urls: string[] | null;
   status: string | null;
   created_at: string;
   user_id: string;
@@ -95,6 +96,143 @@ const urgencyLabels: Record<string, string> = {
   "1-month": "1 mois",
   "no-rush": "Pas pressé",
   "normal": "Normal",
+};
+
+const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
+  search: SearchWithProfile;
+  activeReservation: Reservation | undefined;
+  isReserved: boolean;
+}) => {
+  const allImages = useMemo(() => {
+    const imgs: string[] = [];
+    if (search.image_urls?.length) imgs.push(...search.image_urls);
+    else if (search.image_url) imgs.push(search.image_url);
+    return imgs;
+  }, [search.image_url, search.image_urls]);
+
+  const [current, setCurrent] = useState(0);
+
+  if (allImages.length === 0) {
+    return (
+      <div className="relative rounded-xl overflow-hidden mb-6 bg-secondary">
+        <div className="w-full h-[260px] md:h-[420px] flex items-center justify-center">
+          <span className="text-8xl">🔍</span>
+        </div>
+        <div className="absolute top-3 right-3 flex gap-2">
+          {isReserved && <ReservationBadge expiresAt={activeReservation?.expires_at || null} />}
+          <span style={{ backgroundColor: 'rgba(27,42,74,0.92)', color: '#C9A84C', fontSize: '12px', fontWeight: 500, letterSpacing: '0.05em', borderRadius: '20px', padding: '6px 14px' }}>{search.category}</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-6">
+      {/* Main image */}
+      <div className="relative rounded-xl overflow-hidden bg-secondary">
+        <img
+          src={allImages[current]}
+          alt={search.title}
+          className="w-full h-[260px] md:h-[420px] object-cover transition-opacity duration-200"
+          key={current}
+        />
+
+        {/* Counter */}
+        {allImages.length > 1 && (
+          <span className="absolute bottom-3 right-3 text-white text-xs px-2.5 py-1 rounded-full" style={{ background: "rgba(0,0,0,0.5)", fontSize: "12px" }}>
+            {current + 1} / {allImages.length}
+          </span>
+        )}
+
+        {/* Arrows */}
+        {allImages.length > 1 && (
+          <>
+            <button
+              onClick={() => setCurrent(current - 1)}
+              disabled={current === 0}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center border-none transition-colors"
+              style={{
+                background: current === 0 ? "rgba(27,42,74,0.3)" : "rgba(27,42,74,0.7)",
+                cursor: current === 0 ? "default" : "pointer",
+                opacity: current === 0 ? 0.3 : 1,
+              }}
+              onMouseEnter={(e) => { if (current !== 0) e.currentTarget.style.background = "rgba(27,42,74,0.95)"; }}
+              onMouseLeave={(e) => { if (current !== 0) e.currentTarget.style.background = "rgba(27,42,74,0.7)"; }}
+            >
+              <ChevronLeft className="w-5 h-5 text-white" />
+            </button>
+            <button
+              onClick={() => setCurrent(current + 1)}
+              disabled={current === allImages.length - 1}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center border-none transition-colors"
+              style={{
+                background: current === allImages.length - 1 ? "rgba(27,42,74,0.3)" : "rgba(27,42,74,0.7)",
+                cursor: current === allImages.length - 1 ? "default" : "pointer",
+                opacity: current === allImages.length - 1 ? 0.3 : 1,
+              }}
+              onMouseEnter={(e) => { if (current !== allImages.length - 1) e.currentTarget.style.background = "rgba(27,42,74,0.95)"; }}
+              onMouseLeave={(e) => { if (current !== allImages.length - 1) e.currentTarget.style.background = "rgba(27,42,74,0.7)"; }}
+            >
+              <ChevronRight className="w-5 h-5 text-white" />
+            </button>
+          </>
+        )}
+
+        {/* Badges overlay */}
+        {search.urgency === "3-days" && (
+          <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground text-sm px-3 py-1">Urgent</Badge>
+        )}
+        <div className="absolute top-3 right-3 flex gap-2">
+          {isReserved && <ReservationBadge expiresAt={activeReservation?.expires_at || null} />}
+          <span style={{ backgroundColor: 'rgba(27,42,74,0.92)', color: '#C9A84C', fontSize: '12px', fontWeight: 500, letterSpacing: '0.05em', borderRadius: '20px', padding: '6px 14px' }}>{search.category}</span>
+        </div>
+      </div>
+
+      {/* Dots */}
+      {allImages.length > 1 && (
+        <div className="flex items-center justify-center gap-1.5 mt-3">
+          {allImages.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className="border-none p-0 transition-all"
+              style={{
+                width: i === current ? "24px" : "8px",
+                height: "8px",
+                borderRadius: i === current ? "4px" : "50%",
+                background: i === current ? "#C9A84C" : "#D4CCBC",
+                cursor: "pointer",
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Thumbnails */}
+      {allImages.length > 1 && (
+        <div className="flex gap-2 mt-3">
+          {allImages.map((img, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className="p-0 border-2 rounded-md overflow-hidden transition-all"
+              style={{
+                width: "64px",
+                height: "64px",
+                borderColor: i === current ? "#C9A84C" : "transparent",
+                opacity: i === current ? 1 : 0.6,
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => { if (i !== current) e.currentTarget.style.opacity = "1"; }}
+              onMouseLeave={(e) => { if (i !== current) e.currentTarget.style.opacity = "0.6"; }}
+            >
+              <img src={img} alt={`${search.title} ${i + 1}`} className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 const SearchDetail = () => {
@@ -340,43 +478,8 @@ const SearchDetail = () => {
               transition={{ duration: 0.5 }}
               className="lg:col-span-3"
             >
-              {/* Image */}
-              <div className="relative rounded-2xl overflow-hidden mb-6 bg-secondary">
-                {search.image_url ? (
-                  <img
-                    src={search.image_url}
-                    alt={search.title}
-                    className="w-full h-[400px] object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-[400px] flex items-center justify-center">
-                    <span className="text-8xl">🔍</span>
-                  </div>
-                )}
-                {search.urgency === "3-days" && (
-                  <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground text-sm px-3 py-1">
-                    Urgent
-                  </Badge>
-                )}
-                <div className="absolute top-3 right-3 flex gap-2">
-                  {isReserved && (
-                    <ReservationBadge expiresAt={activeReservation?.expires_at || null} />
-                  )}
-                  <span
-                    style={{
-                      backgroundColor: 'rgba(27, 42, 74, 0.92)',
-                      color: '#C9A84C',
-                      fontSize: '12px',
-                      fontWeight: 500,
-                      letterSpacing: '0.05em',
-                      borderRadius: '20px',
-                      padding: '6px 14px',
-                    }}
-                  >
-                    {search.category}
-                  </span>
-                </div>
-              </div>
+              {/* Image Carousel */}
+              <SearchDetailCarousel search={search} activeReservation={activeReservation} isReserved={!!isReserved} />
 
               {/* Title & Meta */}
               <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary mb-4">

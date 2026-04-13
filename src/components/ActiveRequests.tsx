@@ -234,8 +234,11 @@ const ActiveRequests = () => {
           {mockSearches.map((search) => (
             <div
               key={search.id}
-              onClick={() => navigate("/recherches")}
-              className="group cursor-pointer bg-white rounded-2xl overflow-hidden border border-[#E8E0D4] hover:shadow-lg transition-all duration-300"
+              onClick={() => navigate(`/recherche/${search.id}`)}
+              className="group cursor-pointer bg-white rounded-2xl overflow-hidden border border-[#E8E0D4] transition-all duration-200"
+              style={{ transition: "box-shadow 0.2s ease, transform 0.2s ease" }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 8px 24px rgba(27,42,74,0.12)"; e.currentTarget.style.transform = "translateY(-3px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "translateY(0)"; }}
             >
               {/* Image placeholder */}
               <div className="relative h-[200px] overflow-hidden">
