@@ -138,7 +138,7 @@ const ActiveRequests = () => {
 
   if (loading) {
     return (
-      <section style={{ backgroundColor: "#F5F0E8", padding: "64px 0" }}>
+      <section style={{ backgroundColor: "#F5F0E8" }} className="py-14">
         <div className="container mx-auto px-4 flex justify-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
         </div>
@@ -149,10 +149,10 @@ const ActiveRequests = () => {
   if (searches.length === 0) return null;
 
   return (
-    <section style={{ backgroundColor: "#F5F0E8", padding: "64px 0" }}>
+    <section style={{ backgroundColor: "#F5F0E8" }} className="py-10 md:py-14">
       <div className="container mx-auto px-4" style={{ maxWidth: "1100px" }}>
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-7">
           <div>
             <span style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#C9A84C", fontWeight: 600 }}>
               Demandes en cours
@@ -172,7 +172,7 @@ const ActiveRequests = () => {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {searches.map((search) => {
             const profile = profiles[search.user_id];
             const images = getImages(search);
@@ -276,7 +276,7 @@ const ActiveRequests = () => {
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-8">
+        <div className="text-center mt-6">
           <Button
             variant="outline"
             onClick={() => navigate("/recherches")}

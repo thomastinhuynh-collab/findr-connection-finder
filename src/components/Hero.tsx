@@ -6,7 +6,7 @@ import heroBackground from "@/assets/hero-vintage-market.png";
 const Hero = () => {
   return (
     <section 
-      className="relative flex items-center justify-center overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32 bg-navy-primary"
+      className="relative flex items-center justify-center overflow-hidden pt-32 pb-14 md:pt-40 md:pb-14 bg-navy-primary"
     >
       {/* Background image */}
       <div 

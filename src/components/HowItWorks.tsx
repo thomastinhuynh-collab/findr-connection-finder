@@ -82,7 +82,7 @@ const HowItWorks = () => {
   const cardsRef = useScrollRevealGroup();
 
   return (
-    <section className="py-24 relative overflow-hidden bg-cream">
+    <section className="py-14 relative overflow-hidden bg-cream">
       {/* Warm texture */}
       <div 
         className="absolute inset-0 opacity-[0.03]"
@@ -93,7 +93,7 @@ const HowItWorks = () => {
       />
       
       <div className="container mx-auto px-4 relative z-10">
-        <div ref={headingRef} className="scroll-reveal text-center mb-16">
+        <div ref={headingRef} className="scroll-reveal text-center mb-7">
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Simple et efficace
           </span>
@@ -110,7 +110,7 @@ const HowItWorks = () => {
           {/* Connector line - desktop only */}
           <div className="hidden lg:block absolute top-12 left-[12%] right-[12%] h-0.5 bg-accent/20" />
 
-          <div ref={cardsRef} className="stagger-group grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+          <div ref={cardsRef} className="stagger-group grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-4">
             {steps.map((step, index) => (
               <div
                 key={index}
