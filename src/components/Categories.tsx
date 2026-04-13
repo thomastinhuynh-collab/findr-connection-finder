@@ -10,18 +10,21 @@ const categories = [
     slug: "Mode Vintage",
     image: catModeVintage,
     description: "Vestes en cuir, denim, fripes 70s-90s",
+    subcategories: "Mode Vintage · Vinyles & Musique · Bijoux & Accessoires",
   },
   {
     name: "Pop Culture",
     slug: "Pop Culture & TCG",
     image: catPopCulture,
     description: "Figurines, comics, cartes, vinyles",
+    subcategories: "Comics · Figurines · Cartes TCG · Jeux vidéo",
   },
   {
     name: "Objets Divers",
     slug: "Bijoux & Accessoires",
     image: catObjetsDivers,
     description: "Montres, appareils photo, curiosités",
+    subcategories: "Photo & Électronique · Horlogerie · Livres · Curiosités",
   },
 ];
 
@@ -83,7 +86,10 @@ const Categories = () => {
                 <p className="text-sm text-cream/80 group-hover:text-cream transition-opacity">
                   {cat.description}
                 </p>
-                <div className="mt-3 text-xs font-barlow font-medium flex items-center gap-1 text-accent opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                <p className="mt-2 text-xs text-cream/60 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 leading-relaxed">
+                  {cat.subcategories}
+                </p>
+                <div className="mt-2 text-xs font-barlow font-medium flex items-center gap-1 text-accent opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 delay-75">
                   <span>Voir les recherches →</span>
                 </div>
               </div>
