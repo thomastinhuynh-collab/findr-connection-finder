@@ -3,6 +3,7 @@ import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import catModeVintage from "@/assets/cat-mode-vintage.jpg";
 import catPopCulture from "@/assets/cat-pop-culture.jpg";
 import catObjetsDivers from "@/assets/cat-objets-divers.jpg";
+import catDecoVintage from "@/assets/cat-deco-vintage.jpg";
 
 const categories = [
   {
@@ -26,7 +27,7 @@ const categories = [
   {
     name: "Décoration Vintage",
     slug: "Décoration Vintage",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
+    image: catDecoVintage,
     description: "Mobilier mid-century, affiches, luminaires",
   },
 ];
