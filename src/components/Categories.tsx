@@ -23,12 +23,6 @@ const categories = [
     image: catObjetsDivers,
     description: "Montres, appareils photo, curiosités",
   },
-  {
-    name: "Décoration Vintage",
-    slug: "Décoration Vintage",
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
-    description: "Mobilier mid-century, affiches, luminaires",
-  },
 ];
 
 const Categories = () => {
@@ -52,7 +46,7 @@ const Categories = () => {
           </h2>
         </div>
 
-        <div ref={gridRef} className="stagger-group grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+        <div ref={gridRef} className="stagger-group grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
           {categories.map((cat, index) => (
             <button
               key={index}
