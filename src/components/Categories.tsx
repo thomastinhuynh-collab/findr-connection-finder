@@ -18,9 +18,9 @@ const categories = [
     description: "Figurines, comics, cartes, vinyles",
   },
   {
-    name: "Objets de Collection",
+    name: "Objets Divers",
     slug: "Bijoux & Accessoires",
-    image: "https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?auto=format&fit=crop&w=800&q=80",
+    image: catObjetsDivers,
     description: "Montres, appareils photo, curiosités",
   },
   {
