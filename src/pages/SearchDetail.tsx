@@ -10,13 +10,14 @@ import {
   Euro, 
   Calendar,
   MessageCircle, 
-  Gift,
+  Tag,
   Star,
   Shield,
   Crown,
   Loader2,
   CalendarClock,
-  Lock
+  Lock,
+  HelpCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -528,50 +529,55 @@ const SearchDetail = () => {
 
               {/* Action Buttons */}
               {!isOwner && canInteract && (
-                <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
+                <div className="bg-card border border-border rounded-2xl p-6">
+                  {/* Primary — Faire une proposition */}
                   <Button 
-                    size="lg" 
-                    className="w-full gap-2 bg-accent hover:bg-accent/90 text-accent-foreground"
+                    className="w-full gap-2 rounded-lg"
+                    style={{ height: '52px', fontSize: '15px', fontWeight: 600, backgroundColor: '#1B2A4A', color: '#FFFFFF' }}
+                    onClick={handleProposal}
+                  >
+                    <Tag className="w-5 h-5" />
+                    Faire une proposition
+                  </Button>
+                  <p style={{ fontSize: '11px', color: '#8A8070', textAlign: 'center', marginTop: '4px' }}>
+                    Proposez votre trouvaille avec photo et prix
+                  </p>
+
+                  {/* Secondary — Envoyer un message */}
+                  <Button 
+                    variant="outline"
+                    className="w-full gap-2 rounded-lg mt-4"
+                    style={{ height: '44px', fontSize: '14px', fontWeight: 500, backgroundColor: 'transparent', border: '1.5px solid #C9A84C', color: '#1B2A4A' }}
                     onClick={handleContact}
                   >
                     <MessageCircle className="w-5 h-5" />
                     Envoyer un message
                   </Button>
-                  
-                  <Button 
-                    size="lg" 
-                    className="w-full gap-2"
-                    onClick={handleProposal}
-                  >
-                    <Gift className="w-5 h-5" />
-                    Faire une proposition
-                  </Button>
 
-                  {/* Reservation Button */}
+                  {/* Tertiary — Demander une réservation */}
                   {!hasExistingReservation && !isReserved && (
-                    <Button 
-                      size="lg" 
-                      variant="outline"
-                      className="w-full gap-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground"
-                      onClick={handleReservation}
-                    >
-                      <CalendarClock className="w-5 h-5" />
-                      Demander une réservation
-                    </Button>
+                    <div className="flex items-center justify-center gap-1 mt-4">
+                      <button
+                        onClick={handleReservation}
+                        className="hover:underline"
+                        style={{ fontSize: '13px', color: '#C9A84C' }}
+                      >
+                        Demander une réservation
+                      </button>
+                      <span title="La réservation bloque l'objet le temps de finaliser l'échange">
+                        <HelpCircle className="w-3.5 h-3.5" style={{ color: '#C9A84C' }} />
+                      </span>
+                    </div>
                   )}
 
                   {hasExistingReservation && !isReserved && (
-                    <div className="bg-secondary/50 rounded-xl p-3 text-center">
+                    <div className="bg-secondary/50 rounded-xl p-3 text-center mt-4">
                       <p className="text-sm text-muted-foreground">
                         <CalendarClock className="w-4 h-4 inline mr-1" />
                         Tu as déjà une demande de réservation en cours
                       </p>
                     </div>
                   )}
-
-                  <p className="text-xs text-muted-foreground text-center pt-2">
-                    Proposez votre trouvaille avec photos et prix
-                  </p>
                 </div>
               )}
 
