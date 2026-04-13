@@ -450,32 +450,41 @@ const SearchDetail = () => {
             >
               {/* User Card */}
               <div className="bg-card border border-border rounded-2xl p-6 mb-6">
-                <h3 className="text-sm font-medium text-muted-foreground mb-4">Publié par</h3>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/profil/${search.user_id}`);
-                  }}
-                  className="flex items-center gap-4 mb-4 w-full text-left hover:opacity-80 transition-opacity"
+                <h3
+                  className="mb-4 font-medium"
+                  style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8A8070' }}
                 >
-                  {search.profiles?.avatar_url ? (
-                    <img
-                      src={search.profiles.avatar_url}
-                      alt={search.profiles.full_name || "User"}
-                      className="w-14 h-14 rounded-full border-2 border-accent object-cover"
-                    />
-                  ) : (
-                    <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold">
-                      {search.profiles?.full_name?.charAt(0) || "U"}
-                    </div>
-                  )}
+                  Publié par
+                </h3>
+                <div className="flex items-center gap-4 mb-4">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/profil/${search.user_id}`);
+                    }}
+                    className="shrink-0 hover:opacity-80 transition-opacity"
+                  >
+                    {search.profiles?.avatar_url ? (
+                      <img
+                        src={search.profiles.avatar_url}
+                        alt={search.profiles.full_name || "User"}
+                        className="w-14 h-14 rounded-full border-2 border-accent object-cover"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold">
+                        {search.profiles?.full_name?.charAt(0) || "U"}
+                      </div>
+                    )}
+                  </button>
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="font-semibold text-primary hover:text-accent transition-colors">
+                      <p style={{ fontSize: '16px', fontWeight: 600, color: '#1B2A4A' }}>
                         {search.profiles?.full_name || "Utilisateur"}
                       </p>
                       {search.profiles?.is_premium && (
-                        <Crown className="w-4 h-4 text-accent" />
+                        <span style={{ fontSize: '10px', color: '#C9A84C', backgroundColor: '#FDF6E8', borderRadius: '4px', padding: '2px 6px', fontWeight: 600 }}>
+                          Top vendeur
+                        </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
