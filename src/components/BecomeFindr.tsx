@@ -23,9 +23,9 @@ const BecomeFindr = () => {
   const rightCardRef = useScrollReveal();
 
   return (
-    <section className="py-24 relative overflow-hidden bg-navy-primary">
+    <section className="py-14 relative overflow-hidden bg-navy-primary">
       <div className="container mx-auto px-4 relative z-10">
-        <div ref={headingRef} className="scroll-reveal text-center mb-14">
+        <div ref={headingRef} className="scroll-reveal text-center mb-7">
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Deux profils, une communauté
           </span>

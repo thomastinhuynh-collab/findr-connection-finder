@@ -60,11 +60,11 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <section className="py-24 bg-cream">
+    <section className="py-14 bg-cream">
       <div className="container mx-auto px-4">
 
         {/* Guarantees badges */}
-        <div ref={guaranteesRef} className="scroll-reveal flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-16">
+        <div ref={guaranteesRef} className="scroll-reveal flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-7">
           {guarantees.map((g, i) => (
             <div key={i} className="flex items-center gap-3 px-6 py-3 rounded-full border border-foreground/12 bg-background">
               <g.icon className="w-5 h-5 text-accent" />
@@ -74,7 +74,7 @@ const Testimonials = () => {
         </div>
 
         {/* Section header */}
-        <div ref={headingRef} className="scroll-reveal text-center mb-14">
+        <div ref={headingRef} className="scroll-reveal text-center mb-7">
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Témoignages
           </span>
@@ -84,7 +84,7 @@ const Testimonials = () => {
         </div>
 
         {/* Testimonial cards */}
-        <div ref={cardsRef} className="stagger-group grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+        <div ref={cardsRef} className="stagger-group grid md:grid-cols-3 gap-4 max-w-5xl mx-auto mb-10">
           {testimonials.map((t, index) => (
             <div
               key={index}
