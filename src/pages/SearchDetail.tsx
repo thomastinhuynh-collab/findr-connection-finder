@@ -479,7 +479,7 @@ const SearchDetail = () => {
               className="lg:col-span-3"
             >
               {/* Image Carousel */}
-              <SearchDetailCarousel search={search} activeReservation={activeReservation} isReserved={isReserved} />
+              <SearchDetailCarousel search={search} activeReservation={activeReservation} isReserved={!!isReserved} />
 
               {/* Title & Meta */}
               <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary mb-4">
