@@ -235,7 +235,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
   );
 };
 
-
+const SearchDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
