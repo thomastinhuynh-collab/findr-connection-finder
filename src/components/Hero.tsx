@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Search, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-vintage-market.png";
 
@@ -35,111 +36,81 @@ const Hero = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Surtitle */}
-          <p
-            className="uppercase text-center mb-3"
-            style={{
-              fontSize: '13px',
-              letterSpacing: '0.1em',
-              color: '#C9A84C',
-            }}
+          {/* Premium badge with pulse */}
+          <div
+            className="inline-flex items-center mb-8 animate-fade-in"
+            style={{ animationDelay: '0.1s', animationFillMode: 'both' }}
           >
-            La marketplace où c'est le vendeur qui vient à toi
-          </p>
+            <span
+              className="font-poppins uppercase badge-pulse"
+              style={{
+                fontSize: '11px',
+                letterSpacing: '2px',
+                color: 'hsl(var(--gold))',
+                background: 'hsl(var(--gold) / 0.2)',
+                border: '1px solid hsl(var(--gold))',
+                borderRadius: '20px',
+                padding: '6px 16px',
+              }}
+            >
+              ✦ PREMIUM COMMUNITY
+            </span>
+          </div>
 
-          {/* Main Headline — Two Lines */}
+          {/* Main Headline */}
           <h1
-            className="text-center mb-4 leading-tight"
-            style={{
-              fontSize: 'clamp(28px, 5vw, 42px)',
-              fontWeight: 700,
-              lineHeight: 1.25,
-              color: '#FFFFFF',
-            }}
+            className="text-3xl md:text-5xl lg:text-6xl font-poppins font-extrabold mb-6 leading-tight text-cream animate-slide-up"
+            style={{ animationDelay: '0.15s', animationFillMode: 'both' }}
           >
-            Tu cherches quelque chose.
-            <br />
-            <span style={{ color: '#C9A84C' }}>La communauté le trouve.</span>
+            Trouvez l'introuvable, avec{" "}
+            <span className="text-accent">findr</span> &{" "}
+            <span className="text-accent">buyr</span>
           </h1>
 
           {/* Subtitle */}
           <p
-            className="text-center mx-auto"
-            style={{
-              fontSize: '16px',
-              color: 'rgba(255,255,255,0.75)',
-              maxWidth: '480px',
-              marginTop: '16px',
-              lineHeight: 1.5,
-            }}
+            className="text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10 text-cream/85 font-normal animate-slide-up"
+            style={{ animationDelay: '0.3s', animationFillMode: 'both' }}
           >
-            Poste ta recherche en 2 minutes.
-            <br />
-            Des vendeurs te proposent exactement ce que tu veux.
+            La marketplace inversée où les findr passionnés dénichent pour les buyr leurs pépites vintage et objets pop culture.
           </p>
 
           {/* CTA Buttons */}
-          <div className="mt-8">
-            {/* Main CTA Button */}
-            <Button
-              size="lg"
-              className="font-semibold w-full mx-auto block"
-              style={{
-                maxWidth: '320px',
-                height: '52px',
-                backgroundColor: '#C9A84C',
-                color: '#1B2A4A',
-                fontWeight: 700,
-                fontSize: '15px',
-                borderRadius: '10px',
-                border: 'none',
-              }}
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up"
+            style={{ animationDelay: '0.45s', animationFillMode: 'both' }}
+          >
+            <Button 
+              size="lg" 
+              className="cta-hover text-base px-8 py-6 rounded-full font-poppins font-semibold w-full sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90"
               asChild
             >
               <Link to="/poster">
-                Poster ma recherche — c'est gratuit
+                <Search className="w-5 h-5 mr-2" />
+                Devenir buyr
               </Link>
             </Button>
 
-            {/* Secondary Link */}
-            <Link
-              to="/recherches"
-              className="block text-center mt-3 transition-colors duration-150"
-              style={{
-                fontSize: '13px',
-                color: 'rgba(255,255,255,0.6)',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')}
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="cta-hover text-base px-8 py-6 rounded-full font-poppins font-semibold w-full sm:w-auto border-2 border-cream/50 text-cream bg-transparent hover:bg-cream/10"
+              asChild
             >
-              Voir les recherches en cours →
-            </Link>
+              <Link to="/recherches">
+                <ArrowRight className="w-5 h-5 mr-2" />
+                Devenir findr
+              </Link>
+            </Button>
           </div>
 
-          {/* Reassurance Band */}
-          <div
-            className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8"
-            style={{ marginTop: '20px' }}
+          {/* Reassurance line */}
+          <p
+            className="mt-6 text-sm text-cream/60 font-normal animate-fade-in"
+            style={{ animationDelay: '0.6s', animationFillMode: 'both' }}
           >
-            <div className="flex items-center gap-2">
-              <span style={{ color: '#C9A84C', fontSize: '12px' }}>✓</span>
-              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.65)' }}>
-                Gratuit pour le buyr
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span style={{ color: '#C9A84C', fontSize: '12px' }}>✓</span>
-              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.65)' }}>
-                Résultats en moins de 48h
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span style={{ color: '#C9A84C', fontSize: '12px' }}>✓</span>
-              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.65)' }}>
-                Paiement sécurisé
-              </span>
-            </div>
-          </div>
+            🔒 Gratuit · Sans engagement · Accès anticipé
+          </p>
         </div>
       </div>
     </section>
