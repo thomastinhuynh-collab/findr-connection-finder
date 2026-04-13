@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "@/components/Logo";
 import AuthModal from "@/components/AuthModal";
 import CategoryNav from "@/components/CategoryNav";
@@ -17,6 +17,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+  const isDetailPage = location.pathname.startsWith("/recherche/");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 80);
@@ -60,10 +62,10 @@ const Navbar = () => {
             <div className="hidden md:flex items-center">
               <Button
                 size="sm"
-                className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full"
+                className={`bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
                 onClick={() => setAuthModalOpen(true)}
               >
-                Rejoindre la beta
+                {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la beta"}
               </Button>
             </div>
 
