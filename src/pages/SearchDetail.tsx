@@ -358,16 +358,23 @@ const SearchDetail = () => {
                     Urgent
                   </Badge>
                 )}
-                <div className="absolute top-4 right-4 flex gap-2">
+                <div className="absolute top-3 right-3 flex gap-2">
                   {isReserved && (
                     <ReservationBadge expiresAt={activeReservation?.expires_at || null} />
                   )}
-                  <Badge 
-                    variant="secondary" 
-                    className="bg-background/90 backdrop-blur-sm text-sm px-3 py-1"
+                  <span
+                    style={{
+                      backgroundColor: 'rgba(27, 42, 74, 0.92)',
+                      color: '#C9A84C',
+                      fontSize: '12px',
+                      fontWeight: 500,
+                      letterSpacing: '0.05em',
+                      borderRadius: '20px',
+                      padding: '6px 14px',
+                    }}
                   >
                     {search.category}
-                  </Badge>
+                  </span>
                 </div>
               </div>
 
