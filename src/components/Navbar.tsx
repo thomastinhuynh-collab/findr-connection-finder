@@ -62,10 +62,10 @@ const Navbar = () => {
             <div className="hidden md:flex items-center">
               <Button
                 size="sm"
-                className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full"
+                className={`bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
                 onClick={() => setAuthModalOpen(true)}
               >
-                Rejoindre la beta
+                {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la beta"}
               </Button>
             </div>
 
