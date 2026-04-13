@@ -17,6 +17,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+  const isDetailPage = location.pathname.startsWith("/recherche/");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 80);
