@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
+import catModeVintage from "@/assets/cat-mode-vintage.jpg";
 
 const categories = [
   {
     name: "Mode Vintage",
     slug: "Mode Vintage",
-    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=800&q=80",
+    image: catModeVintage,
     description: "Vestes en cuir, denim, fripes 70s-90s",
   },
   {
