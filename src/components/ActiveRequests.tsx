@@ -14,6 +14,7 @@ const mockSearches = [
     urgencyLabel: "2 semaines",
     offers: 3,
     city: "Paris",
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
   },
   {
     id: "mock-2",
@@ -25,6 +26,7 @@ const mockSearches = [
     urgencyLabel: "1 mois",
     offers: 5,
     city: "Lyon",
+    image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80",
   },
   {
     id: "mock-3",
@@ -36,6 +38,7 @@ const mockSearches = [
     urgencyLabel: "3 semaines",
     offers: 2,
     city: "Bordeaux",
+    image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&q=80",
   },
   {
     id: "mock-4",
@@ -47,6 +50,7 @@ const mockSearches = [
     urgencyLabel: "1 mois",
     offers: 7,
     city: "Marseille",
+    image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=600&q=80",
   },
   {
     id: "mock-5",
@@ -58,6 +62,7 @@ const mockSearches = [
     urgencyLabel: "2 semaines",
     offers: 12,
     city: "Toulouse",
+    image: "https://images.unsplash.com/photo-1613771404784-3a5686aa2be3?w=600&q=80",
   },
   {
     id: "mock-6",
@@ -69,6 +74,7 @@ const mockSearches = [
     urgencyLabel: "3 semaines",
     offers: 4,
     city: "Nantes",
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
   },
 ];
 
@@ -133,8 +139,12 @@ const ActiveRequests = () => {
               className="group cursor-pointer bg-white rounded-2xl overflow-hidden border border-[#E8E0D4] hover:shadow-lg transition-all duration-300"
             >
               {/* Image placeholder */}
-              <div className="relative h-48 bg-[#E8E0D4] overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#1B2A4A]/10 to-[#C9A84C]/10" />
+              <div className="relative h-[200px] overflow-hidden">
+                <img
+                  src={search.image}
+                  alt={search.title}
+                  className="w-full h-full object-cover object-center"
+                />
 
                 {/* Demande buyr label */}
                 <span
