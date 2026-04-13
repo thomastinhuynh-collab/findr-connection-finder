@@ -105,6 +105,10 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
+        "pulse-subtle": {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.03)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -112,6 +116,7 @@ export default {
         "slide-up": "slide-up 0.6s ease-out forwards",
         "fade-in": "fade-in 0.8s ease-out forwards",
         float: "float 6s ease-in-out infinite",
+        "pulse-subtle": "pulse-subtle 2s ease-in-out infinite",
       },
       boxShadow: {
         vintage: "0 8px 24px -4px hsl(227 90% 14% / 0.12)",
