@@ -1,8 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import ActiveRequests from "@/components/ActiveRequests";
-import SocialProofBar from "@/components/SocialProofBar";
 import HowItWorks from "@/components/HowItWorks";
+import ActiveRequests from "@/components/ActiveRequests";
 import BecomeFindr from "@/components/BecomeFindr";
 import Categories from "@/components/Categories";
 import Testimonials from "@/components/Testimonials";
@@ -14,9 +13,8 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
-      <SocialProofBar />
-      <ActiveRequests />
       <HowItWorks />
+      <ActiveRequests />
       <BecomeFindr />
       <Categories />
       <Testimonials />
