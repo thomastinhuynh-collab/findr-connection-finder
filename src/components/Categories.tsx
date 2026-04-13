@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import catModeVintage from "@/assets/cat-mode-vintage.jpg";
 import catPopCulture from "@/assets/cat-pop-culture.jpg";
+import catObjetsDivers from "@/assets/cat-objets-divers.jpg";
 
 const categories = [
   {
