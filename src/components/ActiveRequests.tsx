@@ -230,11 +230,7 @@ const ActiveRequests = () => {
             >
               {/* Image placeholder */}
               <div className="relative h-[200px] overflow-hidden">
-                <img
-                  src={search.image}
-                  alt={search.title}
-                  className="w-full h-full object-cover object-center"
-                />
+                <CardImageCarousel images={search.images} alt={search.title} />
 
                 {/* Demande buyr label */}
                 <span
@@ -315,19 +311,33 @@ const ActiveRequests = () => {
                   {search.budget_min}€ – {search.budget_max}€
                 </p>
 
-                {/* Stats */}
-                <div
-                  className="flex items-center gap-4 pt-3 border-t border-[#E8E0D4]"
-                  style={{ fontSize: "13px", color: "#8A8070" }}
-                >
-                  <span className="flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5" />
-                    {search.offers} offres
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5" />
-                    {search.city}
-                  </span>
+                {/* User + Stats */}
+                <div className="flex items-center justify-between pt-3 border-t border-[#E8E0D4]">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={search.user.avatar}
+                      alt={search.user.name}
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                    <span style={{ fontSize: "12px", fontWeight: 500, color: "#1B2A4A" }}>
+                      {search.user.name}
+                    </span>
+                    {search.user.badge && (
+                      <span style={{ fontSize: "10px", background: "#C9A84C", color: "#1B2A4A", borderRadius: "4px", padding: "1px 6px", fontWeight: 600 }}>
+                        {search.user.badge}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3" style={{ fontSize: "12px", color: "#8A8070" }}>
+                    <span className="flex items-center gap-1">
+                      <Users className="w-3 h-3" />
+                      {search.offers}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3" />
+                      {search.user.city}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
