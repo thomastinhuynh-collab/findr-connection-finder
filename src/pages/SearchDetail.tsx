@@ -37,6 +37,7 @@ interface SearchWithProfile {
   budget_max: number | null;
   urgency: string | null;
   image_url: string | null;
+  image_urls: string[] | null;
   status: string | null;
   created_at: string;
   user_id: string;
