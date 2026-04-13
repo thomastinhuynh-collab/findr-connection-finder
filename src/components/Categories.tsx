@@ -10,18 +10,21 @@ const categories = [
     slug: "Mode Vintage",
     image: catModeVintage,
     description: "Vestes en cuir, denim, fripes 70s-90s",
+    subcategories: "Mode Vintage · Vinyles & Musique · Bijoux & Accessoires",
   },
   {
     name: "Pop Culture",
     slug: "Pop Culture & TCG",
     image: catPopCulture,
     description: "Figurines, comics, cartes, vinyles",
+    subcategories: "Comics · Figurines · Cartes TCG · Jeux vidéo",
   },
   {
     name: "Objets Divers",
     slug: "Bijoux & Accessoires",
     image: catObjetsDivers,
     description: "Montres, appareils photo, curiosités",
+    subcategories: "Photo & Électronique · Horlogerie · Livres · Curiosités",
   },
 ];
 
