@@ -375,17 +375,26 @@ const SearchDetail = () => {
                 {search.title}
               </h1>
 
-              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-6">
-                <span className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-full">
-                  <Euro className="w-4 h-4 text-accent" />
+              <div className="flex flex-wrap gap-2 mb-6">
+                <span
+                  className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
+                  style={{ backgroundColor: '#1B2A4A', color: '#FFFFFF', fontSize: '13px', fontWeight: 500 }}
+                >
+                  <Euro className="w-4 h-4" style={{ color: '#C9A84C' }} />
                   {formatBudget(search.budget_min, search.budget_max)}
                 </span>
-                <span className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-full">
-                  <Clock className="w-4 h-4 text-accent" />
+                <span
+                  className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
+                  style={{ backgroundColor: '#F5F0E8', color: '#1B2A4A', fontSize: '13px', fontWeight: 500, border: '1.5px solid #C9A84C' }}
+                >
+                  <Clock className="w-4 h-4" style={{ color: '#C9A84C' }} />
                   {urgencyLabels[search.urgency || "normal"] || search.urgency}
                 </span>
-                <span className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-full">
-                  <Calendar className="w-4 h-4 text-accent" />
+                <span
+                  className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
+                  style={{ backgroundColor: '#F5F0E8', color: '#1B2A4A', fontSize: '13px', fontWeight: 500, border: '1.5px solid #C9A84C' }}
+                >
+                  <Calendar className="w-4 h-4" style={{ color: '#C9A84C' }} />
                   {formatDate(search.created_at)}
                 </span>
               </div>
