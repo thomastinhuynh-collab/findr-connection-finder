@@ -676,10 +676,18 @@ const SearchDetail = () => {
               )}
 
               {/* Trust badges */}
-              <div className="mt-6 p-4 bg-secondary/30 rounded-xl">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <Shield className="w-5 h-5 text-accent" />
-                  <span>Paiement sécurisé via findr</span>
+              <div
+                className="mt-6 flex items-start gap-3"
+                style={{ backgroundColor: '#F5F0E8', border: '1px solid #C9A84C', borderRadius: '10px', padding: '12px 16px' }}
+              >
+                <Shield className="w-[18px] h-[18px] shrink-0 mt-0.5" style={{ color: '#C9A84C' }} />
+                <div>
+                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#1B2A4A' }}>
+                    Paiement sécurisé via findr
+                  </span>
+                  <p style={{ fontSize: '11px', color: '#8A8070', fontStyle: 'italic', marginTop: '2px' }}>
+                    Fonds bloqués jusqu'à confirmation de réception
+                  </p>
                 </div>
               </div>
             </motion.div>
