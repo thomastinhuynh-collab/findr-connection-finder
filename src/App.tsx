@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
-import BackButton from "@/components/BackButton";
+
 import VintageBackground from "@/components/VintageBackground";
 import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
@@ -36,7 +36,7 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <VintageBackground />
-          <BackButton />
+          
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/recherches" element={<Searches />} />
