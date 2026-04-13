@@ -71,16 +71,6 @@ const categories: Category[] = [
       { name: "Lunettes", slug: "Bijoux & Accessoires&sub=Lunettes" },
     ],
   },
-  {
-    name: "Décoration Vintage",
-    slug: "Décoration Vintage",
-    subcategories: [
-      { name: "Luminaires", slug: "Décoration Vintage&sub=Luminaires" },
-      { name: "Affiches & Art", slug: "Décoration Vintage&sub=Affiches & Art" },
-      { name: "Vaisselle & Céramique", slug: "Décoration Vintage&sub=Vaisselle & Céramique" },
-      { name: "Miroirs & Cadres", slug: "Décoration Vintage&sub=Miroirs & Cadres" },
-    ],
-  },
 ];
 
 const CategoryNav = () => {
