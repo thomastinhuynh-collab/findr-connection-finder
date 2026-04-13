@@ -10,7 +10,7 @@ const Hero = () => {
     >
       {/* Background image */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-[0.12]"
+        className="absolute inset-0 bg-cover bg-center opacity-[0.35]"
         style={{ backgroundImage: `url(${heroBackground})` }}
       />
 
@@ -20,7 +20,7 @@ const Hero = () => {
         style={{
           background: `
             radial-gradient(ellipse 80% 60% at 50% 40%, hsl(var(--gold) / 0.08) 0%, transparent 60%),
-            linear-gradient(180deg, hsl(var(--navy-primary) / 0.3) 0%, hsl(var(--navy-primary) / 0.6) 100%)
+            linear-gradient(135deg, rgba(17, 33, 80, 0.55) 0%, rgba(17, 33, 80, 0.45) 100%)
           `
         }}
       />
