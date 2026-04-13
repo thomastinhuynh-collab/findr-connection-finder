@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
+import { useGoBack } from "@/hooks/useGoBack";
 
 interface SubCategory {
   name: string;
@@ -87,10 +88,29 @@ const CategoryNav = () => {
     setOpenCategory(null);
   };
 
+  const location = useLocation();
+  const goBack = useGoBack("/recherches");
+  const isDetailPage = location.pathname.startsWith("/recherche/");
+
   return (
     <div className="hidden md:block border-b border-[hsl(224_67%_25%)]" style={{ backgroundColor: 'hsl(224 67% 19%)' }}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center gap-0">
+          {isDetailPage && (
+            <>
+              <button
+                onClick={goBack}
+                className="text-[rgba(255,255,255,0.75)] hover:text-white whitespace-nowrap"
+                style={{ fontSize: '13px', fontWeight: 400, transition: 'color 0.15s ease' }}
+              >
+                ← Retour
+              </button>
+              <div
+                className="shrink-0"
+                style={{ width: '1px', height: '18px', backgroundColor: 'rgba(255,255,255,0.2)', margin: '0 16px' }}
+              />
+            </>
+          )}
           {categories.map((category) => (
             <div
               key={category.slug}
