@@ -298,7 +298,7 @@ const MySpace = () => {
             {/* Tabs */}
             <Tabs defaultValue="searches" className="w-full">
               <TabsList
-                className="grid w-full grid-cols-4 bg-transparent border-b rounded-none h-auto p-0"
+                className="flex w-auto justify-start gap-2 bg-transparent border-b rounded-none h-auto p-0"
                 style={{ borderColor: '#E5E1D8' }}
               >
                 <TabsTrigger
