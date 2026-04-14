@@ -180,7 +180,7 @@ const MySpace = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F5F0EA' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#112150' }}></div>
       </div>
     );
@@ -195,7 +195,7 @@ const MySpace = () => {
     : "N/A";
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F5F0EA' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
       <Navbar />
       
       <main className="pt-24 pb-16">
@@ -362,7 +362,7 @@ const MySpace = () => {
                     </Button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {searches.map((search) => (
                       <SearchCardAccordion
                         key={search.id}
