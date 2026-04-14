@@ -19,7 +19,7 @@ const NotFound = () => {
       <div className="text-center max-w-lg">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
-          <Logo variant="light" />
+          <Logo />
         </div>
 
         {/* Magnifying glass illustration */}
