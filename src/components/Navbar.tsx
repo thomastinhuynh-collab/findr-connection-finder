@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
 import AuthModal from "@/components/AuthModal";
 import CategoryNav from "@/components/CategoryNav";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { label: "Comment ça marche", to: "/comment-ca-marche" },
@@ -18,6 +19,8 @@ const Navbar = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const isDetailPage = location.pathname.startsWith("/recherche/");
 
   useEffect(() => {
@@ -60,13 +63,23 @@ const Navbar = () => {
 
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center">
-              <Button
-                size="sm"
-                className={`bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
-                onClick={() => setAuthModalOpen(true)}
-              >
-                {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la beta"}
-              </Button>
+              {user ? (
+                <Button
+                  size="sm"
+                  className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full"
+                  onClick={() => navigate("/mon-espace")}
+                >
+                  Mon espace
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  className={`bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
+                  onClick={() => setAuthModalOpen(true)}
+                >
+                  {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la beta"}
+                </Button>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -92,16 +105,29 @@ const Navbar = () => {
                     {link.label}
                   </Link>
                 ))}
-                <Button
-                  size="sm"
-                  className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full w-full mt-2"
-                  onClick={() => {
-                    setIsOpen(false);
-                    setAuthModalOpen(true);
-                  }}
-                >
-                  Rejoindre la beta
-                </Button>
+                {user ? (
+                  <Button
+                    size="sm"
+                    className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full w-full mt-2"
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate("/mon-espace");
+                    }}
+                  >
+                    Mon espace
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full w-full mt-2"
+                    onClick={() => {
+                      setIsOpen(false);
+                      setAuthModalOpen(true);
+                    }}
+                  >
+                    Rejoindre la beta
+                  </Button>
+                )}
               </div>
             </div>
           )}
