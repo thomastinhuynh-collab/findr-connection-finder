@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
 import AuthModal from "@/components/AuthModal";
 import CategoryNav from "@/components/CategoryNav";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { label: "Comment ça marche", to: "/comment-ca-marche" },
