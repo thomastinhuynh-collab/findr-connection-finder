@@ -19,6 +19,8 @@ const Navbar = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const isDetailPage = location.pathname.startsWith("/recherche/");
 
   useEffect(() => {
