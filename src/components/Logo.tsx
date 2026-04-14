@@ -25,8 +25,8 @@ const Logo = ({ className }: LogoProps) => {
       >
         fındr
       </text>
-      <circle cx="46" cy="10" r="3" fill="none" stroke="#F5F0EA" strokeWidth="1.8" />
-      <line x1="48.5" y1="12.5" x2="52" y2="16" stroke="#F5F0EA" strokeWidth="1.8" strokeLinecap="round" />
+      <circle cx="46" cy="9" r="3" fill="none" stroke="#F5F0EA" strokeWidth="1.8" />
+      <line x1="48.2" y1="11.2" x2="50.5" y2="13.5" stroke="#F5F0EA" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 };
