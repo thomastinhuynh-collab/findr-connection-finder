@@ -126,7 +126,7 @@ const CategoryNav = () => {
             >
               <button
                 onClick={() => handleCategoryClick(category.slug)}
-                className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-[hsl(42_33%_94%/0.8)] hover:text-[hsl(42_33%_94%)] transition-colors whitespace-nowrap"
+                className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-[#112150]/70 hover:text-[#112150] transition-colors whitespace-nowrap"
               >
                 {category.name}
                 <ChevronDown className="w-3 h-3" />
