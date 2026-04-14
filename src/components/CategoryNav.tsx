@@ -93,7 +93,7 @@ const CategoryNav = () => {
   const isDetailPage = location.pathname.startsWith("/recherche/");
 
   return (
-    <div className="hidden md:block border-b border-[hsl(224_67%_25%)]" style={{ backgroundColor: 'hsl(224 67% 19%)' }}>
+    <div className="hidden md:block" style={{ background: 'transparent' }}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center gap-0">
           {isDetailPage && (
