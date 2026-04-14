@@ -62,9 +62,8 @@ const Hero = () => {
             className="text-3xl md:text-5xl lg:text-6xl font-poppins font-extrabold mb-6 leading-tight text-cream animate-slide-up"
             style={{ animationDelay: '0.15s', animationFillMode: 'both' }}
           >
-            Trouvez l'introuvable, avec{" "}
-            <span className="text-accent">findr</span> &{" "}
-            <span className="text-accent">buyr</span>
+            Trouvez l'introuvable avec{" "}
+            <span className="text-accent">findr</span>
           </h1>
 
           {/* Subtitle */}
