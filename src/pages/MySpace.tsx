@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Package, Heart, Clock, Euro, ExternalLink, MapPin } from "lucide-react";
+import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Package, Heart, Clock, Euro, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import PremiumWallet from "@/components/PremiumWallet";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
-import heroVintageMarket from "@/assets/hero-vintage-market.png";
 
 interface Profile {
   id: string;
@@ -24,6 +23,7 @@ interface Profile {
   is_premium: boolean | null;
   xp_points: number;
   level: number;
+  city: string | null;
 }
 
 interface SearchItem {
@@ -51,7 +51,6 @@ interface Evaluation {
   } | null;
 }
 
-// Mock transactions pour simulation
 const mockTransactions = [
   { id: "1", type: "credit" as const, amount: 25.00, description: "Vente recherche #127", date: "15 Jan 2026" },
   { id: "2", type: "debit" as const, amount: 15.00, description: "Abonnement Premium", date: "10 Jan 2026" },
@@ -89,7 +88,7 @@ const MySpace = () => {
       .select("*")
       .eq("user_id", user.id)
       .single();
-    if (data) setProfile(data);
+    if (data) setProfile(data as any);
   };
 
   const fetchSearches = async () => {
@@ -101,7 +100,6 @@ const MySpace = () => {
       .order("created_at", { ascending: false });
     
     if (data) {
-      // Fetch pending proposal counts and reservation counts for each search
       const searchesWithCounts = await Promise.all(
         data.map(async (search) => {
           const { count: proposalCount } = await supabase
@@ -182,8 +180,8 @@ const MySpace = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F5F0EA' }}>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#112150' }}></div>
       </div>
     );
   }
@@ -197,138 +195,156 @@ const MySpace = () => {
     : "N/A";
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: 'hsl(224 67% 19%)' }}>
-      {/* Background image */}
-      <div 
-        className="fixed inset-0 z-0"
-        style={{
-          backgroundImage: `url(${heroVintageMarket})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.15
-        }}
-      />
-      {/* Dark overlay */}
-      <div 
-        className="fixed inset-0 z-0"
-        style={{
-          background: 'linear-gradient(180deg, hsl(224 67% 19% / 0.3) 0%, hsl(224 67% 19% / 0.6) 100%)'
-        }}
-      />
-      
+    <div className="min-h-screen" style={{ backgroundColor: '#F5F0EA' }}>
       <Navbar />
       
-      <main className="pt-24 pb-16 relative z-10">
+      <main className="pt-24 pb-16">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="max-w-4xl mx-auto"
           >
-            {/* Profile Header */}
-            <Card className="mb-8">
-              <CardContent className="pt-6">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <Avatar className="w-24 h-24">
-                    <AvatarImage src={profile.avatar_url || undefined} />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
-                      {profile.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="text-center md:text-left flex-1">
-                    <h1 className="text-2xl font-display font-bold text-primary flex items-center gap-2 justify-center md:justify-start">
-                      {profile.full_name || "Utilisateur"}
-                      {profile.is_premium && (
-                        <Badge className="bg-accent text-accent-foreground">
-                          <Crown className="w-3 h-3 mr-1" />
-                          Premium
-                        </Badge>
-                      )}
-                    </h1>
-                    <p className="text-muted-foreground">{user.email}</p>
-                    <div className="flex flex-wrap gap-2 mt-2 justify-center md:justify-start">
-                      {profile.is_findr && (
-                        <Badge className="bg-primary text-primary-foreground">findr</Badge>
-                      )}
-                      <Badge variant="outline">Niveau {profile.level}</Badge>
-                      <Badge variant="outline">{profile.xp_points} XP</Badge>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="icon">
-                      <Settings className="w-4 h-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" onClick={handleSignOut}>
-                      <LogOut className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  
-                  {/* Link to My Proposals for Findrs */}
+            {/* Profile Header - inspired by image 2 */}
+            <div className="flex flex-col md:flex-row items-start gap-6 mb-10">
+              <Avatar className="w-28 h-28 border-4" style={{ borderColor: '#D9BD8B' }}>
+                <AvatarImage src={profile.avatar_url || undefined} />
+                <AvatarFallback className="text-3xl font-bold" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                  {profile.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+
+              <div className="flex-1">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h1 className="text-2xl font-display font-bold" style={{ color: '#112150' }}>
+                    {profile.full_name || "Utilisateur"}
+                  </h1>
+                  {profile.is_premium && (
+                    <Badge style={{ backgroundColor: '#D9BD8B', color: '#112150' }}>
+                      <Crown className="w-3 h-3 mr-1" />
+                      Premium
+                    </Badge>
+                  )}
                   {profile.is_findr && (
-                    <Button variant="outline" asChild className="md:hidden mt-4 w-full">
-                      <Link to="/mes-propositions">
-                        <Package className="w-4 h-4 mr-2" />
-                        Mes propositions
-                      </Link>
-                    </Button>
+                    <Badge style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>findr</Badge>
                   )}
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <Search className="w-8 h-8 mx-auto mb-2 text-primary" />
-                  <p className="text-3xl font-bold text-primary">{searches.length}</p>
-                  <p className="text-sm text-muted-foreground">Recherches</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <Star className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
-                  <p className="text-3xl font-bold text-primary">{averageRating}</p>
-                  <p className="text-sm text-muted-foreground">Note moyenne</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6 text-center">
-                  <User className="w-8 h-8 mx-auto mb-2 text-primary" />
-                  <p className="text-3xl font-bold text-primary">{evaluations.length}</p>
-                  <p className="text-sm text-muted-foreground">Évaluations</p>
-                </CardContent>
-              </Card>
+                {/* Rating stars */}
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-4 h-4 ${
+                          averageRating !== "N/A" && i < Math.round(Number(averageRating))
+                            ? "fill-yellow-500 text-yellow-500"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm" style={{ color: '#6B7280' }}>
+                    {evaluations.length} évaluation{evaluations.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+
+                {/* Info rows */}
+                <div className="mt-3 space-y-1 text-sm" style={{ color: '#4B5563' }}>
+                  {profile.city && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" style={{ color: '#D9BD8B' }} />
+                      <span>{profile.city}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" style={{ color: '#D9BD8B' }} />
+                    <span>Niveau {profile.level} · {profile.xp_points} XP</span>
+                  </div>
+                </div>
+
+                {profile.bio && (
+                  <p className="mt-3 text-sm leading-relaxed" style={{ color: '#374151' }}>
+                    {profile.bio}
+                  </p>
+                )}
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-2 self-start">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border"
+                  style={{ borderColor: '#D9BD8B', color: '#112150' }}
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Modifier mon profil
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleSignOut}
+                  className="border"
+                  style={{ borderColor: '#E5E7EB', color: '#6B7280' }}
+                >
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
+
+            {/* Separator */}
+            <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
             {/* Tabs */}
             <Tabs defaultValue="searches" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="searches">Mes Recherches</TabsTrigger>
-                <TabsTrigger value="favorites" className="flex items-center gap-1.5">
-                  <Heart className="w-4 h-4" />
+              <TabsList
+                className="grid w-full grid-cols-4 bg-transparent border-b rounded-none h-auto p-0"
+                style={{ borderColor: '#E5E1D8' }}
+              >
+                <TabsTrigger
+                  value="searches"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium"
+                  style={{ color: '#6B7280' }}
+                >
+                  Annonces
+                </TabsTrigger>
+                <TabsTrigger
+                  value="favorites"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium flex items-center gap-1.5"
+                  style={{ color: '#6B7280' }}
+                >
                   Favoris
                 </TabsTrigger>
-                <TabsTrigger value="wallet" className="flex items-center gap-1.5">
-                  <Wallet className="w-4 h-4" />
+                <TabsTrigger
+                  value="wallet"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium flex items-center gap-1.5"
+                  style={{ color: '#6B7280' }}
+                >
                   Portefeuille
                 </TabsTrigger>
-                <TabsTrigger value="evaluations">Évaluations</TabsTrigger>
+                <TabsTrigger
+                  value="evaluations"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium"
+                  style={{ color: '#6B7280' }}
+                >
+                  Évaluations
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="searches" className="mt-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">Mes recherches en cours</h2>
+                  <h2 className="text-lg font-semibold" style={{ color: '#112150' }}>Mes recherches en cours</h2>
                   <div className="flex gap-2">
                     {profile.is_findr && (
-                      <Button variant="outline" asChild>
+                      <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BD8B', color: '#112150' }}>
                         <Link to="/mes-propositions">
                           <Package className="w-4 h-4 mr-2" />
                           Mes propositions
                         </Link>
                       </Button>
                     )}
-                    <Button asChild className="btn-hero">
+                    <Button asChild size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
                       <Link to="/poster">
                         <Plus className="w-4 h-4 mr-2" />
                         Nouvelle recherche
@@ -338,15 +354,13 @@ const MySpace = () => {
                 </div>
 
                 {searches.length === 0 ? (
-                  <Card>
-                    <CardContent className="py-12 text-center">
-                      <Search className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-muted-foreground">Aucune recherche pour le moment</p>
-                      <Button asChild className="mt-4 btn-hero">
-                        <Link to="/poster">Poster ma première recherche</Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  <div className="py-16 text-center">
+                    <Search className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
+                    <p style={{ color: '#6B7280' }}>Aucune recherche pour le moment</p>
+                    <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                      <Link to="/poster">Poster ma première recherche</Link>
+                    </Button>
+                  </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {searches.map((search) => (
@@ -370,109 +384,98 @@ const MySpace = () => {
               </TabsContent>
 
               <TabsContent value="favorites" className="mt-6">
-                <h2 className="text-xl font-semibold mb-4">Mes favoris</h2>
-
                 {favorites.length === 0 ? (
-                  <Card>
-                    <CardContent className="py-12 text-center">
-                      <Heart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-muted-foreground">Aucun favori pour le moment</p>
-                      <Button asChild className="mt-4 btn-hero">
-                        <Link to="/recherches">Parcourir les annonces</Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  <div className="py-16 text-center">
+                    <Heart className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
+                    <p style={{ color: '#6B7280' }}>Aucun favori pour le moment</p>
+                    <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                      <Link to="/recherches">Parcourir les annonces</Link>
+                    </Button>
+                  </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {favorites.map((search) => (
-                      <Card
+                      <div
                         key={search.id}
-                        className="overflow-hidden cursor-pointer hover:shadow-vintage transition-all"
+                        className="flex rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow bg-white border"
+                        style={{ borderColor: '#E5E1D8' }}
                         onClick={() => navigate(`/recherche/${search.id}`)}
                       >
-                        <div className="flex">
-                          {search.image_url && (
-                            <div className="w-32 h-32 flex-shrink-0">
-                              <img
-                                src={search.image_url}
-                                alt={search.title}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
+                        {search.image_url && (
+                          <div className="w-28 h-28 flex-shrink-0">
+                            <img
+                              src={search.image_url}
+                              alt={search.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className="p-3 flex-1">
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: '#F0EBE3', color: '#8B7355' }}>
+                            {search.category}
+                          </span>
+                          <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#112150' }}>
+                            {search.title}
+                          </h3>
+                          {search.description && (
+                            <p className="text-xs line-clamp-1 mt-0.5" style={{ color: '#6B7280' }}>
+                              {search.description}
+                            </p>
                           )}
-                          <CardContent className="p-4 flex-1">
-                            <Badge className="mb-2 bg-accent text-accent-foreground text-xs">
-                              {search.category}
-                            </Badge>
-                            <h3 className="font-semibold text-primary line-clamp-1 mb-1">
-                              {search.title}
-                            </h3>
-                            {search.description && (
-                              <p className="text-xs text-muted-foreground line-clamp-1 mb-2">
-                                {search.description}
-                              </p>
-                            )}
-                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Euro className="w-3 h-3" />
-                                {search.budget_min && search.budget_max
-                                  ? `${search.budget_min.toLocaleString("fr-FR")}€ – ${search.budget_max.toLocaleString("fr-FR")}€`
-                                  : "Non défini"}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <MapPin className="w-3 h-3" />
-                                {search.city}
-                              </span>
-                            </div>
-                          </CardContent>
+                          <div className="flex items-center gap-3 text-xs mt-2" style={{ color: '#9CA3AF' }}>
+                            <span className="flex items-center gap-1">
+                              <Euro className="w-3 h-3" />
+                              {search.budget_min && search.budget_max
+                                ? `${search.budget_min}€ – ${search.budget_max}€`
+                                : "Non défini"}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              {search.city}
+                            </span>
+                          </div>
                         </div>
-                      </Card>
+                      </div>
                     ))}
                   </div>
                 )}
               </TabsContent>
 
               <TabsContent value="evaluations" className="mt-6">
-                <h2 className="text-xl font-semibold mb-4">Évaluations reçues</h2>
-
                 {evaluations.length === 0 ? (
-                  <Card>
-                    <CardContent className="py-12 text-center">
-                      <Star className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-muted-foreground">Aucune évaluation pour le moment</p>
-                    </CardContent>
-                  </Card>
+                  <div className="py-16 text-center">
+                    <Star className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
+                    <p style={{ color: '#6B7280' }}>Aucune évaluation pour le moment</p>
+                  </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {evaluations.map((evaluation) => (
-                      <Card key={evaluation.id}>
-                        <CardContent className="py-4">
-                          <div className="flex items-start gap-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="flex">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className={`w-4 h-4 ${
-                                        i < evaluation.rating
-                                          ? "text-yellow-500 fill-yellow-500"
-                                          : "text-gray-300"
-                                      }`}
-                                    />
-                                  ))}
-                                </div>
-                                <span className="text-sm text-muted-foreground">
-                                  par {evaluation.from_user?.full_name || "Anonyme"}
-                                </span>
-                              </div>
-                              {evaluation.comment && (
-                                <p className="text-sm">{evaluation.comment}</p>
-                              )}
-                            </div>
+                      <div
+                        key={evaluation.id}
+                        className="bg-white rounded-lg p-4 border"
+                        style={{ borderColor: '#E5E1D8' }}
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-4 h-4 ${
+                                  i < evaluation.rating
+                                    ? "text-yellow-500 fill-yellow-500"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            ))}
                           </div>
-                        </CardContent>
-                      </Card>
+                          <span className="text-sm" style={{ color: '#6B7280' }}>
+                            par {evaluation.from_user?.full_name || "Anonyme"}
+                          </span>
+                        </div>
+                        {evaluation.comment && (
+                          <p className="text-sm" style={{ color: '#374151' }}>{evaluation.comment}</p>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}
