@@ -2,56 +2,32 @@ import { cn } from "@/lib/utils";
 
 interface LogoProps {
   className?: string;
-  variant?: "light" | "dark";
-  showTagline?: boolean;
-  size?: "sm" | "md" | "lg" | "xl";
 }
 
-const sizeClasses = {
-  sm: { text: "text-xl", loupe: "w-2 h-2", tagline: "text-xs" },
-  md: { text: "text-2xl", loupe: "w-2.5 h-2.5", tagline: "text-xs" },
-  lg: { text: "text-3xl", loupe: "w-3 h-3", tagline: "text-sm" },
-  xl: { text: "text-4xl", loupe: "w-4 h-4", tagline: "text-sm" },
-};
-
-const Logo = ({ 
-  className, 
-  variant = "dark", 
-  showTagline = false,
-  size = "md" 
-}: LogoProps) => {
-  const textColor = variant === "dark" ? "text-foreground" : "text-cream";
-  const sizes = sizeClasses[size];
-
+const Logo = ({ className }: LogoProps) => {
   return (
-    <div className={cn("flex flex-col", className)}>
-      <div className="flex items-center">
-        <span 
-          className={cn(
-            "font-barlow font-bold tracking-tight",
-            sizes.text,
-            textColor
-          )}
-        >
-          f
-          <span className="relative inline-block">
-            ı
-            {/* Loupe/magnifying glass icon replacing the dot of 'i' */}
-            <svg 
-              className={cn("absolute top-0 left-1/2 -translate-x-1/2", sizes.loupe)}
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2.5"
-            >
-              <circle cx="10" cy="10" r="6" />
-              <path d="M14.5 14.5L20 20" strokeLinecap="round" />
-            </svg>
-          </span>
-          ndr
-        </span>
-      </div>
-    </div>
+    <svg
+      width="110"
+      height="38"
+      viewBox="0 0 140 44"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={cn(className)}
+    >
+      <text
+        x="70"
+        y="36"
+        textAnchor="middle"
+        fontFamily="'Space Grotesk', sans-serif"
+        fontWeight="700"
+        fontSize="38"
+        fill="#F5F0EA"
+      >
+        fındr
+      </text>
+      <circle cx="46" cy="10" r="3" fill="none" stroke="#F5F0EA" strokeWidth="1.8" />
+      <line x1="48.5" y1="12.5" x2="52" y2="16" stroke="#F5F0EA" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
   );
 };
 
