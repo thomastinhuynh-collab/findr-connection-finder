@@ -199,11 +199,10 @@ const MySpace = () => {
       <Navbar />
       
       <main className="pt-24 pb-16">
-        <div className="container mx-auto px-4">
+        <div className="px-6 md:px-12 lg:px-16 mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto"
           >
             {/* Profile Header - inspired by image 2 */}
             <div className="flex flex-col md:flex-row items-start gap-6 mb-10">
