@@ -105,16 +105,29 @@ const Navbar = () => {
                     {link.label}
                   </Link>
                 ))}
-                <Button
-                  size="sm"
-                  className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full w-full mt-2"
-                  onClick={() => {
-                    setIsOpen(false);
-                    setAuthModalOpen(true);
-                  }}
-                >
-                  Rejoindre la beta
-                </Button>
+                {user ? (
+                  <Button
+                    size="sm"
+                    className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full w-full mt-2"
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigate("/mon-espace");
+                    }}
+                  >
+                    Mon espace
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full w-full mt-2"
+                    onClick={() => {
+                      setIsOpen(false);
+                      setAuthModalOpen(true);
+                    }}
+                  >
+                    Rejoindre la beta
+                  </Button>
+                )}
               </div>
             </div>
           )}
