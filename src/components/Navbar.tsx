@@ -42,7 +42,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center group ml-8">
-              <Logo size="lg" variant="light" />
+              <Logo />
             </Link>
 
             {/* Desktop Nav Links */}

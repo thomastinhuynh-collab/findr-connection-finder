@@ -16,7 +16,7 @@ const Footer = () => {
           {/* Left - Brand */}
           <div>
             <Link to="/" className="block mb-2">
-              <Logo size="lg" variant="light" />
+              <Logo />
             </Link>
             <p className="text-cream/70 text-sm italic mb-4">
               let others search for you

@@ -105,7 +105,7 @@ const ResetPassword = () => {
     <div className="flex min-h-screen items-center justify-center px-4" style={{ backgroundColor: "#112150" }}>
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
-          <Logo variant="light" />
+          <Logo />
         </div>
 
         <div className="bg-card rounded-2xl p-8 shadow-vintage">
