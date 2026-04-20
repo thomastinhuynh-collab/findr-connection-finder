@@ -196,17 +196,7 @@ const ActiveRequests = () => {
                     </div>
                   )}
 
-                  {/* Demande buyr label */}
-                  <span
-                    style={{
-                      position: "absolute", top: "10px", left: "10px",
-                      background: "#C9A84C", color: "#1B2A4A",
-                      fontSize: "11px", fontWeight: 600, borderRadius: "4px",
-                      padding: "3px 8px", zIndex: 2,
-                    }}
-                  >
-                    Demande buyr
-                  </span>
+
 
                   {/* Category badge */}
                   <Badge
