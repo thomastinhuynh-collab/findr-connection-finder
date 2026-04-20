@@ -133,9 +133,11 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-      <div className="fixed top-16 left-0 right-0 z-40">
-        <CategoryNav />
-      </div>
+      {location.pathname === "/" && (
+        <div className="fixed top-16 left-0 right-0 z-40">
+          <CategoryNav />
+        </div>
+      )}
 
       <AuthModal
         isOpen={authModalOpen}
