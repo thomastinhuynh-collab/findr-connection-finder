@@ -44,7 +44,7 @@ const Navbar = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center group ml-8" style={{ color: scrolled ? '#F5F0EA' : '#112150' }}>
+            <Link to="/" className="flex items-center group ml-8">
               <Logo />
             </Link>
 
@@ -54,10 +54,7 @@ const Navbar = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="text-sm font-medium transition-colors"
-                  style={{ color: scrolled ? 'rgba(245,240,234,0.8)' : 'rgba(17,33,80,0.75)' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = scrolled ? '#F5F0EA' : '#112150')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = scrolled ? 'rgba(245,240,234,0.8)' : 'rgba(17,33,80,0.75)')}
+                  className="text-sm font-medium text-cream/80 hover:text-cream transition-colors"
                 >
                   {link.label}
                 </Link>
