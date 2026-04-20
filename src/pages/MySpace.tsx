@@ -205,17 +205,17 @@ const MySpace = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Profile Header - inspired by image 2 */}
-            <div className="flex flex-col md:flex-row items-start gap-6 mb-10">
-              <Avatar className="w-28 h-28 border-4" style={{ borderColor: '#D9BD8B' }}>
+            <div className="flex flex-col md:flex-row items-start gap-8 mb-10">
+              <Avatar className="w-44 h-44 md:w-52 md:h-52 border-4 shadow-md flex-shrink-0" style={{ borderColor: '#D9BD8B' }}>
                 <AvatarImage src={profile.avatar_url || undefined} />
-                <AvatarFallback className="text-3xl font-bold" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                <AvatarFallback className="text-5xl font-bold" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
                   {profile.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
                 </AvatarFallback>
               </Avatar>
 
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <h1 className="text-2xl font-display font-bold" style={{ color: '#112150' }}>
+                  <h1 className="text-3xl font-display font-bold" style={{ color: '#112150' }}>
                     {profile.full_name || "Utilisateur"}
                   </h1>
                   {profile.is_premium && (
@@ -230,7 +230,7 @@ const MySpace = () => {
                 </div>
 
                 {/* Rating stars */}
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-2 mt-2">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <Star
@@ -249,7 +249,7 @@ const MySpace = () => {
                 </div>
 
                 {/* Info rows */}
-                <div className="mt-3 space-y-1 text-sm" style={{ color: '#4B5563' }}>
+                <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" style={{ color: '#4B5563' }}>
                   {profile.city && (
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4" style={{ color: '#D9BD8B' }} />
@@ -262,11 +262,27 @@ const MySpace = () => {
                   </div>
                 </div>
 
-                {profile.bio && (
-                  <p className="mt-3 text-sm leading-relaxed" style={{ color: '#374151' }}>
-                    {profile.bio}
-                  </p>
-                )}
+                {/* About / Bio card filling available space */}
+                <div
+                  className="mt-5 rounded-xl p-5"
+                  style={{ backgroundColor: '#FAF7F2', border: '1px solid #ECE6DA' }}
+                >
+                  <h3
+                    className="text-xs font-semibold uppercase tracking-wider mb-2"
+                    style={{ color: '#D9BD8B', letterSpacing: '0.08em' }}
+                  >
+                    À propos
+                  </h3>
+                  {profile.bio ? (
+                    <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>
+                      {profile.bio}
+                    </p>
+                  ) : (
+                    <p className="text-sm leading-relaxed italic" style={{ color: '#9CA3AF' }}>
+                      Aucune description pour le moment. Ajoutez une bio pour vous présenter à la communauté findr — vos passions, ce que vous cherchez ou ce que vous savez dénicher.
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Action buttons */}
