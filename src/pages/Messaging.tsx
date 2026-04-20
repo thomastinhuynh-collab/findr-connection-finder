@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send, User, Loader2, CheckCheck, Check } from "lucide-react";
+import { ArrowLeft, Send, Loader2, CheckCheck, Check, Info, Paperclip } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +28,14 @@ interface Message {
   is_read: boolean;
   created_at: string;
 }
+
+const MAX_CHARS = 240;
+
+const QUICK_SUGGESTIONS = [
+  "J'ai peut-être ce que vous cherchez 👀",
+  "Quel est votre budget ?",
+  "Pouvez-vous envoyer plus de photos ?",
+];
 
 const Messaging = () => {
   const { id } = useParams();
@@ -76,12 +84,10 @@ const Messaging = () => {
         (payload) => {
           const newMessage = payload.new as Message;
           setMessages((prev) => {
-            // Avoid duplicates
             if (prev.some(m => m.id === newMessage.id)) return prev;
             return [...prev, newMessage];
           });
           
-          // Mark as read if we're the receiver
           if (newMessage.receiver_id === user.id) {
             markAsRead(newMessage.id);
           }
@@ -94,7 +100,6 @@ const Messaging = () => {
     };
   }, [id, user]);
 
-  // Scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -144,7 +149,6 @@ const Messaging = () => {
 
     setMessages(data || []);
     
-    // Mark unread messages as read
     if (user && data) {
       const unreadIds = data
         .filter(m => m.receiver_id === user.id && !m.is_read)
@@ -170,9 +174,6 @@ const Messaging = () => {
     if (!message.trim() || !user || !search) return;
 
     setSending(true);
-    const receiverId = search.user_id === user.id ? search.user_id : search.user_id;
-    
-    // Determine the correct receiver (the other person in the conversation)
     const actualReceiverId = search.user_id;
 
     const { error } = await supabase
@@ -205,6 +206,10 @@ const Messaging = () => {
     }
   };
 
+  const handleSuggestion = (text: string) => {
+    setMessage(text);
+  };
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
@@ -225,7 +230,6 @@ const Messaging = () => {
     }
   };
 
-  // Group messages by date
   const groupedMessages = messages.reduce((groups, msg) => {
     const date = new Date(msg.created_at).toDateString();
     if (!groups[date]) {
@@ -235,12 +239,15 @@ const Messaging = () => {
     return groups;
   }, {} as Record<string, Message[]>);
 
+  const remainingChars = MAX_CHARS - message.length;
+  const firstName = search?.profiles?.full_name?.split(" ")[0] || "l'utilisateur";
+
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen" style={{ backgroundColor: "#F5F0E8" }}>
         <Navbar />
         <main className="pt-24 pb-16 flex items-center justify-center">
-          <Loader2 className="w-12 h-12 animate-spin text-primary" />
+          <Loader2 className="w-12 h-12 animate-spin" style={{ color: "#6B7B9E" }} />
         </main>
         <Footer />
       </div>
@@ -249,11 +256,11 @@ const Messaging = () => {
 
   if (!search) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen" style={{ backgroundColor: "#F5F0E8" }}>
         <Navbar />
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-2xl font-serif font-bold text-primary mb-4">
+            <h1 className="text-2xl font-serif font-bold mb-4" style={{ color: "#112150" }}>
               Conversation non trouvée
             </h1>
             <Button onClick={() => navigate("/recherches")}>
@@ -267,17 +274,17 @@ const Messaging = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F0E8" }}>
       <Navbar />
       
       <main className="flex-1 pt-24 pb-8">
         <div className="container mx-auto px-4 h-full flex flex-col max-w-3xl">
-          {/* Header */}
+          {/* Back link */}
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="mb-6"
+            className="mb-4"
           >
             <button
               onClick={() => {
@@ -285,134 +292,248 @@ const Messaging = () => {
                 if (typeof idx === "number" && idx > 0) navigate(-1);
                 else navigate(`/recherche/${id}`);
               }}
-              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-4"
+              className="flex items-center gap-2 text-sm transition-colors"
+              style={{ color: "#6B7B9E" }}
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
               Retour
             </button>
+          </motion.div>
 
-            <div className="bg-card border border-border rounded-2xl p-4 flex items-center gap-4">
+          {/* Main chat card */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="bg-white rounded-2xl overflow-hidden flex flex-col"
+            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+          >
+            {/* Conversation Header */}
+            <div
+              className="flex items-center gap-4 px-5 py-4 border-b"
+              style={{ borderColor: "#ECE6DA", backgroundColor: "#FFFFFF" }}
+            >
               {search.profiles?.avatar_url ? (
                 <img
                   src={search.profiles.avatar_url}
                   alt={search.profiles.full_name || "User"}
-                  className="w-12 h-12 rounded-full border-2 border-accent object-cover"
+                  className="w-12 h-12 rounded-full object-cover border-2"
+                  style={{ borderColor: "#D9BD8B" }}
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-lg font-bold">
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white"
+                  style={{ backgroundColor: "#6B7B9E" }}
+                >
                   {search.profiles?.full_name?.charAt(0) || "U"}
                 </div>
               )}
-              <div className="flex-1">
-                <p className="font-semibold text-primary">
-                  {search.profiles?.full_name || "Utilisateur"}
-                </p>
-                <p className="text-sm text-muted-foreground truncate max-w-md">
-                  {search.title}
-                </p>
-              </div>
-              <div className="w-3 h-3 bg-success rounded-full animate-pulse" title="En ligne" />
-            </div>
-          </motion.div>
 
-          {/* Messages Area */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="flex-1 bg-card border border-border rounded-2xl p-4 mb-4 min-h-[400px] max-h-[500px] overflow-y-auto"
-          >
-            {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center text-muted-foreground">
-                <User className="w-16 h-16 mb-4 opacity-30" />
-                <p className="text-lg font-medium">Commencez la conversation</p>
-                <p className="text-sm max-w-sm mt-2">
-                  Envoyez un message à {search.profiles?.full_name || "l'utilisateur"} pour discuter de sa recherche.
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold truncate" style={{ color: "#112150" }}>
+                    {search.profiles?.full_name || "Utilisateur"}
+                  </p>
+                  <span
+                    className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: "#E6F4EA", color: "#1E7A3E" }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    En ligne
+                  </span>
+                </div>
+                <p className="text-xs mt-0.5 truncate" style={{ color: "#8A8275" }}>
+                  Recherche : {search.title}
                 </p>
               </div>
-            ) : (
-              <div className="space-y-6">
-                {Object.entries(groupedMessages).map(([date, dayMessages]) => (
-                  <div key={date}>
-                    {/* Date separator */}
-                    <div className="flex items-center justify-center mb-4">
-                      <span className="bg-secondary px-3 py-1 rounded-full text-xs text-muted-foreground">
-                        {formatDate(dayMessages[0].created_at)}
-                      </span>
-                    </div>
-                    
-                    {/* Messages for this date */}
-                    <div className="space-y-3">
-                      {dayMessages.map((msg) => (
-                        <motion.div
-                          key={msg.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className={`flex ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}
-                        >
-                          <div
-                            className={`max-w-[70%] rounded-2xl px-4 py-3 ${
-                              msg.sender_id === user?.id
-                                ? "bg-accent text-accent-foreground"
-                                : "bg-secondary text-secondary-foreground"
-                            }`}
-                          >
-                            <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                            <div className={`flex items-center gap-1 mt-1 ${
-                              msg.sender_id === user?.id ? "justify-end" : "justify-start"
-                            }`}>
-                              <span className={`text-xs ${
-                                msg.sender_id === user?.id ? "text-accent-foreground/70" : "text-muted-foreground"
-                              }`}>
-                                {formatTime(msg.created_at)}
-                              </span>
-                              {msg.sender_id === user?.id && (
-                                msg.is_read ? (
-                                  <CheckCheck className="w-3.5 h-3.5 text-accent-foreground/70" />
-                                ) : (
-                                  <Check className="w-3.5 h-3.5 text-accent-foreground/50" />
-                                )
-                              )}
-                            </div>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-            )}
-          </motion.div>
 
-          {/* Input Area */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-            className="bg-card border border-border rounded-2xl p-4"
-          >
-            <div className="flex gap-3">
-              <Textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Écrivez votre message..."
-                className="resize-none min-h-[60px] flex-1 border-border focus:border-accent"
-                rows={2}
-              />
-              <Button
-                onClick={handleSend}
-                disabled={!message.trim() || sending}
-                size="lg"
-                className="self-end gap-2 bg-accent hover:bg-accent/90 text-accent-foreground"
+              <button
+                onClick={() => navigate(`/recherche/${id}`)}
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8]"
+                title="Voir l'annonce"
+                aria-label="Voir l'annonce"
               >
-                {sending ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <Send className="w-5 h-5" />
-                )}
-              </Button>
+                <Info className="w-5 h-5" style={{ color: "#6B7B9E" }} />
+              </button>
+            </div>
+
+            {/* Messages Area */}
+            <div
+              className="flex-1 px-5 py-6 overflow-y-auto min-h-[420px] max-h-[520px]"
+              style={{ backgroundColor: "#F5F0E8" }}
+            >
+              {messages.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center px-4">
+                  {/* Minimalist chat bubbles illustration */}
+                  <svg
+                    width="96"
+                    height="80"
+                    viewBox="0 0 96 80"
+                    fill="none"
+                    className="mb-5"
+                  >
+                    <path
+                      d="M8 20a12 12 0 0 1 12-12h32a12 12 0 0 1 12 12v14a12 12 0 0 1-12 12H32l-10 8v-8h-2A12 12 0 0 1 8 34V20Z"
+                      fill="#6B7B9E"
+                      fillOpacity="0.18"
+                      stroke="#6B7B9E"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M88 38a12 12 0 0 0-12-12H54a12 12 0 0 0-12 12v10a12 12 0 0 0 12 12h18l8 6v-6h-2a12 12 0 0 0 12-12V38Z"
+                      fill="#6B7B9E"
+                      fillOpacity="0.35"
+                      stroke="#6B7B9E"
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+
+                  <p className="text-lg font-semibold mb-1" style={{ color: "#112150" }}>
+                    Commencez la conversation
+                  </p>
+                  <p className="text-sm max-w-sm" style={{ color: "#6B7280" }}>
+                    Dites à {firstName} si vous avez l'article qu'il recherche 👋
+                  </p>
+
+                  {/* Quick suggestions */}
+                  <div className="flex flex-wrap justify-center gap-2 mt-6 max-w-md">
+                    {QUICK_SUGGESTIONS.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => handleSuggestion(s)}
+                        className="text-sm px-3.5 py-2 rounded-full bg-white border transition-all hover:-translate-y-0.5"
+                        style={{
+                          borderColor: "#D9D2C2",
+                          color: "#6B7B9E",
+                          boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                        }}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {Object.entries(groupedMessages).map(([date, dayMessages]) => (
+                    <div key={date}>
+                      <div className="flex items-center justify-center mb-4">
+                        <span
+                          className="px-3 py-1 rounded-full text-xs"
+                          style={{ backgroundColor: "#FFFFFF", color: "#8A8275", border: "1px solid #ECE6DA" }}
+                        >
+                          {formatDate(dayMessages[0].created_at)}
+                        </span>
+                      </div>
+
+                      <div className="space-y-3">
+                        {dayMessages.map((msg) => {
+                          const isMine = msg.sender_id === user?.id;
+                          return (
+                            <motion.div
+                              key={msg.id}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className={`flex ${isMine ? "justify-end" : "justify-start"}`}
+                            >
+                              <div
+                                className="max-w-[72%] px-4 py-2.5"
+                                style={{
+                                  borderRadius: "18px",
+                                  backgroundColor: isMine ? "#6B7B9E" : "#FFFFFF",
+                                  color: isMine ? "#FFFFFF" : "#1F2937",
+                                  border: isMine ? "none" : "1px solid #ECE6DA",
+                                  boxShadow: isMine
+                                    ? "0 1px 3px rgba(107,123,158,0.25)"
+                                    : "0 1px 3px rgba(0,0,0,0.04)",
+                                }}
+                              >
+                                <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                                  {msg.content}
+                                </p>
+                                <div
+                                  className={`flex items-center gap-1 mt-1 ${
+                                    isMine ? "justify-end" : "justify-start"
+                                  }`}
+                                >
+                                  <span
+                                    className="text-[11px]"
+                                    style={{
+                                      color: isMine ? "rgba(255,255,255,0.75)" : "#9CA3AF",
+                                    }}
+                                  >
+                                    {formatTime(msg.created_at)}
+                                  </span>
+                                  {isMine &&
+                                    (msg.is_read ? (
+                                      <CheckCheck className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.85)" }} />
+                                    ) : (
+                                      <Check className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                    ))}
+                                </div>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={messagesEndRef} />
+                </div>
+              )}
+            </div>
+
+            {/* Input Area */}
+            <div
+              className="px-4 py-3 border-t bg-white"
+              style={{ borderColor: "#ECE6DA" }}
+            >
+              <div className="flex items-end gap-2">
+                <button
+                  type="button"
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] flex-shrink-0"
+                  title="Joindre une photo"
+                  aria-label="Joindre une photo"
+                >
+                  <Paperclip className="w-5 h-5" style={{ color: "#6B7B9E" }} />
+                </button>
+
+                <div className="flex-1 relative">
+                  <Textarea
+                    value={message}
+                    onChange={(e) => {
+                      if (e.target.value.length <= MAX_CHARS) setMessage(e.target.value);
+                    }}
+                    onKeyDown={handleKeyPress}
+                    placeholder={`Écrivez un message à ${firstName}...`}
+                    className="resize-none min-h-[48px] pr-14 rounded-2xl border bg-white"
+                    style={{ borderColor: "#D9D2C2" }}
+                    rows={1}
+                  />
+                  <span
+                    className="absolute right-3 bottom-2 text-[11px] tabular-nums"
+                    style={{
+                      color: remainingChars <= 20 ? "#C0392B" : "#9CA3AF",
+                    }}
+                  >
+                    {remainingChars}
+                  </span>
+                </div>
+
+                <Button
+                  onClick={handleSend}
+                  disabled={!message.trim() || sending}
+                  size="icon"
+                  className="h-11 w-11 rounded-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md flex-shrink-0"
+                  style={{ backgroundColor: "#C9A96E" }}
+                >
+                  {sending ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
+                </Button>
+              </div>
             </div>
           </motion.div>
         </div>
