@@ -471,6 +471,18 @@ const Messaging = () => {
                       <div className="space-y-3">
                         {dayMessages.map((msg) => {
                           const isMine = msg.sender_id === user?.id;
+                          const msgImages = localImagesRef.current[msg.id] || msg.images || [];
+                          const hasImages = msgImages.length > 0;
+                          const hasText = msg.content && msg.content !== "📷 Photo(s)";
+                          
+                          // Grid columns logic
+                          const gridCols =
+                            msgImages.length === 1
+                              ? "grid-cols-1"
+                              : msgImages.length >= 5
+                              ? "grid-cols-3"
+                              : "grid-cols-2";
+
                           return (
                             <motion.div
                               key={msg.id}
@@ -479,7 +491,7 @@ const Messaging = () => {
                               className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                             >
                               <div
-                                className="max-w-[72%] px-4 py-2.5"
+                                className="max-w-[72%] overflow-hidden"
                                 style={{
                                   borderRadius: "18px",
                                   backgroundColor: isMine ? "#6B7B9E" : "#FFFFFF",
@@ -490,28 +502,46 @@ const Messaging = () => {
                                     : "0 1px 3px rgba(0,0,0,0.04)",
                                 }}
                               >
-                                <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                                  {msg.content}
-                                </p>
-                                <div
-                                  className={`flex items-center gap-1 mt-1 ${
-                                    isMine ? "justify-end" : "justify-start"
-                                  }`}
-                                >
-                                  <span
-                                    className="text-[11px]"
-                                    style={{
-                                      color: isMine ? "rgba(255,255,255,0.75)" : "#9CA3AF",
-                                    }}
-                                  >
-                                    {formatTime(msg.created_at)}
-                                  </span>
-                                  {isMine &&
-                                    (msg.is_read ? (
-                                      <CheckCheck className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.85)" }} />
-                                    ) : (
-                                      <Check className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                {hasImages && (
+                                  <div className={`grid gap-1 ${gridCols} ${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                    {msgImages.map((src, i) => (
+                                      <img
+                                        key={i}
+                                        src={src}
+                                        alt={`photo-${i}`}
+                                        className={`w-full object-cover rounded-[12px] ${
+                                          msgImages.length === 1 ? "max-h-72" : "h-28"
+                                        }`}
+                                      />
                                     ))}
+                                  </div>
+                                )}
+                                <div className="px-4 py-2.5">
+                                  {hasText && (
+                                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                                      {msg.content}
+                                    </p>
+                                  )}
+                                  <div
+                                    className={`flex items-center gap-1 ${hasText || !hasImages ? "mt-1" : ""} ${
+                                      isMine ? "justify-end" : "justify-start"
+                                    }`}
+                                  >
+                                    <span
+                                      className="text-[11px]"
+                                      style={{
+                                        color: isMine ? "rgba(255,255,255,0.75)" : "#9CA3AF",
+                                      }}
+                                    >
+                                      {formatTime(msg.created_at)}
+                                    </span>
+                                    {isMine &&
+                                      (msg.is_read ? (
+                                        <CheckCheck className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.85)" }} />
+                                      ) : (
+                                        <Check className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                      ))}
+                                  </div>
                                 </div>
                               </div>
                             </motion.div>
