@@ -25,6 +25,7 @@ import HowItWorksPage from "./pages/HowItWorksPage";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import BackButton from "./components/BackButton";
+import Navbar from "./components/Navbar";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
+          <Navbar />
           <BackButton />
           <VintageBackground />
           
