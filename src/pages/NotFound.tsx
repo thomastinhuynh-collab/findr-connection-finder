@@ -2,6 +2,7 @@ import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
+import Navbar from "@/components/Navbar";
 import { ArrowLeft } from "lucide-react";
 
 const NotFound = () => {
@@ -12,10 +13,12 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-center px-4"
-      style={{ backgroundColor: "#112150" }}
-    >
+    <>
+      <Navbar />
+      <div
+        className="flex min-h-screen items-center justify-center px-4 pt-24"
+        style={{ backgroundColor: "#112150" }}
+      >
       <div className="text-center max-w-lg">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
@@ -108,7 +111,8 @@ const NotFound = () => {
           </Link>
         </Button>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
