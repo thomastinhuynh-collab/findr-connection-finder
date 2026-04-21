@@ -13,10 +13,12 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-center px-4"
-      style={{ backgroundColor: "#112150" }}
-    >
+    <>
+      <Navbar />
+      <div
+        className="flex min-h-screen items-center justify-center px-4 pt-24"
+        style={{ backgroundColor: "#112150" }}
+      >
       <div className="text-center max-w-lg">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
