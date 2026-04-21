@@ -24,6 +24,7 @@ import RequestReservation from "./pages/RequestReservation";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import BackButton from "./components/BackButton";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
+          <BackButton />
           <VintageBackground />
           
           <Routes>
