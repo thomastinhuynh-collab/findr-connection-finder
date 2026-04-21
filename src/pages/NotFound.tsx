@@ -111,7 +111,7 @@ const NotFound = () => {
           </Link>
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 
