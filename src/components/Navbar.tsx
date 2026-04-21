@@ -21,6 +21,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isHomePage = location.pathname === "/";
   const isDetailPage = location.pathname.startsWith("/recherche/");
 
   useEffect(() => {
@@ -29,23 +30,49 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Homepage style: transparent/dark background with cream logo
+  // Other pages style: cream/white background with navy logo and links
+  const isLightMode = !isHomePage;
+
+  const navBackground = isHomePage
+    ? {
+        backgroundColor: scrolled ? 'hsla(224, 67%, 19%, 0.95)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(10px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(10px)' : 'none',
+        boxShadow: scrolled ? '0 2px 20px rgba(17, 33, 80, 0.15)' : 'none',
+        borderBottom: scrolled ? '1px solid hsla(222, 37%, 36%, 0.3)' : '1px solid transparent',
+      }
+    : {
+        backgroundColor: '#F5F0EA',
+        backdropFilter: 'none',
+        WebkitBackdropFilter: 'none',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+        borderBottom: '1px solid rgba(17, 33, 80, 0.08)',
+      };
+
+  const logoVariant = isLightMode ? "navy" : "cream";
+  const linkColorClass = isLightMode 
+    ? "text-[#112150]/80 hover:text-[#112150]" 
+    : "text-cream/80 hover:text-cream";
+  const mobileMenuBg = isLightMode ? "bg-[#F5F0EA]" : "bg-transparent";
+  const mobileLinkColor = isLightMode
+    ? "text-[#112150]/80 hover:text-[#112150]"
+    : "text-cream/80 hover:text-cream";
+  const mobileMenuBorder = isLightMode
+    ? "border-[#112150]/20"
+    : "border-cream/20";
+
   return (
     <>
       <nav
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out"
-        style={{
-          backgroundColor: scrolled ? 'hsla(224, 67%, 19%, 0.95)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(10px)' : 'none',
-          WebkitBackdropFilter: scrolled ? 'blur(10px)' : 'none',
-          boxShadow: scrolled ? '0 2px 20px rgba(17, 33, 80, 0.15)' : 'none',
-          borderBottom: scrolled ? '1px solid hsla(222, 37%, 36%, 0.3)' : '1px solid transparent',
-        }}
+        style={navBackground}
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center group ml-8">
-              <Logo />
+              <Logo variant={logoVariant} />
             </Link>
 
             {/* Desktop Nav Links */}
@@ -54,7 +81,7 @@ const Navbar = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="text-sm font-medium text-cream/80 hover:text-cream transition-colors"
+                  className={`text-sm font-medium transition-colors ${linkColorClass}`}
                 >
                   {link.label}
                 </Link>
@@ -66,7 +93,7 @@ const Navbar = () => {
               {user ? (
                 <Button
                   size="sm"
-                  className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full"
+                  className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full"
                   onClick={() => navigate("/mon-espace")}
                 >
                   Mon espace
@@ -74,7 +101,7 @@ const Navbar = () => {
               ) : (
                 <Button
                   size="sm"
-                  className={`bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
+                  className={`bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
                   onClick={() => setAuthModalOpen(true)}
                 >
                   {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la beta"}
@@ -84,7 +111,7 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 text-cream"
+              className={`md:hidden p-2 ${isLightMode ? 'text-[#112150]' : 'text-cream'}`}
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -93,13 +120,13 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           {isOpen && (
-            <div className="md:hidden py-4 border-t border-cream/20 animate-slide-up">
+            <div className={`md:hidden py-4 border-t ${mobileMenuBorder} animate-slide-up ${mobileMenuBg}`}>
               <div className="flex flex-col gap-4">
                 {navLinks.map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
-                    className="text-sm font-medium text-cream/80 hover:text-cream transition-colors"
+                    className={`text-sm font-medium transition-colors ${mobileLinkColor}`}
                     onClick={() => setIsOpen(false)}
                   >
                     {link.label}
@@ -108,7 +135,7 @@ const Navbar = () => {
                 {user ? (
                   <Button
                     size="sm"
-                    className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full w-full mt-2"
+                    className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full w-full mt-2"
                     onClick={() => {
                       setIsOpen(false);
                       navigate("/mon-espace");
@@ -119,7 +146,7 @@ const Navbar = () => {
                 ) : (
                   <Button
                     size="sm"
-                    className="bg-accent text-accent-foreground hover:bg-accent/90 font-poppins font-semibold rounded-full w-full mt-2"
+                    className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full w-full mt-2"
                     onClick={() => {
                       setIsOpen(false);
                       setAuthModalOpen(true);
@@ -133,7 +160,7 @@ const Navbar = () => {
           )}
         </div>
       </nav>
-      {location.pathname === "/" && (
+      {isHomePage && (
         <div className="fixed top-16 left-0 right-0 z-40">
           <CategoryNav />
         </div>
