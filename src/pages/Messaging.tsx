@@ -300,7 +300,6 @@ const Messaging = () => {
   if (!search) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#F5F0E8" }}>
-        <Navbar />
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-2xl font-serif font-bold mb-4" style={{ color: "#112150" }}>
