@@ -289,7 +289,6 @@ const Messaging = () => {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#F5F0E8" }}>
-        <Navbar />
         <main className="pt-24 pb-16 flex items-center justify-center">
           <Loader2 className="w-12 h-12 animate-spin" style={{ color: "#6B7B9E" }} />
         </main>
