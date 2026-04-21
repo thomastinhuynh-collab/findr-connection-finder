@@ -175,19 +175,23 @@ const Messaging = () => {
   };
 
   const handleSend = async () => {
-    if (!message.trim() || !user || !search) return;
+    if ((!message.trim() && photos.length === 0) || !user || !search) return;
 
     setSending(true);
     const actualReceiverId = search.user_id;
+    const photosSnapshot = [...photos];
+    const contentToSend = message.trim() || (photosSnapshot.length > 0 ? "📷 Photo(s)" : "");
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("messages")
       .insert({
         search_id: id,
         sender_id: user.id,
         receiver_id: actualReceiverId,
-        content: message.trim()
-      });
+        content: contentToSend
+      })
+      .select()
+      .single();
 
     if (error) {
       console.error("Error sending message:", error);
@@ -197,7 +201,12 @@ const Messaging = () => {
         variant: "destructive",
       });
     } else {
+      if (data && photosSnapshot.length > 0) {
+        localImagesRef.current[data.id] = photosSnapshot;
+      }
       setMessage("");
+      setPhotos([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
     
     setSending(false);
@@ -212,6 +221,37 @@ const Messaging = () => {
 
   const handleSuggestion = (text: string) => {
     setMessage(text);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const remainingSlots = MAX_PHOTOS - photos.length;
+    const filesToAdd = files.slice(0, remainingSlots);
+
+    if (files.length > remainingSlots) {
+      toast({
+        title: "Limite atteinte",
+        description: `Maximum ${MAX_PHOTOS} photos par message.`,
+      });
+    }
+
+    const newPreviews = filesToAdd.map((f) => URL.createObjectURL(f));
+    setPhotos((prev) => [...prev, ...newPreviews]);
+    if (e.target) e.target.value = "";
+  };
+
+  const removePhoto = (index: number) => {
+    setPhotos((prev) => {
+      const url = prev[index];
+      if (url) URL.revokeObjectURL(url);
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   const formatTime = (dateString: string) => {
@@ -279,8 +319,8 @@ const Messaging = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F0E8" }}>
-      <Navbar />
-      
+        
+
       <main className="flex-1 pt-24 pb-8">
         <div className="container mx-auto px-4 h-full flex flex-col max-w-3xl">
           {/* Back link */}
