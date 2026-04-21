@@ -560,14 +560,68 @@ const Messaging = () => {
               className="px-4 py-3 border-t bg-white"
               style={{ borderColor: "#ECE6DA" }}
             >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+
+              {photos.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  {photos.map((src, i) => (
+                    <div key={i} className="relative" style={{ width: 64, height: 64 }}>
+                      <img
+                        src={src}
+                        alt={`preview-${i}`}
+                        className="w-16 h-16 object-cover rounded-lg border"
+                        style={{ borderColor: "#D9D2C2" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(i)}
+                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white border flex items-center justify-center shadow-sm hover:scale-110 transition-transform"
+                        style={{ borderColor: "#D9D2C2" }}
+                        aria-label="Supprimer la photo"
+                      >
+                        <X className="w-3 h-3" style={{ color: "#112150" }} />
+                      </button>
+                    </div>
+                  ))}
+                  {photos.length < MAX_PHOTOS && (
+                    <button
+                      type="button"
+                      onClick={triggerFileInput}
+                      className="w-16 h-16 rounded-lg border-2 border-dashed flex items-center justify-center transition-colors hover:bg-[#F5F0E8]"
+                      style={{ borderColor: "#D9D2C2", color: "#6B7B9E" }}
+                      aria-label="Ajouter une photo"
+                    >
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+              )}
+
               <div className="flex items-end gap-2">
                 <button
                   type="button"
-                  className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] flex-shrink-0"
+                  onClick={triggerFileInput}
+                  disabled={photos.length >= MAX_PHOTOS}
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Joindre une photo"
                   aria-label="Joindre une photo"
                 >
                   <Paperclip className="w-5 h-5" style={{ color: "#6B7B9E" }} />
+                  {photos.length > 0 && (
+                    <span
+                      className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-semibold text-white flex items-center justify-center"
+                      style={{ backgroundColor: "#C9A96E" }}
+                    >
+                      {photos.length}
+                    </span>
+                  )}
                 </button>
 
                 <div className="flex-1 relative">
@@ -594,7 +648,7 @@ const Messaging = () => {
 
                 <Button
                   onClick={handleSend}
-                  disabled={!message.trim() || sending}
+                  disabled={(!message.trim() && photos.length === 0) || sending}
                   size="icon"
                   className="h-11 w-11 rounded-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md flex-shrink-0"
                   style={{ backgroundColor: "#C9A96E" }}
