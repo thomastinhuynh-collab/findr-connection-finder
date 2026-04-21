@@ -26,9 +26,11 @@ interface Message {
   receiver_id: string;
   is_read: boolean;
   created_at: string;
+  images?: string[];
 }
 
 const MAX_CHARS = 240;
+const MAX_PHOTOS = 5;
 
 const QUICK_SUGGESTIONS = [
   "J'ai peut-être ce que vous cherchez 👀",
@@ -46,7 +48,10 @@ const Messaging = () => {
   const [search, setSearch] = useState<SearchData | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [photos, setPhotos] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const localImagesRef = useRef<Record<string, string[]>>({});
 
   useEffect(() => {
     if (!authLoading && !user) {
