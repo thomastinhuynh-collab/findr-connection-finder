@@ -1,11 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send, Loader2, CheckCheck, Check, Info, Paperclip } from "lucide-react";
+import { ArrowLeft, Send, Loader2, CheckCheck, Check, Info, Paperclip, X, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -27,9 +26,11 @@ interface Message {
   receiver_id: string;
   is_read: boolean;
   created_at: string;
+  images?: string[];
 }
 
 const MAX_CHARS = 240;
+const MAX_PHOTOS = 5;
 
 const QUICK_SUGGESTIONS = [
   "J'ai peut-être ce que vous cherchez 👀",
@@ -47,7 +48,10 @@ const Messaging = () => {
   const [search, setSearch] = useState<SearchData | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [photos, setPhotos] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const localImagesRef = useRef<Record<string, string[]>>({});
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -171,19 +175,23 @@ const Messaging = () => {
   };
 
   const handleSend = async () => {
-    if (!message.trim() || !user || !search) return;
+    if ((!message.trim() && photos.length === 0) || !user || !search) return;
 
     setSending(true);
     const actualReceiverId = search.user_id;
+    const photosSnapshot = [...photos];
+    const contentToSend = message.trim() || (photosSnapshot.length > 0 ? "📷 Photo(s)" : "");
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("messages")
       .insert({
         search_id: id,
         sender_id: user.id,
         receiver_id: actualReceiverId,
-        content: message.trim()
-      });
+        content: contentToSend
+      })
+      .select()
+      .single();
 
     if (error) {
       console.error("Error sending message:", error);
@@ -193,7 +201,12 @@ const Messaging = () => {
         variant: "destructive",
       });
     } else {
+      if (data && photosSnapshot.length > 0) {
+        localImagesRef.current[data.id] = photosSnapshot;
+      }
       setMessage("");
+      setPhotos([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
     
     setSending(false);
@@ -208,6 +221,37 @@ const Messaging = () => {
 
   const handleSuggestion = (text: string) => {
     setMessage(text);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const remainingSlots = MAX_PHOTOS - photos.length;
+    const filesToAdd = files.slice(0, remainingSlots);
+
+    if (files.length > remainingSlots) {
+      toast({
+        title: "Limite atteinte",
+        description: `Maximum ${MAX_PHOTOS} photos par message.`,
+      });
+    }
+
+    const newPreviews = filesToAdd.map((f) => URL.createObjectURL(f));
+    setPhotos((prev) => [...prev, ...newPreviews]);
+    if (e.target) e.target.value = "";
+  };
+
+  const removePhoto = (index: number) => {
+    setPhotos((prev) => {
+      const url = prev[index];
+      if (url) URL.revokeObjectURL(url);
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   const formatTime = (dateString: string) => {
@@ -245,7 +289,6 @@ const Messaging = () => {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#F5F0E8" }}>
-        <Navbar />
         <main className="pt-24 pb-16 flex items-center justify-center">
           <Loader2 className="w-12 h-12 animate-spin" style={{ color: "#6B7B9E" }} />
         </main>
@@ -257,7 +300,6 @@ const Messaging = () => {
   if (!search) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#F5F0E8" }}>
-        <Navbar />
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-2xl font-serif font-bold mb-4" style={{ color: "#112150" }}>
@@ -275,8 +317,8 @@ const Messaging = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F0E8" }}>
-      <Navbar />
-      
+        
+
       <main className="flex-1 pt-24 pb-8">
         <div className="container mx-auto px-4 h-full flex flex-col max-w-3xl">
           {/* Back link */}
@@ -429,6 +471,18 @@ const Messaging = () => {
                       <div className="space-y-3">
                         {dayMessages.map((msg) => {
                           const isMine = msg.sender_id === user?.id;
+                          const msgImages = localImagesRef.current[msg.id] || msg.images || [];
+                          const hasImages = msgImages.length > 0;
+                          const hasText = msg.content && msg.content !== "📷 Photo(s)";
+                          
+                          // Grid columns logic
+                          const gridCols =
+                            msgImages.length === 1
+                              ? "grid-cols-1"
+                              : msgImages.length >= 5
+                              ? "grid-cols-3"
+                              : "grid-cols-2";
+
                           return (
                             <motion.div
                               key={msg.id}
@@ -437,7 +491,7 @@ const Messaging = () => {
                               className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                             >
                               <div
-                                className="max-w-[72%] px-4 py-2.5"
+                                className="max-w-[72%] overflow-hidden"
                                 style={{
                                   borderRadius: "18px",
                                   backgroundColor: isMine ? "#6B7B9E" : "#FFFFFF",
@@ -448,28 +502,46 @@ const Messaging = () => {
                                     : "0 1px 3px rgba(0,0,0,0.04)",
                                 }}
                               >
-                                <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                                  {msg.content}
-                                </p>
-                                <div
-                                  className={`flex items-center gap-1 mt-1 ${
-                                    isMine ? "justify-end" : "justify-start"
-                                  }`}
-                                >
-                                  <span
-                                    className="text-[11px]"
-                                    style={{
-                                      color: isMine ? "rgba(255,255,255,0.75)" : "#9CA3AF",
-                                    }}
-                                  >
-                                    {formatTime(msg.created_at)}
-                                  </span>
-                                  {isMine &&
-                                    (msg.is_read ? (
-                                      <CheckCheck className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.85)" }} />
-                                    ) : (
-                                      <Check className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                {hasImages && (
+                                  <div className={`grid gap-1 ${gridCols} ${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                    {msgImages.map((src, i) => (
+                                      <img
+                                        key={i}
+                                        src={src}
+                                        alt={`photo-${i}`}
+                                        className={`w-full object-cover rounded-[12px] ${
+                                          msgImages.length === 1 ? "max-h-72" : "h-28"
+                                        }`}
+                                      />
                                     ))}
+                                  </div>
+                                )}
+                                <div className="px-4 py-2.5">
+                                  {hasText && (
+                                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                                      {msg.content}
+                                    </p>
+                                  )}
+                                  <div
+                                    className={`flex items-center gap-1 ${hasText || !hasImages ? "mt-1" : ""} ${
+                                      isMine ? "justify-end" : "justify-start"
+                                    }`}
+                                  >
+                                    <span
+                                      className="text-[11px]"
+                                      style={{
+                                        color: isMine ? "rgba(255,255,255,0.75)" : "#9CA3AF",
+                                      }}
+                                    >
+                                      {formatTime(msg.created_at)}
+                                    </span>
+                                    {isMine &&
+                                      (msg.is_read ? (
+                                        <CheckCheck className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.85)" }} />
+                                      ) : (
+                                        <Check className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                      ))}
+                                  </div>
                                 </div>
                               </div>
                             </motion.div>
@@ -488,14 +560,68 @@ const Messaging = () => {
               className="px-4 py-3 border-t bg-white"
               style={{ borderColor: "#ECE6DA" }}
             >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+
+              {photos.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  {photos.map((src, i) => (
+                    <div key={i} className="relative" style={{ width: 64, height: 64 }}>
+                      <img
+                        src={src}
+                        alt={`preview-${i}`}
+                        className="w-16 h-16 object-cover rounded-lg border"
+                        style={{ borderColor: "#D9D2C2" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(i)}
+                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white border flex items-center justify-center shadow-sm hover:scale-110 transition-transform"
+                        style={{ borderColor: "#D9D2C2" }}
+                        aria-label="Supprimer la photo"
+                      >
+                        <X className="w-3 h-3" style={{ color: "#112150" }} />
+                      </button>
+                    </div>
+                  ))}
+                  {photos.length < MAX_PHOTOS && (
+                    <button
+                      type="button"
+                      onClick={triggerFileInput}
+                      className="w-16 h-16 rounded-lg border-2 border-dashed flex items-center justify-center transition-colors hover:bg-[#F5F0E8]"
+                      style={{ borderColor: "#D9D2C2", color: "#6B7B9E" }}
+                      aria-label="Ajouter une photo"
+                    >
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+              )}
+
               <div className="flex items-end gap-2">
                 <button
                   type="button"
-                  className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] flex-shrink-0"
+                  onClick={triggerFileInput}
+                  disabled={photos.length >= MAX_PHOTOS}
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Joindre une photo"
                   aria-label="Joindre une photo"
                 >
                   <Paperclip className="w-5 h-5" style={{ color: "#6B7B9E" }} />
+                  {photos.length > 0 && (
+                    <span
+                      className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-semibold text-white flex items-center justify-center"
+                      style={{ backgroundColor: "#C9A96E" }}
+                    >
+                      {photos.length}
+                    </span>
+                  )}
                 </button>
 
                 <div className="flex-1 relative">
@@ -522,7 +648,7 @@ const Messaging = () => {
 
                 <Button
                   onClick={handleSend}
-                  disabled={!message.trim() || sending}
+                  disabled={(!message.trim() && photos.length === 0) || sending}
                   size="icon"
                   className="h-11 w-11 rounded-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md flex-shrink-0"
                   style={{ backgroundColor: "#C9A96E" }}
