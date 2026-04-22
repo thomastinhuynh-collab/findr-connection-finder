@@ -474,18 +474,33 @@ const ProposalList = ({
               </div>
 
               {/* Wallet Balance */}
-              <div className="flex items-center justify-between bg-primary/5 rounded-lg p-3">
-                <span className="text-sm">Solde portefeuille</span>
-                <span className={`font-bold ${walletBalance >= calculateTotal(selectedProposal.proposed_price) ? "text-success" : "text-destructive"}`}>
-                  {walletBalance.toFixed(2)} €
-                </span>
-              </div>
-
-              {walletBalance < calculateTotal(selectedProposal.proposed_price) && (
-                <div className="text-sm text-destructive bg-destructive/10 rounded-lg p-3">
-                  Solde insuffisant. Veuillez recharger votre portefeuille dans "Mon Espace".
-                </div>
-              )}
+              {(() => {
+                const total = calculateTotal(selectedProposal.proposed_price);
+                const walletPart = Math.min(walletBalance, total);
+                const cardComplement = Math.max(0, total - walletBalance);
+                const needsCard = cardComplement > 0;
+                return (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between bg-primary/5 rounded-lg p-3">
+                      <span className="text-sm">Solde portefeuille</span>
+                      <span className="font-bold text-foreground">
+                        −{walletPart.toFixed(2)} €
+                      </span>
+                    </div>
+                    {needsCard && (
+                      <div className="flex items-center justify-between bg-accent/10 border border-accent/20 rounded-lg p-3">
+                        <span className="text-sm flex items-center gap-2">
+                          <span>💳</span>
+                          Complément par carte bancaire
+                        </span>
+                        <span className="font-bold text-accent">
+                          +{cardComplement.toFixed(2)} €
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Security Info */}
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -501,7 +516,7 @@ const ProposalList = ({
             </Button>
             <Button
               onClick={handlePayment}
-              disabled={isProcessing || (selectedProposal && walletBalance < calculateTotal(selectedProposal.proposed_price))}
+              disabled={isProcessing}
               className="bg-accent hover:bg-accent/90"
             >
               {isProcessing ? (
