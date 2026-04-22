@@ -49,6 +49,7 @@ const Messaging = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const localImagesRef = useRef<Record<string, string[]>>({});
