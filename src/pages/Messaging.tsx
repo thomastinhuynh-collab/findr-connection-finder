@@ -487,14 +487,114 @@ const Messaging = () => {
                           const msgImages = localImagesRef.current[msg.id] || msg.images || [];
                           const hasImages = msgImages.length > 0;
                           const hasText = msg.content && msg.content !== "📷 Photo(s)";
-                          
-                          // Grid columns logic
-                          const gridCols =
-                            msgImages.length === 1
-                              ? "grid-cols-1"
-                              : msgImages.length >= 5
-                              ? "grid-cols-3"
-                              : "grid-cols-2";
+                          const count = msgImages.length;
+                          const openLightbox = (idx: number) => setLightbox({ images: msgImages, index: idx });
+
+                          const renderImages = () => {
+                            if (count === 0) return null;
+
+                            // 1 photo: full format, natural ratio, contain
+                            if (count === 1) {
+                              return (
+                                <div className={`${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                  <button
+                                    type="button"
+                                    onClick={() => openLightbox(0)}
+                                    className="block w-full rounded-[12px] overflow-hidden bg-black/5"
+                                  >
+                                    <img
+                                      src={msgImages[0]}
+                                      alt="photo"
+                                      className="w-full object-contain max-h-[260px]"
+                                    />
+                                  </button>
+                                </div>
+                              );
+                            }
+
+                            // 2 photos: side by side, equal height
+                            if (count === 2) {
+                              return (
+                                <div className={`grid grid-cols-2 gap-1 ${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                  {msgImages.map((src, i) => (
+                                    <button
+                                      key={i}
+                                      type="button"
+                                      onClick={() => openLightbox(i)}
+                                      className="rounded-[12px] overflow-hidden"
+                                    >
+                                      <img src={src} alt={`photo-${i}`} className="w-full h-40 object-cover" />
+                                    </button>
+                                  ))}
+                                </div>
+                              );
+                            }
+
+                            // 3 photos: large left + 2 small right
+                            if (count === 3) {
+                              return (
+                                <div className={`grid grid-cols-2 gap-1 ${hasText ? "p-1.5 pb-0" : "p-1.5"}`} style={{ gridTemplateRows: "repeat(2, 1fr)" }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => openLightbox(0)}
+                                    className="row-span-2 rounded-[12px] overflow-hidden"
+                                  >
+                                    <img src={msgImages[0]} alt="photo-0" className="w-full h-full object-cover" style={{ minHeight: 200 }} />
+                                  </button>
+                                  <button type="button" onClick={() => openLightbox(1)} className="rounded-[12px] overflow-hidden">
+                                    <img src={msgImages[1]} alt="photo-1" className="w-full h-[98px] object-cover" />
+                                  </button>
+                                  <button type="button" onClick={() => openLightbox(2)} className="rounded-[12px] overflow-hidden">
+                                    <img src={msgImages[2]} alt="photo-2" className="w-full h-[98px] object-cover" />
+                                  </button>
+                                </div>
+                              );
+                            }
+
+                            // 4 photos: 2x2
+                            if (count === 4) {
+                              return (
+                                <div className={`grid grid-cols-2 gap-1 ${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                  {msgImages.map((src, i) => (
+                                    <button
+                                      key={i}
+                                      type="button"
+                                      onClick={() => openLightbox(i)}
+                                      className="rounded-[12px] overflow-hidden"
+                                    >
+                                      <img src={src} alt={`photo-${i}`} className="w-full h-32 object-cover" />
+                                    </button>
+                                  ))}
+                                </div>
+                              );
+                            }
+
+                            // 5+ photos: 3 columns, "+N" overlay on last visible (5th)
+                            const visible = msgImages.slice(0, 5);
+                            const remaining = msgImages.length - 5;
+                            return (
+                              <div className={`grid grid-cols-3 gap-1 ${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                {visible.map((src, i) => {
+                                  const isLast = i === 4 && remaining > 0;
+                                  return (
+                                    <button
+                                      key={i}
+                                      type="button"
+                                      onClick={() => openLightbox(i)}
+                                      className="relative rounded-[12px] overflow-hidden"
+                                    >
+                                      <img src={src} alt={`photo-${i}`} className="w-full h-24 object-cover" />
+                                      {isLast && (
+                                        <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
+                                          <span className="text-white font-semibold text-lg">+{remaining}</span>
+                                        </div>
+                                      )}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            );
+                          };
 
                           return (
                             <motion.div
@@ -515,20 +615,7 @@ const Messaging = () => {
                                     : "0 1px 3px rgba(0,0,0,0.04)",
                                 }}
                               >
-                                {hasImages && (
-                                  <div className={`grid gap-1 ${gridCols} ${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
-                                    {msgImages.map((src, i) => (
-                                      <img
-                                        key={i}
-                                        src={src}
-                                        alt={`photo-${i}`}
-                                        className={`w-full object-cover rounded-[12px] ${
-                                          msgImages.length === 1 ? "max-h-72" : "h-28"
-                                        }`}
-                                      />
-                                    ))}
-                                  </div>
-                                )}
+                                {hasImages && renderImages()}
                                 <div className="px-4 py-2.5">
                                   {hasText && (
                                     <p className="text-sm whitespace-pre-wrap leading-relaxed">
