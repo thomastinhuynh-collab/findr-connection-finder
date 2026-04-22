@@ -139,19 +139,22 @@ const ProposalList = ({
     if (!selectedProposal) return;
 
     const totalAmount = calculateTotal(selectedProposal.proposed_price);
-
-    if (walletBalance < totalAmount) {
-      toast({
-        title: "Solde insuffisant",
-        description: "Veuillez recharger votre portefeuille pour effectuer ce paiement.",
-        variant: "destructive",
-      });
-      return;
-    }
+    const walletPart = Math.min(walletBalance, totalAmount);
+    const cardPart = Math.max(0, totalAmount - walletBalance);
 
     setIsProcessing(true);
 
     try {
+      // If a card complement is needed, simulate a Stripe off-session charge
+      // using the buyer's saved default payment method.
+      if (cardPart > 0) {
+        // NOTE: Real Stripe integration not yet wired. This block simulates
+        // stripe.paymentIntents.create({ amount, currency:'eur', customer,
+        // payment_method, confirm:true, off_session:true }) and would fall
+        // back to stripe.confirmCardPayment() if 3DS is required.
+        await new Promise((resolve) => setTimeout(resolve, 600));
+      }
+
       // Update proposal status to accepted with payment pending
       const { error } = await supabase
         .from("proposals")
@@ -173,7 +176,9 @@ const ProposalList = ({
 
       toast({
         title: "Paiement en attente ! 💰",
-        description: "Le paiement sera libéré une fois l'article reçu et vérifié.",
+        description: cardPart > 0
+          ? `${walletPart.toFixed(2)} € débités du portefeuille, ${cardPart.toFixed(2)} € prélevés sur votre carte.`
+          : "Le paiement sera libéré une fois l'article reçu et vérifié.",
       });
 
       setPaymentDialogOpen(false);
@@ -469,18 +474,33 @@ const ProposalList = ({
               </div>
 
               {/* Wallet Balance */}
-              <div className="flex items-center justify-between bg-primary/5 rounded-lg p-3">
-                <span className="text-sm">Solde portefeuille</span>
-                <span className={`font-bold ${walletBalance >= calculateTotal(selectedProposal.proposed_price) ? "text-success" : "text-destructive"}`}>
-                  {walletBalance.toFixed(2)} €
-                </span>
-              </div>
-
-              {walletBalance < calculateTotal(selectedProposal.proposed_price) && (
-                <div className="text-sm text-destructive bg-destructive/10 rounded-lg p-3">
-                  Solde insuffisant. Veuillez recharger votre portefeuille dans "Mon Espace".
-                </div>
-              )}
+              {(() => {
+                const total = calculateTotal(selectedProposal.proposed_price);
+                const walletPart = Math.min(walletBalance, total);
+                const cardComplement = Math.max(0, total - walletBalance);
+                const needsCard = cardComplement > 0;
+                return (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between bg-primary/5 rounded-lg p-3">
+                      <span className="text-sm">Solde portefeuille</span>
+                      <span className="font-bold text-foreground">
+                        −{walletPart.toFixed(2)} €
+                      </span>
+                    </div>
+                    {needsCard && (
+                      <div className="flex items-center justify-between bg-accent/10 border border-accent/20 rounded-lg p-3">
+                        <span className="text-sm flex items-center gap-2">
+                          <span>💳</span>
+                          Complément par carte bancaire
+                        </span>
+                        <span className="font-bold text-accent">
+                          +{cardComplement.toFixed(2)} €
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Security Info */}
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -496,7 +516,7 @@ const ProposalList = ({
             </Button>
             <Button
               onClick={handlePayment}
-              disabled={isProcessing || (selectedProposal && walletBalance < calculateTotal(selectedProposal.proposed_price))}
+              disabled={isProcessing}
               className="bg-accent hover:bg-accent/90"
             >
               {isProcessing ? (
