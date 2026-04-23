@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronDown, Package, CalendarClock, Lock, Edit, Loader2, User, Crown } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { ChevronDown, Package, CalendarClock, Edit, Loader2, User, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { supabase } from "@/integrations/supabase/client";
 import ReservationCard from "./ReservationCard";
@@ -79,6 +77,9 @@ const SearchCardAccordion = ({ search, onDataChange }: SearchCardAccordionProps)
   const [loadingReservations, setLoadingReservations] = useState(false);
   const [proposalsFetched, setProposalsFetched] = useState(false);
   const [reservationsFetched, setReservationsFetched] = useState(false);
+  const [editHover, setEditHover] = useState(false);
+  const [propHover, setPropHover] = useState(false);
+  const [resaHover, setResaHover] = useState(false);
 
   const fetchProposals = async () => {
     if (proposalsFetched) return;
@@ -156,152 +157,307 @@ const SearchCardAccordion = ({ search, onDataChange }: SearchCardAccordionProps)
     });
   };
 
+  const formatBudget = () => {
+    const { budget_min, budget_max } = search;
+    if (budget_min && budget_max) return `${budget_min}€ – ${budget_max}€`;
+    if (budget_max) return `< ${budget_max}€`;
+    if (budget_min) return `> ${budget_min}€`;
+    return "Non défini";
+  };
+
+  const statusLabel = search.status === "active" ? "Active" : search.status === "paused" ? "En pause" : search.status === "reserved" ? "Réservée" : search.status;
+  const proposalCount = search.proposal_count ?? 0;
+  const reservationCount = search.reservation_count ?? 0;
+
   return (
-    <Card className="hover:shadow-md transition-shadow overflow-hidden">
-      <CardContent className="py-4">
-        {/* Main search info */}
-        <div className="flex gap-4">
+    <div
+      style={{
+        backgroundColor: "#FFFFFF",
+        border: "1px solid #E8E2D9",
+        borderRadius: "14px",
+        overflow: "hidden",
+      }}
+    >
+      {/* TOP — Image + infos + Edit */}
+      <div style={{ padding: "14px 14px 12px" }}>
+        <div className="flex gap-3">
           <Link to={`/recherche/${search.id}`} className="flex-shrink-0">
             {search.image_url ? (
               <img
                 src={search.image_url}
                 alt={search.title}
-                className="w-20 h-20 rounded-lg object-cover"
+                style={{ width: 56, height: 56, borderRadius: 8, objectFit: "cover" }}
               />
             ) : (
-              <div className="w-20 h-20 rounded-lg bg-secondary flex items-center justify-center">
-                <span className="text-2xl">🔍</span>
+              <div
+                className="flex items-center justify-center"
+                style={{ width: 56, height: 56, borderRadius: 8, backgroundColor: "#F5F0E8" }}
+              >
+                <span className="text-xl">🔍</span>
               </div>
             )}
           </Link>
+
           <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-start gap-2">
-              <div className="min-w-0 flex-1">
-                <Link to={`/recherche/${search.id}`}>
-                  <h3 className="font-semibold text-primary truncate hover:text-accent transition-colors">{search.title}</h3>
-                </Link>
-                <p className="text-sm text-muted-foreground">{search.category}</p>
-                {(search.budget_min || search.budget_max) && (
-                  <p className="text-sm mt-1">
-                    Budget: {search.budget_min || 0}€ - {search.budget_max || "∞"}€
-                  </p>
-                )}
-              </div>
-              <div className="flex flex-col items-end gap-2">
-                {search.status === "reserved" ? (
-                  <Badge className="bg-accent/20 text-accent border border-accent/50 gap-1 flex-shrink-0">
-                    <Lock className="w-3 h-3" />
-                    Réservée
-                  </Badge>
-                ) : (
-                  <Badge variant={search.status === "active" ? "default" : "secondary"} className="flex-shrink-0">
-                    {search.status === "active" ? "Active" : search.status === "paused" ? "En pause" : search.status}
-                  </Badge>
-                )}
-                <Button size="sm" variant="outline" asChild>
-                  <Link to={`/modifier-recherche/${search.id}`}>
-                    <Edit className="w-4 h-4 mr-1" />
-                    Modifier
-                  </Link>
-                </Button>
-              </div>
+            {/* Title + status badge inline */}
+            <div className="flex items-center gap-2 min-w-0">
+              <Link to={`/recherche/${search.id}`} className="min-w-0 flex-1">
+                <h3
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#1B2A4A",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    margin: 0,
+                  }}
+                >
+                  {search.title}
+                </h3>
+              </Link>
+              <span
+                style={{
+                  backgroundColor: "#1B2A4A",
+                  color: "#C9A84C",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  padding: "3px 9px",
+                  borderRadius: 20,
+                  letterSpacing: "0.03em",
+                  flexShrink: 0,
+                  textTransform: "capitalize",
+                }}
+              >
+                {statusLabel}
+              </span>
             </div>
+
+            {/* Category */}
+            <p style={{ fontSize: 11, color: "#C9A84C", fontWeight: 500, margin: "4px 0 2px" }}>
+              {search.category}
+            </p>
+
+            {/* Budget */}
+            <p style={{ fontSize: 12, color: "#6B6259", margin: 0 }}>
+              Budget :{" "}
+              <span style={{ fontWeight: 600, color: "#1B2A4A" }}>{formatBudget()}</span>
+            </p>
           </div>
         </div>
 
-        {/* Collapsible sections */}
-        <div className="mt-4 space-y-2">
-          {/* Proposals accordion */}
-          {(search.proposal_count ?? 0) > 0 && (
-            <Collapsible open={proposalsOpen} onOpenChange={handleProposalsToggle}>
-              <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl bg-secondary/60 hover:bg-secondary transition-colors">
-                <span className="flex items-center gap-2 text-sm font-medium text-primary">
-                  <Package className="w-4 h-4 text-accent" />
-                  {search.proposal_count} proposition{(search.proposal_count ?? 0) > 1 ? "s" : ""}
-                </span>
-                <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${proposalsOpen ? "rotate-180" : ""}`} />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-2">
-                {loadingProposals ? (
-                  <div className="flex justify-center py-4">
-                    <Loader2 className="w-5 h-5 animate-spin text-accent" />
-                  </div>
-                ) : proposals.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-3">Aucune proposition</p>
-                ) : (
-                  <div className="space-y-2 pl-2">
-                    {proposals.map((proposal) => (
-                      <div
-                        key={proposal.id}
-                        className="flex items-center justify-between gap-3 p-3 rounded-xl bg-card border border-border hover:border-accent/30 transition-colors cursor-pointer"
-                        onClick={() => navigate(`/recherche/${search.id}`)}
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          {proposal.findr_profile?.avatar_url ? (
-                            <img src={proposal.findr_profile.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
-                          ) : (
-                            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs">
-                              <User className="w-4 h-4" />
-                            </div>
-                          )}
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium text-primary truncate">{proposal.title}</p>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <span>{proposal.findr_profile?.full_name || "findr"}</span>
-                              {proposal.findr_profile?.is_premium && <Crown className="w-3 h-3 text-accent" />}
-                              <span>•</span>
-                              <span>{formatDate(proposal.created_at)}</span>
-                            </div>
-                          </div>
+        {/* Edit button */}
+        <div className="flex justify-end" style={{ marginTop: 12 }}>
+          <Link
+            to={`/modifier-recherche/${search.id}`}
+            onMouseEnter={() => setEditHover(true)}
+            onMouseLeave={() => setEditHover(false)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              border: "1.5px solid #1B2A4A",
+              backgroundColor: editHover ? "#1B2A4A" : "transparent",
+              color: editHover ? "#FFFFFF" : "#1B2A4A",
+              borderRadius: 7,
+              padding: "6px 14px",
+              fontSize: 12,
+              fontWeight: 500,
+              transition: "background-color 0.15s, color 0.15s",
+              textDecoration: "none",
+            }}
+          >
+            <Edit style={{ width: 13, height: 13 }} />
+            Modifier
+          </Link>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div style={{ height: 1, backgroundColor: "#EEE8DF" }} />
+
+      {/* BOTTOM ROW 1 — Propositions (navy) */}
+      <Collapsible open={proposalsOpen} onOpenChange={handleProposalsToggle}>
+        <CollapsibleTrigger asChild>
+          <button
+            onMouseEnter={() => setPropHover(true)}
+            onMouseLeave={() => setPropHover(false)}
+            style={{
+              width: "100%",
+              backgroundColor: propHover ? "#243d6b" : "#1B2A4A",
+              padding: "12px 16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              border: "none",
+              cursor: "pointer",
+              transition: "background-color 0.15s",
+            }}
+          >
+            <span className="flex items-center gap-2">
+              <Package style={{ width: 18, height: 18, color: "#C9A84C" }} />
+              <span style={{ fontSize: 13, fontWeight: 500, color: "#FFFFFF" }}>
+                Propositions reçues
+              </span>
+            </span>
+            <span className="flex items-center gap-2">
+              <span
+                style={{
+                  backgroundColor: "#C9A84C",
+                  color: "#1B2A4A",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  padding: "2px 8px",
+                  borderRadius: 20,
+                }}
+              >
+                {proposalCount}
+              </span>
+              <ChevronDown
+                style={{
+                  width: 14,
+                  height: 14,
+                  color: "rgba(255,255,255,0.6)",
+                  transition: "transform 0.2s",
+                  transform: proposalsOpen ? "rotate(180deg)" : "none",
+                }}
+              />
+            </span>
+          </button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div style={{ backgroundColor: "#FFFFFF", padding: "10px 14px", borderTop: "1px solid #EEE8DF" }}>
+            {loadingProposals ? (
+              <div className="flex justify-center py-3">
+                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#C9A84C" }} />
+              </div>
+            ) : proposals.length === 0 ? (
+              <p className="text-center py-2" style={{ fontSize: 12, color: "#6B6259" }}>
+                Aucune proposition
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {proposals.map((proposal) => (
+                  <div
+                    key={proposal.id}
+                    onClick={() => navigate(`/recherche/${search.id}`)}
+                    className="flex items-center justify-between gap-3 p-2.5 rounded-lg cursor-pointer transition-colors"
+                    style={{ backgroundColor: "#FAF7F2", border: "1px solid #EEE8DF" }}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      {proposal.findr_profile?.avatar_url ? (
+                        <img src={proposal.findr_profile.avatar_url} alt="" className="w-7 h-7 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "#1B2A4A" }}>
+                          <User className="w-3.5 h-3.5" style={{ color: "#FFFFFF" }} />
                         </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className="text-sm font-bold text-accent">{proposal.proposed_price.toFixed(0)}€</span>
-                          {statusBadge(proposal.status)}
+                      )}
+                      <div className="min-w-0">
+                        <p className="truncate" style={{ fontSize: 12, fontWeight: 600, color: "#1B2A4A" }}>
+                          {proposal.title}
+                        </p>
+                        <div className="flex items-center gap-1.5" style={{ fontSize: 10.5, color: "#6B6259" }}>
+                          <span>{proposal.findr_profile?.full_name || "findr"}</span>
+                          {proposal.findr_profile?.is_premium && <Crown className="w-3 h-3" style={{ color: "#C9A84C" }} />}
+                          <span>•</span>
+                          <span>{formatDate(proposal.created_at)}</span>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span style={{ fontSize: 13, fontWeight: 700, color: "#C9A84C" }}>
+                        {proposal.proposed_price.toFixed(0)}€
+                      </span>
+                      {statusBadge(proposal.status)}
+                    </div>
                   </div>
-                )}
-              </CollapsibleContent>
-            </Collapsible>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
 
-          {/* Reservations accordion */}
-          {(search.reservation_count ?? 0) > 0 && (
-            <Collapsible open={reservationsOpen} onOpenChange={handleReservationsToggle}>
-              <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2.5 rounded-xl bg-accent/10 hover:bg-accent/20 transition-colors">
-                <span className="flex items-center gap-2 text-sm font-medium text-accent">
-                  <CalendarClock className="w-4 h-4" />
-                  {search.reservation_count} réservation{(search.reservation_count ?? 0) > 1 ? "s" : ""}
-                </span>
-                <ChevronDown className={`w-4 h-4 text-accent transition-transform duration-200 ${reservationsOpen ? "rotate-180" : ""}`} />
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-2">
-                {loadingReservations ? (
-                  <div className="flex justify-center py-4">
-                    <Loader2 className="w-5 h-5 animate-spin text-accent" />
-                  </div>
-                ) : reservations.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-3">Aucune réservation active</p>
-                ) : (
-                  <div className="space-y-2 pl-2">
-                    {reservations.map((reservation) => (
-                      <ReservationCard
-                        key={reservation.id}
-                        reservation={reservation}
-                        isOwner={true}
-                        searchTitle={search.title}
-                        onUpdate={handleReservationUpdate}
-                      />
-                    ))}
-                  </div>
-                )}
-              </CollapsibleContent>
-            </Collapsible>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+      {/* BOTTOM ROW 2 — Réservations (cream) */}
+      <Collapsible open={reservationsOpen} onOpenChange={handleReservationsToggle}>
+        <CollapsibleTrigger asChild>
+          <button
+            onMouseEnter={() => setResaHover(true)}
+            onMouseLeave={() => setResaHover(false)}
+            style={{
+              width: "100%",
+              backgroundColor: resaHover ? "#EDE7DC" : "#F5F0E8",
+              padding: "10px 16px",
+              borderTop: "1px solid #EEE8DF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              border: "none",
+              borderTopWidth: 1,
+              borderTopStyle: "solid",
+              borderTopColor: "#EEE8DF",
+              cursor: "pointer",
+              transition: "background-color 0.15s",
+            }}
+          >
+            <span className="flex items-center gap-2">
+              <CalendarClock style={{ width: 14, height: 14, color: "#9A8F84" }} />
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#6B6259" }}>
+                Réservations
+              </span>
+            </span>
+            <span className="flex items-center gap-2">
+              <span
+                style={{
+                  backgroundColor: "#E8E2D9",
+                  color: "#1B2A4A",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  padding: "2px 8px",
+                  borderRadius: 20,
+                }}
+              >
+                {reservationCount}
+              </span>
+              <ChevronDown
+                style={{
+                  width: 13,
+                  height: 13,
+                  color: "#B0A898",
+                  transition: "transform 0.2s",
+                  transform: reservationsOpen ? "rotate(180deg)" : "none",
+                }}
+              />
+            </span>
+          </button>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <div style={{ backgroundColor: "#FFFFFF", padding: "10px 14px", borderTop: "1px solid #EEE8DF" }}>
+            {loadingReservations ? (
+              <div className="flex justify-center py-3">
+                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#C9A84C" }} />
+              </div>
+            ) : reservations.length === 0 ? (
+              <p className="text-center py-2" style={{ fontSize: 12, color: "#6B6259" }}>
+                Aucune réservation active
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {reservations.map((reservation) => (
+                  <ReservationCard
+                    key={reservation.id}
+                    reservation={reservation}
+                    isOwner={true}
+                    searchTitle={search.title}
+                    onUpdate={handleReservationUpdate}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
   );
 };
 
