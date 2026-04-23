@@ -326,14 +326,31 @@ const Searches = () => {
           {/* Search Grid */}
           {!loading && filteredAndSortedSearches.length > 0 && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredAndSortedSearches.map((search, index) => (
+              {filteredAndSortedSearches.map((search, index) => {
+                const initials = (search.profiles?.full_name || "U")
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase();
+
+                return (
                 <motion.div
                   key={search.id}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
                   onClick={() => navigate(`/recherche/${search.id}`)}
-                  className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-vintage transition-all duration-300 cursor-pointer"
+                  className="group cursor-pointer transition-all duration-200 hover:-translate-y-0.5"
+                  style={{
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #E8E2D9",
+                    borderRadius: "14px",
+                    overflow: "hidden",
+                  }}
+                  whileHover={{
+                    boxShadow: "0 6px 20px rgba(27,42,74,0.10)",
+                  }}
                 >
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden bg-secondary">
@@ -343,55 +360,139 @@ const Searches = () => {
                       ]}
                       alt={search.title}
                     />
-                    {search.urgency === "3-days" && (
-                      <Badge className="absolute top-3 left-3 bg-destructive text-destructive-foreground">
-                        Urgent
-                      </Badge>
-                    )}
-                    <Badge 
-                      variant="secondary" 
-                      className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm"
+
+                    {/* Category badge — top left */}
+                    <span
+                      className="absolute"
+                      style={{
+                        top: "10px",
+                        left: "10px",
+                        backgroundColor: "rgba(27,42,74,0.92)",
+                        color: "#C9A84C",
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        letterSpacing: "0.04em",
+                        padding: "5px 12px",
+                        borderRadius: "20px",
+                        zIndex: 5,
+                      }}
                     >
                       {search.category}
-                    </Badge>
-                    <span className="absolute bottom-3 right-3 text-xs text-secondary bg-primary/70 backdrop-blur-sm px-2 py-1 rounded">
+                    </span>
+
+                    {/* Date badge — bottom right */}
+                    <span
+                      className="absolute"
+                      style={{
+                        bottom: "10px",
+                        right: "10px",
+                        backgroundColor: "rgba(0,0,0,0.55)",
+                        color: "#FFFFFF",
+                        fontSize: "11px",
+                        padding: "4px 10px",
+                        borderRadius: "20px",
+                        zIndex: 5,
+                      }}
+                    >
                       {formatDate(search.created_at)}
                     </span>
                   </div>
 
                   {/* Content */}
-                  <div className="p-5">
-                    <h3 className="font-semibold text-primary mb-3 line-clamp-2 group-hover:text-accent transition-colors">
+                  <div style={{ padding: "14px 16px 12px" }}>
+                    <h3
+                      className="truncate"
+                      style={{
+                        fontSize: "15px",
+                        fontWeight: 700,
+                        color: "#1B2A4A",
+                        marginBottom: "8px",
+                      }}
+                    >
                       {search.title}
                     </h3>
 
-                    <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mb-4">
-                      <span className="flex items-center gap-1">
-                        <Euro className="w-3.5 h-3.5" />
-                        {formatBudget(search.budget_min, search.budget_max)}
+                    {/* Price + delay */}
+                    <div className="flex items-center" style={{ gap: "16px" }}>
+                      <span className="flex items-center" style={{ gap: "4px" }}>
+                        <Euro style={{ width: "13px", height: "13px", color: "#C9A84C" }} />
+                        <span style={{ fontSize: "13px", fontWeight: 600, color: "#1B2A4A" }}>
+                          {formatBudget(search.budget_min, search.budget_max)}
+                        </span>
                       </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        {urgencyLabels[search.urgency || "normal"] || search.urgency}
+                      <span className="flex items-center" style={{ gap: "4px" }}>
+                        <Clock style={{ width: "13px", height: "13px", color: "#C9A84C" }} />
+                        <span style={{ fontSize: "13px", color: "#6B6259" }}>
+                          {urgencyLabels[search.urgency || "normal"] || search.urgency}
+                        </span>
                       </span>
                     </div>
 
+                    {/* Divider */}
+                    <div style={{ height: "1px", backgroundColor: "#EEE8DF", margin: "10px 0" }} />
+
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-border">
-                      <UserBadge
-                        userId={search.user_id}
-                        fullName={search.profiles?.full_name || null}
-                        avatarUrl={search.profiles?.avatar_url || null}
-                        showCrown={false}
-                      />
-                      <span className="flex items-center gap-1 text-sm text-accent font-medium">
-                        <MessageCircle className="w-4 h-4" />
-                        0
+                    <div
+                      className="flex items-center justify-between"
+                      style={{ height: "36px" }}
+                    >
+                      {/* Author */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/profil/${search.user_id}`);
+                        }}
+                        className="flex items-center hover:opacity-80 transition-opacity"
+                        style={{ gap: "7px" }}
+                      >
+                        {search.profiles?.avatar_url ? (
+                          <img
+                            src={search.profiles.avatar_url}
+                            alt={search.profiles.full_name || "User"}
+                            style={{
+                              width: "28px",
+                              height: "28px",
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                            }}
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).style.display = "none";
+                              const fallback = e.currentTarget.nextElementSibling as HTMLElement | null;
+                              if (fallback) fallback.style.display = "flex";
+                            }}
+                          />
+                        ) : null}
+                        <span
+                          style={{
+                            width: "28px",
+                            height: "28px",
+                            borderRadius: "50%",
+                            backgroundColor: "#1B2A4A",
+                            color: "#C9A84C",
+                            fontSize: "11px",
+                            fontWeight: 600,
+                            display: search.profiles?.avatar_url ? "none" : "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {initials}
+                        </span>
+                        <span style={{ fontSize: "12px", fontWeight: 500, color: "#1B2A4A" }}>
+                          {search.profiles?.full_name || "Utilisateur"}
+                        </span>
+                      </button>
+
+                      {/* Comments count */}
+                      <span className="flex items-center" style={{ gap: "4px" }}>
+                        <MessageCircle style={{ width: "14px", height: "14px", color: "#C9A84C" }} />
+                        <span style={{ fontSize: "12px", fontWeight: 600, color: "#1B2A4A" }}>0</span>
                       </span>
                     </div>
                   </div>
                 </motion.div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

@@ -87,16 +87,17 @@ const SearchImageCarousel = ({ images, alt, className = "" }: SearchImageCarouse
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+      <div className="absolute left-1/2 -translate-x-1/2 flex gap-1.5 z-10" style={{ bottom: "10px" }}>
         {validImages.map((_, i) => (
           <button
             key={i}
             onClick={(e) => goTo(e, i)}
-            className={`w-2 h-2 rounded-full transition-all duration-200 ${
-              i === safeIndex
-                ? "bg-primary-foreground scale-110"
-                : "bg-primary-foreground/50 hover:bg-primary-foreground/75"
-            }`}
+            className="rounded-full transition-all duration-200"
+            style={{
+              width: "6px",
+              height: "6px",
+              backgroundColor: i === safeIndex ? "#FFFFFF" : "rgba(255,255,255,0.5)",
+            }}
             aria-label={`Photo ${i + 1}`}
           />
         ))}
