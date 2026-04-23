@@ -17,22 +17,25 @@ const BackButton = () => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       aria-label="Retour"
-      className="hidden lg:flex fixed items-center justify-center"
+      className="hidden lg:flex fixed items-center"
       style={{
-        top: "50%",
+        top: "80px",
         left: "16px",
-        transform: "translateY(-50%) rotate(180deg)",
-        writingMode: "vertical-rl",
+        transform: "none",
         zIndex: 50,
+        display: "flex",
+        alignItems: "center",
+        gap: "6px",
         backgroundColor: hover ? "#243d6b" : "#1B2A4A",
         color: "#FFFFFF",
         fontFamily: "Inter, sans-serif",
-        fontSize: "12px",
+        fontSize: "13px",
         fontWeight: 500,
-        padding: "14px 10px",
+        padding: "8px 14px",
         borderRadius: "8px",
         border: "none",
         cursor: "pointer",
+        whiteSpace: "nowrap",
         transition: "background-color 0.15s ease",
       }}
     >
