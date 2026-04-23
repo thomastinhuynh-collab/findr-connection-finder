@@ -348,8 +348,25 @@ const MySpace = () => {
               </TabsList>
 
               <TabsContent value="searches" className="mt-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold" style={{ color: '#112150' }}>Mes recherches en cours</h2>
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <span
+                      style={{
+                        fontSize: 11,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                        color: "#9A8F84",
+                        fontWeight: 500,
+                        display: "block",
+                        marginBottom: 4,
+                      }}
+                    >
+                      MON ESPACE
+                    </span>
+                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#1B2A4A" }}>
+                      Mes recherches en cours
+                    </h2>
+                  </div>
                   <div className="flex gap-2">
                     {profile.is_findr && (
                       <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BD8B', color: '#112150' }}>
@@ -359,12 +376,24 @@ const MySpace = () => {
                         </Link>
                       </Button>
                     )}
-                    <Button asChild size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
-                      <Link to="/poster">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Nouvelle recherche
-                      </Link>
-                    </Button>
+                    <Link
+                      to="/poster"
+                      className="inline-flex items-center transition-colors"
+                      style={{
+                        backgroundColor: "#1B2A4A",
+                        color: "#FFFFFF",
+                        borderRadius: 8,
+                        padding: "10px 18px",
+                        fontSize: 13,
+                        fontWeight: 500,
+                        textDecoration: "none",
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#243d6b")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#1B2A4A")}
+                    >
+                      <span style={{ fontSize: 16, marginRight: 6, lineHeight: 1 }}>+</span>
+                      Nouvelle recherche
+                    </Link>
                   </div>
                 </div>
 
