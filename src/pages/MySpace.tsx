@@ -392,7 +392,7 @@ const MySpace = () => {
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#1B2A4A")}
                     >
                       <span style={{ fontSize: 16, marginRight: 6, lineHeight: 1 }}>+</span>
-                      Nouvelle recherche
+                      Poster une recherche
                     </Link>
                   </div>
                 </div>
