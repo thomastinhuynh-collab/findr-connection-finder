@@ -96,27 +96,6 @@ const CategoryNav = () => {
     <div className="hidden md:block" style={{ background: 'transparent' }}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center gap-0">
-          {isDetailPage && (
-              <button
-                onClick={goBack}
-                className="whitespace-nowrap"
-                style={{
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  color: '#FFFFFF',
-                  background: 'rgba(255,255,255,0.12)',
-                  border: '1px solid rgba(255,255,255,0.25)',
-                  borderRadius: '20px',
-                  padding: '5px 14px',
-                  marginRight: '32px',
-                  transition: 'background 0.15s ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.22)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.12)')}
-              >
-                ← Retour
-              </button>
-          )}
           {categories.map((category) => (
             <div
               key={category.slug}
