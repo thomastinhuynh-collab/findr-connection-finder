@@ -89,15 +89,29 @@ const Navbar = () => {
             </div>
 
             {/* Desktop CTA */}
-            <div className="hidden md:flex items-center">
+            <div className="hidden md:flex items-center gap-2">
               {user ? (
-                <Button
-                  size="sm"
-                  className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full"
-                  onClick={() => navigate("/mon-espace")}
-                >
-                  Mon espace
-                </Button>
+                <>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className={`font-poppins font-semibold rounded-full ${
+                      isLightMode
+                        ? "border-[#112150] text-[#112150] bg-transparent hover:bg-[#112150] hover:text-[#F5F0EA]"
+                        : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#112150]"
+                    }`}
+                    onClick={() => navigate("/poster")}
+                  >
+                    + Poster une recherche
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full"
+                    onClick={() => navigate("/mon-espace")}
+                  >
+                    Mon espace
+                  </Button>
+                </>
               ) : (
                 <Button
                   size="sm"
@@ -133,16 +147,33 @@ const Navbar = () => {
                   </Link>
                 ))}
                 {user ? (
-                  <Button
-                    size="sm"
-                    className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full w-full mt-2"
-                    onClick={() => {
-                      setIsOpen(false);
-                      navigate("/mon-espace");
-                    }}
-                  >
-                    Mon espace
-                  </Button>
+                  <>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className={`font-poppins font-semibold rounded-full w-full mt-2 ${
+                        isLightMode
+                          ? "border-[#112150] text-[#112150] bg-transparent hover:bg-[#112150] hover:text-[#F5F0EA]"
+                          : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#112150]"
+                      }`}
+                      onClick={() => {
+                        setIsOpen(false);
+                        navigate("/poster");
+                      }}
+                    >
+                      + Poster une recherche
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full w-full"
+                      onClick={() => {
+                        setIsOpen(false);
+                        navigate("/mon-espace");
+                      }}
+                    >
+                      Mon espace
+                    </Button>
+                  </>
                 ) : (
                   <Button
                     size="sm"
