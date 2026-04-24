@@ -238,7 +238,7 @@ const PostSearch = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             onSubmit={handleSubmit}
-            className="bg-card rounded-2xl p-8 shadow-vintage"
+            className="post-search-form"
           >
             <AnimatePresence mode="wait">
               {/* STEP 1 */}
