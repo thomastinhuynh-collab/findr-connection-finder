@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Package, Heart, Clock, Euro, MapPin } from "lucide-react";
+import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Package, Heart, Clock, Euro, MapPin, Pencil, MoreHorizontal } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import PremiumWallet from "@/components/PremiumWallet";
@@ -60,11 +62,14 @@ const mockTransactions = [
 const MySpace = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
   const [walletBalance] = useState(155.50);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -173,6 +178,32 @@ const MySpace = () => {
     }
   };
 
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "Fichier trop lourd", description: "Max 5 Mo", variant: "destructive" });
+      return;
+    }
+    setUploadingAvatar(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("search-images").upload(path, file, { upsert: true });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("search-images").getPublicUrl(path);
+      const { error: updErr } = await supabase.from("profiles").update({ avatar_url: pub.publicUrl }).eq("user_id", user.id);
+      if (updErr) throw updErr;
+      await fetchProfile();
+      toast({ title: "Photo mise à jour" });
+    } catch (err: any) {
+      toast({ title: "Erreur", description: err.message, variant: "destructive" });
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
@@ -204,18 +235,50 @@ const MySpace = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            {/* Profile Header - inspired by image 2 */}
-            <div className="flex flex-col md:flex-row items-start gap-8 mb-10">
-              <Avatar className="w-44 h-44 md:w-52 md:h-52 border-4 shadow-md flex-shrink-0" style={{ borderColor: '#D9BD8B' }}>
-                <AvatarImage src={profile.avatar_url || undefined} />
-                <AvatarFallback className="text-5xl font-bold" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
-                  {profile.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+            {/* Profile Header */}
+            {(() => {
+              const xpPerLevel = 500;
+              const currentLevelXp = (profile.level - 1) * xpPerLevel;
+              const nextLevelXp = profile.level * xpPerLevel;
+              const xpInLevel = Math.max(0, profile.xp_points - currentLevelXp);
+              const progressPct = Math.min(100, (xpInLevel / xpPerLevel) * 100);
+              return (
+            <div className="relative flex flex-col md:flex-row items-start gap-6 mb-8">
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
+
+              {/* Avatar with hover overlay */}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingAvatar}
+                title="Changer ma photo"
+                className="group relative flex-shrink-0 rounded-full overflow-hidden"
+                style={{ width: 80, height: 80 }}
+              >
+                <Avatar className="w-20 h-20 border-2" style={{ borderColor: '#D9BD8B' }}>
+                  <AvatarImage src={profile.avatar_url || undefined} />
+                  <AvatarFallback className="text-2xl font-bold" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                    {profile.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div
+                  className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+                  style={{ backgroundColor: 'rgba(27,42,74,0.6)' }}
+                >
+                  <Pencil className="w-4 h-4" style={{ color: '#FFFFFF' }} />
+                </div>
+              </button>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <h1 className="text-3xl font-display font-bold" style={{ color: '#112150' }}>
+                  <h1 className="text-2xl font-display font-bold" style={{ color: '#1B2A4A' }}>
                     {profile.full_name || "Utilisateur"}
                   </h1>
                   {profile.is_premium && (
@@ -229,26 +292,43 @@ const MySpace = () => {
                   )}
                 </div>
 
-                {/* Rating stars */}
+                {/* Rating: badge "Nouveau membre" if 0 evals, else stars */}
                 <div className="flex items-center gap-2 mt-2">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${
-                          averageRating !== "N/A" && i < Math.round(Number(averageRating))
-                            ? "fill-yellow-500 text-yellow-500"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-sm" style={{ color: '#6B7280' }}>
-                    {evaluations.length} évaluation{evaluations.length !== 1 ? 's' : ''}
-                  </span>
+                  {evaluations.length === 0 ? (
+                    <span
+                      style={{
+                        backgroundColor: '#EEF2FF',
+                        color: '#3B4F8C',
+                        fontSize: 11,
+                        padding: '3px 10px',
+                        borderRadius: 20,
+                        fontWeight: 500,
+                      }}
+                    >
+                      Nouveau membre
+                    </span>
+                  ) : (
+                    <>
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${
+                              i < Math.round(Number(averageRating))
+                                ? "fill-yellow-500 text-yellow-500"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs" style={{ color: '#6B7280' }}>
+                        ({evaluations.length} évaluation{evaluations.length !== 1 ? 's' : ''})
+                      </span>
+                    </>
+                  )}
                 </div>
 
-                {/* Info rows */}
+                {/* City + Level row */}
                 <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" style={{ color: '#4B5563' }}>
                   {profile.city && (
                     <div className="flex items-center gap-2">
@@ -262,11 +342,50 @@ const MySpace = () => {
                   </div>
                 </div>
 
-                {/* About / Bio card filling available space */}
-                <div
-                  className="mt-5 rounded-xl p-5"
-                  style={{ backgroundColor: '#FAF7F2', border: '1px solid #ECE6DA' }}
+                {/* XP progress bar */}
+                <div className="mt-2">
+                  <div
+                    style={{
+                      width: 200,
+                      height: 6,
+                      borderRadius: 3,
+                      backgroundColor: '#E8E2D9',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${progressPct}%`,
+                        height: '100%',
+                        backgroundColor: '#C9A84C',
+                        transition: 'width 0.3s ease',
+                      }}
+                    />
+                  </div>
+                  <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 4 }}>
+                    {xpInLevel} / {xpPerLevel} XP pour le Niveau {profile.level + 1}
+                  </p>
+                </div>
+
+                {/* Edit profile button — inline */}
+                <button
+                  type="button"
+                  className="mt-4 inline-flex items-center gap-1.5 transition-colors"
+                  style={{
+                    border: '1.5px solid #1B2A4A',
+                    color: '#1B2A4A',
+                    fontSize: 12,
+                    padding: '5px 14px',
+                    borderRadius: 7,
+                    backgroundColor: 'transparent',
+                  }}
                 >
+                  <Pencil className="w-3 h-3" />
+                  Modifier mon profil
+                </button>
+
+                {/* À propos */}
+                <div className="mt-5">
                   <h3
                     className="text-xs font-semibold uppercase tracking-wider mb-2"
                     style={{ color: '#D9BD8B', letterSpacing: '0.08em' }}
@@ -274,39 +393,75 @@ const MySpace = () => {
                     À propos
                   </h3>
                   {profile.bio ? (
-                    <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>
-                      {profile.bio}
-                    </p>
+                    <div
+                      className="rounded-xl p-5"
+                      style={{ backgroundColor: '#FAF7F2', border: '1px solid #ECE6DA' }}
+                    >
+                      <p className="text-sm leading-relaxed" style={{ color: '#374151' }}>
+                        {profile.bio}
+                      </p>
+                    </div>
                   ) : (
-                    <p className="text-sm leading-relaxed italic" style={{ color: '#9CA3AF' }}>
-                      Aucune description pour le moment. Ajoutez une bio pour vous présenter à la communauté findr — vos passions, ce que vous cherchez ou ce que vous savez dénicher.
-                    </p>
+                    <div
+                      style={{
+                        backgroundColor: '#FFFFFF',
+                        border: '1.5px dashed #D4CCBC',
+                        borderRadius: 10,
+                        padding: 16,
+                      }}
+                    >
+                      <p style={{ fontSize: 13, color: '#6B6259', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>✏️</span>
+                        Ajoute une bio pour te présenter à la communauté
+                      </p>
+                      <button
+                        type="button"
+                        className="mt-3 transition-colors"
+                        style={{
+                          backgroundColor: 'transparent',
+                          border: '1.5px solid #C9A84C',
+                          color: '#C9A84C',
+                          fontSize: 12,
+                          borderRadius: 7,
+                          padding: '6px 16px',
+                          fontWeight: 500,
+                        }}
+                      >
+                        + Ajouter ma bio
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
 
-              {/* Action buttons */}
-              <div className="flex gap-2 self-start">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border"
-                  style={{ borderColor: '#D9BD8B', color: '#112150' }}
-                >
-                  <Settings className="w-4 h-4 mr-2" />
-                  Modifier mon profil
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleSignOut}
-                  className="border"
-                  style={{ borderColor: '#E5E7EB', color: '#6B7280' }}
-                >
-                  <LogOut className="w-4 h-4" />
-                </Button>
+              {/* Top-right discreet menu */}
+              <div className="absolute top-0 right-0">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      className="p-2 rounded-md hover:bg-muted transition-colors"
+                      style={{ color: '#6B6259' }}
+                      aria-label="Plus d'options"
+                    >
+                      <MoreHorizontal className="w-5 h-5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem>
+                      <Settings className="w-4 h-4 mr-2" />
+                      Paramètres du compte
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut} style={{ color: '#DC2626' }}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Se déconnecter
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
+              );
+            })()}
 
             {/* Separator */}
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
