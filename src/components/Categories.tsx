@@ -6,11 +6,11 @@ import catObjetsDivers from "@/assets/cat-objets-divers.jpg";
 
 const categories = [
   {
-    name: "Mode Vintage",
-    slug: "Mode Vintage",
+    name: "Mode & Maroquinerie",
+    slug: "Mode & Maroquinerie",
     image: catModeVintage,
-    description: "Vestes en cuir, denim, fripes 70s-90s",
-    subcategories: "Mode Vintage · Vinyles & Musique · Bijoux & Accessoires",
+    description: "Vestes en cuir, denim, fripes 70s-90s, sacs",
+    subcategories: "Mode & Maroquinerie · Vinyles & Musique · Bijoux & Accessoires",
   },
   {
     name: "Pop Culture",
