@@ -284,7 +284,7 @@ const PostSearch = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>État souhaité *</Label>
+                    <Label>État souhaité <span className="required-mark">*</span></Label>
                     <div className="grid grid-cols-2 gap-3">
                       {conditionOptions.map((opt) => {
                         const selected = formData.condition === opt;
