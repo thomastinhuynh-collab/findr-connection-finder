@@ -238,7 +238,7 @@ const PostSearch = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             onSubmit={handleSubmit}
-            className="bg-card rounded-2xl p-8 shadow-vintage"
+            className="post-search-form"
           >
             <AnimatePresence mode="wait">
               {/* STEP 1 */}
@@ -252,7 +252,7 @@ const PostSearch = () => {
                   className="space-y-6"
                 >
                   <div className="space-y-2">
-                    <Label htmlFor="title">Qu'est-ce que tu cherches ? *</Label>
+                    <Label htmlFor="title">Qu'est-ce que tu cherches ? <span className="required-mark">*</span></Label>
                     <Input
                       id="title"
                       placeholder="Ex: Veste en cuir oversize années 80"
@@ -267,7 +267,7 @@ const PostSearch = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Catégorie *</Label>
+                    <Label>Catégorie <span className="required-mark">*</span></Label>
                     <Select
                       value={formData.category}
                       onValueChange={(value) => setFormData({ ...formData, category: value })}
@@ -284,7 +284,7 @@ const PostSearch = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>État souhaité *</Label>
+                    <Label>État souhaité <span className="required-mark">*</span></Label>
                     <div className="grid grid-cols-2 gap-3">
                       {conditionOptions.map((opt) => {
                         const selected = formData.condition === opt;
@@ -479,24 +479,22 @@ const PostSearch = () => {
                   <div className="space-y-2">
                     <Label>Budget</Label>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="relative">
-                        <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <div className="relative input-with-icon">
+                        <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
                         <Input
                           type="number"
                           placeholder="50€"
                           value={formData.budgetMin}
                           onChange={(e) => setFormData({ ...formData, budgetMin: e.target.value })}
-                          className="h-12 pl-10"
                         />
                       </div>
-                      <div className="relative">
-                        <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <div className="relative input-with-icon">
+                        <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
                         <Input
                           type="number"
                           placeholder="200€"
                           value={formData.budgetMax}
                           onChange={(e) => setFormData({ ...formData, budgetMax: e.target.value })}
-                          className="h-12 pl-10"
                         />
                       </div>
                     </div>
@@ -509,13 +507,13 @@ const PostSearch = () => {
 
                   <div className="space-y-2">
                     <Label>Délai souhaité</Label>
-                    <div className="relative">
-                      <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                    <div className="relative input-with-icon">
+                      <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
                       <Select
                         value={formData.deadline}
                         onValueChange={(value) => setFormData({ ...formData, deadline: value })}
                       >
-                        <SelectTrigger className="h-12 pl-10">
+                        <SelectTrigger>
                           <SelectValue placeholder="Sélectionner" />
                         </SelectTrigger>
                         <SelectContent className="bg-card border-border">
@@ -531,13 +529,12 @@ const PostSearch = () => {
 
                   <div className="space-y-2">
                     <Label>Localisation</Label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <div className="relative input-with-icon">
+                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
                       <Input
                         placeholder="Ville"
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                        className="h-12 pl-10"
                       />
                     </div>
                   </div>

@@ -197,6 +197,87 @@
     background: var(--gradient-gold);
     @apply text-primary text-xs font-bold px-2 py-0.5 rounded-full;
   }
+
+  /* === Post Search Form — refined input styling === */
+  .post-search-form {
+    background: #FFFFFF;
+    border: 1px solid #E8E2D9;
+    border-radius: 16px;
+    padding: 20px 20px;
+    box-shadow: 0 4px 24px rgba(27, 42, 74, 0.06);
+  }
+
+  @media (min-width: 768px) {
+    .post-search-form {
+      padding: 32px 36px;
+    }
+  }
+
+  .post-search-form label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1B2A4A;
+    margin-bottom: 6px;
+    display: inline-block;
+  }
+
+  /* Gold asterisk for required fields */
+  .post-search-form .required-mark {
+    color: #C9A84C;
+    margin-left: 2px;
+  }
+
+  .post-search-form input,
+  .post-search-form textarea,
+  .post-search-form [data-radix-select-trigger],
+  .post-search-form button[role="combobox"] {
+    background-color: #FFFFFF !important;
+    border: 1.5px solid #E8E2D9 !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    color: #1B2A4A !important;
+    padding: 13px 16px !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    box-shadow: none !important;
+  }
+
+  .post-search-form textarea {
+    padding: 13px 16px !important;
+    line-height: 1.5;
+  }
+
+  .post-search-form input::placeholder,
+  .post-search-form textarea::placeholder {
+    color: #B0A898 !important;
+    opacity: 1;
+  }
+
+  .post-search-form input:focus,
+  .post-search-form input:focus-visible,
+  .post-search-form textarea:focus,
+  .post-search-form textarea:focus-visible,
+  .post-search-form [data-radix-select-trigger]:focus,
+  .post-search-form [data-radix-select-trigger]:focus-visible,
+  .post-search-form button[role="combobox"]:focus,
+  .post-search-form button[role="combobox"]:focus-visible {
+    border-color: #1B2A4A !important;
+    box-shadow: 0 0 0 3px rgba(27, 42, 74, 0.08) !important;
+    outline: none !important;
+  }
+
+  /* Gold chevron in selects */
+  .post-search-form [data-radix-select-trigger] svg,
+  .post-search-form button[role="combobox"] > svg:last-child {
+    color: #C9A84C !important;
+    opacity: 1 !important;
+  }
+
+  /* Inputs with leading icons need extra left padding */
+  .post-search-form .input-with-icon input,
+  .post-search-form .input-with-icon [data-radix-select-trigger],
+  .post-search-form .input-with-icon button[role="combobox"] {
+    padding-left: 42px !important;
+  }
 }
 
 @layer utilities {
