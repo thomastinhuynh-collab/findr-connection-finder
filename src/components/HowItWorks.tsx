@@ -21,7 +21,7 @@ const steps = [
         "Décris précisément l'objet que tu recherches (marque, modèle, époque, état souhaité)",
         "Ajoute une ou plusieurs photos d'inspiration pour guider les findrs",
         "Indique ton budget minimum et maximum",
-        "Choisis la catégorie appropriée (Mode & Accessoires, Vinyles, Pop culture, etc.)",
+        "Choisis la catégorie appropriée (Mode vintage, Vinyles, Pop culture, etc.)",
         "Précise le niveau d'urgence de ta recherche"
       ]
     }

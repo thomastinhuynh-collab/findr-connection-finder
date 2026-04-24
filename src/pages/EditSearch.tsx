@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const categories = [
-  "Mode & Accessoires",
+  "Mode Vintage",
   "Pop Culture & TCG",
   "Vinyles & Musique",
   "Photo & Électronique",

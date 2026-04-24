@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
-  "Mode & Accessoires",
+  "Mode Vintage",
   "Pop Culture & TCG",
   "Vinyles & Musique",
   "Photo & Électronique",

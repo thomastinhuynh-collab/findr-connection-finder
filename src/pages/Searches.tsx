@@ -49,7 +49,7 @@ const urgencyOrder: Record<string, number> = {
 
 const categories = [
   "Toutes",
-  "Mode & Accessoires",
+  "Mode Vintage",
   "Pop Culture & TCG",
   "Vinyles & Musique",
   "Photo & Électronique",
