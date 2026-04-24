@@ -62,11 +62,14 @@ const mockTransactions = [
 const MySpace = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
+  const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
   const [walletBalance] = useState(155.50);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
