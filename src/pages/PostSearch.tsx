@@ -507,13 +507,13 @@ const PostSearch = () => {
 
                   <div className="space-y-2">
                     <Label>Délai souhaité</Label>
-                    <div className="relative">
-                      <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                    <div className="relative input-with-icon">
+                      <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
                       <Select
                         value={formData.deadline}
                         onValueChange={(value) => setFormData({ ...formData, deadline: value })}
                       >
-                        <SelectTrigger className="h-12 pl-10">
+                        <SelectTrigger>
                           <SelectValue placeholder="Sélectionner" />
                         </SelectTrigger>
                         <SelectContent className="bg-card border-border">
@@ -529,13 +529,12 @@ const PostSearch = () => {
 
                   <div className="space-y-2">
                     <Label>Localisation</Label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <div className="relative input-with-icon">
+                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
                       <Input
                         placeholder="Ville"
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                        className="h-12 pl-10"
                       />
                     </div>
                   </div>
