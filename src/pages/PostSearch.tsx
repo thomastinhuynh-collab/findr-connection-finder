@@ -267,7 +267,7 @@ const PostSearch = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Catégorie *</Label>
+                    <Label>Catégorie <span className="required-mark">*</span></Label>
                     <Select
                       value={formData.category}
                       onValueChange={(value) => setFormData({ ...formData, category: value })}
