@@ -252,7 +252,7 @@ const PostSearch = () => {
                   className="space-y-6"
                 >
                   <div className="space-y-2">
-                    <Label htmlFor="title">Qu'est-ce que tu cherches ? *</Label>
+                    <Label htmlFor="title">Qu'est-ce que tu cherches ? <span className="required-mark">*</span></Label>
                     <Input
                       id="title"
                       placeholder="Ex: Veste en cuir oversize années 80"
