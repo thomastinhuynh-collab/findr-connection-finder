@@ -479,24 +479,22 @@ const PostSearch = () => {
                   <div className="space-y-2">
                     <Label>Budget</Label>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="relative">
-                        <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <div className="relative input-with-icon">
+                        <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
                         <Input
                           type="number"
                           placeholder="50€"
                           value={formData.budgetMin}
                           onChange={(e) => setFormData({ ...formData, budgetMin: e.target.value })}
-                          className="h-12 pl-10"
                         />
                       </div>
-                      <div className="relative">
-                        <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <div className="relative input-with-icon">
+                        <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
                         <Input
                           type="number"
                           placeholder="200€"
                           value={formData.budgetMax}
                           onChange={(e) => setFormData({ ...formData, budgetMax: e.target.value })}
-                          className="h-12 pl-10"
                         />
                       </div>
                     </div>
