@@ -16,15 +16,15 @@ interface Category {
 
 const categories: Category[] = [
   {
-    name: "Mode Vintage",
-    slug: "Mode Vintage",
+    name: "Mode & Maroquinerie",
+    slug: "Mode & Maroquinerie",
     subcategories: [
-      { name: "Vestes & Manteaux", slug: "Mode Vintage&sub=Vestes & Manteaux" },
-      { name: "T-shirts & Sweats", slug: "Mode Vintage&sub=T-shirts & Sweats" },
-      { name: "Pantalons & Jeans", slug: "Mode Vintage&sub=Pantalons & Jeans" },
-      { name: "Robes & Jupes", slug: "Mode Vintage&sub=Robes & Jupes" },
-      { name: "Chaussures", slug: "Mode Vintage&sub=Chaussures" },
-      { name: "Sportswear", slug: "Mode Vintage&sub=Sportswear" },
+      { name: "Vestes & Manteaux", slug: "Mode & Maroquinerie&sub=Vestes & Manteaux" },
+      { name: "T-shirts & Sweats", slug: "Mode & Maroquinerie&sub=T-shirts & Sweats" },
+      { name: "Pantalons & Jeans", slug: "Mode & Maroquinerie&sub=Pantalons & Jeans" },
+      { name: "Robes & Jupes", slug: "Mode & Maroquinerie&sub=Robes & Jupes" },
+      { name: "Chaussures", slug: "Mode & Maroquinerie&sub=Chaussures" },
+      { name: "Sportswear", slug: "Mode & Maroquinerie&sub=Sportswear" },
     ],
   },
   {
