@@ -102,7 +102,7 @@ const Navbar = () => {
                     }`}
                     onClick={() => navigate("/poster")}
                   >
-                    + Poster une recherche
+                    Poster une recherche
                   </Button>
                   <Button
                     size="sm"
