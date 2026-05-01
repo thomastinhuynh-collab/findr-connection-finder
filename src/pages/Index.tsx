@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/HeroAbTest";
+import Hero from "@/components/Hero";
 import HowItWorks from "@/components/HowItWorks";
 import ActiveRequests from "@/components/ActiveRequests";
 import BecomeFindr from "@/components/BecomeFindr";

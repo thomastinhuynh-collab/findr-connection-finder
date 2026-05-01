@@ -14,39 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      ab_events: {
-        Row: {
-          created_at: string
-          cta: string | null
-          event_type: string
-          experiment: string
-          id: string
-          session_id: string
-          user_id: string | null
-          variant: string
-        }
-        Insert: {
-          created_at?: string
-          cta?: string | null
-          event_type: string
-          experiment: string
-          id?: string
-          session_id: string
-          user_id?: string | null
-          variant: string
-        }
-        Update: {
-          created_at?: string
-          cta?: string | null
-          event_type?: string
-          experiment?: string
-          id?: string
-          session_id?: string
-          user_id?: string | null
-          variant?: string
-        }
-        Relationships: []
-      }
       evaluations: {
         Row: {
           comment: string | null
