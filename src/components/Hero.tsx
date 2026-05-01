@@ -89,11 +89,12 @@ const Hero = () => {
             </p>
             <p
               style={{
-                fontSize: '14px',
+                fontSize: '12px',
                 color: '#C9A84C',
                 fontWeight: 500,
                 marginTop: '8px',
-                letterSpacing: '0.04em',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
               }}
             >
               Tu es buyr. Eux sont findr.
@@ -130,8 +131,8 @@ const Hero = () => {
               asChild
               className="font-poppins w-full sm:w-auto transition-colors"
               style={{
-                backgroundColor: 'transparent',
-                border: '1.5px solid rgba(255,255,255,0.5)',
+                backgroundColor: 'rgba(255,255,255,0.08)',
+                border: '2px solid #FFFFFF',
                 color: '#FFFFFF',
                 fontSize: '15px',
                 height: '54px',
@@ -139,12 +140,10 @@ const Hero = () => {
                 borderRadius: '10px',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)';
-                e.currentTarget.style.borderColor = '#FFFFFF';
+                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.18)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)';
+                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.08)';
               }}
             >
               <Link to="/recherches">
