@@ -23,6 +23,7 @@ import Premium from "./pages/Premium";
 import RequestReservation from "./pages/RequestReservation";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import ResetPassword from "./pages/ResetPassword";
+import AbTestDashboard from "./pages/AbTestDashboard";
 import NotFound from "./pages/NotFound";
 import BackButton from "./components/BackButton";
 import Navbar from "./components/Navbar";
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="/reservation/:id" element={<RequestReservation />} />
             <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/admin/ab-test" element={<AbTestDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
