@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-vintage-market.png";
+import { trackAbClick } from "@/lib/abTest";
 
 const avatars = [
   "https://i.pravatar.cc/64?img=5",
@@ -10,7 +11,7 @@ const avatars = [
   "https://i.pravatar.cc/64?img=32",
 ];
 
-const Hero = () => {
+const HeroV2 = () => {
   return (
     <section
       className="relative flex items-center justify-center overflow-hidden pt-32 pb-14 md:pt-40 md:pb-14 bg-navy-primary"
@@ -120,6 +121,7 @@ const Hero = () => {
               }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#D4B05C')}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#C9A84C')}
+              onClick={() => trackAbClick('hero_cta_primary')}
             >
               <Link to="/poster">
                 <Search className="w-5 h-5 mr-2" />
@@ -145,6 +147,7 @@ const Hero = () => {
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.08)';
               }}
+              onClick={() => trackAbClick('hero_cta_secondary')}
             >
               <Link to="/recherches">
                 Je deviens findr →
@@ -185,4 +188,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default HeroV2;
