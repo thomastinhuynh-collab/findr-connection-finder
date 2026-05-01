@@ -93,7 +93,13 @@ const CategoryNav = () => {
   const isDetailPage = location.pathname.startsWith("/recherche/");
 
   return (
-    <div className="hidden md:block" style={{ background: 'transparent' }}>
+    <div
+      className="hidden md:block"
+      style={{
+        background: 'rgba(27,42,74,0.95)',
+        borderTop: '1px solid rgba(255,255,255,0.1)',
+      }}
+    >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center gap-0">
           {categories.map((category) => (
@@ -105,7 +111,8 @@ const CategoryNav = () => {
             >
               <button
                 onClick={() => handleCategoryClick(category.slug)}
-                className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors whitespace-nowrap"
+                className="flex items-center gap-1 px-4 py-2 font-medium text-white/80 hover:text-white transition-colors whitespace-nowrap"
+                style={{ fontSize: '13px' }}
               >
                 {category.name}
                 <ChevronDown className="w-3 h-3" />
