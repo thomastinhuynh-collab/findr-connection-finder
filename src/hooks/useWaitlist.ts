@@ -8,12 +8,9 @@ export function useWaitlist() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    supabase
-      .from("waitlist")
-      .select("*", { count: "exact", head: true })
-      .then(({ count: c }) => {
-        if (c !== null) setCount(c);
-      });
+    supabase.rpc("get_waitlist_count").then(({ data }) => {
+      if (typeof data === "number") setCount(data);
+    });
   }, []);
 
   const submit = async (email: string, role: "buyr" | "findr" | "unknown" = "unknown") => {
