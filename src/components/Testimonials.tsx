@@ -133,7 +133,7 @@ const Testimonials = () => {
           <div ref={progressRef} className="h-3 rounded-full overflow-hidden bg-cream/15">
             <div
               className="h-full rounded-full bg-gradient-to-r from-accent to-accent/70 transition-all duration-1000 ease-out"
-              style={{ width: progressRevealed ? `${(WAITLIST_COUNT / WAITLIST_GOAL) * 100}%` : '0%' }}
+              style={{ width: progressRevealed ? `${(waitlistCount / WAITLIST_GOAL) * 100}%` : '0%' }}
             />
           </div>
         </div>
