@@ -62,7 +62,7 @@ const Hero = () => {
                 padding: '6px 16px',
               }}
             >
-              ✦ 2 341 membres · Accès 100% gratuit
+              ✦ {displayCount} curieux inscrits · 100% gratuit
             </span>
           </div>
 
