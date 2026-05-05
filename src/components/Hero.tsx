@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-vintage-market.png";
+import { useWaitlist } from "@/hooks/useWaitlist";
 
 const avatars = [
   "https://i.pravatar.cc/64?img=5",
