@@ -108,6 +108,9 @@ const Testimonials = () => {
                   <p className="text-xs text-foreground/50">{t.role}</p>
                 </div>
               </div>
+              <p className="mt-4 text-foreground/60" style={{ fontSize: '11px', opacity: 0.6 }}>
+                Exemple illustratif · bêta en cours
+              </p>
             </div>
           ))}
         </div>
