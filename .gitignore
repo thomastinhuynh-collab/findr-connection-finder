@@ -12,8 +12,11 @@ dist
 dist-ssr
 *.local
 
-# Environment variables (secrets)
-.env
+# Environment variables
+# NOTE: .env is intentionally NOT ignored — it only contains PUBLIC Vite vars
+# (VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY) needed at build time.
+# Security relies on Supabase RLS, not on hiding these keys.
+# Never commit a service_role key or any backend secret.
 .env.local
 .env.*.local
 !.env.example
