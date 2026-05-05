@@ -6,8 +6,8 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 const buyerBenefits = [
   { icon: Gem, text: "Trouve des pièces introuvables" },
   { icon: Send, text: "Publie gratuitement ta recherche" },
-  { icon: Clock, text: "Reçois des propositions en 24h" },
-  { icon: ShieldCheck, text: "Paiement 100% sécurisé" },
+  { icon: Clock, text: "Reçois tes premières propositions rapidement" },
+  { icon: ShieldCheck, text: "Transaction suivie par l'équipe findr" },
 ];
 
 const finderBenefits = [
