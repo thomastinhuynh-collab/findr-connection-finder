@@ -33,8 +33,8 @@ const testimonials = [
   },
 ];
 
-const WAITLIST_COUNT = 1_247;
 const WAITLIST_GOAL = 2_000;
+
 
 const Testimonials = () => {
   const guaranteesRef = useScrollReveal();
