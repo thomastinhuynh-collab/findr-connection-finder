@@ -61,8 +61,8 @@ const steps = [
   {
     icon: ShieldCheck,
     step: "04",
-    title: "La transaction est sécurisée",
-    description: "Paiement sécurisé, protection buyr incluse.",
+    title: "Tu finalises en confiance",
+    description: "Findr suit la transaction et t'accompagne jusqu'à la livraison de ton objet.",
     details: {
       title: "Comment se passe la transaction ?",
       content: [
