@@ -1,6 +1,7 @@
 import { Star, Lock, ShieldCheck, BadgeCheck, Users } from "lucide-react";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import { useEffect, useRef, useState } from "react";
+import { useWaitlist } from "@/hooks/useWaitlist";
 
 const guarantees = [
   { icon: Lock, label: "Paiement sécurisé" },
