@@ -123,7 +123,7 @@ const Testimonials = () => {
           </div>
 
           <p className="text-2xl md:text-3xl font-poppins font-bold mb-1 text-cream">
-            Déjà {WAITLIST_COUNT.toLocaleString('fr-FR')} curieux inscrits
+            Déjà {waitlistCount.toLocaleString('fr-FR')} curieux inscrits
           </p>
           <p className="text-xs mb-5 text-cream/50">
             Objectif : {WAITLIST_GOAL.toLocaleString('fr-FR')} inscrits
