@@ -13,7 +13,7 @@ const buyerBenefits = [
 const finderBenefits = [
   { icon: Coins, text: "Monétise ton expertise" },
   { icon: Heart, text: "Choisis les recherches qui t'intéressent" },
-  { icon: Calendar, text: "Travaille à ton rythme" },
+  { icon: Calendar, text: "Choisis tes missions, gagne à la trouvaille" },
   { icon: TrendingUp, text: "Construis ta réputation" },
 ];
 
