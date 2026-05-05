@@ -43,6 +43,8 @@ const Testimonials = () => {
   const waitlistRef = useScrollReveal();
   const progressRef = useRef<HTMLDivElement>(null);
   const [progressRevealed, setProgressRevealed] = useState(false);
+  const { count } = useWaitlist();
+  const waitlistCount = count ?? 1247;
 
   useEffect(() => {
     const el = progressRef.current;
