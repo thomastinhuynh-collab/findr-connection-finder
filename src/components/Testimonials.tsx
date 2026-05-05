@@ -1,6 +1,7 @@
 import { Star, Lock, ShieldCheck, BadgeCheck, Users } from "lucide-react";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import { useEffect, useRef, useState } from "react";
+import { useWaitlist } from "@/hooks/useWaitlist";
 
 const guarantees = [
   { icon: Lock, label: "Paiement sécurisé" },
@@ -32,8 +33,8 @@ const testimonials = [
   },
 ];
 
-const WAITLIST_COUNT = 1_247;
 const WAITLIST_GOAL = 2_000;
+
 
 const Testimonials = () => {
   const guaranteesRef = useScrollReveal();
@@ -42,6 +43,8 @@ const Testimonials = () => {
   const waitlistRef = useScrollReveal();
   const progressRef = useRef<HTMLDivElement>(null);
   const [progressRevealed, setProgressRevealed] = useState(false);
+  const { count } = useWaitlist();
+  const waitlistCount = count ?? 1247;
 
   useEffect(() => {
     const el = progressRef.current;
@@ -105,6 +108,9 @@ const Testimonials = () => {
                   <p className="text-xs text-foreground/50">{t.role}</p>
                 </div>
               </div>
+              <p className="mt-4 text-foreground/60" style={{ fontSize: '11px', opacity: 0.6 }}>
+                Exemple illustratif · bêta en cours
+              </p>
             </div>
           ))}
         </div>
@@ -117,7 +123,7 @@ const Testimonials = () => {
           </div>
 
           <p className="text-2xl md:text-3xl font-poppins font-bold mb-1 text-cream">
-            Déjà {WAITLIST_COUNT.toLocaleString('fr-FR')} curieux inscrits
+            Déjà {waitlistCount.toLocaleString('fr-FR')} curieux inscrits
           </p>
           <p className="text-xs mb-5 text-cream/50">
             Objectif : {WAITLIST_GOAL.toLocaleString('fr-FR')} inscrits
@@ -127,7 +133,7 @@ const Testimonials = () => {
           <div ref={progressRef} className="h-3 rounded-full overflow-hidden bg-cream/15">
             <div
               className="h-full rounded-full bg-gradient-to-r from-accent to-accent/70 transition-all duration-1000 ease-out"
-              style={{ width: progressRevealed ? `${(WAITLIST_COUNT / WAITLIST_GOAL) * 100}%` : '0%' }}
+              style={{ width: progressRevealed ? `${(waitlistCount / WAITLIST_GOAL) * 100}%` : '0%' }}
             />
           </div>
         </div>

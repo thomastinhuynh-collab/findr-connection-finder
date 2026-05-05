@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-vintage-market.png";
+import { useWaitlist } from "@/hooks/useWaitlist";
 
 const avatars = [
   "https://i.pravatar.cc/64?img=5",
@@ -11,6 +12,8 @@ const avatars = [
 ];
 
 const Hero = () => {
+  const { count } = useWaitlist();
+  const displayCount = (count ?? 2341).toLocaleString('fr-FR');
   return (
     <section
       className="relative flex items-center justify-center overflow-hidden pt-32 pb-14 md:pt-40 md:pb-14 bg-navy-primary"
@@ -59,7 +62,7 @@ const Hero = () => {
                 padding: '6px 16px',
               }}
             >
-              ✦ 2 341 membres · Accès 100% gratuit
+              ✦ {displayCount} curieux inscrits · 100% gratuit
             </span>
           </div>
 
