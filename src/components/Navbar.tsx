@@ -183,7 +183,7 @@ const Navbar = () => {
                       setAuthModalOpen(true);
                     }}
                   >
-                    Rejoindre la beta
+                    Rejoindre la liste d'attente
                   </Button>
                 )}
               </div>
