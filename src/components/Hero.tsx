@@ -63,7 +63,7 @@ const Hero = () => {
                 padding: '6px 16px',
               }}
             >
-              ✦ {displayCount} curieux inscrits · 100% gratuit
+              ✦ {displayCount ?? '...'} {curieuxLabel} · 100% gratuit
             </span>
           </div>
 
