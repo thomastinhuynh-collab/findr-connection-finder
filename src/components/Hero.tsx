@@ -13,7 +13,8 @@ const avatars = [
 
 const Hero = () => {
   const { count } = useWaitlist();
-  const displayCount = (count ?? 2341).toLocaleString('fr-FR');
+  const displayCount = count !== null ? count.toLocaleString('fr-FR') : null;
+  const curieuxLabel = count !== null && count <= 1 ? 'curieux inscrit' : 'curieux inscrits';
   return (
     <section
       className="relative flex items-center justify-center overflow-hidden pt-32 pb-14 md:pt-40 md:pb-14 bg-navy-primary"
