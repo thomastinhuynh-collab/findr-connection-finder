@@ -23,6 +23,10 @@ import Premium from "./pages/Premium";
 import RequestReservation from "./pages/RequestReservation";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import ResetPassword from "./pages/ResetPassword";
+import LegalNotice from "./pages/LegalNotice";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import BackButton from "./components/BackButton";
 import Navbar from "./components/Navbar";
@@ -58,6 +62,10 @@ const App = () => (
             <Route path="/reservation/:id" element={<RequestReservation />} />
             <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/mentions-legales" element={<LegalNotice />} />
+            <Route path="/cgu" element={<Terms />} />
+            <Route path="/confidentialite" element={<Privacy />} />
+            <Route path="/contact" element={<Contact />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
