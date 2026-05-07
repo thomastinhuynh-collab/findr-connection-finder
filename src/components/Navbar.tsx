@@ -118,7 +118,7 @@ const Navbar = () => {
                   className={`bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
                   onClick={() => setAuthModalOpen(true)}
                 >
-                  {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la beta"}
+                  {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la liste d'attente"}
                 </Button>
               )}
             </div>
