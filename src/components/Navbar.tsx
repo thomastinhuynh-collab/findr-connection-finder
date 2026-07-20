@@ -24,13 +24,14 @@ const Navbar = () => {
   const isHomePage = location.pathname === "/";
   const isDetailPage = location.pathname.startsWith("/recherche/");
 
-  if (isHomePage) return null;
-
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 80);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (isHomePage) return null;
+
 
   // Homepage style: transparent/dark background with cream logo
   // Other pages style: cream/white background with navy logo and links
