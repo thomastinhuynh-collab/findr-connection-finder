@@ -360,7 +360,7 @@ const Hero = () => {
           {/* CTA cards */}
           <div
             className="hero-cta-grid"
-            style={{ marginBottom: "2rem", maxWidth: 780 }}
+            style={{ marginBottom: "2rem", maxWidth: 780, width: "100%", marginLeft: "auto", marginRight: "auto", textAlign: "left" }}
           >
             {/* Left card — buyr */}
             <div
