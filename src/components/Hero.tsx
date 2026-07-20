@@ -268,14 +268,15 @@ const Hero = () => {
             position: "relative",
             padding: "4rem 32px 3rem",
             color: GOLD,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
           }}
         >
           {/* Live badge */}
           <div
             style={{
-              position: "absolute",
-              top: 32,
-              right: 32,
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
@@ -283,6 +284,7 @@ const Hero = () => {
               border: "0.5px solid rgba(217, 187, 135, 0.2)",
               borderRadius: 20,
               padding: "6px 14px",
+              marginBottom: "1.75rem",
             }}
           >
             <span
@@ -316,7 +318,6 @@ const Hero = () => {
               letterSpacing: 3,
               color: "rgba(217, 187, 135, 0.6)",
               marginBottom: "1.5rem",
-              marginTop: 8,
             }}
           >
             — MARKETPLACE INVERSÉE
@@ -328,16 +329,14 @@ const Hero = () => {
               ...playfair,
               fontSize: "clamp(34px, 5.5vw, 52px)",
               fontWeight: 400,
-              lineHeight: 1.05,
+              lineHeight: 1.1,
               letterSpacing: "-1px",
               color: GOLD,
-              margin: 0,
-              marginBottom: "1.25rem",
-              maxWidth: 900,
+              margin: "0 auto 1.25rem",
+              maxWidth: 820,
             }}
           >
-            L'objet que tu cherches
-            <br />
+            L'objet que tu cherches{" "}
             <span style={{ fontStyle: "italic", fontWeight: 500 }}>
               existe quelque part.
             </span>
@@ -351,8 +350,8 @@ const Hero = () => {
               fontWeight: 300,
               lineHeight: 1.6,
               color: "rgba(217, 187, 135, 0.75)",
-              maxWidth: 520,
-              marginBottom: "2.5rem",
+              maxWidth: 560,
+              margin: "0 auto 2.75rem",
             }}
           >
             Décris-le. Une communauté de chineurs passionnés le déniche pour toi.
