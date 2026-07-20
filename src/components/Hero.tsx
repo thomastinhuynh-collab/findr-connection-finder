@@ -32,14 +32,17 @@ const Hero = () => {
   const borderLine = "0.5px solid rgba(217, 187, 135, 0.12)";
 
   return (
-    <section className="pt-4 px-3 md:px-6 pb-8" style={{ backgroundColor: DARK }}>
+    <section
+      style={{
+        width: "100%",
+        background: "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)",
+      }}
+    >
       <div
-        className="mx-auto max-w-[1240px] relative"
         style={{
-          borderRadius: 16,
-          overflow: "hidden",
-          background: "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)",
-          border: "0.5px solid rgba(217, 187, 135, 0.15)",
+          maxWidth: 1280,
+          margin: "0 auto",
+          position: "relative",
         }}
       >
         {/* ============ ZONE 1: NAV ============ */}
@@ -263,7 +266,7 @@ const Hero = () => {
         <div
           style={{
             position: "relative",
-            padding: "3rem 2.5rem 2.5rem",
+            padding: "4rem 32px 3rem",
             color: GOLD,
           }}
         >
@@ -271,7 +274,7 @@ const Hero = () => {
           <div
             style={{
               position: "absolute",
-              top: 24,
+              top: 32,
               right: 32,
               display: "inline-flex",
               alignItems: "center",
@@ -330,6 +333,7 @@ const Hero = () => {
               color: GOLD,
               margin: 0,
               marginBottom: "1.25rem",
+              maxWidth: 900,
             }}
           >
             L'objet que tu cherches
@@ -347,7 +351,7 @@ const Hero = () => {
               fontWeight: 300,
               lineHeight: 1.6,
               color: "rgba(217, 187, 135, 0.75)",
-              maxWidth: 460,
+              maxWidth: 520,
               marginBottom: "2.5rem",
             }}
           >
@@ -355,7 +359,10 @@ const Hero = () => {
           </p>
 
           {/* CTA cards */}
-          <div className="hero-cta-grid" style={{ marginBottom: "2rem" }}>
+          <div
+            className="hero-cta-grid"
+            style={{ marginBottom: "2rem", maxWidth: 780 }}
+          >
             {/* Left card — buyr */}
             <div
               style={{
@@ -522,6 +529,7 @@ const Hero = () => {
               paddingTop: "1.75rem",
               borderTop: "0.5px solid rgba(217, 187, 135, 0.15)",
               flexWrap: "wrap",
+              maxWidth: 780,
             }}
           >
             {/* Avatars */}
