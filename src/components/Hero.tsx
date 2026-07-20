@@ -524,11 +524,16 @@ const Hero = () => {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 24,
+              justifyContent: "center",
+              gap: 40,
               paddingTop: "1.75rem",
               borderTop: "0.5px solid rgba(217, 187, 135, 0.15)",
               flexWrap: "wrap",
               maxWidth: 780,
+              width: "100%",
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "left",
             }}
           >
             {/* Avatars */}
