@@ -262,11 +262,11 @@ const Hero = () => {
           ))}
         </div>
 
-        {/* ============ ZONE 3: HERO CONTENT ============ */}
+        {/* ============ ZONE 3: HERO CONTENT (compact) ============ */}
         <div
           style={{
             position: "relative",
-            padding: "4rem 32px 3rem",
+            padding: "2rem 32px 1.75rem",
             color: GOLD,
             display: "flex",
             flexDirection: "column",
@@ -284,7 +284,7 @@ const Hero = () => {
               border: "0.5px solid rgba(217, 187, 135, 0.2)",
               borderRadius: 20,
               padding: "6px 14px",
-              marginBottom: "1.75rem",
+              marginBottom: "1.25rem",
             }}
           >
             <span
@@ -309,30 +309,16 @@ const Hero = () => {
             </span>
           </div>
 
-          {/* Eyebrow */}
-          <div
-            style={{
-              ...inter,
-              fontSize: 10,
-              fontWeight: 500,
-              letterSpacing: 3,
-              color: "rgba(217, 187, 135, 0.6)",
-              marginBottom: "1.5rem",
-            }}
-          >
-            — MARKETPLACE INVERSÉE
-          </div>
-
           {/* Title */}
           <h1
             style={{
               ...playfair,
-              fontSize: "clamp(34px, 5.5vw, 52px)",
+              fontSize: "clamp(30px, 4.8vw, 46px)",
               fontWeight: 400,
               lineHeight: 1.1,
               letterSpacing: "-1px",
               color: GOLD,
-              margin: "0 auto 1.25rem",
+              margin: "0 auto 1rem",
               maxWidth: 820,
             }}
           >
@@ -346,277 +332,58 @@ const Hero = () => {
           <p
             style={{
               ...inter,
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: 300,
               lineHeight: 1.6,
               color: "rgba(217, 187, 135, 0.75)",
               maxWidth: 560,
-              margin: "0 auto 2.75rem",
+              margin: "0 auto 1.5rem",
             }}
           >
             Décris-le. Une communauté de chineurs passionnés le déniche pour toi.
           </p>
 
-          {/* CTA cards */}
+          {/* Simple CTA buttons */}
           <div
-            className="hero-cta-grid"
-            style={{ marginBottom: "2rem", maxWidth: 780, width: "100%", marginLeft: "auto", marginRight: "auto", textAlign: "left" }}
-          >
-            {/* Left card — buyr */}
-            <div
-              style={{
-                position: "relative",
-                overflow: "hidden",
-                background: GOLD,
-                borderRadius: 12,
-                padding: 22,
-              }}
-            >
-              <span
-                style={{
-                  ...playfair,
-                  position: "absolute",
-                  top: 8,
-                  right: 14,
-                  fontStyle: "italic",
-                  fontSize: 42,
-                  lineHeight: 1,
-                  color: "rgba(10, 22, 40, 0.1)",
-                }}
-              >
-                b
-              </span>
-              <div
-                style={{
-                  ...inter,
-                  fontSize: 10,
-                  fontWeight: 500,
-                  letterSpacing: 2,
-                  color: "rgba(10, 22, 40, 0.55)",
-                  marginBottom: 12,
-                }}
-              >
-                01 — JE CHERCHE
-              </div>
-              <div
-                style={{
-                  ...playfair,
-                  fontSize: 24,
-                  fontWeight: 500,
-                  letterSpacing: "-0.3px",
-                  color: DARK,
-                  marginBottom: 6,
-                }}
-              >
-                Je suis <span style={{ fontStyle: "italic" }}>buyr</span>
-              </div>
-              <p
-                style={{
-                  ...inter,
-                  fontSize: 13,
-                  lineHeight: 1.5,
-                  color: "rgba(10, 22, 40, 0.7)",
-                  marginBottom: 18,
-                }}
-              >
-                Je poste ma recherche. Les findr me trouvent la perle rare.
-              </p>
-              <Link
-                to="/poster"
-                style={{
-                  ...inter,
-                  fontSize: 12,
-                  fontWeight: 500,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.5px",
-                  color: DARK,
-                  borderBottom: `1px solid ${DARK}`,
-                  paddingBottom: 2,
-                  textDecoration: "none",
-                }}
-              >
-                POSTER MA RECHERCHE →
-              </Link>
-            </div>
-
-            {/* Right card — findr */}
-            <div
-              style={{
-                position: "relative",
-                overflow: "hidden",
-                background: "rgba(217, 187, 135, 0.05)",
-                border: "0.5px solid rgba(217, 187, 135, 0.25)",
-                borderRadius: 12,
-                padding: 22,
-              }}
-            >
-              <span
-                style={{
-                  ...playfair,
-                  position: "absolute",
-                  top: 8,
-                  right: 14,
-                  fontStyle: "italic",
-                  fontSize: 42,
-                  lineHeight: 1,
-                  color: "rgba(217, 187, 135, 0.15)",
-                }}
-              >
-                f
-              </span>
-              <div
-                style={{
-                  ...inter,
-                  fontSize: 10,
-                  fontWeight: 500,
-                  letterSpacing: 2,
-                  color: "rgba(217, 187, 135, 0.55)",
-                  marginBottom: 12,
-                }}
-              >
-                02 — JE DÉNICHE
-              </div>
-              <div
-                style={{
-                  ...playfair,
-                  fontSize: 24,
-                  fontWeight: 500,
-                  letterSpacing: "-0.3px",
-                  color: GOLD,
-                  marginBottom: 6,
-                }}
-              >
-                Je deviens <span style={{ fontStyle: "italic" }}>findr</span>
-              </div>
-              <p
-                style={{
-                  ...inter,
-                  fontSize: 13,
-                  lineHeight: 1.5,
-                  color: "rgba(217, 187, 135, 0.7)",
-                  marginBottom: 18,
-                }}
-              >
-                Je monétise mon flair et mon carnet d'adresses.
-              </p>
-              <Link
-                to="/recherches"
-                style={{
-                  ...inter,
-                  fontSize: 12,
-                  fontWeight: 500,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.5px",
-                  color: GOLD,
-                  borderBottom: `1px solid ${GOLD}`,
-                  paddingBottom: 2,
-                  textDecoration: "none",
-                }}
-              >
-                REJOINDRE LES FINDR →
-              </Link>
-            </div>
-          </div>
-
-          {/* Social proof + stats */}
-          <div
-            className="hero-bottom"
             style={{
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 40,
-              paddingTop: "1.75rem",
-              borderTop: "0.5px solid rgba(217, 187, 135, 0.15)",
+              gap: 12,
               flexWrap: "wrap",
-              maxWidth: 780,
-              width: "100%",
-              marginLeft: "auto",
-              marginRight: "auto",
-              textAlign: "left",
+              justifyContent: "center",
             }}
           >
-            {/* Avatars */}
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {[
-                { bg: "#C4A574", label: "M", color: DARK },
-                { bg: "#8B6F47", label: "L", color: GOLD },
-                { bg: "#A68A5B", label: "J", color: DARK },
-                {
-                  bg: "rgba(217, 187, 135, 0.15)",
-                  label: "+840",
-                  color: GOLD,
-                  small: true,
-                },
-              ].map((a, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: "50%",
-                    border: `2px solid ${DARK}`,
-                    background: a.bg,
-                    marginLeft: i === 0 ? 0 : -8,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    ...(a.small
-                      ? { ...inter, fontSize: 9 }
-                      : { ...playfair, fontSize: 10, fontWeight: 500 }),
-                    color: a.color,
-                  }}
-                >
-                  {a.label}
-                </div>
-              ))}
-            </div>
-
-            {/* Stats */}
-            <div style={{ display: "flex", gap: 40, flexWrap: "wrap" }}>
-              {[
-                { n: "98", u: "%", l: "Objets trouvés" },
-                { n: "72", u: "h", l: "Délai moyen" },
-                { n: "840", u: "+", l: "Chineurs actifs" },
-              ].map((s) => (
-                <div key={s.l}>
-                  <div style={{ display: "flex", alignItems: "baseline" }}>
-                    <span
-                      style={{
-                        ...playfair,
-                        fontSize: 24,
-                        fontWeight: 500,
-                        color: GOLD,
-                        lineHeight: 1,
-                      }}
-                    >
-                      {s.n}
-                    </span>
-                    <span
-                      style={{
-                        ...playfair,
-                        fontSize: 14,
-                        color: "rgba(217, 187, 135, 0.55)",
-                        marginLeft: 2,
-                      }}
-                    >
-                      {s.u}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      ...inter,
-                      fontSize: 11,
-                      color: "rgba(217, 187, 135, 0.6)",
-                      letterSpacing: "0.3px",
-                      marginTop: 2,
-                    }}
-                  >
-                    {s.l}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <button
+              onClick={() => navigate("/poster")}
+              style={{
+                ...inter,
+                fontSize: 13,
+                fontWeight: 500,
+                color: DARK,
+                background: GOLD,
+                border: "none",
+                padding: "12px 24px",
+                borderRadius: 24,
+                cursor: "pointer",
+              }}
+            >
+              Poster une recherche
+            </button>
+            <button
+              onClick={() => navigate("/recherches")}
+              style={{
+                ...inter,
+                fontSize: 13,
+                fontWeight: 500,
+                color: GOLD,
+                background: "transparent",
+                border: `1px solid ${GOLD}`,
+                padding: "12px 24px",
+                borderRadius: 24,
+                cursor: "pointer",
+              }}
+            >
+              Devenir findr
+            </button>
           </div>
         </div>
       </div>
