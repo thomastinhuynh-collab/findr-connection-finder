@@ -150,27 +150,17 @@ const ActiveRequests = () => {
 
   return (
     <section style={{ backgroundColor: "#F5F0E8" }} className="pt-4 pb-10 md:pt-6 md:pb-14">
-      <div className="container mx-auto px-4" style={{ maxWidth: "1100px" }}>
+      <div className="container mx-auto px-4" style={{ maxWidth: "1400px" }}>
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-7">
-          <div>
-            <span style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#C9A84C", fontWeight: 600 }}>
-              Recherches en cours
-            </span>
-          </div>
-          <button
-            onClick={() => navigate("/recherches")}
-            style={{ fontSize: "14px", color: "#C9A84C", background: "none", border: "none", cursor: "pointer", fontWeight: 500, textDecoration: "none", transition: "text-decoration 0.15s ease" }}
-            onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-            onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-          >
-            Voir toutes les recherches →
-          </button>
+        <div className="mb-7">
+          <span style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#C9A84C", fontWeight: 600 }}>
+            Recherches en cours
+          </span>
         </div>
 
-
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
           {searches.map((search) => {
             const profile = profiles[search.user_id];
             const images = getImages(search);
