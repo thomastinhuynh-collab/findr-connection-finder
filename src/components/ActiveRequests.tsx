@@ -149,17 +149,14 @@ const ActiveRequests = () => {
   if (searches.length === 0) return null;
 
   return (
-    <section style={{ backgroundColor: "#F5F0E8" }} className="py-10 md:py-14">
+    <section style={{ backgroundColor: "#F5F0E8" }} className="pt-4 pb-10 md:pt-6 md:pb-14">
       <div className="container mx-auto px-4" style={{ maxWidth: "1100px" }}>
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-7">
           <div>
             <span style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#C9A84C", fontWeight: 600 }}>
-              Demandes en cours
+              Recherches en cours
             </span>
-            <h2 style={{ fontSize: "28px", fontWeight: 600, color: "#1B2A4A", marginTop: "8px" }}>
-              Ce que la communauté recherche
-            </h2>
           </div>
           <button
             onClick={() => navigate("/recherches")}
@@ -167,9 +164,10 @@ const ActiveRequests = () => {
             onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
             onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
           >
-            Voir toutes les demandes →
+            Voir toutes les recherches →
           </button>
         </div>
+
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
