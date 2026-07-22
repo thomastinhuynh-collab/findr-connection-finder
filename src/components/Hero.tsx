@@ -330,7 +330,14 @@ const Hero = () => {
             </button>
           </form>
         </div>
+      </div>
+      </div>
 
+      {/* Spacer to compensate for fixed header */}
+      <div style={{ height: 112 }} className="hidden md:block" />
+      <div style={{ height: 64 }} className="md:hidden" />
+
+      <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative" }}>
         {/* ============ ZONE 3: HERO CONTENT (compact) ============ */}
         <div
           style={{
