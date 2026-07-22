@@ -40,6 +40,18 @@ const Hero = () => {
     >
       <div
         style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          background: "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)",
+          borderBottom: "0.5px solid rgba(217, 187, 135, 0.12)",
+          boxShadow: "0 2px 20px rgba(0,0,0,0.25)",
+        }}
+      >
+      <div
+        style={{
           maxWidth: 1280,
           margin: "0 auto",
           position: "relative",
