@@ -48,18 +48,19 @@ const Hero = () => {
     >
       <div
         style={{
-          position: "fixed",
+          position: isStuck ? "fixed" : "relative",
           top: 0,
           left: 0,
           right: 0,
           zIndex: 50,
-          background: "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)",
-          borderBottom: isStuck ? "0.5px solid rgba(217, 187, 135, 0.12)" : "0.5px solid transparent",
+          background: isStuck
+            ? "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)"
+            : "transparent",
+          borderBottom: isStuck
+            ? "0.5px solid rgba(217, 187, 135, 0.12)"
+            : "0.5px solid transparent",
           boxShadow: isStuck ? "0 2px 20px rgba(0,0,0,0.25)" : "none",
-          opacity: isStuck ? 1 : 0,
-          pointerEvents: isStuck ? "auto" : "none",
-          transform: isStuck ? "translateY(0)" : "translateY(-8px)",
-          transition: "opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease",
+          transition: "box-shadow 0.25s ease, background 0.25s ease",
         }}
       >
       <div
