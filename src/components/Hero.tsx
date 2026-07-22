@@ -26,6 +26,14 @@ const Hero = () => {
   const { user } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isStuck, setIsStuck] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setIsStuck(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const inter = { fontFamily: "'Inter', system-ui, sans-serif" };
   const playfair = { fontFamily: "'Playfair Display', Georgia, serif" };
