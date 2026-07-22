@@ -230,6 +230,7 @@ const Hero = () => {
             gap: 32,
             padding: "12px 32px",
             borderBottom: borderLine,
+            alignItems: "center",
           }}
         >
           {categories.map((c) => (
@@ -260,6 +261,62 @@ const Hero = () => {
               <span style={{ fontSize: 10 }}>▾</span>
             </button>
           ))}
+
+          {/* Search bar */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const input = (e.currentTarget.elements.namedItem("q") as HTMLInputElement);
+              const q = input?.value.trim();
+              navigate(`/recherches${q ? `?q=${encodeURIComponent(q)}` : ""}`);
+            }}
+            style={{
+              marginLeft: "auto",
+              flex: "1 1 340px",
+              maxWidth: 440,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              background: "transparent",
+              border: "0.5px solid rgba(217, 187, 135, 0.4)",
+              borderRadius: 24,
+              padding: "5px 5px 5px 16px",
+            }}
+          >
+            <span style={{ color: "rgba(217, 187, 135, 0.6)", fontSize: 14 }}>⌕</span>
+            <input
+              type="text"
+              name="q"
+              placeholder="Rechercher un objet, une marque…"
+              style={{
+                ...inter,
+                flex: 1,
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                color: GOLD,
+                fontSize: 13,
+                padding: "4px 0",
+              }}
+            />
+            <button
+              type="submit"
+              style={{
+                ...inter,
+                fontSize: 12,
+                fontWeight: 500,
+                color: GOLD,
+                background: "transparent",
+                border: "0.5px solid rgba(217, 187, 135, 0.4)",
+                padding: "6px 16px",
+                borderRadius: 20,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Rechercher
+            </button>
+          </form>
         </div>
 
         {/* ============ ZONE 3: HERO CONTENT (compact) ============ */}
