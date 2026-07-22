@@ -266,7 +266,7 @@ const Hero = () => {
         <div
           style={{
             position: "relative",
-            padding: "2rem 32px 1.75rem",
+            padding: "1.5rem 32px 1.25rem",
             color: GOLD,
             display: "flex",
             flexDirection: "column",
@@ -284,7 +284,7 @@ const Hero = () => {
               border: "0.5px solid rgba(217, 187, 135, 0.2)",
               borderRadius: 20,
               padding: "6px 14px",
-              marginBottom: "1.25rem",
+              marginBottom: "1rem",
             }}
           >
             <span
@@ -318,8 +318,9 @@ const Hero = () => {
               lineHeight: 1.1,
               letterSpacing: "-1px",
               color: GOLD,
-              margin: "0 auto 1rem",
-              maxWidth: 820,
+              margin: "0 auto 0.75rem",
+              maxWidth: 1100,
+              whiteSpace: "nowrap",
             }}
           >
             L'objet que tu cherches{" "}
