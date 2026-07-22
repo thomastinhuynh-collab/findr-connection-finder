@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,6 +26,14 @@ const Hero = () => {
   const { user } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isStuck, setIsStuck] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setIsStuck(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const inter = { fontFamily: "'Inter', system-ui, sans-serif" };
   const playfair = { fontFamily: "'Playfair Display', Georgia, serif" };
@@ -40,14 +48,19 @@ const Hero = () => {
     >
       <div
         style={{
-          position: "fixed",
+          position: isStuck ? "fixed" : "relative",
           top: 0,
           left: 0,
           right: 0,
           zIndex: 50,
-          background: "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)",
-          borderBottom: "0.5px solid rgba(217, 187, 135, 0.12)",
-          boxShadow: "0 2px 20px rgba(0,0,0,0.25)",
+          background: isStuck
+            ? "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)"
+            : "transparent",
+          borderBottom: isStuck
+            ? "0.5px solid rgba(217, 187, 135, 0.12)"
+            : "0.5px solid transparent",
+          boxShadow: isStuck ? "0 2px 20px rgba(0,0,0,0.25)" : "none",
+          transition: "box-shadow 0.25s ease, background 0.25s ease",
         }}
       >
       <div
@@ -333,9 +346,13 @@ const Hero = () => {
       </div>
       </div>
 
-      {/* Spacer to compensate for fixed header */}
-      <div style={{ height: 112 }} className="hidden md:block" />
-      <div style={{ height: 64 }} className="md:hidden" />
+      {/* Spacer to compensate for fixed header (only when stuck) */}
+      {isStuck && (
+        <>
+          <div style={{ height: 112 }} className="hidden md:block" />
+          <div style={{ height: 64 }} className="md:hidden" />
+        </>
+      )}
 
       <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative" }}>
         {/* ============ ZONE 3: HERO CONTENT (compact) ============ */}
