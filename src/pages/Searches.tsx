@@ -19,6 +19,7 @@ interface SearchItem {
   budget_min: number | null;
   budget_max: number | null;
   urgency: string | null;
+  deadline: string | null;
   image_url: string | null;
   image_urls: string[] | null;
   created_at: string;
@@ -28,6 +29,16 @@ interface SearchItem {
     avatar_url: string | null;
   } | null;
 }
+
+const getDeadlineBadge = (deadline: string | null) => {
+  if (!deadline) return null;
+  const days = Math.round((new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  if (days < 0) return { label: "Délai dépassé", bg: "rgba(140,140,140,0.92)", color: "#fff" };
+  const label = `Il reste ${days} jour${days > 1 ? "s" : ""}`;
+  if (days < 3) return { label, bg: "rgba(239,83,80,0.95)", color: "#fff" };
+  if (days <= 7) return { label, bg: "rgba(245,158,11,0.95)", color: "#1B2A4A" };
+  return { label, bg: "rgba(201,168,76,0.95)", color: "#1B2A4A" };
+};
 
 const urgencyLabels: Record<string, string> = {
   "3-days": "3 jours",
