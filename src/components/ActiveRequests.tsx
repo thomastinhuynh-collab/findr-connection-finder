@@ -1,18 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, Users, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-
-const urgencyLabels: Record<string, string> = {
-  "3-days": "3 jours",
-  "1-week": "1 semaine",
-  "2-weeks": "2 semaines",
-  "1-month": "1 mois",
-  "no-rush": "Pas pressé",
-  "normal": "Normal",
-};
 
 interface SearchData {
   id: string;
@@ -20,7 +11,7 @@ interface SearchData {
   category: string;
   budget_min: number | null;
   budget_max: number | null;
-  urgency: string | null;
+  deadline: string | null;
   image_url: string | null;
   image_urls: string[] | null;
   user_id: string;
@@ -35,6 +26,19 @@ interface ProfileData {
   level: number | null;
   xp_points: number | null;
 }
+
+const getDeadlineBadge = (deadline: string | null) => {
+  if (!deadline) return null;
+  const diffMs = new Date(deadline).getTime() - Date.now();
+  const days = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  if (days < 0) {
+    return { label: "Délai dépassé", bg: "rgba(140,140,140,0.92)", color: "#fff" };
+  }
+  const label = `Il reste ${days} jour${days > 1 ? "s" : ""}`;
+  if (days < 3) return { label, bg: "rgba(239,83,80,0.95)", color: "#fff" };
+  if (days <= 7) return { label, bg: "rgba(245,158,11,0.95)", color: "#1B2A4A" };
+  return { label, bg: "rgba(201,168,76,0.95)", color: "#1B2A4A" };
+};
 
 const CardImageCarousel = ({ images, alt }: { images: string[]; alt: string }) => {
   const [current, setCurrent] = useState(0);
