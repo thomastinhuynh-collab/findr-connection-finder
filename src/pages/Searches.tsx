@@ -504,12 +504,19 @@ const Searches = () => {
                           {search.profiles?.full_name || "Utilisateur"}
                         </span>
                       </button>
+                    </div>
 
-                      {/* Comments count */}
-                      <span className="flex items-center" style={{ gap: "4px" }}>
-                        <MessageCircle style={{ width: "14px", height: "14px", color: "#C9A84C" }} />
-                        <span style={{ fontSize: "12px", fontWeight: 600, color: "#1B2A4A" }}>0</span>
-                      </span>
+                    {/* Proposal count / CTA */}
+                    <div style={{ marginTop: "8px", fontSize: "12px" }}>
+                      {(proposalCounts[search.id] || 0) > 0 ? (
+                        <span style={{ color: "#1B2A4A" }}>
+                          {proposalCounts[search.id]} proposition{proposalCounts[search.id] > 1 ? "s" : ""} déjà reçue{proposalCounts[search.id] > 1 ? "s" : ""}
+                        </span>
+                      ) : (
+                        <span style={{ color: "#C9A84C", fontStyle: "italic" }}>
+                          Sois le premier findr à proposer →
+                        </span>
+                      )}
                     </div>
                   </div>
                 </motion.div>
