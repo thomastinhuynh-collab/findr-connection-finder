@@ -439,19 +439,14 @@ const Searches = () => {
                       {search.title}
                     </h3>
 
-                    {/* Price + delay */}
-                    <div className="flex items-center" style={{ gap: "16px" }}>
-                      <span className="flex items-center" style={{ gap: "4px" }}>
-                        <Euro style={{ width: "13px", height: "13px", color: "#C9A84C" }} />
-                        <span style={{ fontSize: "13px", fontWeight: 600, color: "#1B2A4A" }}>
-                          {formatBudget(search.budget_min, search.budget_max)}
-                        </span>
-                      </span>
-                      <span className="flex items-center" style={{ gap: "4px" }}>
-                        <Clock style={{ width: "13px", height: "13px", color: "#C9A84C" }} />
-                        <span style={{ fontSize: "13px", color: "#6B6259" }}>
-                          {urgencyLabels[search.urgency || "normal"] || search.urgency}
-                        </span>
+                    {/* Budget */}
+                    <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", color: "#8A7A4C", textTransform: "uppercase" }}>
+                      Budget
+                    </span>
+                    <div className="flex items-center" style={{ gap: "4px", marginTop: "2px" }}>
+                      <Euro style={{ width: "13px", height: "13px", color: "#C9A84C" }} />
+                      <span style={{ fontSize: "14px", fontWeight: 700, color: "#1B2A4A" }}>
+                        {formatBudget(search.budget_min, search.budget_max)}
                       </span>
                     </div>
 
