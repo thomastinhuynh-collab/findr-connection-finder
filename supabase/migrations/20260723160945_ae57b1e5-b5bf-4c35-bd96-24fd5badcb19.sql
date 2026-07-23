@@ -1,0 +1,1 @@
+ALTER TABLE public.searches ADD COLUMN IF NOT EXISTS deadline timestamp with time zone;

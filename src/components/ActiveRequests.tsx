@@ -1,18 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, Users, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-
-const urgencyLabels: Record<string, string> = {
-  "3-days": "3 jours",
-  "1-week": "1 semaine",
-  "2-weeks": "2 semaines",
-  "1-month": "1 mois",
-  "no-rush": "Pas pressé",
-  "normal": "Normal",
-};
 
 interface SearchData {
   id: string;
@@ -20,7 +11,7 @@ interface SearchData {
   category: string;
   budget_min: number | null;
   budget_max: number | null;
-  urgency: string | null;
+  deadline: string | null;
   image_url: string | null;
   image_urls: string[] | null;
   user_id: string;
@@ -35,6 +26,19 @@ interface ProfileData {
   level: number | null;
   xp_points: number | null;
 }
+
+const getDeadlineBadge = (deadline: string | null) => {
+  if (!deadline) return null;
+  const diffMs = new Date(deadline).getTime() - Date.now();
+  const days = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  if (days < 0) {
+    return { label: "Délai dépassé", bg: "rgba(140,140,140,0.92)", color: "#fff" };
+  }
+  const label = `Il reste ${days} jour${days > 1 ? "s" : ""}`;
+  if (days < 3) return { label, bg: "rgba(239,83,80,0.95)", color: "#fff" };
+  if (days <= 7) return { label, bg: "rgba(245,158,11,0.95)", color: "#1B2A4A" };
+  return { label, bg: "rgba(201,168,76,0.95)", color: "#1B2A4A" };
+};
 
 const CardImageCarousel = ({ images, alt }: { images: string[]; alt: string }) => {
   const [current, setCurrent] = useState(0);
@@ -88,20 +92,24 @@ const ActiveRequests = () => {
   const fetchSearches = async () => {
     const { data, error } = await supabase
       .from("searches")
-      .select("id, title, category, budget_min, budget_max, urgency, image_url, image_urls, user_id, created_at")
+      .select("id, title, category, budget_min, budget_max, deadline, image_url, image_urls, user_id, created_at")
       .eq("status", "active")
       .order("created_at", { ascending: false })
-      .limit(6);
+      .limit(24);
 
     if (error || !data || data.length === 0) {
       setLoading(false);
       return;
     }
 
-    setSearches(data);
+    const filtered = data
+      .filter(s => !s.deadline || new Date(s.deadline).getTime() > Date.now())
+      .slice(0, 8);
 
-    const userIds = [...new Set(data.map(s => s.user_id))];
-    const searchIds = data.map(s => s.id);
+    setSearches(filtered);
+
+    const userIds = [...new Set(filtered.map(s => s.user_id))];
+    const searchIds = filtered.map(s => s.id);
 
     const [profilesRes, proposalsRes] = await Promise.all([
       supabase.from("profiles").select("user_id, full_name, avatar_url, city, level, xp_points").in("user_id", userIds),
@@ -164,6 +172,8 @@ const ActiveRequests = () => {
           {searches.map((search) => {
             const profile = profiles[search.user_id];
             const images = getImages(search);
+            const deadlineBadge = getDeadlineBadge(search.deadline);
+            const proposalCount = proposalCounts[search.id] || 0;
 
             return (
               <div
@@ -184,13 +194,11 @@ const ActiveRequests = () => {
                     </div>
                   )}
 
-
-
                   {/* Category badge */}
                   <Badge
                     style={{
                       position: "absolute", top: "10px", right: "10px",
-                      background: "rgba(27, 42, 74, 0.92)", color: "#C9A84C",
+                      background: "#0A1628", color: "#FFFFFF",
                       fontSize: "11px", fontWeight: 500, borderRadius: "20px",
                       padding: "4px 12px", border: "none",
                     }}
@@ -198,17 +206,17 @@ const ActiveRequests = () => {
                     {search.category}
                   </Badge>
 
-                  {/* Urgency */}
-                  {search.urgency && search.urgency !== "no-rush" && search.urgency !== "normal" && (
+                  {/* Deadline badge */}
+                  {deadlineBadge && (
                     <div
                       className="absolute bottom-3 left-3 flex items-center gap-1.5"
                       style={{
-                        background: "rgba(255,255,255,0.92)", borderRadius: "20px",
-                        padding: "4px 10px", fontSize: "11px", fontWeight: 500, color: "#1B2A4A",
+                        background: deadlineBadge.bg, borderRadius: "20px",
+                        padding: "4px 10px", fontSize: "11px", fontWeight: 600, color: deadlineBadge.color,
                       }}
                     >
                       <Clock className="w-3 h-3" />
-                      {urgencyLabels[search.urgency] || search.urgency}
+                      {deadlineBadge.label}
                     </div>
                   )}
                 </div>
@@ -222,11 +230,14 @@ const ActiveRequests = () => {
                     {search.title}
                   </h3>
 
-                  <p style={{ fontSize: "20px", fontWeight: 700, color: "#1B2A4A", marginBottom: "12px" }}>
+                  <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", color: "#8A7A4C", textTransform: "uppercase" }}>
+                    Budget
+                  </span>
+                  <p style={{ fontSize: "20px", fontWeight: 700, color: "#1B2A4A", marginTop: "2px", marginBottom: "12px" }}>
                     {formatBudget(search.budget_min, search.budget_max)}
                   </p>
 
-                  {/* User + Stats */}
+                  {/* User + location */}
                   <div className="flex items-center justify-between pt-3 border-t border-[#E8E0D4]">
                     <div className="flex items-center gap-2">
                       {profile?.avatar_url && (
@@ -236,16 +247,23 @@ const ActiveRequests = () => {
                         {profile?.full_name || "Utilisateur"}
                       </span>
                     </div>
-                    <div className="flex items-center gap-3" style={{ fontSize: "12px", color: "#8A8070" }}>
-                      <span className="flex items-center gap-1">
-                        <Users className="w-3 h-3" />
-                        {proposalCounts[search.id] || 0}
+                    <span className="flex items-center gap-1" style={{ fontSize: "12px", color: "#8A8070" }}>
+                      <MapPin className="w-3 h-3" />
+                      {profile?.city || "France"}
+                    </span>
+                  </div>
+
+                  {/* Social proof / CTA */}
+                  <div className="mt-2" style={{ fontSize: "12px" }}>
+                    {proposalCount > 0 ? (
+                      <span style={{ color: "#1B2A4A" }}>
+                        {proposalCount} proposition{proposalCount > 1 ? "s" : ""} déjà reçue{proposalCount > 1 ? "s" : ""}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {profile?.city || "France"}
+                    ) : (
+                      <span style={{ color: "#C9A84C", fontStyle: "italic" }}>
+                        Sois le premier findr à proposer →
                       </span>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>

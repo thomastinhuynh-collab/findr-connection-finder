@@ -19,6 +19,7 @@ interface SearchItem {
   budget_min: number | null;
   budget_max: number | null;
   urgency: string | null;
+  deadline: string | null;
   image_url: string | null;
   image_urls: string[] | null;
   created_at: string;
@@ -28,6 +29,16 @@ interface SearchItem {
     avatar_url: string | null;
   } | null;
 }
+
+const getDeadlineBadge = (deadline: string | null) => {
+  if (!deadline) return null;
+  const days = Math.round((new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+  if (days < 0) return { label: "Délai dépassé", bg: "rgba(140,140,140,0.92)", color: "#fff" };
+  const label = `Il reste ${days} jour${days > 1 ? "s" : ""}`;
+  if (days < 3) return { label, bg: "rgba(239,83,80,0.95)", color: "#fff" };
+  if (days <= 7) return { label, bg: "rgba(245,158,11,0.95)", color: "#1B2A4A" };
+  return { label, bg: "rgba(201,168,76,0.95)", color: "#1B2A4A" };
+};
 
 const urgencyLabels: Record<string, string> = {
   "3-days": "3 jours",
@@ -69,6 +80,7 @@ const Searches = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("recent");
   const [selectedUrgency, setSelectedUrgency] = useState("Toutes");
+  const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
@@ -90,7 +102,7 @@ const Searches = () => {
     setLoading(true);
     let query = supabase
       .from("searches")
-      .select("id, title, category, budget_min, budget_max, urgency, image_url, image_urls, created_at, user_id")
+      .select("id, title, category, budget_min, budget_max, urgency, deadline, image_url, image_urls, created_at, user_id")
       .eq("status", "active")
       .order("created_at", { ascending: false });
 
@@ -107,19 +119,25 @@ const Searches = () => {
     }
 
     if (data && data.length > 0) {
-      const userIds = [...new Set(data.map(s => s.user_id))];
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, full_name, avatar_url")
-        .in("user_id", userIds);
+      const filtered = data.filter(s => !s.deadline || new Date(s.deadline).getTime() > Date.now());
+      const userIds = [...new Set(filtered.map(s => s.user_id))];
+      const searchIds = filtered.map(s => s.id);
+      const [profilesRes, proposalsRes] = await Promise.all([
+        supabase.from("profiles").select("user_id, full_name, avatar_url").in("user_id", userIds),
+        supabase.from("proposals").select("search_id").in("search_id", searchIds),
+      ]);
 
-      const profilesMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
-      
-      const searchesWithProfiles = data.map(search => ({
+      const profilesMap = new Map(profilesRes.data?.map(p => [p.user_id, p]) || []);
+
+      const searchesWithProfiles = filtered.map(search => ({
         ...search,
         profiles: profilesMap.get(search.user_id) || null
       }));
-      
+
+      const counts: Record<string, number> = {};
+      proposalsRes.data?.forEach(p => { counts[p.search_id] = (counts[p.search_id] || 0) + 1; });
+      setProposalCounts(counts);
+
       setSearches(searchesWithProfiles as any);
     } else {
       setSearches([]);
@@ -361,14 +379,14 @@ const Searches = () => {
                       alt={search.title}
                     />
 
-                    {/* Category badge — top left */}
+                    {/* Category badge — top right */}
                     <span
                       className="absolute"
                       style={{
                         top: "10px",
-                        left: "10px",
-                        backgroundColor: "rgba(27,42,74,0.92)",
-                        color: "#C9A84C",
+                        right: "10px",
+                        backgroundColor: "#0A1628",
+                        color: "#FFFFFF",
                         fontSize: "11px",
                         fontWeight: 600,
                         letterSpacing: "0.04em",
@@ -380,22 +398,31 @@ const Searches = () => {
                       {search.category}
                     </span>
 
-                    {/* Date badge — bottom right */}
-                    <span
-                      className="absolute"
-                      style={{
-                        bottom: "10px",
-                        right: "10px",
-                        backgroundColor: "rgba(0,0,0,0.55)",
-                        color: "#FFFFFF",
-                        fontSize: "11px",
-                        padding: "4px 10px",
-                        borderRadius: "20px",
-                        zIndex: 5,
-                      }}
-                    >
-                      {formatDate(search.created_at)}
-                    </span>
+                    {/* Deadline badge — bottom left */}
+                    {(() => {
+                      const d = getDeadlineBadge(search.deadline);
+                      if (!d) return null;
+                      return (
+                        <span
+                          className="absolute flex items-center"
+                          style={{
+                            bottom: "10px",
+                            left: "10px",
+                            backgroundColor: d.bg,
+                            color: d.color,
+                            fontSize: "11px",
+                            fontWeight: 600,
+                            padding: "4px 10px",
+                            borderRadius: "20px",
+                            gap: "4px",
+                            zIndex: 5,
+                          }}
+                        >
+                          <Clock style={{ width: "12px", height: "12px" }} />
+                          {d.label}
+                        </span>
+                      );
+                    })()}
                   </div>
 
                   {/* Content */}
@@ -412,19 +439,14 @@ const Searches = () => {
                       {search.title}
                     </h3>
 
-                    {/* Price + delay */}
-                    <div className="flex items-center" style={{ gap: "16px" }}>
-                      <span className="flex items-center" style={{ gap: "4px" }}>
-                        <Euro style={{ width: "13px", height: "13px", color: "#C9A84C" }} />
-                        <span style={{ fontSize: "13px", fontWeight: 600, color: "#1B2A4A" }}>
-                          {formatBudget(search.budget_min, search.budget_max)}
-                        </span>
-                      </span>
-                      <span className="flex items-center" style={{ gap: "4px" }}>
-                        <Clock style={{ width: "13px", height: "13px", color: "#C9A84C" }} />
-                        <span style={{ fontSize: "13px", color: "#6B6259" }}>
-                          {urgencyLabels[search.urgency || "normal"] || search.urgency}
-                        </span>
+                    {/* Budget */}
+                    <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", color: "#8A7A4C", textTransform: "uppercase" }}>
+                      Budget
+                    </span>
+                    <div className="flex items-center" style={{ gap: "4px", marginTop: "2px" }}>
+                      <Euro style={{ width: "13px", height: "13px", color: "#C9A84C" }} />
+                      <span style={{ fontSize: "14px", fontWeight: 700, color: "#1B2A4A" }}>
+                        {formatBudget(search.budget_min, search.budget_max)}
                       </span>
                     </div>
 
@@ -482,12 +504,19 @@ const Searches = () => {
                           {search.profiles?.full_name || "Utilisateur"}
                         </span>
                       </button>
+                    </div>
 
-                      {/* Comments count */}
-                      <span className="flex items-center" style={{ gap: "4px" }}>
-                        <MessageCircle style={{ width: "14px", height: "14px", color: "#C9A84C" }} />
-                        <span style={{ fontSize: "12px", fontWeight: 600, color: "#1B2A4A" }}>0</span>
-                      </span>
+                    {/* Proposal count / CTA */}
+                    <div style={{ marginTop: "8px", fontSize: "12px" }}>
+                      {(proposalCounts[search.id] || 0) > 0 ? (
+                        <span style={{ color: "#1B2A4A" }}>
+                          {proposalCounts[search.id]} proposition{proposalCounts[search.id] > 1 ? "s" : ""} déjà reçue{proposalCounts[search.id] > 1 ? "s" : ""}
+                        </span>
+                      ) : (
+                        <span style={{ color: "#C9A84C", fontStyle: "italic" }}>
+                          Sois le premier findr à proposer →
+                        </span>
+                      )}
                     </div>
                   </div>
                 </motion.div>
