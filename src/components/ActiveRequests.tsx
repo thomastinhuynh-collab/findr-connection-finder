@@ -172,6 +172,8 @@ const ActiveRequests = () => {
           {searches.map((search) => {
             const profile = profiles[search.user_id];
             const images = getImages(search);
+            const deadlineBadge = getDeadlineBadge(search.deadline);
+            const proposalCount = proposalCounts[search.id] || 0;
 
             return (
               <div
@@ -192,13 +194,11 @@ const ActiveRequests = () => {
                     </div>
                   )}
 
-
-
                   {/* Category badge */}
                   <Badge
                     style={{
                       position: "absolute", top: "10px", right: "10px",
-                      background: "rgba(27, 42, 74, 0.92)", color: "#C9A84C",
+                      background: "#0A1628", color: "#FFFFFF",
                       fontSize: "11px", fontWeight: 500, borderRadius: "20px",
                       padding: "4px 12px", border: "none",
                     }}
@@ -206,17 +206,17 @@ const ActiveRequests = () => {
                     {search.category}
                   </Badge>
 
-                  {/* Urgency */}
-                  {search.urgency && search.urgency !== "no-rush" && search.urgency !== "normal" && (
+                  {/* Deadline badge */}
+                  {deadlineBadge && (
                     <div
                       className="absolute bottom-3 left-3 flex items-center gap-1.5"
                       style={{
-                        background: "rgba(255,255,255,0.92)", borderRadius: "20px",
-                        padding: "4px 10px", fontSize: "11px", fontWeight: 500, color: "#1B2A4A",
+                        background: deadlineBadge.bg, borderRadius: "20px",
+                        padding: "4px 10px", fontSize: "11px", fontWeight: 600, color: deadlineBadge.color,
                       }}
                     >
                       <Clock className="w-3 h-3" />
-                      {urgencyLabels[search.urgency] || search.urgency}
+                      {deadlineBadge.label}
                     </div>
                   )}
                 </div>
@@ -230,11 +230,14 @@ const ActiveRequests = () => {
                     {search.title}
                   </h3>
 
-                  <p style={{ fontSize: "20px", fontWeight: 700, color: "#1B2A4A", marginBottom: "12px" }}>
+                  <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", color: "#8A7A4C", textTransform: "uppercase" }}>
+                    Budget
+                  </span>
+                  <p style={{ fontSize: "20px", fontWeight: 700, color: "#1B2A4A", marginTop: "2px", marginBottom: "12px" }}>
                     {formatBudget(search.budget_min, search.budget_max)}
                   </p>
 
-                  {/* User + Stats */}
+                  {/* User + location */}
                   <div className="flex items-center justify-between pt-3 border-t border-[#E8E0D4]">
                     <div className="flex items-center gap-2">
                       {profile?.avatar_url && (
@@ -244,16 +247,23 @@ const ActiveRequests = () => {
                         {profile?.full_name || "Utilisateur"}
                       </span>
                     </div>
-                    <div className="flex items-center gap-3" style={{ fontSize: "12px", color: "#8A8070" }}>
-                      <span className="flex items-center gap-1">
-                        <Users className="w-3 h-3" />
-                        {proposalCounts[search.id] || 0}
+                    <span className="flex items-center gap-1" style={{ fontSize: "12px", color: "#8A8070" }}>
+                      <MapPin className="w-3 h-3" />
+                      {profile?.city || "France"}
+                    </span>
+                  </div>
+
+                  {/* Social proof / CTA */}
+                  <div className="mt-2" style={{ fontSize: "12px" }}>
+                    {proposalCount > 0 ? (
+                      <span style={{ color: "#1B2A4A" }}>
+                        {proposalCount} proposition{proposalCount > 1 ? "s" : ""} déjà reçue{proposalCount > 1 ? "s" : ""}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {profile?.city || "France"}
+                    ) : (
+                      <span style={{ color: "#C9A84C", fontStyle: "italic" }}>
+                        Sois le premier findr à proposer →
                       </span>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
