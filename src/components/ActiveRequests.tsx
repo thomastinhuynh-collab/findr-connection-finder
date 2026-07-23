@@ -102,10 +102,14 @@ const ActiveRequests = () => {
       return;
     }
 
-    setSearches(data);
+    const filtered = data
+      .filter(s => !s.deadline || new Date(s.deadline).getTime() > Date.now())
+      .slice(0, 8);
 
-    const userIds = [...new Set(data.map(s => s.user_id))];
-    const searchIds = data.map(s => s.id);
+    setSearches(filtered);
+
+    const userIds = [...new Set(filtered.map(s => s.user_id))];
+    const searchIds = filtered.map(s => s.id);
 
     const [profilesRes, proposalsRes] = await Promise.all([
       supabase.from("profiles").select("user_id, full_name, avatar_url, city, level, xp_points").in("user_id", userIds),
