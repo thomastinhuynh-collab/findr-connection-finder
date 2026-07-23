@@ -102,7 +102,7 @@ const Searches = () => {
     setLoading(true);
     let query = supabase
       .from("searches")
-      .select("id, title, category, budget_min, budget_max, urgency, image_url, image_urls, created_at, user_id")
+      .select("id, title, category, budget_min, budget_max, urgency, deadline, image_url, image_urls, created_at, user_id")
       .eq("status", "active")
       .order("created_at", { ascending: false });
 
@@ -119,19 +119,25 @@ const Searches = () => {
     }
 
     if (data && data.length > 0) {
-      const userIds = [...new Set(data.map(s => s.user_id))];
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, full_name, avatar_url")
-        .in("user_id", userIds);
+      const filtered = data.filter(s => !s.deadline || new Date(s.deadline).getTime() > Date.now());
+      const userIds = [...new Set(filtered.map(s => s.user_id))];
+      const searchIds = filtered.map(s => s.id);
+      const [profilesRes, proposalsRes] = await Promise.all([
+        supabase.from("profiles").select("user_id, full_name, avatar_url").in("user_id", userIds),
+        supabase.from("proposals").select("search_id").in("search_id", searchIds),
+      ]);
 
-      const profilesMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
-      
-      const searchesWithProfiles = data.map(search => ({
+      const profilesMap = new Map(profilesRes.data?.map(p => [p.user_id, p]) || []);
+
+      const searchesWithProfiles = filtered.map(search => ({
         ...search,
         profiles: profilesMap.get(search.user_id) || null
       }));
-      
+
+      const counts: Record<string, number> = {};
+      proposalsRes.data?.forEach(p => { counts[p.search_id] = (counts[p.search_id] || 0) + 1; });
+      setProposalCounts(counts);
+
       setSearches(searchesWithProfiles as any);
     } else {
       setSearches([]);
