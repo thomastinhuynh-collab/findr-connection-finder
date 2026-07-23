@@ -336,6 +336,7 @@ export type Database = {
           budget_min: number | null
           category: string
           created_at: string
+          deadline: string | null
           description: string | null
           id: string
           image_url: string | null
@@ -352,6 +353,7 @@ export type Database = {
           budget_min?: number | null
           category: string
           created_at?: string
+          deadline?: string | null
           description?: string | null
           id?: string
           image_url?: string | null
@@ -368,6 +370,7 @@ export type Database = {
           budget_min?: number | null
           category?: string
           created_at?: string
+          deadline?: string | null
           description?: string | null
           id?: string
           image_url?: string | null
