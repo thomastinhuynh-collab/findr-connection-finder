@@ -80,6 +80,7 @@ const Searches = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("recent");
   const [selectedUrgency, setSelectedUrgency] = useState("Toutes");
+  const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
