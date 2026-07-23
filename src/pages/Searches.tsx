@@ -379,14 +379,14 @@ const Searches = () => {
                       alt={search.title}
                     />
 
-                    {/* Category badge — top left */}
+                    {/* Category badge — top right */}
                     <span
                       className="absolute"
                       style={{
                         top: "10px",
-                        left: "10px",
-                        backgroundColor: "rgba(27,42,74,0.92)",
-                        color: "#C9A84C",
+                        right: "10px",
+                        backgroundColor: "#0A1628",
+                        color: "#FFFFFF",
                         fontSize: "11px",
                         fontWeight: 600,
                         letterSpacing: "0.04em",
@@ -398,22 +398,31 @@ const Searches = () => {
                       {search.category}
                     </span>
 
-                    {/* Date badge — bottom right */}
-                    <span
-                      className="absolute"
-                      style={{
-                        bottom: "10px",
-                        right: "10px",
-                        backgroundColor: "rgba(0,0,0,0.55)",
-                        color: "#FFFFFF",
-                        fontSize: "11px",
-                        padding: "4px 10px",
-                        borderRadius: "20px",
-                        zIndex: 5,
-                      }}
-                    >
-                      {formatDate(search.created_at)}
-                    </span>
+                    {/* Deadline badge — bottom left */}
+                    {(() => {
+                      const d = getDeadlineBadge(search.deadline);
+                      if (!d) return null;
+                      return (
+                        <span
+                          className="absolute flex items-center"
+                          style={{
+                            bottom: "10px",
+                            left: "10px",
+                            backgroundColor: d.bg,
+                            color: d.color,
+                            fontSize: "11px",
+                            fontWeight: 600,
+                            padding: "4px 10px",
+                            borderRadius: "20px",
+                            gap: "4px",
+                            zIndex: 5,
+                          }}
+                        >
+                          <Clock style={{ width: "12px", height: "12px" }} />
+                          {d.label}
+                        </span>
+                      );
+                    })()}
                   </div>
 
                   {/* Content */}
