@@ -92,10 +92,10 @@ const ActiveRequests = () => {
   const fetchSearches = async () => {
     const { data, error } = await supabase
       .from("searches")
-      .select("id, title, category, budget_min, budget_max, urgency, image_url, image_urls, user_id, created_at")
+      .select("id, title, category, budget_min, budget_max, deadline, image_url, image_urls, user_id, created_at")
       .eq("status", "active")
       .order("created_at", { ascending: false })
-      .limit(6);
+      .limit(24);
 
     if (error || !data || data.length === 0) {
       setLoading(false);
