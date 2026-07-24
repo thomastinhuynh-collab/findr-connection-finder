@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Clock, Euro, MessageCircle, Filter, SlidersHorizontal, Loader2, X, ArrowUpDown } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Slider } from "@/components/ui/slider";
+import { Search, Clock, Euro, MessageCircle, Filter, SlidersHorizontal, Loader2, X, ArrowUpDown, ChevronDown, Tag, Wallet } from "lucide-react";
+
 import { supabase } from "@/integrations/supabase/client";
 import UserBadge from "@/components/UserBadge";
 import SearchImageCarousel from "@/components/SearchImageCarousel";
@@ -68,7 +71,9 @@ const categories = [
   "Déco & Mobilier",
 ];
 
-type SortOption = "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc" | "deadline-asc";
+type SortOption = "relevance" | "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc" | "deadline-asc";
+type DeadlineFilter = "all" | "urgent" | "week" | "none";
+
 
 const Searches = () => {
   const navigate = useNavigate();
@@ -79,8 +84,13 @@ const Searches = () => {
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("recent");
+  const [sortTouched, setSortTouched] = useState(false);
   const [selectedUrgency, setSelectedUrgency] = useState("Toutes");
+  const [deadlineFilter, setDeadlineFilter] = useState<DeadlineFilter>("all");
+  const [budgetRange, setBudgetRange] = useState<[number, number]>([0, 5000]);
+  const [budgetTouched, setBudgetTouched] = useState(false);
   const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
+
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
@@ -91,8 +101,10 @@ const Searches = () => {
     }
     if (queryFromUrl) {
       setSearchQuery(queryFromUrl);
+      if (!sortTouched) setSortBy("relevance");
     }
   }, [searchParams]);
+
 
   useEffect(() => {
     fetchSearches();
@@ -166,14 +178,46 @@ const Searches = () => {
     return date.toLocaleDateString("fr-FR");
   };
 
+  const relevanceScore = (s: SearchItem, q: string) => {
+    if (!q) return 0;
+    const query = q.toLowerCase();
+    const title = (s.title || "").toLowerCase();
+    let score = 0;
+    if (title === query) score += 100;
+    else if (title.startsWith(query)) score += 60;
+    else if (title.includes(query)) score += 40;
+    // deadline proximity bonus
+    if (s.deadline) {
+      const days = (new Date(s.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+      if (days > 0 && days < 14) score += Math.max(0, 10 - days);
+    }
+    return score;
+  };
+
   const filteredAndSortedSearches = searches
     .filter((search) => {
-      const matchesQuery = search.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const q = searchQuery.toLowerCase();
+      const matchesQuery = !q || search.title.toLowerCase().includes(q);
       const matchesUrgency = selectedUrgency === "Toutes" || search.urgency === selectedUrgency;
-      return matchesQuery && matchesUrgency;
+      // Budget filter
+      const bMin = search.budget_min ?? search.budget_max ?? 0;
+      const bMax = search.budget_max ?? search.budget_min ?? 0;
+      const matchesBudget = !budgetTouched || (bMax >= budgetRange[0] && bMin <= budgetRange[1]);
+      // Deadline filter
+      let matchesDeadline = true;
+      if (deadlineFilter === "none") matchesDeadline = !search.deadline;
+      else if (deadlineFilter === "urgent") {
+        matchesDeadline = !!search.deadline && (new Date(search.deadline).getTime() - Date.now()) / 86400000 < 3;
+      } else if (deadlineFilter === "week") {
+        const d = search.deadline ? (new Date(search.deadline).getTime() - Date.now()) / 86400000 : Infinity;
+        matchesDeadline = !!search.deadline && d < 7;
+      }
+      return matchesQuery && matchesUrgency && matchesBudget && matchesDeadline;
     })
     .sort((a, b) => {
       switch (sortBy) {
+        case "relevance":
+          return relevanceScore(b, searchQuery) - relevanceScore(a, searchQuery);
         case "price-asc":
           return (a.budget_min || 0) - (b.budget_min || 0);
         case "price-desc":
@@ -183,10 +227,7 @@ const Searches = () => {
         case "urgency-desc":
           return (urgencyOrder[b.urgency || "normal"] || 5) - (urgencyOrder[a.urgency || "normal"] || 5);
         case "deadline-asc": {
-          // Deadlines first (asc), then searches without deadline by created_at desc
-          if (a.deadline && b.deadline) {
-            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
-          }
+          if (a.deadline && b.deadline) return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
           if (a.deadline && !b.deadline) return -1;
           if (!a.deadline && b.deadline) return 1;
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -196,6 +237,31 @@ const Searches = () => {
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
     });
+
+  const NAVY = "#0A1628";
+  const GOLD_ACCENT = "#D9BD8B";
+  const pillBase: React.CSSProperties = {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 13,
+    fontWeight: 500,
+    padding: "8px 14px",
+    borderRadius: 999,
+    background: "#FFFFFF",
+    border: "1px solid #E5E0D6",
+    color: "#1B2A4A",
+    cursor: "pointer",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    whiteSpace: "nowrap",
+  };
+  const pillActive: React.CSSProperties = {
+    ...pillBase,
+    background: NAVY,
+    color: GOLD_ACCENT,
+    border: `1px solid ${NAVY}`,
+  };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -218,156 +284,197 @@ const Searches = () => {
             </p>
           </motion.div>
 
-          {/* Sort pills */}
-          <div className="flex flex-wrap items-center gap-2 mb-5">
-            <span style={{ fontSize: "13px", fontWeight: 500, color: "#6B6355", marginRight: "4px" }}>
-              Trier :
-            </span>
-            {([
-              { value: "recent", label: "Plus récentes" },
-              { value: "deadline-asc", label: "Urgentes d'abord" },
-              { value: "price-asc", label: "Budget croissant" },
-            ] as { value: SortOption; label: string }[]).map((opt) => {
-              const active = sortBy === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  onClick={() => setSortBy(opt.value)}
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    padding: "7px 14px",
-                    borderRadius: "999px",
-                    border: active ? "1px solid #1B2A4A" : "1px solid rgba(217,189,139,0.5)",
-                    background: active ? "#1B2A4A" : "transparent",
-                    color: active ? "#D9BD8B" : "#1B2A4A",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
+          {/* Free text search (kept for typing on the page) */}
+          <div className="relative mb-4 max-w-xl mx-auto">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              placeholder="Rechercher un objet, une marque…"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                if (!sortTouched && e.target.value) setSortBy("relevance");
+              }}
+              className="h-12 pl-12 rounded-full"
+            />
           </div>
 
-          {/* Filters */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex flex-col md:flex-row gap-4 mb-8"
-          >
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                placeholder="Rechercher..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-12 pl-12"
-              />
-            </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="h-12 w-full md:w-[200px]">
-                <Filter className="w-4 h-4 mr-2" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border">
-                {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button 
-              variant={showFilters ? "default" : "outline"} 
-              className="h-12 gap-2"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              Plus de filtres
-              {showFilters && <X className="w-4 h-4 ml-1" />}
-            </Button>
-          </motion.div>
-
-          {/* Extended Filters Panel */}
-          <AnimatePresence>
-            {showFilters && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden mb-6"
-              >
-                <div className="bg-card border border-border rounded-xl p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {/* Sort by */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                        <ArrowUpDown className="w-4 h-4" />
-                        Trier par
-                      </label>
-                      <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-border">
-                          <SelectItem value="recent">Plus récent</SelectItem>
-                          <SelectItem value="price-asc">Prix croissant</SelectItem>
-                          <SelectItem value="price-desc">Prix décroissant</SelectItem>
-                          <SelectItem value="urgency-asc">Délai le plus court</SelectItem>
-                          <SelectItem value="urgency-desc">Délai le plus long</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Filter by urgency */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        Délai
-                      </label>
-                      <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-border">
-                          <SelectItem value="Toutes">Tous les délais</SelectItem>
-                          <SelectItem value="3-days">3 jours (Urgent)</SelectItem>
-                          <SelectItem value="1-week">1 semaine</SelectItem>
-                          <SelectItem value="2-weeks">2 semaines</SelectItem>
-                          <SelectItem value="1-month">1 mois</SelectItem>
-                          <SelectItem value="no-rush">Pas pressé</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Reset filters */}
-                    <div className="flex items-end">
-                      <Button 
-                        variant="ghost" 
-                        className="w-full"
-                        onClick={() => {
-                          setSortBy("recent");
-                          setSelectedUrgency("Toutes");
-                          setSelectedCategory("Toutes");
-                          setSearchQuery("");
-                        }}
-                      >
-                        Réinitialiser les filtres
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {/* Results count */}
-          <p className="text-sm text-muted-foreground mb-6">
+          <p className="text-sm text-muted-foreground mb-3">
             {filteredAndSortedSearches.length} recherche{filteredAndSortedSearches.length > 1 ? "s" : ""} trouvée{filteredAndSortedSearches.length > 1 ? "s" : ""}
           </p>
+
+          {/* Toolbar */}
+          <div
+            className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6"
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #E8E2D9",
+              borderRadius: 16,
+              padding: "12px 14px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+            }}
+          >
+            {/* Left: filter pills */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Category */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button style={selectedCategory !== "Toutes" ? pillActive : pillBase}>
+                    <Tag className="w-3.5 h-3.5" />
+                    {selectedCategory === "Toutes" ? "Catégorie" : selectedCategory}
+                    <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-56 p-1">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted"
+                      style={{
+                        background: selectedCategory === cat ? "#F5F1E8" : "transparent",
+                        color: "#1B2A4A",
+                        fontWeight: selectedCategory === cat ? 600 : 400,
+                      }}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+
+              {/* Budget */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button style={budgetTouched ? pillActive : pillBase}>
+                    <Wallet className="w-3.5 h-3.5" />
+                    {budgetTouched ? `${budgetRange[0]}€ – ${budgetRange[1]}€` : "Budget"}
+                    <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-72 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-medium text-muted-foreground">Fourchette de budget</span>
+                    {budgetTouched && (
+                      <button
+                        onClick={() => { setBudgetTouched(false); setBudgetRange([0, 5000]); }}
+                        className="text-xs text-muted-foreground hover:text-foreground"
+                      >
+                        Réinitialiser
+                      </button>
+                    )}
+                  </div>
+                  <Slider
+                    min={0}
+                    max={5000}
+                    step={50}
+                    value={budgetRange}
+                    onValueChange={(v) => { setBudgetRange([v[0], v[1]] as [number, number]); setBudgetTouched(true); }}
+                  />
+                  <div className="flex justify-between mt-3 text-sm font-medium" style={{ color: "#1B2A4A" }}>
+                    <span>{budgetRange[0]}€</span>
+                    <span>{budgetRange[1]}€{budgetRange[1] === 5000 ? "+" : ""}</span>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              {/* Deadline */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button style={deadlineFilter !== "all" ? pillActive : pillBase}>
+                    <Clock className="w-3.5 h-3.5" />
+                    {deadlineFilter === "all" && "Délai"}
+                    {deadlineFilter === "urgent" && "Urgent <3j"}
+                    {deadlineFilter === "week" && "Cette semaine"}
+                    {deadlineFilter === "none" && "Sans échéance"}
+                    <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-56 p-1">
+                  {([
+                    { v: "all", label: "Toutes" },
+                    { v: "urgent", label: "Urgent < 3 jours" },
+                    { v: "week", label: "Cette semaine" },
+                    { v: "none", label: "Sans échéance" },
+                  ] as { v: DeadlineFilter; label: string }[]).map((o) => (
+                    <button
+                      key={o.v}
+                      onClick={() => setDeadlineFilter(o.v)}
+                      className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted"
+                      style={{
+                        background: deadlineFilter === o.v ? "#F5F1E8" : "transparent",
+                        color: "#1B2A4A",
+                        fontWeight: deadlineFilter === o.v ? 600 : 400,
+                      }}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+
+              {(selectedCategory !== "Toutes" || budgetTouched || deadlineFilter !== "all" || searchQuery) && (
+                <button
+                  onClick={() => {
+                    setSelectedCategory("Toutes");
+                    setBudgetTouched(false);
+                    setBudgetRange([0, 5000]);
+                    setDeadlineFilter("all");
+                    setSearchQuery("");
+                  }}
+                  style={{ ...pillBase, border: "none", background: "transparent", color: "#8A7A4C" }}
+                >
+                  <X className="w-3.5 h-3.5" /> Réinitialiser
+                </button>
+              )}
+            </div>
+
+            {/* Right: sort */}
+            <div className="flex items-center gap-2">
+              <span style={{ fontSize: 12, color: "#6B6355", fontWeight: 500 }}>Trier par</span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button style={pillActive}>
+                    <ArrowUpDown className="w-3.5 h-3.5" />
+                    {sortBy === "relevance" && "Pertinence"}
+                    {sortBy === "recent" && "Plus récent"}
+                    {sortBy === "price-asc" && "Prix croissant"}
+                    {sortBy === "price-desc" && "Prix décroissant"}
+                    {sortBy === "deadline-asc" && "Échéance proche"}
+                    {sortBy === "urgency-asc" && "Délai le plus court"}
+                    {sortBy === "urgency-desc" && "Délai le plus long"}
+                    <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-56 p-1">
+                  {([
+                    { v: "relevance", label: "Pertinence", show: !!searchQuery },
+                    { v: "recent", label: "Plus récent", show: true },
+                    { v: "price-asc", label: "Prix croissant", show: true },
+                    { v: "price-desc", label: "Prix décroissant", show: true },
+                    { v: "deadline-asc", label: "Échéance proche", show: true },
+                  ] as { v: SortOption; label: string; show: boolean }[])
+                    .filter((o) => o.show)
+                    .map((o) => (
+                      <button
+                        key={o.v}
+                        onClick={() => { setSortBy(o.v); setSortTouched(true); }}
+                        className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted"
+                        style={{
+                          background: sortBy === o.v ? "#F5F1E8" : "transparent",
+                          color: "#1B2A4A",
+                          fontWeight: sortBy === o.v ? 600 : 400,
+                        }}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+
 
           {/* Loading state */}
           {loading && (
