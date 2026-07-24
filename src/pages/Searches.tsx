@@ -218,6 +218,40 @@ const Searches = () => {
             </p>
           </motion.div>
 
+          {/* Sort pills */}
+          <div className="flex flex-wrap items-center gap-2 mb-5">
+            <span style={{ fontSize: "13px", fontWeight: 500, color: "#6B6355", marginRight: "4px" }}>
+              Trier :
+            </span>
+            {([
+              { value: "recent", label: "Plus récentes" },
+              { value: "deadline-asc", label: "Urgentes d'abord" },
+              { value: "price-asc", label: "Budget croissant" },
+            ] as { value: SortOption; label: string }[]).map((opt) => {
+              const active = sortBy === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => setSortBy(opt.value)}
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    padding: "7px 14px",
+                    borderRadius: "999px",
+                    border: active ? "1px solid #1B2A4A" : "1px solid rgba(217,189,139,0.5)",
+                    background: active ? "#1B2A4A" : "transparent",
+                    color: active ? "#D9BD8B" : "#1B2A4A",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+
           {/* Filters */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
