@@ -302,55 +302,67 @@ const Hero = () => {
               <span style={{ fontSize: 10 }}>▾</span>
             </button>
           ))}
+        </div>
 
-          {/* Search bar */}
+        {/* ============ ZONE 2.5: SEARCH BAR (dedicated row) ============ */}
+        <div
+          style={{
+            width: "100%",
+            background: "rgba(255,255,255,0.02)",
+            borderBottom: borderLine,
+            padding: "14px 32px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              const input = (e.currentTarget.elements.namedItem("q") as HTMLInputElement);
-              const q = input?.value.trim();
+              const q = heroQuery.trim();
               navigate(`/recherches${q ? `?q=${encodeURIComponent(q)}` : ""}`);
             }}
             style={{
-              marginLeft: "auto",
-              flex: "1 1 340px",
-              maxWidth: 440,
+              width: "100%",
+              maxWidth: 560,
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              background: "transparent",
-              border: "0.5px solid rgba(217, 187, 135, 0.4)",
-              borderRadius: 24,
-              padding: "5px 5px 5px 16px",
+              gap: 10,
+              background: "#F5F1E8",
+              border: "1px solid rgba(10,22,40,0.08)",
+              borderRadius: 999,
+              padding: "5px 5px 5px 18px",
+              boxShadow: "0 2px 12px rgba(0,0,0,0.15)",
             }}
           >
-            <span style={{ color: "rgba(217, 187, 135, 0.6)", fontSize: 14 }}>⌕</span>
+            <span style={{ color: "rgba(10,22,40,0.55)", fontSize: 15, lineHeight: 1 }}>⌕</span>
             <input
               type="text"
-              name="q"
-              placeholder="Rechercher un objet, une marque…"
+              value={heroQuery}
+              onChange={(e) => setHeroQuery(e.target.value)}
+              placeholder={`Chercher parmi les ${searchCount} recherches en cours…`}
               style={{
                 ...inter,
                 flex: 1,
                 background: "transparent",
                 border: "none",
                 outline: "none",
-                color: GOLD,
+                color: "#0A1628",
                 fontSize: 13,
-                padding: "4px 0",
+                padding: "8px 0",
+                minWidth: 0,
               }}
             />
             <button
               type="submit"
               style={{
                 ...inter,
-                fontSize: 12,
-                fontWeight: 500,
+                fontSize: 13,
+                fontWeight: 600,
                 color: GOLD,
-                background: "transparent",
-                border: "0.5px solid rgba(217, 187, 135, 0.4)",
-                padding: "6px 16px",
-                borderRadius: 20,
+                background: "#0A1628",
+                border: "none",
+                padding: "9px 22px",
+                borderRadius: 999,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
               }}
@@ -365,12 +377,13 @@ const Hero = () => {
       {/* Spacer to compensate for fixed header (only when stuck) */}
       {isStuck && (
         <>
-          <div style={{ height: 112 }} className="hidden md:block" />
-          <div style={{ height: 64 }} className="md:hidden" />
+          <div style={{ height: 168 }} className="hidden md:block" />
+          <div style={{ height: 128 }} className="md:hidden" />
         </>
       )}
 
       <div style={{ maxWidth: 1280, margin: "0 auto", position: "relative" }}>
+
         {/* ============ ZONE 3: HERO CONTENT (compact) ============ */}
         <div
           style={{
