@@ -84,8 +84,13 @@ const Searches = () => {
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("recent");
+  const [sortTouched, setSortTouched] = useState(false);
   const [selectedUrgency, setSelectedUrgency] = useState("Toutes");
+  const [deadlineFilter, setDeadlineFilter] = useState<DeadlineFilter>("all");
+  const [budgetRange, setBudgetRange] = useState<[number, number]>([0, 5000]);
+  const [budgetTouched, setBudgetTouched] = useState(false);
   const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
+
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
