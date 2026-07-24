@@ -182,6 +182,15 @@ const Searches = () => {
           return (urgencyOrder[a.urgency || "normal"] || 5) - (urgencyOrder[b.urgency || "normal"] || 5);
         case "urgency-desc":
           return (urgencyOrder[b.urgency || "normal"] || 5) - (urgencyOrder[a.urgency || "normal"] || 5);
+        case "deadline-asc": {
+          // Deadlines first (asc), then searches without deadline by created_at desc
+          if (a.deadline && b.deadline) {
+            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+          }
+          if (a.deadline && !b.deadline) return -1;
+          if (!a.deadline && b.deadline) return 1;
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
         case "recent":
         default:
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
