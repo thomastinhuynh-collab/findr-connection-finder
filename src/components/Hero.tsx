@@ -27,6 +27,8 @@ const Hero = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isStuck, setIsStuck] = useState(false);
+  const [searchCount, setSearchCount] = useState<number>(847);
+  const [heroQuery, setHeroQuery] = useState("");
 
   useEffect(() => {
     const onScroll = () => setIsStuck(window.scrollY > 40);
@@ -35,9 +37,23 @@ const Hero = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const { supabase } = await import("@/integrations/supabase/client");
+        const { count } = await supabase
+          .from("searches")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "active");
+        if (typeof count === "number") setSearchCount(count);
+      } catch {}
+    })();
+  }, []);
+
   const inter = { fontFamily: "'Inter', system-ui, sans-serif" };
   const playfair = { fontFamily: "'Playfair Display', Georgia, serif" };
   const borderLine = "0.5px solid rgba(217, 187, 135, 0.12)";
+
 
   return (
     <section
