@@ -101,8 +101,10 @@ const Searches = () => {
     }
     if (queryFromUrl) {
       setSearchQuery(queryFromUrl);
+      if (!sortTouched) setSortBy("relevance");
     }
   }, [searchParams]);
+
 
   useEffect(() => {
     fetchSearches();
