@@ -68,7 +68,7 @@ const categories = [
   "Déco & Mobilier",
 ];
 
-type SortOption = "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc";
+type SortOption = "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc" | "deadline-asc";
 
 const Searches = () => {
   const navigate = useNavigate();
@@ -182,6 +182,15 @@ const Searches = () => {
           return (urgencyOrder[a.urgency || "normal"] || 5) - (urgencyOrder[b.urgency || "normal"] || 5);
         case "urgency-desc":
           return (urgencyOrder[b.urgency || "normal"] || 5) - (urgencyOrder[a.urgency || "normal"] || 5);
+        case "deadline-asc": {
+          // Deadlines first (asc), then searches without deadline by created_at desc
+          if (a.deadline && b.deadline) {
+            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+          }
+          if (a.deadline && !b.deadline) return -1;
+          if (!a.deadline && b.deadline) return 1;
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
         case "recent":
         default:
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -208,6 +217,40 @@ const Searches = () => {
               Parcours les demandes des buyrs et propose tes trouvailles pour gagner des commissions
             </p>
           </motion.div>
+
+          {/* Sort pills */}
+          <div className="flex flex-wrap items-center gap-2 mb-5">
+            <span style={{ fontSize: "13px", fontWeight: 500, color: "#6B6355", marginRight: "4px" }}>
+              Trier :
+            </span>
+            {([
+              { value: "recent", label: "Plus récentes" },
+              { value: "deadline-asc", label: "Urgentes d'abord" },
+              { value: "price-asc", label: "Budget croissant" },
+            ] as { value: SortOption; label: string }[]).map((opt) => {
+              const active = sortBy === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => setSortBy(opt.value)}
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    padding: "7px 14px",
+                    borderRadius: "999px",
+                    border: active ? "1px solid #1B2A4A" : "1px solid rgba(217,189,139,0.5)",
+                    background: active ? "#1B2A4A" : "transparent",
+                    color: active ? "#D9BD8B" : "#1B2A4A",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
 
           {/* Filters */}
           <motion.div
