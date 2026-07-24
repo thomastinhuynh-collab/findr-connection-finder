@@ -474,7 +474,7 @@ const Searches = () => {
             </div>
           </div>
 
-          </p>
+
 
           {/* Loading state */}
           {loading && (
