@@ -160,10 +160,29 @@ const ActiveRequests = () => {
     <section style={{ backgroundColor: "#F5F0E8" }} className="pt-4 pb-10 md:pt-6 md:pb-14">
       <div className="container mx-auto px-4" style={{ maxWidth: "1400px" }}>
         {/* Header */}
-        <div className="mb-7">
-          <span style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#C9A84C", fontWeight: 600 }}>
+        <div className="mb-8">
+          <h2
+            style={{
+              fontFamily: "'Poppins', sans-serif",
+              fontSize: "28px",
+              fontWeight: 700,
+              color: "#1B2A4A",
+              textTransform: "uppercase",
+              letterSpacing: "0.04em",
+              lineHeight: 1.2,
+            }}
+          >
             Recherches en cours
-          </span>
+          </h2>
+          <div
+            style={{
+              width: "64px",
+              height: "4px",
+              backgroundColor: "#D9BD8B",
+              borderRadius: "2px",
+              marginTop: "10px",
+            }}
+          />
         </div>
 
         {/* Grid */}
