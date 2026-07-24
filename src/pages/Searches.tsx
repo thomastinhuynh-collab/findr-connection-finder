@@ -71,7 +71,9 @@ const categories = [
   "Déco & Mobilier",
 ];
 
-type SortOption = "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc" | "deadline-asc";
+type SortOption = "relevance" | "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc" | "deadline-asc";
+type DeadlineFilter = "all" | "urgent" | "week" | "none";
+
 
 const Searches = () => {
   const navigate = useNavigate();
