@@ -178,14 +178,46 @@ const Searches = () => {
     return date.toLocaleDateString("fr-FR");
   };
 
+  const relevanceScore = (s: SearchItem, q: string) => {
+    if (!q) return 0;
+    const query = q.toLowerCase();
+    const title = (s.title || "").toLowerCase();
+    let score = 0;
+    if (title === query) score += 100;
+    else if (title.startsWith(query)) score += 60;
+    else if (title.includes(query)) score += 40;
+    // deadline proximity bonus
+    if (s.deadline) {
+      const days = (new Date(s.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+      if (days > 0 && days < 14) score += Math.max(0, 10 - days);
+    }
+    return score;
+  };
+
   const filteredAndSortedSearches = searches
     .filter((search) => {
-      const matchesQuery = search.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const q = searchQuery.toLowerCase();
+      const matchesQuery = !q || search.title.toLowerCase().includes(q);
       const matchesUrgency = selectedUrgency === "Toutes" || search.urgency === selectedUrgency;
-      return matchesQuery && matchesUrgency;
+      // Budget filter
+      const bMin = search.budget_min ?? search.budget_max ?? 0;
+      const bMax = search.budget_max ?? search.budget_min ?? 0;
+      const matchesBudget = !budgetTouched || (bMax >= budgetRange[0] && bMin <= budgetRange[1]);
+      // Deadline filter
+      let matchesDeadline = true;
+      if (deadlineFilter === "none") matchesDeadline = !search.deadline;
+      else if (deadlineFilter === "urgent") {
+        matchesDeadline = !!search.deadline && (new Date(search.deadline).getTime() - Date.now()) / 86400000 < 3;
+      } else if (deadlineFilter === "week") {
+        const d = search.deadline ? (new Date(search.deadline).getTime() - Date.now()) / 86400000 : Infinity;
+        matchesDeadline = !!search.deadline && d < 7;
+      }
+      return matchesQuery && matchesUrgency && matchesBudget && matchesDeadline;
     })
     .sort((a, b) => {
       switch (sortBy) {
+        case "relevance":
+          return relevanceScore(b, searchQuery) - relevanceScore(a, searchQuery);
         case "price-asc":
           return (a.budget_min || 0) - (b.budget_min || 0);
         case "price-desc":
@@ -195,10 +227,7 @@ const Searches = () => {
         case "urgency-desc":
           return (urgencyOrder[b.urgency || "normal"] || 5) - (urgencyOrder[a.urgency || "normal"] || 5);
         case "deadline-asc": {
-          // Deadlines first (asc), then searches without deadline by created_at desc
-          if (a.deadline && b.deadline) {
-            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
-          }
+          if (a.deadline && b.deadline) return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
           if (a.deadline && !b.deadline) return -1;
           if (!a.deadline && b.deadline) return 1;
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -208,6 +237,31 @@ const Searches = () => {
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
     });
+
+  const NAVY = "#0A1628";
+  const GOLD_ACCENT = "#D9BD8B";
+  const pillBase: React.CSSProperties = {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 13,
+    fontWeight: 500,
+    padding: "8px 14px",
+    borderRadius: 999,
+    background: "#FFFFFF",
+    border: "1px solid #E5E0D6",
+    color: "#1B2A4A",
+    cursor: "pointer",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    whiteSpace: "nowrap",
+  };
+  const pillActive: React.CSSProperties = {
+    ...pillBase,
+    background: NAVY,
+    color: GOLD_ACCENT,
+    border: `1px solid ${NAVY}`,
+  };
+
 
   return (
     <div className="min-h-screen bg-background">
