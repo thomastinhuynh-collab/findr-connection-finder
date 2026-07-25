@@ -134,29 +134,50 @@ const MySpace = () => {
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-    
+
     if (data) {
       const searchesWithCounts = await Promise.all(
         data.map(async (search) => {
-          const { count: proposalCount } = await supabase
+          const { data: props } = await supabase
             .from("proposals")
-            .select("*", { count: "exact", head: true })
-            .eq("search_id", search.id)
-            .eq("status", "pending");
+            .select("status, updated_at")
+            .eq("search_id", search.id);
+
+          const proposals = props || [];
+          const proposalCount = proposals.length;
+          const unreadCount = proposals.filter((p) => p.status === "pending").length;
+          const acceptedCount = proposals.filter(
+            (p) => p.status === "accepted_pending" || p.status === "completed"
+          ).length;
+          const completed = proposals
+            .filter((p) => p.status === "completed")
+            .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
 
           const { count: reservationCount } = await supabase
             .from("reservations")
             .select("*", { count: "exact", head: true })
             .eq("search_id", search.id)
             .eq("status", "pending");
-          
-          return { 
-            ...search, 
-            proposal_count: proposalCount || 0,
-            reservation_count: reservationCount || 0
+
+          return {
+            ...search,
+            proposal_count: proposalCount,
+            unread_count: unreadCount,
+            accepted_count: acceptedCount,
+            completed_at: completed?.updated_at || null,
+            reservation_count: reservationCount || 0,
           };
         })
       );
+
+      // Sort: unread proposals first, then most recent
+      searchesWithCounts.sort((a, b) => {
+        const aHas = (a.unread_count || 0) > 0 ? 1 : 0;
+        const bHas = (b.unread_count || 0) > 0 ? 1 : 0;
+        if (aHas !== bHas) return bHas - aHas;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+
       setSearches(searchesWithCounts);
     }
   };
