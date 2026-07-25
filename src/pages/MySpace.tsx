@@ -73,6 +73,9 @@ const MySpace = () => {
   const [favorites, setFavorites] = useState<any[]>([]);
   const [walletBalance] = useState(155.50);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [gamificationEnabled, setGamificationEnabled] = useState(false);
+  const [hasProposals, setHasProposals] = useState(false);
+  const [hasCommission, setHasCommission] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
