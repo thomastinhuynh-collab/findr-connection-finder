@@ -89,8 +89,33 @@ const MySpace = () => {
       fetchSearches();
       fetchEvaluations();
       fetchFavorites();
+      fetchGamificationFlag();
+      fetchActivityFlags();
     }
   }, [user]);
+
+  const fetchGamificationFlag = async () => {
+    const { data } = await supabase
+      .from("app_settings")
+      .select("gamification_enabled")
+      .maybeSingle();
+    if (data) setGamificationEnabled(!!data.gamification_enabled);
+  };
+
+  const fetchActivityFlags = async () => {
+    if (!user) return;
+    const { count: propCount } = await supabase
+      .from("proposals")
+      .select("*", { count: "exact", head: true })
+      .eq("findr_id", user.id);
+    setHasProposals((propCount || 0) > 0);
+    const { count: comCount } = await supabase
+      .from("proposals")
+      .select("*", { count: "exact", head: true })
+      .eq("findr_id", user.id)
+      .eq("status", "completed");
+    setHasCommission((comCount || 0) > 0);
+  };
 
   const fetchProfile = async () => {
     if (!user) return;
