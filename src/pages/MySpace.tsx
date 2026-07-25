@@ -95,7 +95,7 @@ const MySpace = () => {
   }, [user]);
 
   const fetchGamificationFlag = async () => {
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("app_settings")
       .select("gamification_enabled")
       .maybeSingle();
