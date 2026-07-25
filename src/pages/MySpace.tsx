@@ -571,7 +571,7 @@ const MySpace = () => {
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium"
                   style={{ color: '#6B7280' }}
                 >
-                  Annonces
+                  Mes recherches
                 </TabsTrigger>
                 <TabsTrigger
                   value="favorites"
@@ -580,13 +580,25 @@ const MySpace = () => {
                 >
                   Favoris
                 </TabsTrigger>
-                <TabsTrigger
-                  value="wallet"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium flex items-center gap-1.5"
-                  style={{ color: '#6B7280' }}
-                >
-                  Portefeuille
-                </TabsTrigger>
+                {hasProposals && (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/mes-propositions")}
+                    className="rounded-none border-b-2 border-transparent pb-3 text-sm font-medium flex items-center gap-1.5"
+                    style={{ color: '#6B7280', background: 'transparent' }}
+                  >
+                    Mes propositions
+                  </button>
+                )}
+                {hasCommission && (
+                  <TabsTrigger
+                    value="wallet"
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium flex items-center gap-1.5"
+                    style={{ color: '#6B7280' }}
+                  >
+                    Portefeuille
+                  </TabsTrigger>
+                )}
                 <TabsTrigger
                   value="evaluations"
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium"
