@@ -47,6 +47,24 @@ export type Database = {
         }
         Relationships: []
       }
+      app_settings: {
+        Row: {
+          gamification_enabled: boolean
+          id: boolean
+          updated_at: string
+        }
+        Insert: {
+          gamification_enabled?: boolean
+          id?: boolean
+          updated_at?: string
+        }
+        Update: {
+          gamification_enabled?: boolean
+          id?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       evaluations: {
         Row: {
           comment: string | null
