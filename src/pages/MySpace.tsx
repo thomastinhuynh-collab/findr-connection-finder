@@ -388,36 +388,78 @@ const MySpace = () => {
                       <span>{profile.city}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" style={{ color: '#D9BD8B' }} />
-                    <span>Niveau {profile.level} · {profile.xp_points} XP</span>
-                  </div>
+                  {gamificationEnabled && (
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4" style={{ color: '#D9BD8B' }} />
+                      <span>Niveau {profile.level} · {profile.xp_points} XP</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* XP progress bar */}
-                <div className="mt-2">
-                  <div
-                    style={{
-                      width: 200,
-                      height: 6,
-                      borderRadius: 3,
-                      backgroundColor: '#E8E2D9',
-                      overflow: 'hidden',
-                    }}
-                  >
+                {gamificationEnabled ? (
+                  <div className="mt-2">
                     <div
                       style={{
-                        width: `${progressPct}%`,
-                        height: '100%',
-                        backgroundColor: '#C9A84C',
-                        transition: 'width 0.3s ease',
+                        width: 200,
+                        height: 6,
+                        borderRadius: 3,
+                        backgroundColor: '#E8E2D9',
+                        overflow: 'hidden',
                       }}
-                    />
+                    >
+                      <div
+                        style={{
+                          width: `${progressPct}%`,
+                          height: '100%',
+                          backgroundColor: '#C9A84C',
+                          transition: 'width 0.3s ease',
+                        }}
+                      />
+                    </div>
+                    <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 4 }}>
+                      {xpInLevel} / {xpPerLevel} XP pour le Niveau {profile.level + 1}
+                    </p>
                   </div>
-                  <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 4 }}>
-                    {xpInLevel} / {xpPerLevel} XP pour le Niveau {profile.level + 1}
-                  </p>
-                </div>
+                ) : (() => {
+                  const fields = [profile.avatar_url, profile.bio, profile.city, profile.full_name];
+                  const filled = fields.filter(Boolean).length;
+                  const pct = Math.round((filled / fields.length) * 100);
+                  const missing: string[] = [];
+                  if (!profile.avatar_url) missing.push("une photo");
+                  if (!profile.bio) missing.push("une bio");
+                  return (
+                    <div className="mt-3" style={{ maxWidth: 280 }}>
+                      <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
+                        <span style={{ fontSize: 12, color: '#1B2A4A', fontWeight: 600 }}>
+                          Profil complété à {pct}%
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          width: '100%',
+                          height: 6,
+                          borderRadius: 3,
+                          backgroundColor: '#E8E2D9',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${pct}%`,
+                            height: '100%',
+                            backgroundColor: '#C9A84C',
+                            transition: 'width 0.3s ease',
+                          }}
+                        />
+                      </div>
+                      {missing.length > 0 && (
+                        <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 6 }}>
+                          Ajoute {missing.join(" + ")} pour rassurer les chineurs.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Edit profile button — inline */}
                 <button
