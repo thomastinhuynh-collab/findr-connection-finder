@@ -52,11 +52,19 @@ const PublicProfile = () => {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [loading, setLoading] = useState(true);
   const [averageRating, setAverageRating] = useState(0);
+  const [gamificationEnabled, setGamificationEnabled] = useState(false);
 
   useEffect(() => {
     if (userId) {
       fetchProfileData();
     }
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("app_settings")
+        .select("gamification_enabled")
+        .maybeSingle();
+      if (data) setGamificationEnabled(!!data.gamification_enabled);
+    })();
   }, [userId]);
 
   const fetchProfileData = async () => {
@@ -215,9 +223,11 @@ const PublicProfile = () => {
                 
                 {/* Badges */}
                 <div className="flex flex-wrap gap-2 justify-center mt-3">
-                  <Badge className={`${levelInfo.color} text-white`}>
-                    Niveau {profile.level} - {levelInfo.name}
-                  </Badge>
+                  {gamificationEnabled && (
+                    <Badge className={`${levelInfo.color} text-white`}>
+                      Niveau {profile.level} - {levelInfo.name}
+                    </Badge>
+                  )}
                   {profile.is_findr && (
                     <Badge variant="outline" className="border-accent text-accent">
                       <Award className="w-3 h-3 mr-1" />
@@ -228,7 +238,7 @@ const PublicProfile = () => {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 py-4 border-y border-border mb-4">
+              <div className={`grid ${gamificationEnabled ? 'grid-cols-3' : 'grid-cols-2'} gap-4 py-4 border-y border-border mb-4`}>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">{searches.length}</p>
                   <p className="text-xs text-muted-foreground">Recherches</p>
@@ -243,10 +253,12 @@ const PublicProfile = () => {
                   </p>
                   <p className="text-xs text-muted-foreground">Note ({evaluations.length})</p>
                 </button>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">{profile.xp_points || 0}</p>
-                  <p className="text-xs text-muted-foreground">XP</p>
-                </div>
+                {gamificationEnabled && (
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-primary">{profile.xp_points || 0}</p>
+                    <p className="text-xs text-muted-foreground">XP</p>
+                  </div>
+                )}
               </div>
 
               {/* Bio */}

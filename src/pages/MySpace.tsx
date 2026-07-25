@@ -41,6 +41,9 @@ interface SearchItem {
   urgency: string | null;
   proposal_count?: number;
   reservation_count?: number;
+  accepted_count?: number;
+  unread_count?: number;
+  completed_at?: string | null;
 }
 
 interface Evaluation {
@@ -70,6 +73,9 @@ const MySpace = () => {
   const [favorites, setFavorites] = useState<any[]>([]);
   const [walletBalance] = useState(155.50);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [gamificationEnabled, setGamificationEnabled] = useState(false);
+  const [hasProposals, setHasProposals] = useState(false);
+  const [hasCommission, setHasCommission] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -83,8 +89,33 @@ const MySpace = () => {
       fetchSearches();
       fetchEvaluations();
       fetchFavorites();
+      fetchGamificationFlag();
+      fetchActivityFlags();
     }
   }, [user]);
+
+  const fetchGamificationFlag = async () => {
+    const { data } = await (supabase as any)
+      .from("app_settings")
+      .select("gamification_enabled")
+      .maybeSingle();
+    if (data) setGamificationEnabled(!!data.gamification_enabled);
+  };
+
+  const fetchActivityFlags = async () => {
+    if (!user) return;
+    const { count: propCount } = await supabase
+      .from("proposals")
+      .select("*", { count: "exact", head: true })
+      .eq("findr_id", user.id);
+    setHasProposals((propCount || 0) > 0);
+    const { count: comCount } = await supabase
+      .from("proposals")
+      .select("*", { count: "exact", head: true })
+      .eq("findr_id", user.id)
+      .eq("status", "completed");
+    setHasCommission((comCount || 0) > 0);
+  };
 
   const fetchProfile = async () => {
     if (!user) return;
@@ -103,29 +134,50 @@ const MySpace = () => {
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-    
+
     if (data) {
       const searchesWithCounts = await Promise.all(
         data.map(async (search) => {
-          const { count: proposalCount } = await supabase
+          const { data: props } = await supabase
             .from("proposals")
-            .select("*", { count: "exact", head: true })
-            .eq("search_id", search.id)
-            .eq("status", "pending");
+            .select("status, updated_at")
+            .eq("search_id", search.id);
+
+          const proposals = props || [];
+          const proposalCount = proposals.length;
+          const unreadCount = proposals.filter((p) => p.status === "pending").length;
+          const acceptedCount = proposals.filter(
+            (p) => p.status === "accepted_pending" || p.status === "completed"
+          ).length;
+          const completed = proposals
+            .filter((p) => p.status === "completed")
+            .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
 
           const { count: reservationCount } = await supabase
             .from("reservations")
             .select("*", { count: "exact", head: true })
             .eq("search_id", search.id)
             .eq("status", "pending");
-          
-          return { 
-            ...search, 
-            proposal_count: proposalCount || 0,
-            reservation_count: reservationCount || 0
+
+          return {
+            ...search,
+            proposal_count: proposalCount,
+            unread_count: unreadCount,
+            accepted_count: acceptedCount,
+            completed_at: completed?.updated_at || null,
+            reservation_count: reservationCount || 0,
           };
         })
       );
+
+      // Sort: unread proposals first, then most recent
+      searchesWithCounts.sort((a, b) => {
+        const aHas = (a.unread_count || 0) > 0 ? 1 : 0;
+        const bHas = (b.unread_count || 0) > 0 ? 1 : 0;
+        if (aHas !== bHas) return bHas - aHas;
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+
       setSearches(searchesWithCounts);
     }
   };
@@ -336,36 +388,78 @@ const MySpace = () => {
                       <span>{profile.city}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" style={{ color: '#D9BD8B' }} />
-                    <span>Niveau {profile.level} · {profile.xp_points} XP</span>
-                  </div>
+                  {gamificationEnabled && (
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4" style={{ color: '#D9BD8B' }} />
+                      <span>Niveau {profile.level} · {profile.xp_points} XP</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* XP progress bar */}
-                <div className="mt-2">
-                  <div
-                    style={{
-                      width: 200,
-                      height: 6,
-                      borderRadius: 3,
-                      backgroundColor: '#E8E2D9',
-                      overflow: 'hidden',
-                    }}
-                  >
+                {gamificationEnabled ? (
+                  <div className="mt-2">
                     <div
                       style={{
-                        width: `${progressPct}%`,
-                        height: '100%',
-                        backgroundColor: '#C9A84C',
-                        transition: 'width 0.3s ease',
+                        width: 200,
+                        height: 6,
+                        borderRadius: 3,
+                        backgroundColor: '#E8E2D9',
+                        overflow: 'hidden',
                       }}
-                    />
+                    >
+                      <div
+                        style={{
+                          width: `${progressPct}%`,
+                          height: '100%',
+                          backgroundColor: '#C9A84C',
+                          transition: 'width 0.3s ease',
+                        }}
+                      />
+                    </div>
+                    <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 4 }}>
+                      {xpInLevel} / {xpPerLevel} XP pour le Niveau {profile.level + 1}
+                    </p>
                   </div>
-                  <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 4 }}>
-                    {xpInLevel} / {xpPerLevel} XP pour le Niveau {profile.level + 1}
-                  </p>
-                </div>
+                ) : (() => {
+                  const fields = [profile.avatar_url, profile.bio, profile.city, profile.full_name];
+                  const filled = fields.filter(Boolean).length;
+                  const pct = Math.round((filled / fields.length) * 100);
+                  const missing: string[] = [];
+                  if (!profile.avatar_url) missing.push("une photo");
+                  if (!profile.bio) missing.push("une bio");
+                  return (
+                    <div className="mt-3" style={{ maxWidth: 280 }}>
+                      <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
+                        <span style={{ fontSize: 12, color: '#1B2A4A', fontWeight: 600 }}>
+                          Profil complété à {pct}%
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          width: '100%',
+                          height: 6,
+                          borderRadius: 3,
+                          backgroundColor: '#E8E2D9',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${pct}%`,
+                            height: '100%',
+                            backgroundColor: '#C9A84C',
+                            transition: 'width 0.3s ease',
+                          }}
+                        />
+                      </div>
+                      {missing.length > 0 && (
+                        <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 6 }}>
+                          Ajoute {missing.join(" + ")} pour rassurer les chineurs.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Edit profile button — inline */}
                 <button
@@ -477,7 +571,7 @@ const MySpace = () => {
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium"
                   style={{ color: '#6B7280' }}
                 >
-                  Annonces
+                  Mes recherches
                 </TabsTrigger>
                 <TabsTrigger
                   value="favorites"
@@ -486,13 +580,25 @@ const MySpace = () => {
                 >
                   Favoris
                 </TabsTrigger>
-                <TabsTrigger
-                  value="wallet"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium flex items-center gap-1.5"
-                  style={{ color: '#6B7280' }}
-                >
-                  Portefeuille
-                </TabsTrigger>
+                {hasProposals && (
+                  <button
+                    type="button"
+                    onClick={() => navigate("/mes-propositions")}
+                    className="rounded-none border-b-2 border-transparent pb-3 text-sm font-medium flex items-center gap-1.5"
+                    style={{ color: '#6B7280', background: 'transparent' }}
+                  >
+                    Mes propositions
+                  </button>
+                )}
+                {hasCommission && (
+                  <TabsTrigger
+                    value="wallet"
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium flex items-center gap-1.5"
+                    style={{ color: '#6B7280' }}
+                  >
+                    Portefeuille
+                  </TabsTrigger>
+                )}
                 <TabsTrigger
                   value="evaluations"
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium"
