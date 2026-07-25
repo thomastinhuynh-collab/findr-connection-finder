@@ -52,11 +52,19 @@ const PublicProfile = () => {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [loading, setLoading] = useState(true);
   const [averageRating, setAverageRating] = useState(0);
+  const [gamificationEnabled, setGamificationEnabled] = useState(false);
 
   useEffect(() => {
     if (userId) {
       fetchProfileData();
     }
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("app_settings")
+        .select("gamification_enabled")
+        .maybeSingle();
+      if (data) setGamificationEnabled(!!data.gamification_enabled);
+    })();
   }, [userId]);
 
   const fetchProfileData = async () => {
