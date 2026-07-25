@@ -41,6 +41,9 @@ interface SearchItem {
   urgency: string | null;
   proposal_count?: number;
   reservation_count?: number;
+  accepted_count?: number;
+  unread_count?: number;
+  completed_at?: string | null;
 }
 
 interface Evaluation {
