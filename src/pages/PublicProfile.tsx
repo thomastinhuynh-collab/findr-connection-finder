@@ -253,10 +253,12 @@ const PublicProfile = () => {
                   </p>
                   <p className="text-xs text-muted-foreground">Note ({evaluations.length})</p>
                 </button>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">{profile.xp_points || 0}</p>
-                  <p className="text-xs text-muted-foreground">XP</p>
-                </div>
+                {gamificationEnabled && (
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-primary">{profile.xp_points || 0}</p>
+                    <p className="text-xs text-muted-foreground">XP</p>
+                  </div>
+                )}
               </div>
 
               {/* Bio */}
