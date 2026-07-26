@@ -601,13 +601,13 @@ const MySpace = () => {
                         type="button"
                         className="mt-3 transition-colors"
                         style={{
-                          backgroundColor: 'transparent',
-                          border: '1.5px solid #C9A84C',
-                          color: '#C9A84C',
+                          backgroundColor: '#D9BB87',
+                          border: '1.5px solid #D9BB87',
+                          color: '#0A1628',
                           fontSize: 12,
-                          borderRadius: 7,
+                          borderRadius: 999,
                           padding: '6px 16px',
-                          fontWeight: 500,
+                          fontWeight: 600,
                         }}
                       >
                         + Ajouter ma bio
