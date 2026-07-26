@@ -584,9 +584,10 @@ const MySpace = () => {
                   )}
                 </div>
               </div>
+              </div>
 
               {/* Top-right discreet menu */}
-              <div className="absolute top-0 right-0">
+              <div className="absolute" style={{ top: 16, right: 16, zIndex: 2 }}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
