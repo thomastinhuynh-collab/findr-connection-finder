@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Edit, Bell } from "lucide-react";
+import { Edit } from "lucide-react";
 
 interface SearchItem {
   id: string;
@@ -17,12 +17,26 @@ interface SearchItem {
   accepted_count?: number;
   unread_count?: number;
   completed_at?: string | null;
+  urgent_reason?: "reservation_pending" | "payment_pending" | null;
 }
 
 interface SearchCardAccordionProps {
   search: SearchItem;
   onDataChange: () => void;
 }
+
+const categoryGradient = (cat: string) => {
+  const gradients = [
+    "linear-gradient(135deg, #F5E6D3 0%, #E8C89A 100%)",
+    "linear-gradient(135deg, #EEE4D2 0%, #C9B896 100%)",
+    "linear-gradient(135deg, #F0E4D0 0%, #D9BB87 100%)",
+    "linear-gradient(135deg, #E8DDCB 0%, #B8A075 100%)",
+    "linear-gradient(135deg, #F2E8D5 0%, #D4BD8B 100%)",
+    "linear-gradient(135deg, #EBE0CB 0%, #C4A574 100%)",
+  ];
+  const h = [...(cat || "")].reduce((a, c) => a + c.charCodeAt(0), 0);
+  return gradients[h % gradients.length];
+};
 
 const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
   const navigate = useNavigate();
@@ -32,6 +46,8 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
   const unreadCount = search.unread_count ?? 0;
   const isTerminee = search.status === "completed" || search.status === "closed";
   const isReservee = search.status === "reserved";
+  const urgentReason = search.urgent_reason ?? null;
+  const isUrgent = !!urgentReason && !isTerminee;
 
   const formatBudget = () => {
     const { budget_min, budget_max } = search;
@@ -50,15 +66,14 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
     });
   };
 
-  // Distinct status badge styling
   const statusBadge = () => {
     if (isTerminee) {
       return {
         label: "Terminée",
         style: {
-          backgroundColor: "#F3F4F6",
-          color: "#6B7280",
-          border: "1px solid #E5E7EB",
+          backgroundColor: "#EEEEEE",
+          color: "#777777",
+          border: "none",
         } as React.CSSProperties,
       };
     }
@@ -66,9 +81,9 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
       return {
         label: "Réservée",
         style: {
-          backgroundColor: "#DCFCE7",
-          color: "#166534",
-          border: "1px solid #BBF7D0",
+          backgroundColor: "#E2F3E6",
+          color: "#1F7A34",
+          border: "none",
         } as React.CSSProperties,
       };
     }
@@ -76,26 +91,60 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
       label: "Active",
       style: {
         backgroundColor: "transparent",
-        color: "#C9A84C",
-        border: "1.5px solid #D9BD8B",
+        color: "#8B7333",
+        border: "1.5px solid #D9BB87",
       } as React.CSSProperties,
     };
   };
 
   const badge = statusBadge();
 
+  const urgentMessage =
+    urgentReason === "reservation_pending"
+      ? "⏳ Confirme la réservation sous 48h"
+      : urgentReason === "payment_pending"
+      ? "💳 Proposition acceptée — paiement en attente"
+      : null;
+
   return (
     <div
       style={{
+        position: "relative",
         backgroundColor: "#FFFFFF",
-        border: "1px solid #E8E2D9",
-        borderLeft: unreadCount > 0 ? "4px solid #D85A30" : "1px solid #E8E2D9",
-        borderRadius: "14px",
+        border: isUrgent ? "1.5px solid #D85A30" : "none",
+        borderRadius: 11,
         overflow: "hidden",
         opacity: isTerminee ? 0.85 : 1,
-        transition: "opacity 0.15s",
+        boxShadow: "0 3px 10px rgba(10,22,40,0.06)",
+        transition: "opacity 0.15s, box-shadow 0.15s",
       }}
     >
+      {/* Discreet gold circle badge for unread proposals (top-right) */}
+      {unreadCount > 0 && !isUrgent && !isTerminee && (
+        <div
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            backgroundColor: "#D9BB87",
+            color: "#0A1628",
+            fontSize: 11,
+            fontWeight: 700,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 2,
+            boxShadow: "0 1px 3px rgba(10,22,40,0.15)",
+          }}
+          title={`${unreadCount} nouvelle${unreadCount > 1 ? "s" : ""} proposition${unreadCount > 1 ? "s" : ""}`}
+        >
+          {unreadCount}
+        </div>
+      )}
+
       <div style={{ padding: "14px 14px 12px" }}>
         <div className="flex gap-3">
           <Link to={`/recherche/${search.id}`} className="flex-shrink-0">
@@ -108,21 +157,26 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
             ) : (
               <div
                 className="flex items-center justify-center"
-                style={{ width: 56, height: 56, borderRadius: 8, backgroundColor: "#F5F0E8" }}
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 8,
+                  background: categoryGradient(search.category),
+                }}
               >
-                <span className="text-xl">🔍</span>
+                <span style={{ fontSize: 22, opacity: 0.7 }}>🔍</span>
               </div>
             )}
           </Link>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 min-w-0">
+            <div className="flex items-center gap-2 min-w-0" style={{ paddingRight: unreadCount > 0 && !isUrgent && !isTerminee ? 26 : 0 }}>
               <Link to={`/recherche/${search.id}`} className="min-w-0 flex-1">
                 <h3
                   style={{
                     fontSize: 14,
                     fontWeight: 600,
-                    color: "#1B2A4A",
+                    color: "#0A1628",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -153,12 +207,11 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
 
             <p style={{ fontSize: 12, color: "#6B6259", margin: 0 }}>
               Budget :{" "}
-              <span style={{ fontWeight: 600, color: "#1B2A4A" }}>{formatBudget()}</span>
+              <span style={{ fontWeight: 600, color: "#0A1628" }}>{formatBudget()}</span>
             </p>
           </div>
         </div>
 
-        {/* Single info line replacing the two counters */}
         <p
           style={{
             marginTop: 12,
@@ -178,10 +231,10 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              border: "1.5px solid #1B2A4A",
+              border: "1.5px solid #0A1628",
               backgroundColor: "transparent",
-              color: "#1B2A4A",
-              borderRadius: 7,
+              color: "#0A1628",
+              borderRadius: 999,
               padding: "6px 14px",
               fontSize: 12,
               fontWeight: 500,
@@ -194,8 +247,8 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
         </div>
       </div>
 
-      {/* Coral alert banner for unread proposals */}
-      {unreadCount > 0 && !isTerminee && (
+      {/* Urgent action banner (only for strong urgency) */}
+      {isUrgent && urgentMessage && (
         <button
           type="button"
           onClick={() => navigate(`/recherche/${search.id}`)}
@@ -206,19 +259,16 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
             justifyContent: "space-between",
             gap: 8,
             padding: "10px 14px",
-            backgroundColor: "rgba(216, 90, 48, 0.08)",
-            borderTop: "1px solid rgba(216, 90, 48, 0.15)",
+            backgroundColor: "#FEF1EA",
             border: "none",
+            borderTop: "1px solid rgba(216,90,48,0.18)",
             cursor: "pointer",
-            color: "#D85A30",
+            color: "#993C1D",
             fontSize: 12,
             fontWeight: 600,
           }}
         >
-          <span className="flex items-center gap-2">
-            <Bell style={{ width: 14, height: 14 }} />
-            {unreadCount} nouvelle{unreadCount > 1 ? "s" : ""} proposition{unreadCount > 1 ? "s" : ""} à traiter
-          </span>
+          <span>{urgentMessage}</span>
           <span style={{ textDecoration: "underline" }}>Voir →</span>
         </button>
       )}
