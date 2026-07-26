@@ -293,7 +293,7 @@ const MySpace = () => {
     : "N/A";
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#F5F1E8' }}>
       <Navbar />
       
       <main className="pt-24 pb-16">
