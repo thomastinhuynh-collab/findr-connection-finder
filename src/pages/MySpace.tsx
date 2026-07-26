@@ -309,8 +309,40 @@ const MySpace = () => {
               const nextLevelXp = profile.level * xpPerLevel;
               const xpInLevel = Math.max(0, profile.xp_points - currentLevelXp);
               const progressPct = Math.min(100, (xpInLevel / xpPerLevel) * 100);
+              const firstLetter = (profile.full_name?.trim().charAt(0) || user.email?.charAt(0) || "U").toUpperCase();
               return (
-            <div className="relative flex flex-col md:flex-row items-start gap-6 mb-8">
+            <div
+              className="relative mb-8"
+              style={{
+                backgroundColor: "#FFFFFF",
+                borderRadius: 14,
+                border: "1px solid rgba(10,22,40,0.08)",
+                padding: 32,
+                overflow: "hidden",
+              }}
+            >
+              {/* Decorative watermark letter */}
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  top: -40,
+                  right: 8,
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontStyle: "italic",
+                  fontWeight: 700,
+                  fontSize: 260,
+                  lineHeight: 1,
+                  color: "rgba(10,22,40,0.03)",
+                  pointerEvents: "none",
+                  userSelect: "none",
+                  zIndex: 0,
+                }}
+              >
+                {firstLetter}
+              </span>
+
+              <div className="relative flex flex-col md:flex-row items-start gap-6" style={{ zIndex: 1 }}>
               {/* Hidden file input */}
               <input
                 ref={fileInputRef}
@@ -327,21 +359,31 @@ const MySpace = () => {
                 disabled={uploadingAvatar}
                 title="Changer ma photo"
                 className="group relative flex-shrink-0 rounded-full overflow-hidden"
-                style={{ width: 80, height: 80 }}
+                style={{ width: 92, height: 92 }}
               >
-                <Avatar className="w-20 h-20 border-2" style={{ borderColor: '#D9BD8B' }}>
+                <Avatar className="w-[92px] h-[92px]" style={{ border: '3px solid #D9BB87' }}>
                   <AvatarImage src={profile.avatar_url || undefined} />
-                  <AvatarFallback className="text-2xl font-bold" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
-                    {profile.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
+                  <AvatarFallback
+                    style={{
+                      backgroundColor: '#0A1628',
+                      color: '#D9BB87',
+                      fontFamily: "'Playfair Display', Georgia, serif",
+                      fontStyle: 'italic',
+                      fontWeight: 700,
+                      fontSize: 40,
+                    }}
+                  >
+                    {firstLetter}
                   </AvatarFallback>
                 </Avatar>
                 <div
                   className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
-                  style={{ backgroundColor: 'rgba(27,42,74,0.6)' }}
+                  style={{ backgroundColor: 'rgba(10,22,40,0.6)' }}
                 >
                   <Pencil className="w-4 h-4" style={{ color: '#FFFFFF' }} />
                 </div>
               </button>
+
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap">
