@@ -136,6 +136,7 @@ const MySpace = () => {
       .order("created_at", { ascending: false });
 
     if (data) {
+      const now = Date.now();
       const searchesWithCounts = await Promise.all(
         data.map(async (search) => {
           const { data: props } = await supabase
@@ -149,15 +150,28 @@ const MySpace = () => {
           const acceptedCount = proposals.filter(
             (p) => p.status === "accepted_pending" || p.status === "completed"
           ).length;
+          const paymentPending = proposals.some((p) => p.status === "accepted_pending");
           const completed = proposals
             .filter((p) => p.status === "completed")
             .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
 
-          const { count: reservationCount } = await supabase
+          const { data: reservations } = await supabase
             .from("reservations")
-            .select("*", { count: "exact", head: true })
+            .select("created_at, status")
             .eq("search_id", search.id)
             .eq("status", "pending");
+
+          const reservationRows = reservations || [];
+          const hasRecentReservation = reservationRows.some(
+            (r) => now - new Date(r.created_at).getTime() < 48 * 3600 * 1000
+          );
+
+          const urgent_reason: "reservation_pending" | "payment_pending" | null =
+            hasRecentReservation
+              ? "reservation_pending"
+              : paymentPending
+              ? "payment_pending"
+              : null;
 
           return {
             ...search,
@@ -165,16 +179,17 @@ const MySpace = () => {
             unread_count: unreadCount,
             accepted_count: acceptedCount,
             completed_at: completed?.updated_at || null,
-            reservation_count: reservationCount || 0,
+            reservation_count: reservationRows.length,
+            urgent_reason,
           };
         })
       );
 
-      // Sort: unread proposals first, then most recent
+      // Sort: urgent first, then unread, then most recent
       searchesWithCounts.sort((a, b) => {
-        const aHas = (a.unread_count || 0) > 0 ? 1 : 0;
-        const bHas = (b.unread_count || 0) > 0 ? 1 : 0;
-        if (aHas !== bHas) return bHas - aHas;
+        const aU = a.urgent_reason ? 2 : (a.unread_count || 0) > 0 ? 1 : 0;
+        const bU = b.urgent_reason ? 2 : (b.unread_count || 0) > 0 ? 1 : 0;
+        if (aU !== bU) return bU - aU;
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
 
