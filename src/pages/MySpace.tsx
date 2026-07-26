@@ -136,6 +136,7 @@ const MySpace = () => {
       .order("created_at", { ascending: false });
 
     if (data) {
+      const now = Date.now();
       const searchesWithCounts = await Promise.all(
         data.map(async (search) => {
           const { data: props } = await supabase
@@ -149,15 +150,28 @@ const MySpace = () => {
           const acceptedCount = proposals.filter(
             (p) => p.status === "accepted_pending" || p.status === "completed"
           ).length;
+          const paymentPending = proposals.some((p) => p.status === "accepted_pending");
           const completed = proposals
             .filter((p) => p.status === "completed")
             .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
 
-          const { count: reservationCount } = await supabase
+          const { data: reservations } = await supabase
             .from("reservations")
-            .select("*", { count: "exact", head: true })
+            .select("created_at, status")
             .eq("search_id", search.id)
             .eq("status", "pending");
+
+          const reservationRows = reservations || [];
+          const hasRecentReservation = reservationRows.some(
+            (r) => now - new Date(r.created_at).getTime() < 48 * 3600 * 1000
+          );
+
+          const urgent_reason: "reservation_pending" | "payment_pending" | null =
+            hasRecentReservation
+              ? "reservation_pending"
+              : paymentPending
+              ? "payment_pending"
+              : null;
 
           return {
             ...search,
@@ -165,16 +179,17 @@ const MySpace = () => {
             unread_count: unreadCount,
             accepted_count: acceptedCount,
             completed_at: completed?.updated_at || null,
-            reservation_count: reservationCount || 0,
+            reservation_count: reservationRows.length,
+            urgent_reason,
           };
         })
       );
 
-      // Sort: unread proposals first, then most recent
+      // Sort: urgent first, then unread, then most recent
       searchesWithCounts.sort((a, b) => {
-        const aHas = (a.unread_count || 0) > 0 ? 1 : 0;
-        const bHas = (b.unread_count || 0) > 0 ? 1 : 0;
-        if (aHas !== bHas) return bHas - aHas;
+        const aU = a.urgent_reason ? 2 : (a.unread_count || 0) > 0 ? 1 : 0;
+        const bU = b.urgent_reason ? 2 : (b.unread_count || 0) > 0 ? 1 : 0;
+        if (aU !== bU) return bU - aU;
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });
 
@@ -278,7 +293,7 @@ const MySpace = () => {
     : "N/A";
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#F5F1E8' }}>
       <Navbar />
       
       <main className="pt-24 pb-16">
@@ -294,8 +309,40 @@ const MySpace = () => {
               const nextLevelXp = profile.level * xpPerLevel;
               const xpInLevel = Math.max(0, profile.xp_points - currentLevelXp);
               const progressPct = Math.min(100, (xpInLevel / xpPerLevel) * 100);
+              const firstLetter = (profile.full_name?.trim().charAt(0) || user.email?.charAt(0) || "U").toUpperCase();
               return (
-            <div className="relative flex flex-col md:flex-row items-start gap-6 mb-8">
+            <div
+              className="relative mb-8"
+              style={{
+                backgroundColor: "#FFFFFF",
+                borderRadius: 14,
+                border: "1px solid rgba(10,22,40,0.08)",
+                padding: 32,
+                overflow: "hidden",
+              }}
+            >
+              {/* Decorative watermark letter */}
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  top: -40,
+                  right: 8,
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontStyle: "italic",
+                  fontWeight: 700,
+                  fontSize: 260,
+                  lineHeight: 1,
+                  color: "rgba(10,22,40,0.03)",
+                  pointerEvents: "none",
+                  userSelect: "none",
+                  zIndex: 0,
+                }}
+              >
+                {firstLetter}
+              </span>
+
+              <div className="relative flex flex-col md:flex-row items-start gap-6" style={{ zIndex: 1 }}>
               {/* Hidden file input */}
               <input
                 ref={fileInputRef}
@@ -312,21 +359,31 @@ const MySpace = () => {
                 disabled={uploadingAvatar}
                 title="Changer ma photo"
                 className="group relative flex-shrink-0 rounded-full overflow-hidden"
-                style={{ width: 80, height: 80 }}
+                style={{ width: 92, height: 92 }}
               >
-                <Avatar className="w-20 h-20 border-2" style={{ borderColor: '#D9BD8B' }}>
+                <Avatar className="w-[92px] h-[92px]" style={{ border: '3px solid #D9BB87' }}>
                   <AvatarImage src={profile.avatar_url || undefined} />
-                  <AvatarFallback className="text-2xl font-bold" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
-                    {profile.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase()}
+                  <AvatarFallback
+                    style={{
+                      backgroundColor: '#0A1628',
+                      color: '#D9BB87',
+                      fontFamily: "'Playfair Display', Georgia, serif",
+                      fontStyle: 'italic',
+                      fontWeight: 700,
+                      fontSize: 40,
+                    }}
+                  >
+                    {firstLetter}
                   </AvatarFallback>
                 </Avatar>
                 <div
                   className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
-                  style={{ backgroundColor: 'rgba(27,42,74,0.6)' }}
+                  style={{ backgroundColor: 'rgba(10,22,40,0.6)' }}
                 >
                   <Pencil className="w-4 h-4" style={{ color: '#FFFFFF' }} />
                 </div>
               </button>
+
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 flex-wrap">
@@ -349,11 +406,12 @@ const MySpace = () => {
                   {evaluations.length === 0 ? (
                     <span
                       style={{
-                        backgroundColor: '#EEF2FF',
-                        color: '#3B4F8C',
+                        backgroundColor: 'transparent',
+                        color: '#8B7333',
+                        border: '1px solid #D9BB87',
                         fontSize: 11,
-                        padding: '3px 10px',
-                        borderRadius: 20,
+                        padding: '3px 12px',
+                        borderRadius: 999,
                         fontWeight: 500,
                       }}
                     >
@@ -380,27 +438,56 @@ const MySpace = () => {
                   )}
                 </div>
 
+                {/* Quick stats line */}
+                {(() => {
+                  const memberSince = (profile as any).created_at
+                    ? new Date((profile as any).created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+                    : null;
+                  const Stat = ({ value, label }: { value: React.ReactNode; label: string }) => (
+                    <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 5 }}>
+                      <span style={{ fontWeight: 700, color: '#0A1628', fontSize: 14 }}>{value}</span>
+                      <span style={{ color: '#9A8570', fontSize: 12 }}>{label}</span>
+                    </span>
+                  );
+                  return (
+                    <div
+                      className="mt-3 flex flex-wrap items-baseline"
+                      style={{ gap: 18, columnGap: 22 }}
+                    >
+                      <Stat value={searches.length} label={searches.length > 1 ? "recherches actives" : "recherche active"} />
+                      {profile.is_findr && hasProposals && (
+                        <Stat value={"—"} label="propositions envoyées" />
+                      )}
+                      {memberSince && (
+                        <span style={{ color: '#9A8570', fontSize: 12 }}>
+                          Membre depuis <span style={{ color: '#6B6259', fontWeight: 500 }}>{memberSince}</span>
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {/* City + Level row */}
                 <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" style={{ color: '#4B5563' }}>
                   {profile.city && (
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" style={{ color: '#D9BD8B' }} />
+                      <MapPin className="w-4 h-4" style={{ color: '#D9BB87' }} />
                       <span>{profile.city}</span>
                     </div>
                   )}
                   {gamificationEnabled && (
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4" style={{ color: '#D9BD8B' }} />
+                      <Clock className="w-4 h-4" style={{ color: '#D9BB87' }} />
                       <span>Niveau {profile.level} · {profile.xp_points} XP</span>
                     </div>
                   )}
                 </div>
 
                 {gamificationEnabled ? (
-                  <div className="mt-2">
+                  <div className="mt-3" style={{ maxWidth: 340 }}>
                     <div
                       style={{
-                        width: 200,
+                        width: '100%',
                         height: 6,
                         borderRadius: 3,
                         backgroundColor: '#E8E2D9',
@@ -411,7 +498,7 @@ const MySpace = () => {
                         style={{
                           width: `${progressPct}%`,
                           height: '100%',
-                          backgroundColor: '#C9A84C',
+                          background: 'linear-gradient(90deg, #D9BB87, #c9a876)',
                           transition: 'width 0.3s ease',
                         }}
                       />
@@ -428,9 +515,9 @@ const MySpace = () => {
                   if (!profile.avatar_url) missing.push("une photo");
                   if (!profile.bio) missing.push("une bio");
                   return (
-                    <div className="mt-3" style={{ maxWidth: 280 }}>
+                    <div className="mt-3" style={{ maxWidth: 340 }}>
                       <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, color: '#1B2A4A', fontWeight: 600 }}>
+                        <span style={{ fontSize: 12, color: '#0A1628', fontWeight: 600 }}>
                           Profil complété à {pct}%
                         </span>
                       </div>
@@ -447,7 +534,7 @@ const MySpace = () => {
                           style={{
                             width: `${pct}%`,
                             height: '100%',
-                            backgroundColor: '#C9A84C',
+                            background: 'linear-gradient(90deg, #D9BB87, #c9a876)',
                             transition: 'width 0.3s ease',
                           }}
                         />
@@ -461,22 +548,24 @@ const MySpace = () => {
                   );
                 })()}
 
-                {/* Edit profile button — inline */}
+                {/* Edit profile button — pill */}
                 <button
                   type="button"
                   className="mt-4 inline-flex items-center gap-1.5 transition-colors"
                   style={{
-                    border: '1.5px solid #1B2A4A',
-                    color: '#1B2A4A',
+                    border: '1.5px solid #0A1628',
+                    color: '#0A1628',
                     fontSize: 12,
-                    padding: '5px 14px',
-                    borderRadius: 7,
+                    padding: '6px 16px',
+                    borderRadius: 999,
                     backgroundColor: 'transparent',
+                    fontWeight: 500,
                   }}
                 >
                   <Pencil className="w-3 h-3" />
                   Modifier mon profil
                 </button>
+
 
                 {/* À propos */}
                 <div className="mt-5">
@@ -512,13 +601,13 @@ const MySpace = () => {
                         type="button"
                         className="mt-3 transition-colors"
                         style={{
-                          backgroundColor: 'transparent',
-                          border: '1.5px solid #C9A84C',
-                          color: '#C9A84C',
+                          backgroundColor: '#D9BB87',
+                          border: '1.5px solid #D9BB87',
+                          color: '#0A1628',
                           fontSize: 12,
-                          borderRadius: 7,
+                          borderRadius: 999,
                           padding: '6px 16px',
-                          fontWeight: 500,
+                          fontWeight: 600,
                         }}
                       >
                         + Ajouter ma bio
@@ -527,9 +616,10 @@ const MySpace = () => {
                   )}
                 </div>
               </div>
+              </div>
 
               {/* Top-right discreet menu */}
-              <div className="absolute top-0 right-0">
+              <div className="absolute" style={{ top: 16, right: 16, zIndex: 2 }}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
@@ -624,9 +714,10 @@ const MySpace = () => {
                     >
                       MON ESPACE
                     </span>
-                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#1B2A4A" }}>
+                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#0A1628" }}>
                       Mes recherches en cours
                     </h2>
+                    <div style={{ width: 60, height: 2, backgroundColor: "#D9BB87", borderRadius: 2, marginTop: 8 }} />
                   </div>
                   <div className="flex gap-2">
                     {profile.is_findr && (
