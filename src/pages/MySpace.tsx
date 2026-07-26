@@ -714,9 +714,10 @@ const MySpace = () => {
                     >
                       MON ESPACE
                     </span>
-                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#1B2A4A" }}>
+                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#0A1628" }}>
                       Mes recherches en cours
                     </h2>
+                    <div style={{ width: 60, height: 2, backgroundColor: "#D9BB87", borderRadius: 2, marginTop: 8 }} />
                   </div>
                   <div className="flex gap-2">
                     {profile.is_findr && (
