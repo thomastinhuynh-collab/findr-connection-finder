@@ -406,11 +406,12 @@ const MySpace = () => {
                   {evaluations.length === 0 ? (
                     <span
                       style={{
-                        backgroundColor: '#EEF2FF',
-                        color: '#3B4F8C',
+                        backgroundColor: 'transparent',
+                        color: '#8B7333',
+                        border: '1px solid #D9BB87',
                         fontSize: 11,
-                        padding: '3px 10px',
-                        borderRadius: 20,
+                        padding: '3px 12px',
+                        borderRadius: 999,
                         fontWeight: 500,
                       }}
                     >
@@ -437,27 +438,56 @@ const MySpace = () => {
                   )}
                 </div>
 
+                {/* Quick stats line */}
+                {(() => {
+                  const memberSince = (profile as any).created_at
+                    ? new Date((profile as any).created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+                    : null;
+                  const Stat = ({ value, label }: { value: React.ReactNode; label: string }) => (
+                    <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 5 }}>
+                      <span style={{ fontWeight: 700, color: '#0A1628', fontSize: 14 }}>{value}</span>
+                      <span style={{ color: '#9A8570', fontSize: 12 }}>{label}</span>
+                    </span>
+                  );
+                  return (
+                    <div
+                      className="mt-3 flex flex-wrap items-baseline"
+                      style={{ gap: 18, columnGap: 22 }}
+                    >
+                      <Stat value={searches.length} label={searches.length > 1 ? "recherches actives" : "recherche active"} />
+                      {profile.is_findr && hasProposals && (
+                        <Stat value={"—"} label="propositions envoyées" />
+                      )}
+                      {memberSince && (
+                        <span style={{ color: '#9A8570', fontSize: 12 }}>
+                          Membre depuis <span style={{ color: '#6B6259', fontWeight: 500 }}>{memberSince}</span>
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {/* City + Level row */}
                 <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" style={{ color: '#4B5563' }}>
                   {profile.city && (
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" style={{ color: '#D9BD8B' }} />
+                      <MapPin className="w-4 h-4" style={{ color: '#D9BB87' }} />
                       <span>{profile.city}</span>
                     </div>
                   )}
                   {gamificationEnabled && (
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4" style={{ color: '#D9BD8B' }} />
+                      <Clock className="w-4 h-4" style={{ color: '#D9BB87' }} />
                       <span>Niveau {profile.level} · {profile.xp_points} XP</span>
                     </div>
                   )}
                 </div>
 
                 {gamificationEnabled ? (
-                  <div className="mt-2">
+                  <div className="mt-3" style={{ maxWidth: 340 }}>
                     <div
                       style={{
-                        width: 200,
+                        width: '100%',
                         height: 6,
                         borderRadius: 3,
                         backgroundColor: '#E8E2D9',
@@ -468,7 +498,7 @@ const MySpace = () => {
                         style={{
                           width: `${progressPct}%`,
                           height: '100%',
-                          backgroundColor: '#C9A84C',
+                          background: 'linear-gradient(90deg, #D9BB87, #c9a876)',
                           transition: 'width 0.3s ease',
                         }}
                       />
@@ -485,9 +515,9 @@ const MySpace = () => {
                   if (!profile.avatar_url) missing.push("une photo");
                   if (!profile.bio) missing.push("une bio");
                   return (
-                    <div className="mt-3" style={{ maxWidth: 280 }}>
+                    <div className="mt-3" style={{ maxWidth: 340 }}>
                       <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, color: '#1B2A4A', fontWeight: 600 }}>
+                        <span style={{ fontSize: 12, color: '#0A1628', fontWeight: 600 }}>
                           Profil complété à {pct}%
                         </span>
                       </div>
@@ -504,7 +534,7 @@ const MySpace = () => {
                           style={{
                             width: `${pct}%`,
                             height: '100%',
-                            backgroundColor: '#C9A84C',
+                            background: 'linear-gradient(90deg, #D9BB87, #c9a876)',
                             transition: 'width 0.3s ease',
                           }}
                         />
@@ -518,22 +548,24 @@ const MySpace = () => {
                   );
                 })()}
 
-                {/* Edit profile button — inline */}
+                {/* Edit profile button — pill */}
                 <button
                   type="button"
                   className="mt-4 inline-flex items-center gap-1.5 transition-colors"
                   style={{
-                    border: '1.5px solid #1B2A4A',
-                    color: '#1B2A4A',
+                    border: '1.5px solid #0A1628',
+                    color: '#0A1628',
                     fontSize: 12,
-                    padding: '5px 14px',
-                    borderRadius: 7,
+                    padding: '6px 16px',
+                    borderRadius: 999,
                     backgroundColor: 'transparent',
+                    fontWeight: 500,
                   }}
                 >
                   <Pencil className="w-3 h-3" />
                   Modifier mon profil
                 </button>
+
 
                 {/* À propos */}
                 <div className="mt-5">
