@@ -24,6 +24,7 @@ interface Profile {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  banner_url: string | null;
   bio: string | null;
   is_findr: boolean;
   is_premium: boolean | null;
