@@ -72,12 +72,14 @@ const MySpace = () => {
   const { user, loading, signOut } = useAuth();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
   const [walletBalance] = useState(155.50);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingBanner, setUploadingBanner] = useState(false);
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [hasProposals, setHasProposals] = useState(false);
   const [hasCommission, setHasCommission] = useState(false);
