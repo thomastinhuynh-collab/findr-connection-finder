@@ -10,6 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -76,6 +80,41 @@ const MySpace = () => {
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [hasProposals, setHasProposals] = useState(false);
   const [hasCommission, setHasCommission] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
+  const [savingProfile, setSavingProfile] = useState(false);
+
+  const openEditProfile = () => {
+    setEditForm({
+      full_name: profile?.full_name || "",
+      bio: profile?.bio || "",
+      city: profile?.city || "",
+    });
+    setEditOpen(true);
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+    setSavingProfile(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: editForm.full_name.trim() || null,
+          bio: editForm.bio.trim() || null,
+          city: editForm.city.trim() || null,
+        })
+        .eq("user_id", user.id);
+      if (error) throw error;
+      await fetchProfile();
+      toast({ title: "Profil mis à jour" });
+      setEditOpen(false);
+    } catch (err: any) {
+      toast({ title: "Erreur", description: err.message, variant: "destructive" });
+    } finally {
+      setSavingProfile(false);
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -551,6 +590,7 @@ const MySpace = () => {
                 {/* Edit profile button — pill */}
                 <button
                   type="button"
+                  onClick={openEditProfile}
                   className="mt-4 inline-flex items-center gap-1.5 transition-colors"
                   style={{
                     border: '1.5px solid #0A1628',
@@ -560,6 +600,7 @@ const MySpace = () => {
                     borderRadius: 999,
                     backgroundColor: 'transparent',
                     fontWeight: 500,
+                    cursor: 'pointer',
                   }}
                 >
                   <Pencil className="w-3 h-3" />
@@ -599,6 +640,7 @@ const MySpace = () => {
                       </p>
                       <button
                         type="button"
+                        onClick={openEditProfile}
                         className="mt-3 transition-colors"
                         style={{
                           backgroundColor: '#D9BB87',
@@ -608,6 +650,7 @@ const MySpace = () => {
                           borderRadius: 999,
                           padding: '6px 16px',
                           fontWeight: 600,
+                          cursor: 'pointer',
                         }}
                       >
                         + Ajouter ma bio
@@ -632,7 +675,7 @@ const MySpace = () => {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={openEditProfile}>
                       <Settings className="w-4 h-4 mr-2" />
                       Paramètres du compte
                     </DropdownMenuItem>
@@ -882,6 +925,60 @@ const MySpace = () => {
       </main>
 
       <Footer />
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle style={{ color: '#0A1628' }}>Modifier mon profil</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-name">Nom complet</Label>
+              <Input
+                id="edit-name"
+                value={editForm.full_name}
+                onChange={(e) => setEditForm((f) => ({ ...f, full_name: e.target.value }))}
+                placeholder="Ton nom"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-city">Ville</Label>
+              <Input
+                id="edit-city"
+                value={editForm.city}
+                onChange={(e) => setEditForm((f) => ({ ...f, city: e.target.value }))}
+                placeholder="Paris, Lyon…"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-bio">Bio</Label>
+              <Textarea
+                id="edit-bio"
+                value={editForm.bio}
+                onChange={(e) => setEditForm((f) => ({ ...f, bio: e.target.value }))}
+                placeholder="Présente-toi à la communauté…"
+                rows={4}
+                maxLength={500}
+              />
+              <p className="text-xs" style={{ color: '#9A8F84' }}>
+                {editForm.bio.length}/500
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditOpen(false)} disabled={savingProfile}>
+              Annuler
+            </Button>
+            <Button
+              onClick={handleSaveProfile}
+              disabled={savingProfile}
+              style={{ backgroundColor: '#0A1628', color: '#F5F0EA' }}
+            >
+              {savingProfile ? "Enregistrement…" : "Enregistrer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
