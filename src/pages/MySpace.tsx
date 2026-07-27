@@ -312,6 +312,43 @@ const MySpace = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
+  const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (file.size > 8 * 1024 * 1024) {
+      toast({ title: "Fichier trop lourd", description: "Max 8 Mo", variant: "destructive" });
+      return;
+    }
+    setUploadingBanner(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/banner-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("search-images").upload(path, file, { upsert: true });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("search-images").getPublicUrl(path);
+      const { error: updErr } = await (supabase.from("profiles") as any).update({ banner_url: pub.publicUrl }).eq("user_id", user.id);
+      if (updErr) throw updErr;
+      await fetchProfile();
+      toast({ title: "Bannière mise à jour" });
+    } catch (err: any) {
+      toast({ title: "Erreur", description: err.message, variant: "destructive" });
+    } finally {
+      setUploadingBanner(false);
+      if (bannerInputRef.current) bannerInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveBanner = async () => {
+    if (!user) return;
+    const { error } = await (supabase.from("profiles") as any).update({ banner_url: null }).eq("user_id", user.id);
+    if (error) {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+      return;
+    }
+    await fetchProfile();
+    toast({ title: "Bannière supprimée" });
+  };
+
 
   const handleSignOut = async () => {
     await signOut();
