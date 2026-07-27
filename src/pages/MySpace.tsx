@@ -675,7 +675,7 @@ const MySpace = () => {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={openEditProfile}>
                       <Settings className="w-4 h-4 mr-2" />
                       Paramètres du compte
                     </DropdownMenuItem>
