@@ -679,6 +679,7 @@ const MySpace = () => {
                   const missing: string[] = [];
                   if (!profile.avatar_url) missing.push("une photo");
                   if (!profile.bio) missing.push("une bio");
+                  if (pct >= 100) return null;
                   return (
                     <div className="mt-3" style={{ maxWidth: 340 }}>
                       <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
