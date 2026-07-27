@@ -396,16 +396,100 @@ const MySpace = () => {
                 backgroundColor: "#FFFFFF",
                 borderRadius: 14,
                 border: "1px solid rgba(10,22,40,0.08)",
-                padding: 32,
                 overflow: "hidden",
               }}
             >
+              {/* Hidden banner input */}
+              <input
+                ref={bannerInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleBannerChange}
+              />
+
+              {/* Banner area */}
+              <div
+                className="relative w-full group/banner"
+                style={{
+                  height: 180,
+                  background: profile.banner_url
+                    ? undefined
+                    : "linear-gradient(135deg, #0A1628 0%, #1B2A4A 60%, #2a3a5f 100%)",
+                }}
+              >
+                {profile.banner_url && (
+                  <img
+                    src={profile.banner_url}
+                    alt="Bannière de profil"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
+                {/* Subtle gold accent gradient on top */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: profile.banner_url
+                      ? "linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(10,22,40,0.35) 100%)"
+                      : "radial-gradient(ellipse at top right, rgba(217,187,135,0.18), transparent 60%)",
+                  }}
+                />
+                {/* Banner actions */}
+                <div className="absolute flex gap-2" style={{ top: 12, right: 12, zIndex: 3 }}>
+                  <button
+                    type="button"
+                    onClick={() => bannerInputRef.current?.click()}
+                    disabled={uploadingBanner}
+                    className="inline-flex items-center gap-1.5 transition-all"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,0.92)",
+                      color: "#0A1628",
+                      border: "1px solid rgba(10,22,40,0.1)",
+                      fontSize: 12,
+                      padding: "6px 12px",
+                      borderRadius: 999,
+                      fontWeight: 500,
+                      cursor: "pointer",
+                      backdropFilter: "blur(4px)",
+                    }}
+                  >
+                    <Pencil className="w-3 h-3" />
+                    {uploadingBanner
+                      ? "Envoi…"
+                      : profile.banner_url
+                      ? "Changer la bannière"
+                      : "Ajouter une bannière"}
+                  </button>
+                  {profile.banner_url && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveBanner}
+                      className="transition-all"
+                      style={{
+                        backgroundColor: "rgba(255,255,255,0.92)",
+                        color: "#8B3A2E",
+                        border: "1px solid rgba(10,22,40,0.1)",
+                        fontSize: 12,
+                        padding: "6px 12px",
+                        borderRadius: 999,
+                        fontWeight: 500,
+                        cursor: "pointer",
+                        backdropFilter: "blur(4px)",
+                      }}
+                    >
+                      Retirer
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="relative" style={{ padding: 32, paddingTop: 24 }}>
               {/* Decorative watermark letter */}
               <span
                 aria-hidden
                 style={{
                   position: "absolute",
-                  top: -40,
+                  top: -60,
                   right: 8,
                   fontFamily: "'Playfair Display', Georgia, serif",
                   fontStyle: "italic",
@@ -431,17 +515,17 @@ const MySpace = () => {
                 onChange={handleAvatarChange}
               />
 
-              {/* Avatar with hover overlay */}
+              {/* Avatar with hover overlay — pulled up to overlap banner */}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
                 title="Changer ma photo"
                 className="group relative flex-shrink-0 rounded-full overflow-hidden"
-                style={{ width: 92, height: 92 }}
+                style={{ width: 108, height: 108, marginTop: -76 }}
               >
-                <Avatar className="w-[92px] h-[92px]" style={{ border: '3px solid #D9BB87' }}>
-                  <AvatarImage src={profile.avatar_url || undefined} />
+                <Avatar className="w-[108px] h-[108px]" style={{ border: '4px solid #FFFFFF', boxShadow: '0 0 0 3px #D9BB87' }}>
+                  <AvatarImage src={profile.avatar_url || undefined} className="object-cover" />
                   <AvatarFallback
                     style={{
                       backgroundColor: '#0A1628',
@@ -449,7 +533,7 @@ const MySpace = () => {
                       fontFamily: "'Playfair Display', Georgia, serif",
                       fontStyle: 'italic',
                       fontWeight: 700,
-                      fontSize: 40,
+                      fontSize: 44,
                     }}
                   >
                     {firstLetter}
@@ -462,6 +546,8 @@ const MySpace = () => {
                   <Pencil className="w-4 h-4" style={{ color: '#FFFFFF' }} />
                 </div>
               </button>
+
+
 
 
               <div className="flex-1 min-w-0">
