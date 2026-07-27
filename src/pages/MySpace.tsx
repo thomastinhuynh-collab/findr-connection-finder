@@ -590,6 +590,7 @@ const MySpace = () => {
                 {/* Edit profile button — pill */}
                 <button
                   type="button"
+                  onClick={openEditProfile}
                   className="mt-4 inline-flex items-center gap-1.5 transition-colors"
                   style={{
                     border: '1.5px solid #0A1628',
@@ -599,6 +600,7 @@ const MySpace = () => {
                     borderRadius: 999,
                     backgroundColor: 'transparent',
                     fontWeight: 500,
+                    cursor: 'pointer',
                   }}
                 >
                   <Pencil className="w-3 h-3" />
