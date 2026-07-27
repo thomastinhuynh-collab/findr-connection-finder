@@ -925,6 +925,60 @@ const MySpace = () => {
       </main>
 
       <Footer />
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle style={{ color: '#0A1628' }}>Modifier mon profil</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-name">Nom complet</Label>
+              <Input
+                id="edit-name"
+                value={editForm.full_name}
+                onChange={(e) => setEditForm((f) => ({ ...f, full_name: e.target.value }))}
+                placeholder="Ton nom"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-city">Ville</Label>
+              <Input
+                id="edit-city"
+                value={editForm.city}
+                onChange={(e) => setEditForm((f) => ({ ...f, city: e.target.value }))}
+                placeholder="Paris, Lyon…"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-bio">Bio</Label>
+              <Textarea
+                id="edit-bio"
+                value={editForm.bio}
+                onChange={(e) => setEditForm((f) => ({ ...f, bio: e.target.value }))}
+                placeholder="Présente-toi à la communauté…"
+                rows={4}
+                maxLength={500}
+              />
+              <p className="text-xs" style={{ color: '#9A8F84' }}>
+                {editForm.bio.length}/500
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditOpen(false)} disabled={savingProfile}>
+              Annuler
+            </Button>
+            <Button
+              onClick={handleSaveProfile}
+              disabled={savingProfile}
+              style={{ backgroundColor: '#0A1628', color: '#F5F0EA' }}
+            >
+              {savingProfile ? "Enregistrement…" : "Enregistrer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
