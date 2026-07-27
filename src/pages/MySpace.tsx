@@ -80,6 +80,41 @@ const MySpace = () => {
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [hasProposals, setHasProposals] = useState(false);
   const [hasCommission, setHasCommission] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
+  const [savingProfile, setSavingProfile] = useState(false);
+
+  const openEditProfile = () => {
+    setEditForm({
+      full_name: profile?.full_name || "",
+      bio: profile?.bio || "",
+      city: profile?.city || "",
+    });
+    setEditOpen(true);
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+    setSavingProfile(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: editForm.full_name.trim() || null,
+          bio: editForm.bio.trim() || null,
+          city: editForm.city.trim() || null,
+        })
+        .eq("user_id", user.id);
+      if (error) throw error;
+      await fetchProfile();
+      toast({ title: "Profil mis à jour" });
+      setEditOpen(false);
+    } catch (err: any) {
+      toast({ title: "Erreur", description: err.message, variant: "destructive" });
+    } finally {
+      setSavingProfile(false);
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) {
