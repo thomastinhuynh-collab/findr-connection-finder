@@ -640,6 +640,7 @@ const MySpace = () => {
                       </p>
                       <button
                         type="button"
+                        onClick={openEditProfile}
                         className="mt-3 transition-colors"
                         style={{
                           backgroundColor: '#D9BB87',
@@ -649,6 +650,7 @@ const MySpace = () => {
                           borderRadius: 999,
                           padding: '6px 16px',
                           fontWeight: 600,
+                          cursor: 'pointer',
                         }}
                       >
                         + Ajouter ma bio
