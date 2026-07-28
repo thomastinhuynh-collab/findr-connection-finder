@@ -408,14 +408,14 @@ const MySpace = () => {
                 onChange={handleBannerChange}
               />
 
-              {/* Banner area */}
+              {/* Banner area — slim, default brand gradient */}
               <div
                 className="relative w-full group/banner"
                 style={{
-                  height: 180,
+                  height: 90,
                   background: profile.banner_url
                     ? undefined
-                    : "linear-gradient(135deg, #0A1628 0%, #1B2A4A 60%, #2a3a5f 100%)",
+                    : "linear-gradient(120deg, #0A1628 0%, #132a4d 100%)",
                 }}
               >
                 {profile.banner_url && (
@@ -425,17 +425,15 @@ const MySpace = () => {
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 )}
-                {/* Subtle gold accent gradient on top */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
                     background: profile.banner_url
                       ? "linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(10,22,40,0.35) 100%)"
-                      : "radial-gradient(ellipse at top right, rgba(217,187,135,0.18), transparent 60%)",
+                      : "radial-gradient(ellipse at top right, rgba(217,187,135,0.14), transparent 60%)",
                   }}
                 />
-                {/* Banner actions */}
-                <div className="absolute flex gap-2" style={{ top: 12, right: 12, zIndex: 3 }}>
+                <div className="absolute flex gap-2" style={{ top: 10, right: 12, zIndex: 3 }}>
                   <button
                     type="button"
                     onClick={() => bannerInputRef.current?.click()}
@@ -446,7 +444,7 @@ const MySpace = () => {
                       color: "#0A1628",
                       border: "1px solid rgba(10,22,40,0.1)",
                       fontSize: 12,
-                      padding: "6px 12px",
+                      padding: "5px 11px",
                       borderRadius: 999,
                       fontWeight: 500,
                       cursor: "pointer",
@@ -470,7 +468,7 @@ const MySpace = () => {
                         color: "#8B3A2E",
                         border: "1px solid rgba(10,22,40,0.1)",
                         fontSize: 12,
-                        padding: "6px 12px",
+                        padding: "5px 11px",
                         borderRadius: 999,
                         fontWeight: 500,
                         cursor: "pointer",
@@ -484,19 +482,19 @@ const MySpace = () => {
               </div>
 
               <div className="relative" style={{ padding: 32, paddingTop: 24 }}>
-              {/* Decorative watermark letter */}
+              {/* Decorative watermark letter — centered behind name/bio block */}
               <span
                 aria-hidden
                 style={{
                   position: "absolute",
-                  top: -60,
-                  right: 8,
+                  top: -30,
+                  right: 24,
                   fontFamily: "'Playfair Display', Georgia, serif",
                   fontStyle: "italic",
                   fontWeight: 700,
-                  fontSize: 260,
+                  fontSize: 110,
                   lineHeight: 1,
-                  color: "rgba(10,22,40,0.03)",
+                  color: "rgba(10,22,40,0.035)",
                   pointerEvents: "none",
                   userSelect: "none",
                   zIndex: 0,
