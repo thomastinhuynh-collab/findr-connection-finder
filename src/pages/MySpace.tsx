@@ -786,8 +786,10 @@ const MySpace = () => {
                   Modifier mon profil
                 </button>
               </div>
+              </div>
 
               </div>
+
 
               {/* Top-right discreet menu */}
               <div className="absolute" style={{ top: 196, right: 12, zIndex: 4 }}>
