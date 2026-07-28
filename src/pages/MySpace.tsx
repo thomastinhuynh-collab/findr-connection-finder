@@ -549,6 +549,7 @@ const MySpace = () => {
 
 
               <div className="flex-1 min-w-0">
+                {/* a. Name + status badges + email verified */}
                 <div className="flex items-center gap-3 flex-wrap">
                   <h1 className="text-2xl font-display font-bold" style={{ color: '#1B2A4A' }}>
                     {profile.full_name || "Utilisateur"}
@@ -562,178 +563,55 @@ const MySpace = () => {
                   {profile.is_findr && (
                     <Badge style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>findr</Badge>
                   )}
-                </div>
-
-                {/* Rating: badge "Nouveau membre" if 0 evals, else stars */}
-                <div className="flex items-center gap-2 mt-2">
-                  {evaluations.length === 0 ? (
+                  {(user as any)?.email_confirmed_at && (
                     <span
                       style={{
-                        backgroundColor: 'transparent',
-                        color: '#8B7333',
-                        border: '1px solid #D9BB87',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
                         fontSize: 11,
-                        padding: '3px 12px',
+                        color: '#1B7A4A',
+                        backgroundColor: 'rgba(27,122,74,0.08)',
+                        border: '1px solid rgba(27,122,74,0.25)',
+                        padding: '3px 10px',
                         borderRadius: 999,
                         fontWeight: 500,
                       }}
                     >
-                      Nouveau membre
+                      ✓ Email vérifié
                     </span>
+                  )}
+                </div>
+
+                {/* b. Rating line */}
+                <div className="flex items-center gap-2 mt-2">
+                  {evaluations.length === 0 ? (
+                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>Pas encore d'avis</span>
                   ) : (
                     <>
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`w-4 h-4 ${
-                              i < Math.round(Number(averageRating))
-                                ? "fill-yellow-500 text-yellow-500"
-                                : "text-gray-300"
-                            }`}
+                            className="w-4 h-4"
+                            style={{
+                              color: i < Math.round(Number(averageRating)) ? '#D9BB87' : '#E5E1D8',
+                              fill: i < Math.round(Number(averageRating)) ? '#D9BB87' : 'transparent',
+                            }}
                           />
                         ))}
                       </div>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#0A1628' }}>
+                        {averageRating}
+                      </span>
                       <span className="text-xs" style={{ color: '#6B7280' }}>
-                        ({evaluations.length} évaluation{evaluations.length !== 1 ? 's' : ''})
+                        ({evaluations.length} avis)
                       </span>
                     </>
                   )}
                 </div>
 
-                {/* Quick stats line */}
-                {(() => {
-                  const memberSince = (profile as any).created_at
-                    ? new Date((profile as any).created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
-                    : null;
-                  const Stat = ({ value, label }: { value: React.ReactNode; label: string }) => (
-                    <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 5 }}>
-                      <span style={{ fontWeight: 700, color: '#0A1628', fontSize: 14 }}>{value}</span>
-                      <span style={{ color: '#9A8570', fontSize: 12 }}>{label}</span>
-                    </span>
-                  );
-                  return (
-                    <div
-                      className="mt-3 flex flex-wrap items-baseline"
-                      style={{ gap: 18, columnGap: 22 }}
-                    >
-                      <Stat value={searches.length} label={searches.length > 1 ? "recherches actives" : "recherche active"} />
-                      {profile.is_findr && hasProposals && (
-                        <Stat value={"—"} label="propositions envoyées" />
-                      )}
-                      {memberSince && (
-                        <span style={{ color: '#9A8570', fontSize: 12 }}>
-                          Membre depuis <span style={{ color: '#6B6259', fontWeight: 500 }}>{memberSince}</span>
-                        </span>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                {/* City + Level row */}
-                <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" style={{ color: '#4B5563' }}>
-                  {profile.city && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" style={{ color: '#D9BB87' }} />
-                      <span>{profile.city}</span>
-                    </div>
-                  )}
-                  {gamificationEnabled && (
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4" style={{ color: '#D9BB87' }} />
-                      <span>Niveau {profile.level} · {profile.xp_points} XP</span>
-                    </div>
-                  )}
-                </div>
-
-                {gamificationEnabled ? (
-                  <div className="mt-3" style={{ maxWidth: 340 }}>
-                    <div
-                      style={{
-                        width: '100%',
-                        height: 6,
-                        borderRadius: 3,
-                        backgroundColor: '#E8E2D9',
-                        overflow: 'hidden',
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: `${progressPct}%`,
-                          height: '100%',
-                          background: 'linear-gradient(90deg, #D9BB87, #c9a876)',
-                          transition: 'width 0.3s ease',
-                        }}
-                      />
-                    </div>
-                    <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 4 }}>
-                      {xpInLevel} / {xpPerLevel} XP pour le Niveau {profile.level + 1}
-                    </p>
-                  </div>
-                ) : (() => {
-                  const fields = [profile.avatar_url, profile.bio, profile.city, profile.full_name];
-                  const filled = fields.filter(Boolean).length;
-                  const pct = Math.round((filled / fields.length) * 100);
-                  const missing: string[] = [];
-                  if (!profile.avatar_url) missing.push("une photo");
-                  if (!profile.bio) missing.push("une bio");
-                  if (pct >= 100) return null;
-                  return (
-                    <div className="mt-3" style={{ maxWidth: 340 }}>
-                      <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, color: '#0A1628', fontWeight: 600 }}>
-                          Profil complété à {pct}%
-                        </span>
-                      </div>
-                      <div
-                        style={{
-                          width: '100%',
-                          height: 6,
-                          borderRadius: 3,
-                          backgroundColor: '#E8E2D9',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: `${pct}%`,
-                            height: '100%',
-                            background: 'linear-gradient(90deg, #D9BB87, #c9a876)',
-                            transition: 'width 0.3s ease',
-                          }}
-                        />
-                      </div>
-                      {missing.length > 0 && (
-                        <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 6 }}>
-                          Ajoute {missing.join(" + ")} pour rassurer les chineurs.
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                {/* Edit profile button — pill */}
-                <button
-                  type="button"
-                  onClick={openEditProfile}
-                  className="mt-4 inline-flex items-center gap-1.5 transition-colors"
-                  style={{
-                    border: '1.5px solid #0A1628',
-                    color: '#0A1628',
-                    fontSize: 12,
-                    padding: '6px 16px',
-                    borderRadius: 999,
-                    backgroundColor: 'transparent',
-                    fontWeight: 500,
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Pencil className="w-3 h-3" />
-                  Modifier mon profil
-                </button>
-
-
-                {/* À propos */}
+                {/* c. À propos — bio */}
                 <div className="mt-5">
                   <h3
                     className="text-xs font-semibold uppercase tracking-wider mb-2"
@@ -783,8 +661,132 @@ const MySpace = () => {
                     </div>
                   )}
                 </div>
+
+                {/* d. Dominant category tag */}
+                {(() => {
+                  if (searches.length === 0) return null;
+                  const counts: Record<string, number> = {};
+                  for (const s of searches) counts[s.category] = (counts[s.category] || 0) + 1;
+                  const dominant = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
+                  if (!dominant) return null;
+                  return (
+                    <div className="mt-3">
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          fontSize: 11,
+                          color: '#0A1628',
+                          backgroundColor: '#F5F1E8',
+                          border: '1px solid #E5DFD1',
+                          padding: '4px 12px',
+                          borderRadius: 999,
+                          fontWeight: 500,
+                        }}
+                      >
+                        <span style={{ color: '#D9BB87' }}>◆</span>
+                        Catégorie favorite · {dominant}
+                      </span>
+                    </div>
+                  );
+                })()}
+
+                {/* e. Secondary metadata line */}
+                {(() => {
+                  const memberSince = (profile as any).created_at
+                    ? new Date((profile as any).created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+                    : null;
+                  return (
+                    <div
+                      className="mt-4 flex flex-wrap items-center text-sm"
+                      style={{ gap: 16, color: '#6B6259' }}
+                    >
+                      <span style={{ fontSize: 13 }}>
+                        <span style={{ fontWeight: 600, color: '#0A1628' }}>{searches.length}</span>
+                        <span style={{ color: '#9A8570', marginLeft: 4 }}>
+                          {searches.length > 1 ? 'recherches actives' : 'recherche active'}
+                        </span>
+                      </span>
+                      {profile.city && (
+                        <span className="flex items-center gap-1.5" style={{ fontSize: 13 }}>
+                          <MapPin className="w-3.5 h-3.5" style={{ color: '#D9BB87' }} />
+                          {profile.city}
+                        </span>
+                      )}
+                      {memberSince && (
+                        <span style={{ fontSize: 12, color: '#9A8570' }}>
+                          Membre depuis <span style={{ color: '#6B6259', fontWeight: 500 }}>{memberSince}</span>
+                        </span>
+                      )}
+                      {gamificationEnabled && (
+                        <span className="flex items-center gap-1.5" style={{ fontSize: 13 }}>
+                          <Clock className="w-3.5 h-3.5" style={{ color: '#D9BB87' }} />
+                          Niveau {profile.level} · {profile.xp_points} XP
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {/* Profile completion (kept, hidden at 100%) */}
+                {gamificationEnabled ? (
+                  <div className="mt-3" style={{ maxWidth: 340 }}>
+                    <div style={{ width: '100%', height: 6, borderRadius: 3, backgroundColor: '#E8E2D9', overflow: 'hidden' }}>
+                      <div style={{ width: `${progressPct}%`, height: '100%', background: 'linear-gradient(90deg, #D9BB87, #c9a876)', transition: 'width 0.3s ease' }} />
+                    </div>
+                    <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 4 }}>
+                      {xpInLevel} / {xpPerLevel} XP pour le Niveau {profile.level + 1}
+                    </p>
+                  </div>
+                ) : (() => {
+                  const fields = [profile.avatar_url, profile.bio, profile.city, profile.full_name];
+                  const filled = fields.filter(Boolean).length;
+                  const pct = Math.round((filled / fields.length) * 100);
+                  const missing: string[] = [];
+                  if (!profile.avatar_url) missing.push("une photo");
+                  if (!profile.bio) missing.push("une bio");
+                  if (pct >= 100) return null;
+                  return (
+                    <div className="mt-3" style={{ maxWidth: 340 }}>
+                      <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
+                        <span style={{ fontSize: 12, color: '#0A1628', fontWeight: 600 }}>
+                          Profil complété à {pct}%
+                        </span>
+                      </div>
+                      <div style={{ width: '100%', height: 6, borderRadius: 3, backgroundColor: '#E8E2D9', overflow: 'hidden' }}>
+                        <div style={{ width: `${pct}%`, height: '100%', background: 'linear-gradient(90deg, #D9BB87, #c9a876)', transition: 'width 0.3s ease' }} />
+                      </div>
+                      {missing.length > 0 && (
+                        <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 6 }}>
+                          Ajoute {missing.join(" + ")} pour rassurer les chineurs.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {/* f. Edit profile button — bottom */}
+                <button
+                  type="button"
+                  onClick={openEditProfile}
+                  className="mt-5 inline-flex items-center gap-1.5 transition-colors"
+                  style={{
+                    border: '1.5px solid #0A1628',
+                    color: '#0A1628',
+                    fontSize: 12,
+                    padding: '6px 16px',
+                    borderRadius: 999,
+                    backgroundColor: 'transparent',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Pencil className="w-3 h-3" />
+                  Modifier mon profil
+                </button>
               </div>
-              </div>
+
               </div>
 
               {/* Top-right discreet menu */}
