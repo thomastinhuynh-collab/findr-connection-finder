@@ -831,15 +831,8 @@ const MySpace = () => {
                 style={{ borderColor: '#E5E1D8' }}
               >
                 <TabsTrigger
-                  value="searches"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium"
-                  style={{ color: '#6B7280' }}
-                >
-                  Mes recherches
-                </TabsTrigger>
-                <TabsTrigger
                   value="favorites"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium flex items-center gap-1.5"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-3 pt-2 pb-3 text-sm font-medium inline-flex items-center gap-1.5"
                   style={{ color: '#6B7280' }}
                 >
                   Favoris
@@ -848,51 +841,39 @@ const MySpace = () => {
                   <button
                     type="button"
                     onClick={() => navigate("/mes-propositions")}
-                    className="rounded-none border-b-2 border-transparent pb-3 text-sm font-medium flex items-center gap-1.5"
-                    style={{ color: '#6B7280', background: 'transparent' }}
+                    className="rounded-none border-b-2 border-transparent px-3 pt-2 pb-3 text-sm font-medium inline-flex items-center gap-1.5 bg-transparent"
+                    style={{ color: '#6B7280' }}
                   >
                     Mes propositions
                   </button>
                 )}
-                {hasCommission && (
-                  <TabsTrigger
-                    value="wallet"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium flex items-center gap-1.5"
-                    style={{ color: '#6B7280' }}
-                  >
-                    Portefeuille
-                  </TabsTrigger>
-                )}
+                <TabsTrigger
+                  value="wallet"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-3 pt-2 pb-3 text-sm font-medium inline-flex items-center gap-1.5"
+                  style={{ color: '#6B7280' }}
+                >
+                  <Wallet className="w-4 h-4" />
+                  Portefeuille
+                </TabsTrigger>
                 <TabsTrigger
                   value="evaluations"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none pb-3 text-sm font-medium"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-3 pt-2 pb-3 text-sm font-medium inline-flex items-center gap-1.5"
                   style={{ color: '#6B7280' }}
                 >
                   Évaluations
                 </TabsTrigger>
               </TabsList>
 
+
               <TabsContent value="searches" className="mt-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span
-                      style={{
-                        fontSize: 11,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                        color: "#9A8F84",
-                        fontWeight: 500,
-                        display: "block",
-                        marginBottom: 4,
-                      }}
-                    >
-                      MON ESPACE
-                    </span>
                     <h2 style={{ fontSize: 18, fontWeight: 600, color: "#0A1628" }}>
                       Mes recherches en cours
                     </h2>
                     <div style={{ width: 60, height: 2, backgroundColor: "#D9BB87", borderRadius: 2, marginTop: 8 }} />
                   </div>
+
                   <div className="flex gap-2">
                     {profile.is_findr && (
                       <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BD8B', color: '#112150' }}>
