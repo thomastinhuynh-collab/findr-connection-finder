@@ -868,24 +868,12 @@ const MySpace = () => {
               <TabsContent value="searches" className="mt-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <span
-                      style={{
-                        fontSize: 11,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                        color: "#9A8F84",
-                        fontWeight: 500,
-                        display: "block",
-                        marginBottom: 4,
-                      }}
-                    >
-                      MON ESPACE
-                    </span>
                     <h2 style={{ fontSize: 18, fontWeight: 600, color: "#0A1628" }}>
                       Mes recherches en cours
                     </h2>
                     <div style={{ width: 60, height: 2, backgroundColor: "#D9BB87", borderRadius: 2, marginTop: 8 }} />
                   </div>
+
                   <div className="flex gap-2">
                     {profile.is_findr && (
                       <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BD8B', color: '#112150' }}>
