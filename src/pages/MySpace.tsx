@@ -86,6 +86,9 @@ const MySpace = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
   const [savingProfile, setSavingProfile] = useState(false);
+  const [activePanel, setActivePanel] = useState<null | "favorites" | "wallet" | "evaluations">(null);
+  const togglePanel = (p: "favorites" | "wallet" | "evaluations") =>
+    setActivePanel((cur) => (cur === p ? null : p));
 
   const openEditProfile = () => {
     setEditForm({
