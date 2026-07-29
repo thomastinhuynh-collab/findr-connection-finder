@@ -86,8 +86,9 @@ const MySpace = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
   const [savingProfile, setSavingProfile] = useState(false);
-  const [activePanel, setActivePanel] = useState<null | "favorites" | "wallet" | "evaluations">(null);
-  const togglePanel = (p: "favorites" | "wallet" | "evaluations") =>
+  type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals";
+  const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
+  const togglePanel = (p: PanelKey) =>
     setActivePanel((cur) => (cur === p ? null : p));
 
   const openEditProfile = () => {
@@ -827,79 +828,15 @@ const MySpace = () => {
             {/* Separator */}
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
-            {/* Tabs */}
-            <Tabs value="searches" className="w-full">
-              {/* Mes recherches en cours (toujours visible) */}
-              <TabsContent value="searches" className="mt-0" forceMount>
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#0A1628" }}>
-                      Mes recherches en cours
-                    </h2>
-                    <div style={{ width: 60, height: 2, backgroundColor: "#D9BB87", borderRadius: 2, marginTop: 8 }} />
-                  </div>
-
-                  <div className="flex gap-2">
-                    {profile.is_findr && (
-                      <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BD8B', color: '#112150' }}>
-                        <Link to="/mes-propositions">
-                          <Package className="w-4 h-4 mr-2" />
-                          Mes propositions
-                        </Link>
-                      </Button>
-                    )}
-                    <Link
-                      to="/poster"
-                      className="inline-flex items-center transition-colors"
-                      style={{
-                        backgroundColor: "#1B2A4A",
-                        color: "#FFFFFF",
-                        borderRadius: 8,
-                        padding: "10px 18px",
-                        fontSize: 13,
-                        fontWeight: 500,
-                        textDecoration: "none",
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#243d6b")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#1B2A4A")}
-                    >
-                      <span style={{ fontSize: 16, marginRight: 6, lineHeight: 1 }}>+</span>
-                      Poster une recherche
-                    </Link>
-                  </div>
-                </div>
-
-                {searches.length === 0 ? (
-                  <div className="py-16 text-center">
-                    <Search className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
-                    <p style={{ color: '#6B7280' }}>Aucune recherche pour le moment</p>
-                    <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
-                      <Link to="/poster">Poster ma première recherche</Link>
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {searches.map((search) => (
-                      <SearchCardAccordion
-                        key={search.id}
-                        search={search}
-                        onDataChange={fetchSearches}
-                      />
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
-            </Tabs>
-
-            {/* Séparateur */}
-            <div className="border-b my-6" style={{ borderColor: '#E5E1D8' }} />
-
             {/* Volets déroulants */}
-            <div className="flex flex-wrap items-center gap-2 mb-2">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
               {([
                 { key: "favorites" as const, label: "Favoris", icon: Heart },
                 { key: "wallet" as const, label: "Portefeuille", icon: Wallet },
                 { key: "evaluations" as const, label: "Évaluations", icon: Star },
+                ...(profile.is_findr || hasProposals
+                  ? [{ key: "proposals" as const, label: "Mes propositions", icon: Package }]
+                  : []),
               ]).map(({ key, label, icon: Icon }) => {
                 const isOpen = activePanel === key;
                 return (
@@ -925,26 +862,7 @@ const MySpace = () => {
                   </button>
                 );
               })}
-              {hasProposals && (
-                <button
-                  type="button"
-                  onClick={() => navigate("/mes-propositions")}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all"
-                  style={{
-                    backgroundColor: "transparent",
-                    color: "#6B7280",
-                    border: "1px solid #E5E1D8",
-                  }}
-                >
-                  <Package className="w-4 h-4" />
-                  Mes propositions
-                </button>
-              )}
             </div>
-
-            <p className="text-xs mb-3" style={{ color: '#9CA3AF' }}>
-              Appuie sur un bouton pour ouvrir le volet, appuie à nouveau pour le refermer.
-            </p>
 
             <AnimatePresence initial={false} mode="wait">
               {activePanel && (
@@ -958,7 +876,7 @@ const MySpace = () => {
                   style={{ overflow: "hidden" }}
                 >
                   <div
-                    className="mt-2 rounded-xl p-5 bg-white"
+                    className="mb-6 rounded-xl p-5 bg-white"
                     style={{ border: "1px solid #E5E1D8" }}
                   >
                     {activePanel === "wallet" && (
@@ -968,6 +886,18 @@ const MySpace = () => {
                         transactions={mockTransactions}
                         onAddFunds={() => navigate("/premium")}
                       />
+                    )}
+
+                    {activePanel === "proposals" && (
+                      <div className="py-8 text-center">
+                        <Package className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
+                        <p className="mb-4" style={{ color: '#374151' }}>
+                          Retrouve ici toutes tes propositions envoyées et leur statut.
+                        </p>
+                        <Button asChild size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                          <Link to="/mes-propositions">Voir mes propositions</Link>
+                        </Button>
+                      </div>
                     )}
 
                     {activePanel === "favorites" && (
@@ -1071,6 +1001,72 @@ const MySpace = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Tabs */}
+            <Tabs value="searches" className="w-full">
+
+              {/* Mes recherches en cours (toujours visible) */}
+              <TabsContent value="searches" className="mt-0" forceMount>
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#0A1628" }}>
+                      Mes recherches en cours
+                    </h2>
+                    <div style={{ width: 60, height: 2, backgroundColor: "#D9BB87", borderRadius: 2, marginTop: 8 }} />
+                  </div>
+
+                  <div className="flex gap-2">
+                    {profile.is_findr && (
+                      <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BD8B', color: '#112150' }}>
+                        <Link to="/mes-propositions">
+                          <Package className="w-4 h-4 mr-2" />
+                          Mes propositions
+                        </Link>
+                      </Button>
+                    )}
+                    <Link
+                      to="/poster"
+                      className="inline-flex items-center transition-colors"
+                      style={{
+                        backgroundColor: "#1B2A4A",
+                        color: "#FFFFFF",
+                        borderRadius: 8,
+                        padding: "10px 18px",
+                        fontSize: 13,
+                        fontWeight: 500,
+                        textDecoration: "none",
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#243d6b")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#1B2A4A")}
+                    >
+                      <span style={{ fontSize: 16, marginRight: 6, lineHeight: 1 }}>+</span>
+                      Poster une recherche
+                    </Link>
+                  </div>
+                </div>
+
+                {searches.length === 0 ? (
+                  <div className="py-16 text-center">
+                    <Search className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
+                    <p style={{ color: '#6B7280' }}>Aucune recherche pour le moment</p>
+                    <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                      <Link to="/poster">Poster ma première recherche</Link>
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {searches.map((search) => (
+                      <SearchCardAccordion
+                        key={search.id}
+                        search={search}
+                        onDataChange={fetchSearches}
+                      />
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+
 
           </motion.div>
         </div>
