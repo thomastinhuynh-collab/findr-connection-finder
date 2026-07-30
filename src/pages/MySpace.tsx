@@ -86,6 +86,8 @@ const MySpace = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
   const [savingProfile, setSavingProfile] = useState(false);
+  const [myProposals, setMyProposals] = useState<any[]>([]);
+  const [loadingProposals, setLoadingProposals] = useState(false);
   type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals";
   const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
   const togglePanel = (p: PanelKey) =>
