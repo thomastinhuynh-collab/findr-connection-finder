@@ -264,6 +264,9 @@ const SearchDetail = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [walletBalance] = useState(155.50); // Mock balance
+  const [ownerRating, setOwnerRating] = useState<{ avg: number; count: number } | null>(null);
+  const [responseHours, setResponseHours] = useState<number | null>(null);
+  const [gamificationEnabled, setGamificationEnabled] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -304,7 +307,53 @@ const SearchDetail = () => {
       profiles: profile
     } as any);
     setLoading(false);
+    fetchOwnerMeta(data.user_id);
   };
+
+  const fetchOwnerMeta = async (ownerId: string) => {
+    const [{ data: settings }, { data: evals }, { data: msgs }] = await Promise.all([
+      supabase.from("app_settings").select("gamification_enabled").maybeSingle(),
+      supabase.from("evaluations").select("rating").eq("to_user_id", ownerId),
+      supabase
+        .from("messages")
+        .select("search_id, sender_id, receiver_id, created_at")
+        .or(`sender_id.eq.${ownerId},receiver_id.eq.${ownerId}`)
+        .order("created_at", { ascending: true }),
+    ]);
+
+    setGamificationEnabled(!!settings?.gamification_enabled);
+
+    if (evals && evals.length > 0) {
+      const avg = evals.reduce((s, e) => s + (e.rating || 0), 0) / evals.length;
+      setOwnerRating({ avg: Math.round(avg * 10) / 10, count: evals.length });
+    } else {
+      setOwnerRating({ avg: 0, count: 0 });
+    }
+
+    // Average first-response delay: per conversation thread, first inbound -> first reply
+    if (msgs && msgs.length > 0) {
+      const threads: Record<string, { inbound?: number; reply?: number }> = {};
+      msgs.forEach((m: any) => {
+        const other = m.sender_id === ownerId ? m.receiver_id : m.sender_id;
+        const key = `${m.search_id}:${other}`;
+        const t = new Date(m.created_at).getTime();
+        const th = threads[key] || (threads[key] = {});
+        if (m.receiver_id === ownerId) {
+          if (th.inbound === undefined) th.inbound = t;
+        } else if (th.inbound !== undefined && th.reply === undefined) {
+          th.reply = t;
+        }
+      });
+      const deltas = Object.values(threads)
+        .filter((t) => t.inbound !== undefined && t.reply !== undefined)
+        .map((t) => (t.reply! - t.inbound!) / (1000 * 60 * 60));
+      if (deltas.length > 0) {
+        const avgH = deltas.reduce((a, b) => a + b, 0) / deltas.length;
+        setResponseHours(Math.max(1, Math.ceil(avgH)));
+      }
+    }
+  };
+
 
   const fetchProposals = async () => {
     const { data, error } = await supabase
