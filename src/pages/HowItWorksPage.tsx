@@ -265,14 +265,17 @@ const HowItWorksPage = () => {
             GUIDE
           </p>
           <h1
+            className="font-barlow"
             style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 34,
+              fontSize: 26,
+              fontWeight: 600,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
               color: "#F5F1E8",
-              lineHeight: 1.2,
+              lineHeight: 1.3,
             }}
           >
-            Comment ça <em>marche</em> ?
+            Comment ça marche ?
           </h1>
           <div
             style={{
