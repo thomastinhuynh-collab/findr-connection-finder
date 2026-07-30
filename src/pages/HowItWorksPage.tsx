@@ -192,10 +192,13 @@ const HowItWorksPage = () => {
           </span>
           <span className="flex-1 min-w-0">
             <span
-              className="block"
+              className="block font-barlow"
               style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 19,
+                fontSize: 14,
+                fontWeight: 600,
+                letterSpacing: "0.16em",
+                textTransform: "uppercase",
+                fontStyle: "normal",
                 color: NAVY,
                 lineHeight: 1.35,
               }}
