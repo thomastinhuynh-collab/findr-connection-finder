@@ -139,6 +139,7 @@ const MySpace = () => {
       fetchFavorites();
       fetchGamificationFlag();
       fetchActivityFlags();
+      fetchMyProposals();
     }
   }, [user]);
 
