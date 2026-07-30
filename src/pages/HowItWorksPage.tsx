@@ -192,10 +192,13 @@ const HowItWorksPage = () => {
           </span>
           <span className="flex-1 min-w-0">
             <span
-              className="block"
+              className="block font-barlow"
               style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 19,
+                fontSize: 14,
+                fontWeight: 600,
+                letterSpacing: "0.16em",
+                textTransform: "uppercase",
+                fontStyle: "normal",
                 color: NAVY,
                 lineHeight: 1.35,
               }}
@@ -262,14 +265,17 @@ const HowItWorksPage = () => {
             GUIDE
           </p>
           <h1
+            className="font-barlow"
             style={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: 34,
+              fontSize: 26,
+              fontWeight: 600,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
               color: "#F5F1E8",
-              lineHeight: 1.2,
+              lineHeight: 1.3,
             }}
           >
-            Comment ça <em>marche</em> ?
+            Comment ça marche ?
           </h1>
           <div
             style={{
@@ -337,7 +343,7 @@ const HowItWorksPage = () => {
 
           {renderRow(
             "findr",
-            <em>Le findr</em>,
+            "Le findr",
             null,
             <>
               <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 14 }}>
