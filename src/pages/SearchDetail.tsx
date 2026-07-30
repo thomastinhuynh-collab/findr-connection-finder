@@ -36,6 +36,7 @@ interface SearchWithProfile {
   budget_min: number | null;
   budget_max: number | null;
   urgency: string | null;
+  deadline: string | null;
   image_url: string | null;
   image_urls: string[] | null;
   status: string | null;
@@ -49,6 +50,23 @@ interface SearchWithProfile {
     level: number | null;
   } | null;
 }
+
+const getDeadlineBadge = (deadline: string | null) => {
+  if (!deadline) return null;
+  const diffMs = new Date(deadline).getTime() - Date.now();
+  const days = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  const dateLabel = new Date(deadline).toLocaleDateString("fr-FR", { day: "2-digit", month: "short" });
+  if (diffMs <= 0) {
+    return { label: `Délai dépassé (éch. ${dateLabel})`, bg: "#E8E4DC", color: "#6B6355", border: "#D4CCBC" };
+  }
+  const unit = days <= 1 ? "jour" : "jours";
+  const value = days < 1 ? 1 : days;
+  const label = `Il reste ${value} ${unit} (éch. ${dateLabel})`;
+  if (days < 3) return { label, bg: "rgba(239,83,80,0.12)", color: "#B03A2E", border: "#EF5350" };
+  if (days <= 7) return { label, bg: "rgba(240,173,78,0.14)", color: "#8A5A12", border: "#E0A73C" };
+  return { label, bg: "#F5F0E8", color: "#1B2A4A", border: "#C9A84C" };
+};
+
 
 interface Proposal {
   id: string;
