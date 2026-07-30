@@ -150,6 +150,30 @@ const MySpace = () => {
     if (data) setGamificationEnabled(!!data.gamification_enabled);
   };
 
+  const fetchMyProposals = async () => {
+    if (!user) return;
+    setLoadingProposals(true);
+    const { data } = await supabase
+      .from("proposals")
+      .select("id, title, description, proposed_price, image_urls, status, created_at, search_id")
+      .eq("findr_id", user.id)
+      .order("created_at", { ascending: false });
+
+    const rows = data || [];
+    const withSearch = await Promise.all(
+      rows.map(async (p) => {
+        const { data: s } = await supabase
+          .from("searches")
+          .select("id, title")
+          .eq("id", p.search_id)
+          .maybeSingle();
+        return { ...p, search: s };
+      })
+    );
+    setMyProposals(withSearch);
+    setLoadingProposals(false);
+  };
+
   const fetchActivityFlags = async () => {
     if (!user) return;
     const { count: propCount } = await supabase
@@ -164,6 +188,7 @@ const MySpace = () => {
       .eq("status", "completed");
     setHasCommission((comCount || 0) > 0);
   };
+
 
   const fetchProfile = async () => {
     if (!user) return;
