@@ -343,7 +343,7 @@ const HowItWorksPage = () => {
 
           {renderRow(
             "findr",
-            <em>Le findr</em>,
+            "Le findr",
             null,
             <>
               <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 14 }}>
