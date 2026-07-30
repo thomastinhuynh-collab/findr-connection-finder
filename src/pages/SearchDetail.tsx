@@ -530,351 +530,399 @@ const SearchDetail = () => {
 
   const isOwner = user?.id === search.user_id;
   const pendingProposals = proposals.filter(p => p.status === "pending").length;
+  const deadlineBadge = getDeadlineBadge(search.deadline);
+
+  const titleBlock = (
+    <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary mb-4">
+      {search.title}
+    </h1>
+  );
+
+  const badgesBlock = (
+    <div className="flex flex-wrap gap-2 mb-6">
+      <span
+        className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
+        style={{ backgroundColor: '#1B2A4A', color: '#FFFFFF', fontSize: '13px', fontWeight: 500 }}
+      >
+        <Euro className="w-4 h-4" style={{ color: '#C9A84C' }} />
+        {formatBudget(search.budget_min, search.budget_max)}
+      </span>
+      {deadlineBadge && (
+        <span
+          className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
+          style={{ backgroundColor: deadlineBadge.bg, color: deadlineBadge.color, fontSize: '13px', fontWeight: 600, border: `1.5px solid ${deadlineBadge.border}` }}
+        >
+          <Clock className="w-4 h-4" />
+          {deadlineBadge.label}
+        </span>
+      )}
+      <span
+        className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
+        style={{ backgroundColor: '#F5F0E8', color: '#1B2A4A', fontSize: '13px', fontWeight: 500, border: '1.5px solid #C9A84C' }}
+      >
+        <Calendar className="w-4 h-4" style={{ color: '#C9A84C' }} />
+        {formatDate(search.created_at)}
+      </span>
+    </div>
+  );
+
+  const descriptionBlock = (
+    <div className="bg-card border border-border rounded-2xl p-6 mb-6">
+      <h2 className="text-lg font-semibold text-primary mb-4">Description</h2>
+      <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+        {search.description?.trim() || "Aucune description fournie."}
+      </p>
+    </div>
+  );
+
+  const proposalsPanel = (
+    <Collapsible defaultOpen={proposals.length > 0} className="bg-card border border-border rounded-2xl overflow-hidden">
+      <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors text-left">
+        <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
+          <MessageCircle className="w-5 h-5 text-accent" />
+          Propositions
+        </h2>
+        <div className="flex items-center gap-2">
+          {proposals.length === 0 ? (
+            <span style={{ fontSize: '13px', color: '#C9A84C', fontStyle: 'italic' }}>
+              Aucune proposition pour l'instant — sois le premier findr à en faire une
+            </span>
+          ) : (
+            <>
+              <span className="text-sm text-accent font-medium">
+                {proposals.length} proposition{proposals.length !== 1 ? "s" : ""}
+              </span>
+              {isOwner && pendingProposals > 0 && (
+                <Badge className="bg-accent text-accent-foreground">
+                  {pendingProposals} nouvelle{pendingProposals !== 1 ? "s" : ""}
+                </Badge>
+              )}
+              <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+            </>
+          )}
+        </div>
+      </CollapsibleTrigger>
+      {proposals.length > 0 && (
+        <CollapsibleContent>
+          <div className="px-6 pb-6">
+            <ProposalList
+              proposals={proposals}
+              isOwner={isOwner}
+              searchId={id || ""}
+              searchOwnerId={search.user_id}
+              walletBalance={walletBalance}
+              isPremium={userProfile?.is_premium || false}
+              onProposalUpdate={() => {
+                fetchProposals();
+              }}
+            />
+          </div>
+        </CollapsibleContent>
+      )}
+    </Collapsible>
+  );
+
+  const userCard = (
+    <div className="bg-card border border-border rounded-2xl p-6 mb-6">
+      <h3
+        className="mb-4 font-medium"
+        style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8A8070' }}
+      >
+        Publié par
+      </h3>
+      <div className="flex items-center gap-4">
+        <button
+          onClick={() => navigate(`/profil/${search.user_id}`)}
+          className="shrink-0 hover:opacity-80 transition-opacity"
+        >
+          {search.profiles?.avatar_url ? (
+            <img
+              src={search.profiles.avatar_url}
+              alt={search.profiles.full_name || "User"}
+              className="w-14 h-14 rounded-full border-2 border-accent object-cover"
+            />
+          ) : (
+            <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold">
+              {search.profiles?.full_name?.charAt(0) || "U"}
+            </div>
+          )}
+        </button>
+        <div>
+          <div className="flex items-center gap-2">
+            <p style={{ fontSize: '16px', fontWeight: 600, color: '#1B2A4A' }}>
+              {search.profiles?.full_name || "Utilisateur"}
+            </p>
+            {search.profiles?.is_premium && (
+              <span style={{ fontSize: '10px', color: '#C9A84C', backgroundColor: '#FDF6E8', borderRadius: '4px', padding: '2px 6px', fontWeight: 600 }}>
+                Top vendeur
+              </span>
+            )}
+          </div>
+
+          {gamificationEnabled ? (
+            <div className="flex items-center gap-2 text-sm">
+              <Star className="w-4 h-4 text-accent fill-accent" />
+              <span style={{ fontWeight: 500, color: '#1B2A4A' }}>Niveau {search.profiles?.level || 1}</span>
+              <span style={{ color: '#8A8070' }}>•</span>
+              <span style={{ color: '#8A8070' }}>{search.profiles?.xp_points || 0} XP</span>
+            </div>
+          ) : ownerRating && ownerRating.count > 0 ? (
+            <div className="flex items-center gap-1.5 text-sm">
+              <span className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star
+                    key={i}
+                    className="w-3.5 h-3.5"
+                    style={{
+                      color: '#D9BB87',
+                      fill: i <= Math.round(ownerRating.avg) ? '#D9BB87' : 'transparent',
+                    }}
+                  />
+                ))}
+              </span>
+              <span style={{ fontWeight: 600, color: '#1B2A4A' }}>{ownerRating.avg.toFixed(1)}</span>
+              <span style={{ color: '#8A8070' }}>({ownerRating.count} avis)</span>
+            </div>
+          ) : (
+            <span style={{ fontSize: '13px', color: '#8A8070' }}>Pas encore d'avis</span>
+          )}
+
+          {responseHours !== null && (
+            <p style={{ fontSize: '12px', color: '#6B6355', marginTop: '2px' }}>
+              Répond généralement en moins de {responseHours}h
+            </p>
+          )}
+
+          <button
+            onClick={() => navigate(`/profil/${search.user_id}`)}
+            className="mt-1 hover:underline block"
+            style={{ fontSize: '12px', color: '#C9A84C' }}
+          >
+            Voir le profil complet →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const reservationStatusBlock = isReserved && !isOwner ? (
+    <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6 mb-6">
+      <div className="flex items-center gap-3 mb-3">
+        <Lock className="w-5 h-5 text-accent" />
+        <h3 className="font-semibold text-accent">Annonce réservée</h3>
+      </div>
+      <p className="text-sm text-muted-foreground">
+        {canInteract
+          ? "Tu as réservé cette annonce. Tu es le seul à pouvoir interagir avec le buyr."
+          : "Cette annonce est actuellement réservée par un autre findr."}
+      </p>
+    </div>
+  ) : null;
+
+  const actionsBlock = !isOwner && canInteract ? (
+    <div className="bg-card border border-border rounded-2xl p-6">
+      <Button
+        className="w-full gap-2 rounded-lg"
+        style={{ height: '52px', fontSize: '15px', fontWeight: 600, backgroundColor: '#1B2A4A', color: '#FFFFFF' }}
+        onClick={handleProposal}
+      >
+        <Tag className="w-5 h-5" />
+        Faire une proposition
+      </Button>
+      <p style={{ fontSize: '11px', color: '#8A8070', textAlign: 'center', marginTop: '4px' }}>
+        Proposez votre trouvaille avec photo et prix
+      </p>
+
+      <Button
+        variant="outline"
+        className="w-full gap-2 rounded-lg mt-4"
+        style={{ height: '44px', fontSize: '14px', fontWeight: 500, backgroundColor: 'transparent', border: '1.5px solid #C9A84C', color: '#1B2A4A' }}
+        onClick={handleContact}
+      >
+        <MessageCircle className="w-5 h-5" />
+        Envoyer un message
+      </Button>
+
+      {!hasExistingReservation && !isReserved && (
+        <div className="flex items-center justify-center gap-1 mt-4">
+          <button
+            onClick={handleReservation}
+            className="hover:underline"
+            style={{ fontSize: '13px', color: '#C9A84C' }}
+          >
+            Demander une réservation
+          </button>
+          <span title="La réservation bloque l'objet le temps de finaliser l'échange">
+            <HelpCircle className="w-3.5 h-3.5" style={{ color: '#C9A84C' }} />
+          </span>
+        </div>
+      )}
+
+      {hasExistingReservation && !isReserved && (
+        <div className="bg-secondary/50 rounded-xl p-3 text-center mt-4">
+          <p className="text-sm text-muted-foreground">
+            <CalendarClock className="w-4 h-4 inline mr-1" />
+            Tu as déjà une demande de réservation en cours
+          </p>
+        </div>
+      )}
+    </div>
+  ) : null;
+
+  const ownerReservationsBlock = isOwner && (reservations.filter(r => r.status === "pending").length > 0 || activeReservation) ? (
+    <Collapsible defaultOpen className="bg-card border border-border rounded-2xl overflow-hidden">
+      <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
+        <h3 className="font-semibold text-primary flex items-center gap-2">
+          <CalendarClock className="w-5 h-5 text-accent" />
+          Demandes de réservation
+        </h3>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-accent font-medium">
+            {reservations.filter(r => r.status === "pending" || r.status === "approved").length} réservation{reservations.filter(r => r.status === "pending" || r.status === "approved").length !== 1 ? "s" : ""}
+          </span>
+          <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+        </div>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="px-6 pb-6 space-y-4">
+          {reservations
+            .filter(r => r.status === "pending")
+            .map(reservation => (
+              <ReservationCard
+                key={reservation.id}
+                reservation={reservation}
+                isOwner={true}
+                searchTitle={search.title}
+                onUpdate={() => {
+                  fetchReservations();
+                  fetchSearch();
+                }}
+              />
+            ))}
+          {activeReservation && (
+            <>
+              <h4 className="font-medium text-primary flex items-center gap-2 pt-2">
+                <Lock className="w-4 h-4 text-accent" />
+                Réservation active
+              </h4>
+              <ReservationCard
+                reservation={activeReservation}
+                isOwner={true}
+                searchTitle={search.title}
+                onUpdate={() => {
+                  fetchReservations();
+                  fetchSearch();
+                }}
+              />
+            </>
+          )}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  ) : null;
+
+  const trustBlock = (
+    <div
+      className="mt-6 flex items-start gap-3"
+      style={{ backgroundColor: '#F5F0E8', border: '1px solid #C9A84C', borderRadius: '10px', padding: '12px 16px' }}
+    >
+      <Shield className="w-[18px] h-[18px] shrink-0 mt-0.5" style={{ color: '#C9A84C' }} />
+      <div>
+        <span style={{ fontSize: '13px', fontWeight: 500, color: '#1B2A4A' }}>
+          Paiement sécurisé via findr
+        </span>
+        <p style={{ fontSize: '11px', color: '#8A8070', fontStyle: 'italic', marginTop: '2px' }}>
+          Fonds bloqués jusqu'à confirmation de réception
+        </p>
+      </div>
+    </div>
+  );
+
+  const carousel = <SearchDetailCarousel search={search} activeReservation={activeReservation} isReserved={!!isReserved} />;
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-28 pb-16">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-5 gap-8">
-            {/* Main Content */}
+          {/* ===== Desktop layout ===== */}
+          <div className="hidden lg:grid lg:grid-cols-5 gap-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               className="lg:col-span-3"
             >
-              {/* Image Carousel */}
-              <SearchDetailCarousel search={search} activeReservation={activeReservation} isReserved={!!isReserved} />
-
-              {/* Title & Meta */}
-              <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary mb-4">
-                {search.title}
-              </h1>
-
-              <div className="flex flex-wrap gap-2 mb-6">
-                <span
-                  className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
-                  style={{ backgroundColor: '#1B2A4A', color: '#FFFFFF', fontSize: '13px', fontWeight: 500 }}
-                >
-                  <Euro className="w-4 h-4" style={{ color: '#C9A84C' }} />
-                  {formatBudget(search.budget_min, search.budget_max)}
-                </span>
-                <span
-                  className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
-                  style={{ backgroundColor: '#F5F0E8', color: '#1B2A4A', fontSize: '13px', fontWeight: 500, border: '1.5px solid #C9A84C' }}
-                >
-                  <Clock className="w-4 h-4" style={{ color: '#C9A84C' }} />
-                  {urgencyLabels[search.urgency || "normal"] || search.urgency}
-                </span>
-                <span
-                  className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
-                  style={{ backgroundColor: '#F5F0E8', color: '#1B2A4A', fontSize: '13px', fontWeight: 500, border: '1.5px solid #C9A84C' }}
-                >
-                  <Calendar className="w-4 h-4" style={{ color: '#C9A84C' }} />
-                  {formatDate(search.created_at)}
-                </span>
-              </div>
-
-              {/* Description */}
-              <div className="bg-card border border-border rounded-2xl p-6 mb-6">
-                <h2 className="text-lg font-semibold text-primary mb-4">Description</h2>
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                  {search.description || "Aucune description fournie."}
-                </p>
-              </div>
-
-              {/* Proposals - only show here for non-owners */}
-              {!isOwner && (
-                <Collapsible defaultOpen={proposals.length > 0} className="bg-card border border-border rounded-2xl overflow-hidden">
-                  <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
-                    <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
-                      <MessageCircle className="w-5 h-5 text-accent" />
-                      Propositions
-                    </h2>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-accent font-medium">
-                        {proposals.length} proposition{proposals.length !== 1 ? "s" : ""}
-                      </span>
-                      <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-                    </div>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <div className="px-6 pb-6">
-                      <ProposalList
-                        proposals={proposals}
-                        isOwner={isOwner}
-                        searchId={id || ""}
-                        searchOwnerId={search.user_id}
-                        walletBalance={walletBalance}
-                        isPremium={userProfile?.is_premium || false}
-                        onProposalUpdate={() => {
-                          fetchProposals();
-                        }}
-                      />
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              )}
+              {carousel}
+              {titleBlock}
+              {badgesBlock}
+              {descriptionBlock}
+              {!isOwner && proposalsPanel}
             </motion.div>
 
-            {/* Sidebar */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="lg:col-span-2"
+              className="lg:col-span-2 self-start sticky"
+              style={{ top: '90px' }}
             >
-              {/* User Card */}
-              <div className="bg-card border border-border rounded-2xl p-6 mb-6">
-                <h3
-                  className="mb-4 font-medium"
-                  style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8A8070' }}
-                >
-                  Publié par
-                </h3>
-                <div className="flex items-center gap-4 mb-4">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/profil/${search.user_id}`);
-                    }}
-                    className="shrink-0 hover:opacity-80 transition-opacity"
-                  >
-                    {search.profiles?.avatar_url ? (
-                      <img
-                        src={search.profiles.avatar_url}
-                        alt={search.profiles.full_name || "User"}
-                        className="w-14 h-14 rounded-full border-2 border-accent object-cover"
-                      />
-                    ) : (
-                      <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold">
-                        {search.profiles?.full_name?.charAt(0) || "U"}
-                      </div>
-                    )}
-                  </button>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p style={{ fontSize: '16px', fontWeight: 600, color: '#1B2A4A' }}>
-                        {search.profiles?.full_name || "Utilisateur"}
-                      </p>
-                      {search.profiles?.is_premium && (
-                        <span style={{ fontSize: '10px', color: '#C9A84C', backgroundColor: '#FDF6E8', borderRadius: '4px', padding: '2px 6px', fontWeight: 600 }}>
-                          Top vendeur
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm" title="Les niveaux récompensent l'activité et la fiabilité des membres">
-                      <Star className="w-4 h-4 text-accent fill-accent" />
-                      <span style={{ fontWeight: 500, color: '#1B2A4A' }}>Niveau {search.profiles?.level || 1}</span>
-                      <span style={{ color: '#8A8070' }}>•</span>
-                      <span style={{ color: '#8A8070' }}>{search.profiles?.xp_points || 0} XP</span>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/profil/${search.user_id}`);
-                      }}
-                      className="mt-1 hover:underline"
-                      style={{ fontSize: '12px', color: '#C9A84C' }}
-                    >
-                      Voir le profil complet →
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Reservation Status for reserved searches */}
-              {isReserved && !isOwner && (
-                <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6 mb-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Lock className="w-5 h-5 text-accent" />
-                    <h3 className="font-semibold text-accent">Annonce réservée</h3>
-                  </div>
-                  {canInteract ? (
-                    <p className="text-sm text-muted-foreground">
-                      Tu as réservé cette annonce. Tu es le seul à pouvoir interagir avec le buyr.
-                    </p>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      Cette annonce est actuellement réservée par un autre findr.
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              {!isOwner && canInteract && (
-                <div className="bg-card border border-border rounded-2xl p-6">
-                  {/* Primary — Faire une proposition */}
-                  <Button 
-                    className="w-full gap-2 rounded-lg"
-                    style={{ height: '52px', fontSize: '15px', fontWeight: 600, backgroundColor: '#1B2A4A', color: '#FFFFFF' }}
-                    onClick={handleProposal}
-                  >
-                    <Tag className="w-5 h-5" />
-                    Faire une proposition
-                  </Button>
-                  <p style={{ fontSize: '11px', color: '#8A8070', textAlign: 'center', marginTop: '4px' }}>
-                    Proposez votre trouvaille avec photo et prix
-                  </p>
-
-                  {/* Secondary — Envoyer un message */}
-                  <Button 
-                    variant="outline"
-                    className="w-full gap-2 rounded-lg mt-4"
-                    style={{ height: '44px', fontSize: '14px', fontWeight: 500, backgroundColor: 'transparent', border: '1.5px solid #C9A84C', color: '#1B2A4A' }}
-                    onClick={handleContact}
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    Envoyer un message
-                  </Button>
-
-                  {/* Tertiary — Demander une réservation */}
-                  {!hasExistingReservation && !isReserved && (
-                    <div className="flex items-center justify-center gap-1 mt-4">
-                      <button
-                        onClick={handleReservation}
-                        className="hover:underline"
-                        style={{ fontSize: '13px', color: '#C9A84C' }}
-                      >
-                        Demander une réservation
-                      </button>
-                      <span title="La réservation bloque l'objet le temps de finaliser l'échange">
-                        <HelpCircle className="w-3.5 h-3.5" style={{ color: '#C9A84C' }} />
-                      </span>
-                    </div>
-                  )}
-
-                  {hasExistingReservation && !isReserved && (
-                    <div className="bg-secondary/50 rounded-xl p-3 text-center mt-4">
-                      <p className="text-sm text-muted-foreground">
-                        <CalendarClock className="w-4 h-4 inline mr-1" />
-                        Tu as déjà une demande de réservation en cours
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Owner View */}
+              {userCard}
+              {reservationStatusBlock}
+              {actionsBlock}
               {isOwner && (
                 <div className="space-y-6">
-                  {/* Reservations Collapsible */}
-                  {(reservations.filter(r => r.status === "pending").length > 0 || activeReservation) && (
-                    <Collapsible defaultOpen className="bg-card border border-border rounded-2xl overflow-hidden">
-                      <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
-                        <h3 className="font-semibold text-primary flex items-center gap-2">
-                          <CalendarClock className="w-5 h-5 text-accent" />
-                          Demandes de réservation
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-accent font-medium">
-                            {reservations.filter(r => r.status === "pending" || r.status === "approved").length} réservation{reservations.filter(r => r.status === "pending" || r.status === "approved").length !== 1 ? "s" : ""}
-                          </span>
-                          <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-                        </div>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <div className="px-6 pb-6 space-y-4">
-                          {reservations
-                            .filter(r => r.status === "pending")
-                            .map(reservation => (
-                              <ReservationCard
-                                key={reservation.id}
-                                reservation={reservation}
-                                isOwner={true}
-                                searchTitle={search.title}
-                                onUpdate={() => {
-                                  fetchReservations();
-                                  fetchSearch();
-                                }}
-                              />
-                            ))}
-                          {activeReservation && (
-                            <>
-                              <h4 className="font-medium text-primary flex items-center gap-2 pt-2">
-                                <Lock className="w-4 h-4 text-accent" />
-                                Réservation active
-                              </h4>
-                              <ReservationCard
-                                reservation={activeReservation}
-                                isOwner={true}
-                                searchTitle={search.title}
-                                onUpdate={() => {
-                                  fetchReservations();
-                                  fetchSearch();
-                                }}
-                              />
-                            </>
-                          )}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  )}
-
-                  {/* Proposals Collapsible for Owner */}
-                  <Collapsible defaultOpen={proposals.length > 0} className="bg-card border border-border rounded-2xl overflow-hidden">
-                    <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
-                      <h3 className="font-semibold text-primary flex items-center gap-2">
-                        <MessageCircle className="w-5 h-5 text-accent" />
-                        Propositions
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-accent font-medium">
-                          {proposals.length} proposition{proposals.length !== 1 ? "s" : ""}
-                        </span>
-                        {pendingProposals > 0 && (
-                          <Badge className="bg-accent text-accent-foreground">
-                            {pendingProposals} nouvelle{pendingProposals !== 1 ? "s" : ""}
-                          </Badge>
-                        )}
-                        <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-                      </div>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <div className="px-6 pb-6">
-                        <ProposalList
-                          proposals={proposals}
-                          isOwner={isOwner}
-                          searchId={id || ""}
-                          searchOwnerId={search.user_id}
-                          walletBalance={walletBalance}
-                          isPremium={userProfile?.is_premium || false}
-                          onProposalUpdate={() => {
-                            fetchProposals();
-                          }}
-                        />
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  {ownerReservationsBlock}
+                  {proposalsPanel}
                 </div>
               )}
-
-              {/* Trust badges */}
-              <div
-                className="mt-6 flex items-start gap-3"
-                style={{ backgroundColor: '#F5F0E8', border: '1px solid #C9A84C', borderRadius: '10px', padding: '12px 16px' }}
-              >
-                <Shield className="w-[18px] h-[18px] shrink-0 mt-0.5" style={{ color: '#C9A84C' }} />
-                <div>
-                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#1B2A4A' }}>
-                    Paiement sécurisé via findr
-                  </span>
-                  <p style={{ fontSize: '11px', color: '#8A8070', fontStyle: 'italic', marginTop: '2px' }}>
-                    Fonds bloqués jusqu'à confirmation de réception
-                  </p>
-                </div>
-              </div>
+              {trustBlock}
             </motion.div>
+          </div>
+
+          {/* ===== Mobile layout ===== */}
+          <div className="lg:hidden" style={{ paddingBottom: !isOwner && canInteract ? '84px' : undefined }}>
+            {carousel}
+            {titleBlock}
+            {badgesBlock}
+            {reservationStatusBlock}
+            {actionsBlock && <div className="mb-6">{actionsBlock}</div>}
+            {descriptionBlock}
+            {userCard}
+            {isOwner ? (
+              <div className="space-y-6">
+                {ownerReservationsBlock}
+                {proposalsPanel}
+              </div>
+            ) : (
+              proposalsPanel
+            )}
+            {trustBlock}
           </div>
         </div>
       </main>
+
+      {/* Mobile fixed action bar */}
+      {!isOwner && canInteract && (
+        <div
+          className="lg:hidden fixed bottom-0 left-0 right-0 z-50 px-4 py-3"
+          style={{ backgroundColor: '#0A1628', boxShadow: '0 -4px 16px rgba(10,22,40,0.25)' }}
+        >
+          <Button
+            onClick={handleProposal}
+            className="w-full gap-2 rounded-lg"
+            style={{ height: '48px', fontSize: '15px', fontWeight: 600, backgroundColor: '#0A1628', color: '#C9A84C', border: '1.5px solid #C9A84C' }}
+          >
+            🏷️ Faire une proposition
+          </Button>
+        </div>
+      )}
 
       <Footer />
     </div>
   );
 };
+
 
 export default SearchDetail;
