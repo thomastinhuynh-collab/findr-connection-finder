@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Package, Heart, Clock, Euro, MapPin, Pencil, MoreHorizontal, ChevronDown } from "lucide-react";
+import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Package, Heart, Clock, Euro, MapPin, Pencil, MoreHorizontal, ChevronDown, CreditCard, CheckCircle2, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import PremiumWallet from "@/components/PremiumWallet";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
+import { useStripeConnect } from "@/hooks/useStripeConnect";
+
 
 interface Profile {
   id: string;
@@ -31,7 +33,10 @@ interface Profile {
   xp_points: number;
   level: number;
   city: string | null;
+  stripe_account_id?: string | null;
+  stripe_onboarding_complete?: boolean | null;
 }
+
 
 interface SearchItem {
   id: string;
@@ -71,6 +76,8 @@ const MySpace = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
   const { toast } = useToast();
+  const { startOnboarding, loading: stripeLoading } = useStripeConnect();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -130,6 +137,28 @@ const MySpace = () => {
       navigate("/");
     }
   }, [user, loading, navigate]);
+
+  // Retour depuis l'onboarding Stripe
+  useEffect(() => {
+    const status = new URLSearchParams(window.location.search).get("stripe");
+    if (!status) return;
+    if (status === "success") {
+      toast({
+        title: "Merci !",
+        description: "Stripe finalise la vérification de ton compte, ça peut prendre quelques instants.",
+      });
+    } else if (status === "refresh") {
+      toast({
+        title: "Configuration incomplète",
+        description: "Reprends la configuration de tes paiements pour la terminer.",
+        variant: "destructive",
+      });
+    }
+    if (user) fetchProfile();
+    window.history.replaceState({}, "", "/mon-espace");
+  }, [user]);
+
+
 
   useEffect(() => {
     if (user) {
@@ -856,7 +885,54 @@ const MySpace = () => {
             {/* Separator */}
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
+            {/* Paiements — Stripe Connect */}
+            <div
+              className="mb-6 rounded-xl p-5 bg-white"
+              style={{ border: `1px solid ${profile.stripe_onboarding_complete ? '#BFDBC8' : '#E5E1D8'}` }}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: profile.stripe_onboarding_complete ? '#E8F1EC' : '#FBF3E2' }}
+                  >
+                    {profile.stripe_onboarding_complete ? (
+                      <CheckCircle2 className="w-5 h-5" style={{ color: '#1F6B47' }} />
+                    ) : (
+                      <CreditCard className="w-5 h-5" style={{ color: '#8B6B1F' }} />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold" style={{ color: '#112150' }}>Paiements</h3>
+                    {profile.stripe_onboarding_complete ? (
+                      <p className="text-sm font-medium" style={{ color: '#1F6B47' }}>
+                        ✓ Paiements configurés — tu peux recevoir tes gains.
+                      </p>
+                    ) : (
+                      <p className="text-sm" style={{ color: '#6B7280' }}>
+                        Non configuré. Configure tes paiements pour recevoir tes gains de findr — ça prend 2 minutes.
+                      </p>
+                    )}
+                  </div>
+                </div>
+                {!profile.stripe_onboarding_complete && (
+                  <Button
+                    onClick={startOnboarding}
+                    disabled={stripeLoading}
+                    style={{ backgroundColor: '#112150', color: '#F5F0EA' }}
+                  >
+                    {stripeLoading ? (
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
+                    ) : (
+                      <><CreditCard className="w-4 h-4 mr-2" />Configurer mes paiements</>
+                    )}
+                  </Button>
+                )}
+              </div>
+            </div>
+
             {/* Volets déroulants */}
+
             <div className="flex flex-wrap items-center gap-2 mb-3">
               {([
                 { key: "favorites" as const, label: "Favoris", icon: Heart },
