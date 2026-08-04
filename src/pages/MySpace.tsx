@@ -138,6 +138,28 @@ const MySpace = () => {
     }
   }, [user, loading, navigate]);
 
+  // Retour depuis l'onboarding Stripe
+  useEffect(() => {
+    const status = new URLSearchParams(window.location.search).get("stripe");
+    if (!status) return;
+    if (status === "success") {
+      toast({
+        title: "Merci !",
+        description: "Stripe finalise la vérification de ton compte, ça peut prendre quelques instants.",
+      });
+    } else if (status === "refresh") {
+      toast({
+        title: "Configuration incomplète",
+        description: "Reprends la configuration de tes paiements pour la terminer.",
+        variant: "destructive",
+      });
+    }
+    if (user) fetchProfile();
+    window.history.replaceState({}, "", "/mon-espace");
+  }, [user]);
+
+
+
   useEffect(() => {
     if (user) {
       fetchProfile();
