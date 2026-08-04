@@ -215,6 +215,8 @@ export type Database = {
           is_findr: boolean | null
           is_premium: boolean | null
           level: number | null
+          stripe_account_id: string | null
+          stripe_onboarding_complete: boolean
           updated_at: string
           user_id: string
           xp_points: number | null
@@ -230,6 +232,8 @@ export type Database = {
           is_findr?: boolean | null
           is_premium?: boolean | null
           level?: number | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean
           updated_at?: string
           user_id: string
           xp_points?: number | null
@@ -245,6 +249,8 @@ export type Database = {
           is_findr?: boolean | null
           is_premium?: boolean | null
           level?: number | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean
           updated_at?: string
           user_id?: string
           xp_points?: number | null
