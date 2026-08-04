@@ -19,6 +19,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import PremiumWallet from "@/components/PremiumWallet";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
+import { useStripeConnect } from "@/hooks/useStripeConnect";
+
 
 interface Profile {
   id: string;
