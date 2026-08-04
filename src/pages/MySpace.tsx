@@ -76,6 +76,8 @@ const MySpace = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
   const { toast } = useToast();
+  const { startOnboarding, loading: stripeLoading } = useStripeConnect();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
