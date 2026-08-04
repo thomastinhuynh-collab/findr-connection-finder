@@ -78,6 +78,14 @@ Deno.serve(async (req) => {
         country: "FR",
         email,
         business_type: "individual",
+        // Pre-filled so Stripe skips the "Informations sur votre entreprise"
+        // step (secteur d'activité + site web) during onboarding.
+        business_profile: {
+          mcc: "5399", // Miscellaneous general merchandise
+          url: origin,
+          product_description:
+            "Recherche et revente d'objets pour des particuliers via la marketplace findr.",
+        },
         capabilities: {
           card_payments: { requested: true },
           transfers: { requested: true },
