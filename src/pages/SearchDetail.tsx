@@ -474,8 +474,13 @@ const SearchDetail = () => {
       });
       return;
     }
+    if (!stripeReady) {
+      setStripeGateOpen(true);
+      return;
+    }
     navigate(`/proposition/${id}`);
   };
+
 
   const handleReservation = () => {
     if (!user) {
