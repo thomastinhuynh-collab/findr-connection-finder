@@ -863,7 +863,54 @@ const MySpace = () => {
             {/* Separator */}
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
+            {/* Paiements — Stripe Connect */}
+            <div
+              className="mb-6 rounded-xl p-5 bg-white"
+              style={{ border: `1px solid ${profile.stripe_onboarding_complete ? '#BFDBC8' : '#E5E1D8'}` }}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: profile.stripe_onboarding_complete ? '#E8F1EC' : '#FBF3E2' }}
+                  >
+                    {profile.stripe_onboarding_complete ? (
+                      <CheckCircle2 className="w-5 h-5" style={{ color: '#1F6B47' }} />
+                    ) : (
+                      <CreditCard className="w-5 h-5" style={{ color: '#8B6B1F' }} />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold" style={{ color: '#112150' }}>Paiements</h3>
+                    {profile.stripe_onboarding_complete ? (
+                      <p className="text-sm font-medium" style={{ color: '#1F6B47' }}>
+                        ✓ Paiements configurés — tu peux recevoir tes gains.
+                      </p>
+                    ) : (
+                      <p className="text-sm" style={{ color: '#6B7280' }}>
+                        Non configuré. Configure tes paiements pour recevoir tes gains de findr — ça prend 2 minutes.
+                      </p>
+                    )}
+                  </div>
+                </div>
+                {!profile.stripe_onboarding_complete && (
+                  <Button
+                    onClick={startOnboarding}
+                    disabled={stripeLoading}
+                    style={{ backgroundColor: '#112150', color: '#F5F0EA' }}
+                  >
+                    {stripeLoading ? (
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
+                    ) : (
+                      <><CreditCard className="w-4 h-4 mr-2" />Configurer mes paiements</>
+                    )}
+                  </Button>
+                )}
+              </div>
+            </div>
+
             {/* Volets déroulants */}
+
             <div className="flex flex-wrap items-center gap-2 mb-3">
               {([
                 { key: "favorites" as const, label: "Favoris", icon: Heart },
