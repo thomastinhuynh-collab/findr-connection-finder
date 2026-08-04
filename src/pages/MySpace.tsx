@@ -31,7 +31,10 @@ interface Profile {
   xp_points: number;
   level: number;
   city: string | null;
+  stripe_account_id?: string | null;
+  stripe_onboarding_complete?: boolean | null;
 }
+
 
 interface SearchItem {
   id: string;
