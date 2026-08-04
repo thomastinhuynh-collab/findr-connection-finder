@@ -77,18 +77,18 @@ Deno.serve(async (req) => {
         type: "express",
         country: "FR",
         email,
+        // Particuliers uniquement : jamais de collecte d'infos d'entreprise.
         business_type: "individual",
-        // Pre-filled so Stripe skips the "Informations sur votre entreprise"
-        // step (secteur d'activité + site web) during onboarding.
+        // On ne demande QUE les virements (payouts). Demander card_payments
+        // déclencherait l'étape "Informations sur votre entreprise"
+        // (secteur d'activité + site web) dans l'onboarding Stripe.
+        capabilities: {
+          transfers: { requested: true },
+        },
         business_profile: {
           mcc: "5399", // Miscellaneous general merchandise
-          url: origin,
           product_description:
-            "Recherche et revente d'objets pour des particuliers via la marketplace findr.",
-        },
-        capabilities: {
-          card_payments: { requested: true },
-          transfers: { requested: true },
+            "Vendeur particulier sur la marketplace findr (recherche et revente d'objets).",
         },
         metadata: { supabase_user_id: userId },
       });
@@ -106,7 +106,10 @@ Deno.serve(async (req) => {
       refresh_url: `${origin}/mon-espace?stripe=refresh`,
       return_url: `${origin}/mon-espace?stripe=success`,
       type: "account_onboarding",
+      // Ne demander que le strict nécessaire au particulier.
+      collection_options: { fields: "currently_due" },
     });
+
 
     return json({ url: accountLink.url, accountId });
   } catch (err) {
