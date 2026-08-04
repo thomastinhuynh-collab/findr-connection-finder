@@ -27,6 +27,8 @@ import { useToast } from "@/hooks/use-toast";
 import ProposalList from "@/components/ProposalList";
 import ReservationCard from "@/components/ReservationCard";
 import ReservationBadge from "@/components/ReservationBadge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { useStripeConnect } from "@/hooks/useStripeConnect";
 
 interface SearchWithProfile {
   id: string;
@@ -88,6 +90,7 @@ interface Proposal {
 interface UserProfile {
   is_premium: boolean | null;
   xp_points: number | null;
+  stripe_onboarding_complete?: boolean | null;
 }
 
 interface Reservation {
@@ -258,6 +261,7 @@ const SearchDetail = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { startOnboarding, loading: stripeLoading } = useStripeConnect();
   const [search, setSearch] = useState<SearchWithProfile | null>(null);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -267,6 +271,8 @@ const SearchDetail = () => {
   const [ownerRating, setOwnerRating] = useState<{ avg: number; count: number } | null>(null);
   const [responseHours, setResponseHours] = useState<number | null>(null);
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
+  const [stripeGateOpen, setStripeGateOpen] = useState(false);
+  const stripeReady = !!userProfile?.stripe_onboarding_complete;
 
   useEffect(() => {
     if (id) {
@@ -425,7 +431,7 @@ const SearchDetail = () => {
 
     const { data } = await supabase
       .from("profiles")
-      .select("is_premium, xp_points")
+      .select("is_premium, xp_points, stripe_onboarding_complete")
       .eq("user_id", user.id)
       .maybeSingle();
 
@@ -923,6 +929,34 @@ const SearchDetail = () => {
           </Button>
         </div>
       )}
+
+      {/* Blocage : paiements non configurés */}
+      <Dialog open={stripeGateOpen} onOpenChange={setStripeGateOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle style={{ color: '#112150' }}>Configure tes paiements</DialogTitle>
+            <DialogDescription>
+              Configure tes paiements avant de pouvoir proposer un objet — ça prend 2 minutes.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => setStripeGateOpen(false)}>
+              Plus tard
+            </Button>
+            <Button
+              onClick={startOnboarding}
+              disabled={stripeLoading}
+              style={{ backgroundColor: '#112150', color: '#F5F0EA' }}
+            >
+              {stripeLoading ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
+              ) : (
+                "Configurer mes paiements"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
