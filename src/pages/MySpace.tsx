@@ -91,6 +91,7 @@ const MySpace = () => {
   const [hasProposals, setHasProposals] = useState(false);
   const [hasCommission, setHasCommission] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [stripeModalOpen, setStripeModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
   const [savingProfile, setSavingProfile] = useState(false);
   const [myProposals, setMyProposals] = useState<any[]>([]);
