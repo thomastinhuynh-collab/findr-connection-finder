@@ -267,7 +267,6 @@ const SearchDetail = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [walletBalance] = useState(155.50); // Mock balance
   const [ownerRating, setOwnerRating] = useState<{ avg: number; count: number } | null>(null);
   const [responseHours, setResponseHours] = useState<number | null>(null);
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
@@ -621,7 +620,6 @@ const SearchDetail = () => {
               isOwner={isOwner}
               searchId={id || ""}
               searchOwnerId={search.user_id}
-              walletBalance={walletBalance}
               isPremium={userProfile?.is_premium || false}
               onProposalUpdate={() => {
                 fetchProposals();
