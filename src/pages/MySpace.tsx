@@ -909,8 +909,8 @@ const MySpace = () => {
                         ✓ Paiements configurés — tu peux recevoir tes gains.
                       </p>
                     ) : (
-                      <p className="text-sm" style={{ color: '#6B7280' }}>
-                        Non configuré. Configure tes paiements pour recevoir tes gains de findr — ça prend 2 minutes.
+                      <p className="text-xs" style={{ color: '#9CA3AF' }}>
+                        Sur Stripe, ignore les mentions « entreprise » ou « auto-entrepreneur » — indique juste tes infos personnelles (identité, coordonnées bancaires).
                       </p>
                     )}
                   </div>
