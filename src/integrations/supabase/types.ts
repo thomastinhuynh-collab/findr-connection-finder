@@ -310,44 +310,78 @@ export type Database = {
       reservations: {
         Row: {
           approved_duration_days: number | null
+          buyr_fee: number | null
           buyr_id: string
           created_at: string
           expires_at: string | null
+          findr_fee: number | null
           findr_id: string
+          findr_payout_amount: number | null
           id: string
           justification: string
+          object_price: number | null
+          payment_status: string | null
+          proposal_id: string | null
           requested_duration_days: number
           search_id: string
           status: string
+          stripe_payment_intent_id: string | null
+          stripe_transfer_id: string | null
+          total_buyr_amount: number | null
           updated_at: string
         }
         Insert: {
           approved_duration_days?: number | null
+          buyr_fee?: number | null
           buyr_id: string
           created_at?: string
           expires_at?: string | null
+          findr_fee?: number | null
           findr_id: string
+          findr_payout_amount?: number | null
           id?: string
           justification: string
+          object_price?: number | null
+          payment_status?: string | null
+          proposal_id?: string | null
           requested_duration_days?: number
           search_id: string
           status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
+          total_buyr_amount?: number | null
           updated_at?: string
         }
         Update: {
           approved_duration_days?: number | null
+          buyr_fee?: number | null
           buyr_id?: string
           created_at?: string
           expires_at?: string | null
+          findr_fee?: number | null
           findr_id?: string
+          findr_payout_amount?: number | null
           id?: string
           justification?: string
+          object_price?: number | null
+          payment_status?: string | null
+          proposal_id?: string | null
           requested_duration_days?: number
           search_id?: string
           status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
+          total_buyr_amount?: number | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "reservations_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "reservations_search_id_fkey"
             columns: ["search_id"]
@@ -410,6 +444,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          findr_id: string
+          id: string
+          reservation_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          findr_id: string
+          id?: string
+          reservation_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          findr_id?: string
+          id?: string
+          reservation_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       waitlist: {
         Row: {
