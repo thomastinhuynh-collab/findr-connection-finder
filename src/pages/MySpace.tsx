@@ -66,11 +66,14 @@ interface Evaluation {
   } | null;
 }
 
-const mockTransactions = [
-  { id: "1", type: "credit" as const, amount: 25.00, description: "Vente recherche #127", date: "15 Jan 2026" },
-  { id: "2", type: "debit" as const, amount: 15.00, description: "Abonnement Premium", date: "10 Jan 2026" },
-  { id: "3", type: "credit" as const, amount: 45.50, description: "Vente recherche #125", date: "5 Jan 2026" },
-];
+interface WalletTransaction {
+  id: string;
+  type: "credit";
+  amount: number;
+  description: string;
+  date: string;
+}
+
 
 const MySpace = () => {
   const navigate = useNavigate();
@@ -84,7 +87,8 @@ const MySpace = () => {
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
-  const [walletBalance] = useState(155.50);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
@@ -170,6 +174,7 @@ const MySpace = () => {
       fetchGamificationFlag();
       fetchActivityFlags();
       fetchMyProposals();
+      fetchWallet();
     }
   }, [user]);
 
@@ -220,6 +225,32 @@ const MySpace = () => {
     setHasCommission((comCount || 0) > 0);
   };
 
+
+  const fetchWallet = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("transactions")
+      .select("id, amount, created_at, reservation_id")
+      .eq("findr_id", user.id)
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("Error fetching transactions:", error);
+      setWalletBalance(0);
+      setWalletTransactions([]);
+      return;
+    }
+    const rows = data || [];
+    setWalletBalance(rows.reduce((sum, t: any) => sum + Number(t.amount || 0), 0));
+    setWalletTransactions(
+      rows.map((t: any) => ({
+        id: t.id,
+        type: "credit" as const,
+        amount: Number(t.amount || 0),
+        description: "Vente finalisée",
+        date: new Date(t.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }),
+      }))
+    );
+  };
 
   const fetchProfile = async () => {
     if (!user) return;
@@ -1022,7 +1053,7 @@ const MySpace = () => {
                       <PremiumWallet
                         balance={walletBalance}
                         isPremium={profile?.is_premium || false}
-                        transactions={mockTransactions}
+                        transactions={walletTransactions}
                         onAddFunds={() => navigate("/premium")}
                       />
                     )}

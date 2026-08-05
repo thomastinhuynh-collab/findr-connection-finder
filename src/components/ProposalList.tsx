@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ import {
   XCircle, 
   MessageCircle, 
   ExternalLink, 
-  Wallet, 
+  CreditCard,
   Shield, 
   Loader2, 
   Euro,
@@ -57,22 +57,33 @@ interface Proposal {
   };
 }
 
+interface ReservationPayment {
+  id: string;
+  proposal_id: string | null;
+  payment_status: string | null;
+  object_price: number | null;
+  buyr_fee: number | null;
+  total_buyr_amount: number | null;
+  findr_payout_amount: number | null;
+}
+
 interface ProposalListProps {
   proposals: Proposal[];
   isOwner: boolean;
   searchId: string;
   searchOwnerId: string;
-  walletBalance: number;
   isPremium: boolean;
   onProposalUpdate: () => void;
 }
+
+const FEE_RATE = 0.04;
+const round2 = (n: number) => Math.round(n * 100) / 100;
 
 const ProposalList = ({ 
   proposals, 
   isOwner, 
   searchId,
   searchOwnerId,
-  walletBalance, 
   isPremium,
   onProposalUpdate 
 }: ProposalListProps) => {
@@ -83,21 +94,46 @@ const ProposalList = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [confirmReceiptDialog, setConfirmReceiptDialog] = useState(false);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [payments, setPayments] = useState<Record<string, ReservationPayment>>({});
 
   // Check if current user is the findr of the selected proposal
   const isCurrentUserFindr = selectedProposal && user?.id === selectedProposal.findr_id;
 
-  const platformFee = isPremium ? 0 : 0.05;
-  const authFee = 0.03;
-
-  const calculateTotal = (price: number) => {
-    return price * (1 + platformFee + authFee);
+  const getFees = (price: number) => {
+    const objectPrice = round2(price);
+    const buyrFee = round2(objectPrice * FEE_RATE);
+    const findrFee = round2(objectPrice * FEE_RATE);
+    return {
+      objectPrice,
+      buyrFee,
+      findrFee,
+      total: round2(objectPrice + buyrFee),
+      payout: round2(objectPrice - findrFee),
+    };
   };
+
+  const fetchPayments = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("reservations")
+      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount")
+      .eq("search_id", searchId);
+    const map: Record<string, ReservationPayment> = {};
+    (data || []).forEach((r: any) => {
+      if (r.proposal_id) map[r.proposal_id] = r as ReservationPayment;
+    });
+    setPayments(map);
+  }, [searchId, user]);
+
+  useEffect(() => {
+    fetchPayments();
+  }, [fetchPayments]);
 
   const handleAccept = async (proposal: Proposal) => {
     setSelectedProposal(proposal);
     setPaymentDialogOpen(true);
   };
+
 
   const handleReject = async (proposal: Proposal) => {
     try {
@@ -137,106 +173,66 @@ const ProposalList = ({
 
   const handlePayment = async () => {
     if (!selectedProposal) return;
-
-    const totalAmount = calculateTotal(selectedProposal.proposed_price);
-    const walletPart = Math.min(walletBalance, totalAmount);
-    const cardPart = Math.max(0, totalAmount - walletBalance);
-
     setIsProcessing(true);
-
     try {
-      // If a card complement is needed, simulate a Stripe off-session charge
-      // using the buyer's saved default payment method.
-      if (cardPart > 0) {
-        // NOTE: Real Stripe integration not yet wired. This block simulates
-        // stripe.paymentIntents.create({ amount, currency:'eur', customer,
-        // payment_method, confirm:true, off_session:true }) and would fall
-        // back to stripe.confirmCardPayment() if 3DS is required.
-        await new Promise((resolve) => setTimeout(resolve, 600));
-      }
-
-      // Update proposal status to accepted with payment pending
-      const { error } = await supabase
-        .from("proposals")
-        .update({ status: "accepted_pending" })
-        .eq("id", selectedProposal.id);
-
-      if (error) throw error;
-
-      // Notify the Findr that their proposal was accepted
-      await supabase
-        .from("notifications")
-        .insert({
-          user_id: selectedProposal.findr_id,
-          type: "proposal_accepted",
-          title: "Proposition acceptée ! 🎉",
-          message: `Votre proposition pour "${selectedProposal.title}" a été acceptée. Le paiement est en attente de confirmation de réception.`,
-          link: "/mes-propositions"
-        });
-
-      toast({
-        title: "Paiement en attente ! 💰",
-        description: cardPart > 0
-          ? `${walletPart.toFixed(2)} € débités du portefeuille, ${cardPart.toFixed(2)} € prélevés sur votre carte.`
-          : "Le paiement sera libéré une fois l'article reçu et vérifié.",
+      const { data, error } = await supabase.functions.invoke("create-payment-checkout", {
+        body: { proposalId: selectedProposal.id, origin: window.location.origin },
       });
-
-      setPaymentDialogOpen(false);
-      onProposalUpdate();
-    } catch (error) {
-      console.error("Error processing payment:", error);
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (!data?.url) throw new Error("Lien de paiement indisponible");
+      window.location.href = data.url as string;
+    } catch (error: any) {
+      console.error("Error creating checkout session:", error);
       toast({
-        title: "Erreur",
-        description: "Impossible de traiter le paiement.",
+        title: "Paiement impossible",
+        description: error?.message || "Impossible de démarrer le paiement.",
         variant: "destructive",
       });
-    } finally {
       setIsProcessing(false);
     }
   };
 
   const handleConfirmReceipt = async () => {
     if (!selectedProposal) return;
+    const reservation = payments[selectedProposal.id];
+    if (!reservation) {
+      toast({
+        title: "Erreur",
+        description: "Paiement introuvable pour cette proposition.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsProcessing(true);
-
     try {
-      const { error } = await supabase
-        .from("proposals")
-        .update({ status: "completed" })
-        .eq("id", selectedProposal.id);
-
+      const { data, error } = await supabase.functions.invoke("release-funds-to-findr", {
+        body: { reservationId: reservation.id },
+      });
       if (error) throw error;
-
-      // Notify the Findr that the transaction is complete
-      await supabase
-        .from("notifications")
-        .insert({
-          user_id: selectedProposal.findr_id,
-          type: "proposal_completed",
-          title: "Transaction finalisée ! 💰",
-          message: `Le paiement pour "${selectedProposal.title}" a été libéré. Félicitations !`,
-          link: "/mes-propositions"
-        });
+      if (data?.error) throw new Error(data.error);
 
       toast({
         title: "Transaction finalisée ! 🎉",
-        description: "Le paiement a été libéré au findr. Merci pour votre confiance !",
+        description: "Le paiement a été versé au findr. Merci pour ta confiance !",
       });
 
       setConfirmReceiptDialog(false);
+      await fetchPayments();
       onProposalUpdate();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error confirming receipt:", error);
       toast({
         title: "Erreur",
-        description: "Impossible de confirmer la réception.",
+        description: error?.message || "Impossible de confirmer la réception.",
         variant: "destructive",
       });
     } finally {
       setIsProcessing(false);
     }
   };
+
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("fr-FR", {
@@ -371,7 +367,13 @@ const ProposalList = ({
                     </>
                   )}
 
-                  {isOwner && proposal.status === "accepted_pending" && (
+                  {payments[proposal.id]?.payment_status === "paye_en_attente_reception" && (
+                    <div className="w-full flex items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
+                      🛡️ Paiement sécurisé — en attente de confirmation de réception.
+                    </div>
+                  )}
+
+                  {isOwner && payments[proposal.id]?.payment_status === "paye_en_attente_reception" && (
                     <Button
                       size="sm"
                       onClick={() => {
@@ -380,9 +382,10 @@ const ProposalList = ({
                       }}
                     >
                       <Package className="w-4 h-4 mr-1" />
-                      Confirmer réception
+                      Confirmer la réception de l'objet
                     </Button>
                   )}
+
 
                   {proposal.product_link && (
                     <a
@@ -418,122 +421,83 @@ const ProposalList = ({
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Wallet className="w-5 h-5 text-accent" />
+              <Shield className="w-5 h-5 text-accent" />
               Confirmer le paiement
             </DialogTitle>
             <DialogDescription>
-              Payez avec votre portefeuille findr. Le paiement sera en attente jusqu'à réception de l'article.
+              Le paiement sera bloqué jusqu'à confirmation de réception de l'article.
             </DialogDescription>
           </DialogHeader>
 
-          {selectedProposal && (
-            <div className="space-y-4 py-4">
-              {/* Proposal Summary */}
-              <div className="bg-secondary/50 rounded-lg p-4">
-                <div className="flex gap-3">
-                  {selectedProposal.image_urls?.[0] && (
-                    <img
-                      src={selectedProposal.image_urls[0]}
-                      alt={selectedProposal.title}
-                      className="w-16 h-16 rounded-lg object-cover"
-                    />
-                  )}
-                  <div>
-                    <p className="font-medium">{selectedProposal.title}</p>
-                    <p className="text-sm text-muted-foreground">
-                      par {selectedProposal.findr_profile?.full_name || "findr"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Price Breakdown */}
-              <div className="bg-card border border-border rounded-lg p-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Prix de l'article</span>
-                  <span>{selectedProposal.proposed_price.toFixed(2)} €</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    Commission plateforme ({isPremium ? "0%" : "5%"})
-                  </span>
-                  <span className={isPremium ? "text-success" : ""}>
-                    {isPremium ? "Gratuit" : `+${(selectedProposal.proposed_price * 0.05).toFixed(2)} €`}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Frais d'authentification (3%)</span>
-                  <span>+{(selectedProposal.proposed_price * 0.03).toFixed(2)} €</span>
-                </div>
-                <div className="border-t border-border pt-2 flex justify-between font-semibold">
-                  <span>Total</span>
-                  <span className="text-accent">
-                    {calculateTotal(selectedProposal.proposed_price).toFixed(2)} €
-                  </span>
-                </div>
-              </div>
-
-              {/* Wallet Balance */}
-              {(() => {
-                const total = calculateTotal(selectedProposal.proposed_price);
-                const walletPart = Math.min(walletBalance, total);
-                const cardComplement = Math.max(0, total - walletBalance);
-                const needsCard = cardComplement > 0;
-                return (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between bg-primary/5 rounded-lg p-3">
-                      <span className="text-sm">Solde portefeuille</span>
-                      <span className="font-bold text-foreground">
-                        −{walletPart.toFixed(2)} €
-                      </span>
-                    </div>
-                    {needsCard && (
-                      <div className="flex items-center justify-between bg-accent/10 border border-accent/20 rounded-lg p-3">
-                        <span className="text-sm flex items-center gap-2">
-                          <span>💳</span>
-                          Complément par carte bancaire
-                        </span>
-                        <span className="font-bold text-accent">
-                          +{cardComplement.toFixed(2)} €
-                        </span>
-                      </div>
+          {selectedProposal && (() => {
+            const fees = getFees(selectedProposal.proposed_price);
+            return (
+              <div className="space-y-4 py-4">
+                {/* Proposal Summary */}
+                <div className="bg-secondary/50 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    {selectedProposal.image_urls?.[0] && (
+                      <img
+                        src={selectedProposal.image_urls[0]}
+                        alt={selectedProposal.title}
+                        className="w-16 h-16 rounded-lg object-cover"
+                      />
                     )}
+                    <div>
+                      <p className="font-medium">{selectedProposal.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        par {selectedProposal.findr_profile?.full_name || "findr"}
+                      </p>
+                    </div>
                   </div>
-                );
-              })()}
+                </div>
 
-              {/* Security Info */}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Shield className="w-4 h-4 text-success" />
-                <span>Le paiement sera sécurisé jusqu'à confirmation de réception</span>
+                {/* Price Breakdown */}
+                <div className="bg-card border border-border rounded-lg p-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Prix de l'article</span>
+                    <span>{fees.objectPrice.toFixed(2)} €</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Frais de service (4%)</span>
+                    <span>+{fees.buyrFee.toFixed(2)} €</span>
+                  </div>
+                  <div className="border-t border-border pt-2 flex justify-between font-semibold">
+                    <span>Total</span>
+                    <span className="text-accent">{fees.total.toFixed(2)} €</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Shield className="w-4 h-4 text-success" />
+                  <span>Le paiement sera bloqué jusqu'à confirmation de réception de l'article.</span>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setPaymentDialogOpen(false)}>
-              Annuler
-            </Button>
             <Button
               onClick={handlePayment}
               disabled={isProcessing}
-              className="bg-accent hover:bg-accent/90"
+              className="w-full bg-accent hover:bg-accent/90"
             >
               {isProcessing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Traitement...
+                  Redirection...
                 </>
               ) : (
                 <>
-                  <Euro className="w-4 h-4 mr-2" />
-                  Payer {selectedProposal && calculateTotal(selectedProposal.proposed_price).toFixed(2)} €
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Payer {selectedProposal && getFees(selectedProposal.proposed_price).total.toFixed(2)} € par carte bancaire
                 </>
               )}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
 
       {/* Proposal Detail Dialog */}
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
@@ -643,33 +607,27 @@ const ProposalList = ({
               )}
 
               {/* Price Breakdown Preview */}
-              {isOwner && selectedProposal.status === "pending" && (
-                <div className="bg-card border border-border rounded-lg p-4 space-y-2">
-                  <h4 className="font-medium mb-2">Récapitulatif du prix</h4>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Prix de l'article</span>
-                    <span>{selectedProposal.proposed_price.toFixed(2)} €</span>
+              {isOwner && selectedProposal.status === "pending" && (() => {
+                const fees = getFees(selectedProposal.proposed_price);
+                return (
+                  <div className="bg-card border border-border rounded-lg p-4 space-y-2">
+                    <h4 className="font-medium mb-2">Récapitulatif du prix</h4>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Prix de l'article</span>
+                      <span>{fees.objectPrice.toFixed(2)} €</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Frais de service (4%)</span>
+                      <span>+{fees.buyrFee.toFixed(2)} €</span>
+                    </div>
+                    <div className="border-t border-border pt-2 flex justify-between font-semibold">
+                      <span>Total à payer</span>
+                      <span className="text-accent">{fees.total.toFixed(2)} €</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Commission plateforme ({isPremium ? "0%" : "5%"})
-                    </span>
-                    <span className={isPremium ? "text-success" : ""}>
-                      {isPremium ? "Gratuit" : `+${(selectedProposal.proposed_price * 0.05).toFixed(2)} €`}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Frais d'authentification (3%)</span>
-                    <span>+{(selectedProposal.proposed_price * 0.03).toFixed(2)} €</span>
-                  </div>
-                  <div className="border-t border-border pt-2 flex justify-between font-semibold">
-                    <span>Total à payer</span>
-                    <span className="text-accent">
-                      {calculateTotal(selectedProposal.proposed_price).toFixed(2)} €
-                    </span>
-                  </div>
-                </div>
-              )}
+                );
+              })()}
+
 
               {/* Date */}
               <div className="text-sm text-muted-foreground">
@@ -737,7 +695,9 @@ const ProposalList = ({
               </>
             )}
 
-            {isOwner && selectedProposal?.status === "accepted_pending" && (
+            {isOwner &&
+              selectedProposal &&
+              payments[selectedProposal.id]?.payment_status === "paye_en_attente_reception" && (
               <Button
                 onClick={() => {
                   setDetailDialogOpen(false);
@@ -745,9 +705,10 @@ const ProposalList = ({
                 }}
               >
                 <Package className="w-4 h-4 mr-2" />
-                Confirmer réception
+                Confirmer la réception de l'objet
               </Button>
             )}
+
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -28,14 +28,14 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+
     if (event.type === "account.updated") {
       const account = event.data.object as Stripe.Account;
       const complete = !!account.charges_enabled && !!account.payouts_enabled;
-
-      const admin = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      );
 
       const { error } = await admin
         .from("profiles")
@@ -48,6 +48,54 @@ Deno.serve(async (req) => {
       }
       console.log(`account.updated ${account.id} -> onboarding_complete=${complete}`);
     }
+
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const reservationId = session.metadata?.reservation_id;
+      const proposalId = session.metadata?.proposal_id;
+
+      if (reservationId) {
+        const paymentIntentId =
+          typeof session.payment_intent === "string"
+            ? session.payment_intent
+            : session.payment_intent?.id ?? null;
+
+        const { data: reservation, error } = await admin
+          .from("reservations")
+          .update({
+            payment_status: "paye_en_attente_reception",
+            stripe_payment_intent_id: paymentIntentId,
+          })
+          .eq("id", reservationId)
+          .select("findr_id, search_id")
+          .maybeSingle();
+
+        if (error) {
+          console.error("Reservation update failed:", error.message);
+          return new Response("Database error", { status: 500 });
+        }
+
+        if (proposalId) {
+          await admin
+            .from("proposals")
+            .update({ status: "accepted_pending" })
+            .eq("id", proposalId);
+        }
+
+        if (reservation?.findr_id) {
+          await admin.from("notifications").insert({
+            user_id: reservation.findr_id,
+            type: "proposal_accepted",
+            title: "Proposition acceptée et payée ! 🎉",
+            message:
+              "Le paiement est sécurisé jusqu'à la confirmation de réception de l'article.",
+            link: "/mes-propositions",
+          });
+        }
+        console.log(`checkout.session.completed -> reservation ${reservationId} paid`);
+      }
+    }
+
 
     return new Response(JSON.stringify({ received: true }), {
       status: 200,
