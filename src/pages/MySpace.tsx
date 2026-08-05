@@ -66,11 +66,14 @@ interface Evaluation {
   } | null;
 }
 
-const mockTransactions = [
-  { id: "1", type: "credit" as const, amount: 25.00, description: "Vente recherche #127", date: "15 Jan 2026" },
-  { id: "2", type: "debit" as const, amount: 15.00, description: "Abonnement Premium", date: "10 Jan 2026" },
-  { id: "3", type: "credit" as const, amount: 45.50, description: "Vente recherche #125", date: "5 Jan 2026" },
-];
+interface WalletTransaction {
+  id: string;
+  type: "credit";
+  amount: number;
+  description: string;
+  date: string;
+}
+
 
 const MySpace = () => {
   const navigate = useNavigate();
