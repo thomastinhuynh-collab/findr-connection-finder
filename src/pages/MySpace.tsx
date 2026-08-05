@@ -91,6 +91,7 @@ const MySpace = () => {
   const [hasProposals, setHasProposals] = useState(false);
   const [hasCommission, setHasCommission] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [stripeModalOpen, setStripeModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
   const [savingProfile, setSavingProfile] = useState(false);
   const [myProposals, setMyProposals] = useState<any[]>([]);
@@ -909,15 +910,15 @@ const MySpace = () => {
                         ✓ Paiements configurés — tu peux recevoir tes gains.
                       </p>
                     ) : (
-                      <p className="text-xs" style={{ color: '#9CA3AF' }}>
-                        Sur Stripe, ignore les mentions « entreprise » ou « auto-entrepreneur » — indique juste tes infos personnelles (identité, coordonnées bancaires).
+                      <p className="text-sm" style={{ color: '#6B7280' }}>
+                        Configure tes paiements pour recevoir tes gains.
                       </p>
                     )}
                   </div>
                 </div>
                 {!profile.stripe_onboarding_complete && (
                   <Button
-                    onClick={startOnboarding}
+                    onClick={() => setStripeModalOpen(true)}
                     disabled={stripeLoading}
                     style={{ backgroundColor: '#112150', color: '#F5F0EA' }}
                   >
@@ -930,6 +931,40 @@ const MySpace = () => {
                 )}
               </div>
             </div>
+
+            {/* Modale d'information avant redirection Stripe */}
+            <Dialog open={stripeModalOpen} onOpenChange={setStripeModalOpen}>
+              <DialogContent className="sm:max-w-md" style={{ backgroundColor: '#FBFAF6' }}>
+                <DialogHeader>
+                  <DialogTitle style={{ fontFamily: "'Playfair Display', serif", color: '#112150' }}>
+                    Avant de continuer
+                  </DialogTitle>
+                </DialogHeader>
+                <p className="text-sm leading-relaxed" style={{ color: '#4B5563' }}>
+                  Sur Stripe, ignore les mentions « entreprise » ou « auto-entrepreneur » — indique juste tes infos personnelles (identité, coordonnées bancaires).
+                </p>
+                <DialogFooter className="flex items-center justify-between gap-3 sm:justify-between">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setStripeModalOpen(false)}
+                    style={{ color: '#6B7280' }}
+                  >
+                    Annuler
+                  </Button>
+                  <Button
+                    onClick={() => { setStripeModalOpen(false); startOnboarding(); }}
+                    disabled={stripeLoading}
+                    style={{ backgroundColor: '#112150', color: '#F5F0EA' }}
+                  >
+                    {stripeLoading ? (
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
+                    ) : (
+                      <>Continuer vers Stripe →</>
+                    )}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             {/* Volets déroulants */}
 
