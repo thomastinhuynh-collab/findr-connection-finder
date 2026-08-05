@@ -23,7 +23,7 @@ import {
   XCircle, 
   MessageCircle, 
   ExternalLink, 
-  Wallet, 
+  CreditCard,
   Shield, 
   Loader2, 
   Euro,
