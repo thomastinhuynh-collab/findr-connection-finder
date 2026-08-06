@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
 
     const { data: reservation, error: rErr } = await admin
       .from("reservations")
-      .select("id, buyr_id, findr_id, proposal_id, payment_status, findr_payout_amount")
+      .select("id, buyr_id, findr_id, proposal_id, payment_status, findr_payout_amount, stripe_payment_intent_id")
       .eq("id", reservationId)
       .maybeSingle();
     if (rErr || !reservation) return json({ error: "Réservation introuvable" }, 404);
@@ -57,12 +57,28 @@ Deno.serve(async (req) => {
     const amount = Math.round(Number(reservation.findr_payout_amount) * 100);
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
+    // On rattache le virement à la charge du buyr (source_transaction) :
+    // Stripe puise directement dans ce paiement, sans dépendre du solde
+    // disponible de la plateforme (essentiel en mode Test).
+    let sourceTransaction: string | undefined;
+    if (reservation.stripe_payment_intent_id) {
+      try {
+        const pi = await stripe.paymentIntents.retrieve(reservation.stripe_payment_intent_id);
+        const latest = pi.latest_charge;
+        sourceTransaction = typeof latest === "string" ? latest : latest?.id;
+      } catch (e) {
+        console.error("Impossible de récupérer la charge d'origine:", e);
+      }
+    }
+
     const transfer = await stripe.transfers.create({
       amount,
       currency: "eur",
       destination: findrProfile.stripe_account_id,
+      ...(sourceTransaction ? { source_transaction: sourceTransaction } : {}),
       metadata: { reservation_id: reservation.id },
     });
+
 
     const { error: upErr } = await admin
       .from("reservations")
