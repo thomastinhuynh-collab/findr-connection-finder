@@ -472,33 +472,14 @@ const MakeProposal = () => {
                     <span className="font-medium">{priceNum.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      Commission plateforme ({isPremium ? "0%" : "5%"})
-                    </span>
-                    <span className={`font-medium ${isPremium ? "text-success" : "text-destructive"}`}>
-                      {isPremium ? "Gratuit" : `-${(priceNum * 0.05).toFixed(2)} €`}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Frais d'authentification (3%)</span>
-                    <span className="font-medium text-destructive">-{(priceNum * 0.03).toFixed(2)} €</span>
+                    <span className="text-muted-foreground">Commission findr (4%)</span>
+                    <span className="font-medium text-destructive">-{findrFee.toFixed(2)} €</span>
                   </div>
                   <div className="border-t border-border pt-2 flex justify-between">
                     <span className="font-semibold text-primary">Vous recevrez</span>
                     <span className="font-bold text-lg text-accent">{finalAmount.toFixed(2)} €</span>
                   </div>
                 </div>
-
-                {!isPremium && (
-                  <button
-                    type="button"
-                    onClick={() => navigate("/premium")}
-                    className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/50 rounded-lg p-2 w-full hover:bg-secondary transition-colors"
-                  >
-                    <Crown className="w-4 h-4 text-accent" />
-                    <span>Avec <span className="font-medium text-accent">Premium</span>, économisez 5% de commission !</span>
-                  </button>
-                )}
               </div>
 
               {/* Payment Info */}
