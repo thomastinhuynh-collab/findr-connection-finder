@@ -480,7 +480,7 @@ const ProposalList = ({
             <Button
               onClick={handlePayment}
               disabled={isProcessing}
-              className="w-full bg-accent hover:bg-accent/90"
+              className="w-full bg-accent hover:bg-accent/90 whitespace-normal"
             >
               {isProcessing ? (
                 <>
@@ -489,8 +489,8 @@ const ProposalList = ({
                 </>
               ) : (
                 <>
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Payer {selectedProposal && getFees(selectedProposal.proposed_price).total.toFixed(2)} € par carte bancaire
+                  <CreditCard className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span className="break-words">Payer {selectedProposal && getFees(selectedProposal.proposed_price).total.toFixed(2)} € par carte bancaire</span>
                 </>
               )}
             </Button>
