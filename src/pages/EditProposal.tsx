@@ -71,10 +71,10 @@ const EditProposal = () => {
   const [loading, setLoading] = useState(true);
 
   const isPremium = userProfile?.is_premium || false;
-  const platformFee = isPremium ? 0 : 0.05;
-  const authFee = 0.03;
+  const FINDR_FEE_RATE = 0.04;
   const priceNum = parseFloat(price) || 0;
-  const finalAmount = priceNum * (1 - platformFee - authFee);
+  const findrFee = Math.round(priceNum * FINDR_FEE_RATE * 100) / 100;
+  const finalAmount = Math.round((priceNum - findrFee) * 100) / 100;
 
   useEffect(() => {
     if (!authLoading && !user) {
