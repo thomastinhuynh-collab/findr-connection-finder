@@ -418,11 +418,11 @@ const ProposalList = ({
 
       {/* Payment Dialog */}
       <Dialog open={paymentDialogOpen} onOpenChange={setPaymentDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-accent" />
-              Confirmer le paiement
+            <DialogTitle className="flex items-center gap-2 flex-wrap">
+              <Shield className="w-5 h-5 text-accent flex-shrink-0" />
+              <span className="break-words">Confirmer le paiement</span>
             </DialogTitle>
             <DialogDescription>
               Le paiement sera bloqué jusqu'à confirmation de réception de l'article.
@@ -443,9 +443,9 @@ const ProposalList = ({
                         className="w-16 h-16 rounded-lg object-cover"
                       />
                     )}
-                    <div>
-                      <p className="font-medium">{selectedProposal.title}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="min-w-0">
+                      <p className="font-medium break-words">{selectedProposal.title}</p>
+                      <p className="text-sm text-muted-foreground break-words">
                         par {selectedProposal.findr_profile?.full_name || "findr"}
                       </p>
                     </div>
@@ -454,17 +454,17 @@ const ProposalList = ({
 
                 {/* Price Breakdown */}
                 <div className="bg-card border border-border rounded-lg p-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Prix de l'article</span>
-                    <span>{fees.objectPrice.toFixed(2)} €</span>
+                  <div className="flex justify-between text-sm gap-4">
+                    <span className="text-muted-foreground break-words">Prix de l'article</span>
+                    <span className="text-right flex-shrink-0">{fees.objectPrice.toFixed(2)} €</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Frais de service (4%)</span>
-                    <span>+{fees.buyrFee.toFixed(2)} €</span>
+                  <div className="flex justify-between text-sm gap-4">
+                    <span className="text-muted-foreground break-words">Frais de service (4%)</span>
+                    <span className="text-right flex-shrink-0">+{fees.buyrFee.toFixed(2)} €</span>
                   </div>
-                  <div className="border-t border-border pt-2 flex justify-between font-semibold">
-                    <span>Total</span>
-                    <span className="text-accent">{fees.total.toFixed(2)} €</span>
+                  <div className="border-t border-border pt-2 flex justify-between font-semibold gap-4">
+                    <span className="break-words">Total</span>
+                    <span className="text-accent text-right flex-shrink-0">{fees.total.toFixed(2)} €</span>
                   </div>
                 </div>
 
@@ -480,7 +480,7 @@ const ProposalList = ({
             <Button
               onClick={handlePayment}
               disabled={isProcessing}
-              className="w-full bg-accent hover:bg-accent/90"
+              className="w-full bg-accent hover:bg-accent/90 whitespace-normal"
             >
               {isProcessing ? (
                 <>
@@ -489,8 +489,8 @@ const ProposalList = ({
                 </>
               ) : (
                 <>
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Payer {selectedProposal && getFees(selectedProposal.proposed_price).total.toFixed(2)} € par carte bancaire
+                  <CreditCard className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span className="break-words">Payer {selectedProposal && getFees(selectedProposal.proposed_price).total.toFixed(2)} € par carte bancaire</span>
                 </>
               )}
             </Button>
@@ -501,11 +501,11 @@ const ProposalList = ({
 
       {/* Proposal Detail Dialog */}
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Package className="w-5 h-5 text-accent" />
-              Détail de la proposition
+            <DialogTitle className="flex items-center gap-2 flex-wrap">
+              <Package className="w-5 h-5 text-accent flex-shrink-0" />
+              <span className="break-words">Détail de la proposition</span>
             </DialogTitle>
           </DialogHeader>
 
@@ -612,17 +612,17 @@ const ProposalList = ({
                 return (
                   <div className="bg-card border border-border rounded-lg p-4 space-y-2">
                     <h4 className="font-medium mb-2">Récapitulatif du prix</h4>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Prix de l'article</span>
-                      <span>{fees.objectPrice.toFixed(2)} €</span>
+                    <div className="flex justify-between text-sm gap-4">
+                      <span className="text-muted-foreground break-words">Prix de l'article</span>
+                      <span className="text-right flex-shrink-0">{fees.objectPrice.toFixed(2)} €</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Frais de service (4%)</span>
-                      <span>+{fees.buyrFee.toFixed(2)} €</span>
+                    <div className="flex justify-between text-sm gap-4">
+                      <span className="text-muted-foreground break-words">Frais de service (4%)</span>
+                      <span className="text-right flex-shrink-0">+{fees.buyrFee.toFixed(2)} €</span>
                     </div>
-                    <div className="border-t border-border pt-2 flex justify-between font-semibold">
-                      <span>Total à payer</span>
-                      <span className="text-accent">{fees.total.toFixed(2)} €</span>
+                    <div className="border-t border-border pt-2 flex justify-between font-semibold gap-4">
+                      <span className="break-words">Total à payer</span>
+                      <span className="text-accent text-right flex-shrink-0">{fees.total.toFixed(2)} €</span>
                     </div>
                   </div>
                 );
@@ -715,11 +715,11 @@ const ProposalList = ({
 
       {/* Confirm Receipt Dialog */}
       <Dialog open={confirmReceiptDialog} onOpenChange={setConfirmReceiptDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Package className="w-5 h-5 text-success" />
-              Confirmer la réception
+            <DialogTitle className="flex items-center gap-2 flex-wrap">
+              <Package className="w-5 h-5 text-success flex-shrink-0" />
+              <span className="break-words">Confirmer la réception</span>
             </DialogTitle>
             <DialogDescription>
               Confirmez que vous avez bien reçu l'article et qu'il correspond à la description.
