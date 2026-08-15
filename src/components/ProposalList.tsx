@@ -717,9 +717,9 @@ const ProposalList = ({
       <Dialog open={confirmReceiptDialog} onOpenChange={setConfirmReceiptDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Package className="w-5 h-5 text-success" />
-              Confirmer la réception
+            <DialogTitle className="flex items-center gap-2 flex-wrap">
+              <Package className="w-5 h-5 text-success flex-shrink-0" />
+              <span className="break-words">Confirmer la réception</span>
             </DialogTitle>
             <DialogDescription>
               Confirmez que vous avez bien reçu l'article et qu'il correspond à la description.
