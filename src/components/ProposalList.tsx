@@ -443,9 +443,9 @@ const ProposalList = ({
                         className="w-16 h-16 rounded-lg object-cover"
                       />
                     )}
-                    <div>
-                      <p className="font-medium">{selectedProposal.title}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="min-w-0">
+                      <p className="font-medium break-words">{selectedProposal.title}</p>
+                      <p className="text-sm text-muted-foreground break-words">
                         par {selectedProposal.findr_profile?.full_name || "findr"}
                       </p>
                     </div>
