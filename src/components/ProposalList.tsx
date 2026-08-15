@@ -715,7 +715,7 @@ const ProposalList = ({
 
       {/* Confirm Receipt Dialog */}
       <Dialog open={confirmReceiptDialog} onOpenChange={setConfirmReceiptDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Package className="w-5 h-5 text-success" />
