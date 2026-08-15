@@ -612,17 +612,17 @@ const ProposalList = ({
                 return (
                   <div className="bg-card border border-border rounded-lg p-4 space-y-2">
                     <h4 className="font-medium mb-2">Récapitulatif du prix</h4>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Prix de l'article</span>
-                      <span>{fees.objectPrice.toFixed(2)} €</span>
+                    <div className="flex justify-between text-sm gap-4">
+                      <span className="text-muted-foreground break-words">Prix de l'article</span>
+                      <span className="text-right flex-shrink-0">{fees.objectPrice.toFixed(2)} €</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Frais de service (4%)</span>
-                      <span>+{fees.buyrFee.toFixed(2)} €</span>
+                    <div className="flex justify-between text-sm gap-4">
+                      <span className="text-muted-foreground break-words">Frais de service (4%)</span>
+                      <span className="text-right flex-shrink-0">+{fees.buyrFee.toFixed(2)} €</span>
                     </div>
-                    <div className="border-t border-border pt-2 flex justify-between font-semibold">
-                      <span>Total à payer</span>
-                      <span className="text-accent">{fees.total.toFixed(2)} €</span>
+                    <div className="border-t border-border pt-2 flex justify-between font-semibold gap-4">
+                      <span className="break-words">Total à payer</span>
+                      <span className="text-accent text-right flex-shrink-0">{fees.total.toFixed(2)} €</span>
                     </div>
                   </div>
                 );
