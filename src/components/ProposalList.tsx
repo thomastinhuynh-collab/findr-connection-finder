@@ -420,9 +420,9 @@ const ProposalList = ({
       <Dialog open={paymentDialogOpen} onOpenChange={setPaymentDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-accent" />
-              Confirmer le paiement
+            <DialogTitle className="flex items-center gap-2 flex-wrap">
+              <Shield className="w-5 h-5 text-accent flex-shrink-0" />
+              <span className="break-words">Confirmer le paiement</span>
             </DialogTitle>
             <DialogDescription>
               Le paiement sera bloqué jusqu'à confirmation de réception de l'article.
