@@ -636,80 +636,94 @@ const ProposalList = ({
             </div>
           )}
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDetailDialogOpen(false)}>
-              Fermer
-            </Button>
-
-            {/* Contact button - for Buyrs to contact Findrs OR Findrs to contact Buyrs */}
-            {selectedProposal && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setDetailDialogOpen(false);
-                  navigate(`/messagerie/${searchId}`);
-                }}
-              >
-                <MessageCircle className="w-4 h-4 mr-2" />
-                {isOwner ? "Contacter le findr" : "Contacter le buyr"}
-              </Button>
-            )}
-
-            {/* Findr can edit their own pending proposal - only visible to the Findr */}
-            {!isOwner && isCurrentUserFindr && selectedProposal?.status === "pending" && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setDetailDialogOpen(false);
-                  navigate(`/modifier-proposition/${selectedProposal.id}`);
-                }}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Modifier ma proposition
-              </Button>
-            )}
-            
+          <DialogFooter className="!flex-col !items-stretch gap-2 pt-2 border-t border-border/60">
+            {/* Primary action first, full width */}
             {isOwner && selectedProposal?.status === "pending" && (
-              <>
-                <Button
-                  variant="outline"
-                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                  onClick={() => {
-                    handleReject(selectedProposal);
-                    setDetailDialogOpen(false);
-                  }}
-                >
-                  <XCircle className="w-4 h-4 mr-2" />
-                  Refuser
-                </Button>
-                <Button
-                  className="bg-success hover:bg-success/90 text-success-foreground"
-                  onClick={() => {
-                    setDetailDialogOpen(false);
-                    handleAccept(selectedProposal);
-                  }}
-                >
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Accepter cette proposition
-                </Button>
-              </>
+              <Button
+                size="lg"
+                className="w-full bg-success hover:bg-success/90 text-success-foreground"
+                onClick={() => {
+                  setDetailDialogOpen(false);
+                  handleAccept(selectedProposal);
+                }}
+              >
+                <CheckCircle2 className="w-4 h-4 mr-2 flex-shrink-0" />
+                Accepter cette proposition
+              </Button>
             )}
 
             {isOwner &&
               selectedProposal &&
               payments[selectedProposal.id]?.payment_status === "paye_en_attente_reception" && (
+                <Button
+                  size="lg"
+                  className="w-full"
+                  onClick={() => {
+                    setDetailDialogOpen(false);
+                    setConfirmReceiptDialog(true);
+                  }}
+                >
+                  <Package className="w-4 h-4 mr-2 flex-shrink-0" />
+                  Confirmer la réception de l'objet
+                </Button>
+              )}
+
+            {/* Findr can edit their own pending proposal */}
+            {!isOwner && isCurrentUserFindr && selectedProposal?.status === "pending" && (
               <Button
+                size="lg"
+                className="w-full"
                 onClick={() => {
                   setDetailDialogOpen(false);
-                  setConfirmReceiptDialog(true);
+                  navigate(`/modifier-proposition/${selectedProposal.id}`);
                 }}
               >
-                <Package className="w-4 h-4 mr-2" />
-                Confirmer la réception de l'objet
+                <ExternalLink className="w-4 h-4 mr-2 flex-shrink-0" />
+                Modifier ma proposition
               </Button>
             )}
 
+            {/* Secondary actions */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
+              {selectedProposal && (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    setDetailDialogOpen(false);
+                    navigate(`/messagerie/${searchId}`);
+                  }}
+                >
+                  <MessageCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+                  {isOwner ? "Contacter le findr" : "Contacter le buyr"}
+                </Button>
+              )}
+
+              {isOwner && selectedProposal?.status === "pending" && (
+                <Button
+                  variant="outline"
+                  className="w-full text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                  onClick={() => {
+                    handleReject(selectedProposal);
+                    setDetailDialogOpen(false);
+                  }}
+                >
+                  <XCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+                  Refuser
+                </Button>
+              )}
+            </div>
+
+            {/* Dismiss last, discreet */}
+            <Button
+              variant="ghost"
+              className="w-full text-muted-foreground"
+              onClick={() => setDetailDialogOpen(false)}
+            >
+              Fermer
+            </Button>
           </DialogFooter>
+
         </DialogContent>
       </Dialog>
 
