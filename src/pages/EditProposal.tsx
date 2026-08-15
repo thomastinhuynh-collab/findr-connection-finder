@@ -553,16 +553,8 @@ const EditProposal = () => {
                     <span className="font-medium">{priceNum.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      Commission plateforme ({isPremium ? "0%" : "5%"})
-                    </span>
-                    <span className={`font-medium ${isPremium ? "text-success" : "text-destructive"}`}>
-                      {isPremium ? "0.00 €" : `-${(priceNum * 0.05).toFixed(2)} €`}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Frais d'authentification (3%)</span>
-                    <span className="font-medium text-destructive">-{(priceNum * 0.03).toFixed(2)} €</span>
+                    <span className="text-muted-foreground">Commission findr (4%)</span>
+                    <span className="font-medium text-destructive">-{findrFee.toFixed(2)} €</span>
                   </div>
                 </div>
 
