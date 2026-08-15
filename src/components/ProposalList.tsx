@@ -503,9 +503,9 @@ const ProposalList = ({
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Package className="w-5 h-5 text-accent" />
-              Détail de la proposition
+            <DialogTitle className="flex items-center gap-2 flex-wrap">
+              <Package className="w-5 h-5 text-accent flex-shrink-0" />
+              <span className="break-words">Détail de la proposition</span>
             </DialogTitle>
           </DialogHeader>
 
