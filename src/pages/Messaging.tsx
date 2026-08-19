@@ -40,6 +40,10 @@ const QUICK_SUGGESTIONS = [
 
 const Messaging = () => {
   const { id } = useParams();
+  const [urlParams] = useSearchParams();
+  const withUserId = urlParams.get("with");
+  const [partnerId, setPartnerId] = useState<string | null>(null);
+  const [partnerProfile, setPartnerProfile] = useState<{ full_name: string | null; avatar_url: string | null } | null>(null);
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
