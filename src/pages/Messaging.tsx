@@ -228,7 +228,6 @@ const Messaging = () => {
 
     setSending(true);
     const photosSnapshot = [...photos];
-    const photosSnapshot = [...photos];
     const contentToSend = message.trim() || (photosSnapshot.length > 0 ? "📷 Photo(s)" : "");
 
     const { data, error } = await supabase
