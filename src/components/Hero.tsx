@@ -99,17 +99,7 @@ const Hero = () => {
         >
           {/* Logo */}
           <Link to="/" style={{ flexShrink: 0, textDecoration: "none" }}>
-            <span
-              style={{
-                ...playfair,
-                fontSize: 22,
-                fontWeight: 500,
-                letterSpacing: "-0.3px",
-                color: GOLD,
-              }}
-            >
-              findr
-            </span>
+            <Logo size={24} />
           </Link>
 
           {/* Center links */}
