@@ -691,7 +691,7 @@ const ProposalList = ({
                   className="w-full"
                   onClick={() => {
                     setDetailDialogOpen(false);
-                    navigate(`/messagerie/${searchId}`);
+                    navigate(`/messagerie/${searchId}?with=${isOwner ? selectedProposal.findr_id : searchOwnerId ?? ""}`);
                   }}
                 >
                   <MessageCircle className="w-4 h-4 mr-2 flex-shrink-0" />

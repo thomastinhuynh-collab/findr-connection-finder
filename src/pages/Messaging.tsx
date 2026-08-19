@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Footer from "@/components/Footer";
@@ -40,6 +40,10 @@ const QUICK_SUGGESTIONS = [
 
 const Messaging = () => {
   const { id } = useParams();
+  const [urlParams] = useSearchParams();
+  const withUserId = urlParams.get("with");
+  const [partnerId, setPartnerId] = useState<string | null>(null);
+  const [partnerProfile, setPartnerProfile] = useState<{ full_name: string | null; avatar_url: string | null } | null>(null);
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
@@ -139,12 +143,34 @@ const Messaging = () => {
       return;
     }
 
+    // Determine the actual conversation partner
+    let resolvedPartnerId: string | null = withUserId;
+
+    if (!resolvedPartnerId) {
+      if (user && user.id === searchData.user_id) {
+        // Buyr side: fall back to the findr of the most recent proposal
+        const { data: prop } = await supabase
+          .from("proposals")
+          .select("findr_id, created_at")
+          .eq("search_id", searchData.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        resolvedPartnerId = prop?.findr_id ?? null;
+      } else {
+        resolvedPartnerId = searchData.user_id;
+      }
+    }
+
+    setPartnerId(resolvedPartnerId);
+
     const { data: profileData } = await supabase
       .from("profiles")
       .select("full_name, avatar_url")
-      .eq("user_id", searchData.user_id)
+      .eq("user_id", resolvedPartnerId ?? searchData.user_id)
       .maybeSingle();
 
+    setPartnerProfile(profileData ?? null);
     setSearch({
       ...searchData,
       profiles: profileData
@@ -190,8 +216,17 @@ const Messaging = () => {
   const handleSend = async () => {
     if ((!message.trim() && photos.length === 0) || !user || !search) return;
 
+    const actualReceiverId = partnerId && partnerId !== user.id ? partnerId : search.user_id;
+    if (!actualReceiverId || actualReceiverId === user.id) {
+      toast({
+        title: "Interlocuteur introuvable",
+        description: "Impossible d'identifier la personne à contacter.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setSending(true);
-    const actualReceiverId = search.user_id;
     const photosSnapshot = [...photos];
     const contentToSend = message.trim() || (photosSnapshot.length > 0 ? "📷 Photo(s)" : "");
 
@@ -287,7 +322,13 @@ const Messaging = () => {
     }
   };
 
-  const groupedMessages = messages.reduce((groups, msg) => {
+  const visibleMessages = partnerId
+    ? messages.filter(
+        (m) => m.sender_id === partnerId || m.receiver_id === partnerId
+      )
+    : messages;
+
+  const groupedMessages = visibleMessages.reduce((groups, msg) => {
     const date = new Date(msg.created_at).toDateString();
     if (!groups[date]) {
       groups[date] = [];
