@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import HeaderActions from "@/components/HeaderActions";
+import Logo from "@/components/Logo";
 
 const GOLD = "rgb(217, 187, 135)";
 const DARK = "#0A1628";
@@ -99,17 +100,7 @@ const Hero = () => {
         >
           {/* Logo */}
           <Link to="/" style={{ flexShrink: 0, textDecoration: "none" }}>
-            <span
-              style={{
-                ...playfair,
-                fontSize: 22,
-                fontWeight: 500,
-                letterSpacing: "-0.3px",
-                color: GOLD,
-              }}
-            >
-              findr
-            </span>
+            <Logo size={24} />
           </Link>
 
           {/* Center links */}
