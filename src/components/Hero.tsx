@@ -100,7 +100,7 @@ const Hero = () => {
         >
           {/* Logo */}
           <Link to="/" style={{ flexShrink: 0, textDecoration: "none" }}>
-            <Logo size={24} />
+            <Logo size={34} />
           </Link>
 
           {/* Center links */}
