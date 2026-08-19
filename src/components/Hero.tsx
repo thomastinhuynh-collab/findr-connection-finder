@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
+import HeaderActions from "@/components/HeaderActions";
 
 const GOLD = "rgb(217, 187, 135)";
 const DARK = "#0A1628";
@@ -143,6 +144,7 @@ const Hero = () => {
             className="hidden md:flex items-center"
             style={{ flexShrink: 0, gap: 12 }}
           >
+            {user && <HeaderActions variant="gold" />}
             <button
               onClick={() => navigate("/poster")}
               style={{
@@ -177,7 +179,12 @@ const Hero = () => {
             </button>
           </div>
 
-          {/* Mobile burger */}
+          {/* Mobile actions + burger */}
+          {user && (
+            <div className="md:hidden" style={{ marginLeft: "auto", marginRight: 4 }}>
+              <HeaderActions variant="gold" />
+            </div>
+          )}
           <button
             className="md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
