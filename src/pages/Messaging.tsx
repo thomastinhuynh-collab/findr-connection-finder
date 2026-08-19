@@ -322,7 +322,13 @@ const Messaging = () => {
     }
   };
 
-  const groupedMessages = messages.reduce((groups, msg) => {
+  const visibleMessages = partnerId
+    ? messages.filter(
+        (m) => m.sender_id === partnerId || m.receiver_id === partnerId
+      )
+    : messages;
+
+  const groupedMessages = visibleMessages.reduce((groups, msg) => {
     const date = new Date(msg.created_at).toDateString();
     if (!groups[date]) {
       groups[date] = [];
