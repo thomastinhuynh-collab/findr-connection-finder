@@ -2,35 +2,63 @@ import { cn } from "@/lib/utils";
 
 interface LogoProps {
   className?: string;
+  /** cream = on dark navy backgrounds (main version), navy = on light backgrounds */
   variant?: "cream" | "navy";
+  /** font-size in px of the wordmark */
+  size?: number;
 }
 
-const Logo = ({ className, variant = "cream" }: LogoProps) => {
-  const fillColor = variant === "navy" ? "#112150" : "#F5F0EA";
-  
+export const LOGO_CREAM = "#F5F1E8";
+export const LOGO_NAVY = "#0A1628";
+
+/**
+ * findr wordmark — Space Grotesk 700, always lowercase.
+ * The dot of the "i" is replaced by a stylised magnifying glass in the same color.
+ */
+const Logo = ({ className, variant = "cream", size = 28 }: LogoProps) => {
+  const color = variant === "navy" ? LOGO_NAVY : LOGO_CREAM;
+  const glassSize = Math.round(size * 0.42);
+
   return (
-    <svg
-      width="110"
-      height="38"
-      viewBox="0 0 140 44"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={cn(className)}
+    <span
+      className={cn("inline-flex items-baseline select-none", className)}
+      style={{
+        fontFamily: "'Space Grotesk', sans-serif",
+        fontWeight: 700,
+        fontSize: size,
+        lineHeight: 1,
+        letterSpacing: "-0.02em",
+        color,
+        textTransform: "lowercase",
+      }}
+      aria-label="findr"
     >
-      <text
-        x="70"
-        y="36"
-        textAnchor="middle"
-        fontFamily="'Space Grotesk', sans-serif"
-        fontWeight="700"
-        fontSize="38"
-        fill={fillColor}
-      >
-        fındr
-      </text>
-      <circle cx="46" cy="9" r="3" fill="none" stroke={fillColor} strokeWidth="1.8" />
-      <line x1="48.2" y1="11.2" x2="50.5" y2="13.5" stroke={fillColor} strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
+      <span aria-hidden="true">f</span>
+      <span aria-hidden="true" style={{ position: "relative", display: "inline-block" }}>
+        {/* dotless i (U+0131) */}
+        {"\u0131"}
+        <svg
+          viewBox="0 0 24 24"
+          width={glassSize}
+          height={glassSize}
+          fill="none"
+          stroke={color}
+          strokeWidth={3}
+          strokeLinecap="round"
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: -glassSize * 0.95,
+            transform: "translateX(-50%) rotate(-45deg)",
+            pointerEvents: "none",
+          }}
+        >
+          <circle cx="10" cy="10" r="6.5" />
+          <line x1="15" y1="15" x2="21" y2="21" />
+        </svg>
+      </span>
+      <span aria-hidden="true">ndr</span>
+    </span>
   );
 };
 
