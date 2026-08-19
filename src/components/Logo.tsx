@@ -17,7 +17,7 @@ export const LOGO_NAVY = "#0A1628";
  */
 const Logo = ({ className, variant = "cream", size = 28 }: LogoProps) => {
   const color = variant === "navy" ? LOGO_NAVY : LOGO_CREAM;
-  const glassSize = Math.round(size * 0.5);
+  const glassSize = Math.round(size * 0.34);
 
   return (
     <span
@@ -48,7 +48,7 @@ const Logo = ({ className, variant = "cream", size = 28 }: LogoProps) => {
           style={{
             position: "absolute",
             left: "50%",
-            top: -glassSize * 0.28,
+            top: -glassSize * 0.55,
             transform: "translateX(-50%)",
             pointerEvents: "none",
           }}
