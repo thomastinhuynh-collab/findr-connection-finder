@@ -48,7 +48,7 @@ const Logo = ({ className, variant = "cream", size = 28 }: LogoProps) => {
           style={{
             position: "absolute",
             left: "50%",
-            top: -glassSize * 0.55,
+            top: -glassSize * 0.35,
             transform: "translateX(-50%)",
             pointerEvents: "none",
           }}
