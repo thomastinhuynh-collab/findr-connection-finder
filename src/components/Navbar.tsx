@@ -6,6 +6,7 @@ import Logo from "@/components/Logo";
 import AuthModal from "@/components/AuthModal";
 import CategoryNav from "@/components/CategoryNav";
 import { useAuth } from "@/hooks/useAuth";
+import HeaderActions from "@/components/HeaderActions";
 
 const navLinks = [
   { label: "Comment ça marche", to: "/comment-ca-marche" },
@@ -95,6 +96,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center gap-2">
               {user ? (
                 <>
+                  <HeaderActions variant={isLightMode ? "navy" : "gold"} />
                   <Button
                     size="sm"
                     variant="outline"
@@ -127,6 +129,11 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Button */}
+            {user && (
+              <div className="md:hidden ml-auto mr-1">
+                <HeaderActions variant={isLightMode ? "navy" : "gold"} />
+              </div>
+            )}
             <button
               className={`md:hidden p-2 ${isLightMode ? 'text-[#112150]' : 'text-cream'}`}
               onClick={() => setIsOpen(!isOpen)}

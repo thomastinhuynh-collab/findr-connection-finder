@@ -252,6 +252,14 @@ const Messaging = () => {
       if (data && photosSnapshot.length > 0) {
         localImagesRef.current[data.id] = photosSnapshot;
       }
+      // Notify the recipient of the new message
+      await supabase.from("notifications").insert({
+        user_id: actualReceiverId,
+        type: "new_message",
+        title: "Nouveau message",
+        message: contentToSend.slice(0, 120),
+        link: `/messagerie/${id}?with=${user.id}`,
+      });
       setMessage("");
       setPhotos([]);
       if (fileInputRef.current) fileInputRef.current.value = "";
