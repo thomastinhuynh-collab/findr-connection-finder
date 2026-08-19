@@ -216,8 +216,18 @@ const Messaging = () => {
   const handleSend = async () => {
     if ((!message.trim() && photos.length === 0) || !user || !search) return;
 
+    const actualReceiverId = partnerId && partnerId !== user.id ? partnerId : search.user_id;
+    if (!actualReceiverId || actualReceiverId === user.id) {
+      toast({
+        title: "Interlocuteur introuvable",
+        description: "Impossible d'identifier la personne à contacter.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setSending(true);
-    const actualReceiverId = search.user_id;
+    const photosSnapshot = [...photos];
     const photosSnapshot = [...photos];
     const contentToSend = message.trim() || (photosSnapshot.length > 0 ? "📷 Photo(s)" : "");
 
