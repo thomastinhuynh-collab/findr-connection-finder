@@ -17,7 +17,7 @@ export const LOGO_NAVY = "#0A1628";
  */
 const Logo = ({ className, variant = "cream", size = 28 }: LogoProps) => {
   const color = variant === "navy" ? LOGO_NAVY : LOGO_CREAM;
-  const glassSize = Math.round(size * 0.42);
+  const glassSize = Math.round(size * 0.5);
 
   return (
     <span
@@ -38,7 +38,7 @@ const Logo = ({ className, variant = "cream", size = 28 }: LogoProps) => {
         {/* dotless i (U+0131) */}
         {"\u0131"}
         <svg
-          viewBox="0 0 24 24"
+          viewBox="1 1 21 21"
           width={glassSize}
           height={glassSize}
           fill="none"
@@ -48,8 +48,8 @@ const Logo = ({ className, variant = "cream", size = 28 }: LogoProps) => {
           style={{
             position: "absolute",
             left: "50%",
-            top: -glassSize * 0.95,
-            transform: "translateX(-50%) rotate(-45deg)",
+            top: -glassSize * 0.28,
+            transform: "translateX(-50%)",
             pointerEvents: "none",
           }}
         >
