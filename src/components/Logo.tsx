@@ -15,7 +15,7 @@ export const LOGO_NAVY = "#0A1628";
  * findr wordmark — Space Grotesk 700, always lowercase.
  * The dot of the "i" is replaced by a stylised magnifying glass in the same color.
  */
-const Logo = ({ className, variant = "cream", size = 28 }: LogoProps) => {
+const Logo = ({ className, variant = "cream", size = 32 }: LogoProps) => {
   const color = variant === "navy" ? LOGO_NAVY : LOGO_CREAM;
   const glassSize = Math.round(size * 0.28);
 
@@ -43,12 +43,12 @@ const Logo = ({ className, variant = "cream", size = 28 }: LogoProps) => {
           height={glassSize}
           fill="none"
           stroke={color}
-          strokeWidth={2.5}
+          strokeWidth={3.2}
           strokeLinecap="round"
           style={{
             position: "absolute",
             left: "50%",
-            top: -glassSize * 0.22,
+            top: -glassSize * 0.08,
             transform: "translateX(-50%)",
             pointerEvents: "none",
           }}
