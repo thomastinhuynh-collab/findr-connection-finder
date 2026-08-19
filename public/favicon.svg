@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0A1628"/>
+  <text x="14" y="48" font-family="'Space Grotesk', 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="42" fill="#F5F1E8">fı</text>
+  <g transform="translate(34 12) rotate(-45 8 8)" fill="none" stroke="#F5F1E8" stroke-width="3" stroke-linecap="round">
+    <circle cx="7" cy="7" r="4.5"/>
+    <line x1="10.5" y1="10.5" x2="14" y2="14"/>
+  </g>
+</svg>
