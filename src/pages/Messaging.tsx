@@ -143,12 +143,34 @@ const Messaging = () => {
       return;
     }
 
+    // Determine the actual conversation partner
+    let resolvedPartnerId: string | null = withUserId;
+
+    if (!resolvedPartnerId) {
+      if (user && user.id === searchData.user_id) {
+        // Buyr side: fall back to the findr of the most recent proposal
+        const { data: prop } = await supabase
+          .from("proposals")
+          .select("findr_id, created_at")
+          .eq("search_id", searchData.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        resolvedPartnerId = prop?.findr_id ?? null;
+      } else {
+        resolvedPartnerId = searchData.user_id;
+      }
+    }
+
+    setPartnerId(resolvedPartnerId);
+
     const { data: profileData } = await supabase
       .from("profiles")
       .select("full_name, avatar_url")
-      .eq("user_id", searchData.user_id)
+      .eq("user_id", resolvedPartnerId ?? searchData.user_id)
       .maybeSingle();
 
+    setPartnerProfile(profileData ?? null);
     setSearch({
       ...searchData,
       profiles: profileData
