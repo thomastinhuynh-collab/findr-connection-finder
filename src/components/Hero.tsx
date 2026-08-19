@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import HeaderActions from "@/components/HeaderActions";
+import Logo from "@/components/Logo";
 
 const GOLD = "rgb(217, 187, 135)";
 const DARK = "#0A1628";
