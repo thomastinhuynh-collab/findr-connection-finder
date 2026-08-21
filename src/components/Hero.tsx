@@ -4,15 +4,17 @@ import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import HeaderActions from "@/components/HeaderActions";
 import Logo from "@/components/Logo";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const GOLD = "rgb(217, 187, 135)";
 const DARK = "#0A1628";
 
 const navLinks = [
-  { label: "Comment ça marche", to: "/comment-ca-marche" },
-  { label: "Je deviens buyr", to: "/poster" },
-  { label: "Je deviens findr", to: "/recherches" },
-  { label: "Blog", to: "/blog" },
+  { key: "howItWorks", to: "/comment-ca-marche" },
+  { key: "becomeBuyr", to: "/poster" },
+  { key: "becomeFindr", to: "/recherches" },
+  { key: "blog", to: "/blog" },
 ];
 
 const categories = [
@@ -25,6 +27,7 @@ const categories = [
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -125,7 +128,7 @@ const Hero = () => {
                   (e.currentTarget.style.color = "rgba(217, 187, 135, 0.75)")
                 }
               >
-                {l.label}
+                {t(`nav.${l.key}`)}
               </Link>
             ))}
           </div>
@@ -136,6 +139,7 @@ const Hero = () => {
             style={{ flexShrink: 0, gap: 12 }}
           >
             {user && <HeaderActions variant="gold" />}
+            <LanguageSwitcher variant="gold" />
             <button
               onClick={() => navigate("/poster")}
               style={{
@@ -150,7 +154,7 @@ const Hero = () => {
                 cursor: "pointer",
               }}
             >
-              Poster une recherche
+              {t("nav.postSearch")}
             </button>
             <button
               onClick={() => (user ? navigate("/mon-espace") : setAuthOpen(true))}
@@ -166,7 +170,7 @@ const Hero = () => {
                 cursor: "pointer",
               }}
             >
-              Mon espace
+              {t("nav.mySpace")}
             </button>
           </div>
 
@@ -176,10 +180,13 @@ const Hero = () => {
               <HeaderActions variant="gold" />
             </div>
           )}
+          <div className="md:hidden" style={{ marginRight: 6 }}>
+            <LanguageSwitcher variant="gold" />
+          </div>
           <button
             className="md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Menu"
+            aria-label={t("nav.menu")}
             style={{
               background: "transparent",
               border: "none",
@@ -217,7 +224,7 @@ const Hero = () => {
                   textDecoration: "none",
                 }}
               >
-                {l.label}
+                {t(`nav.${l.key}`)}
               </Link>
             ))}
             <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
@@ -237,7 +244,7 @@ const Hero = () => {
                   flex: 1,
                 }}
               >
-                Poster
+                {t("nav.postSearchShort")}
               </button>
               <button
                 onClick={() => {
@@ -256,7 +263,7 @@ const Hero = () => {
                   flex: 1,
                 }}
               >
-                Mon espace
+                {t("nav.mySpace")}
               </button>
             </div>
           </div>
@@ -337,7 +344,7 @@ const Hero = () => {
               type="text"
               value={heroQuery}
               onChange={(e) => setHeroQuery(e.target.value)}
-              placeholder={`Chercher parmi les ${searchCount} recherches en cours…`}
+              placeholder={t("hero.searchPlaceholder", { count: searchCount })}
               style={{
                 ...inter,
                 flex: 1,
@@ -365,7 +372,7 @@ const Hero = () => {
                 whiteSpace: "nowrap",
               }}
             >
-              Rechercher
+              {t("hero.searchButton")}
             </button>
           </form>
         </div>
@@ -425,7 +432,7 @@ const Hero = () => {
                 letterSpacing: "0.5px",
               }}
             >
-              847 recherches en direct
+              {t("hero.liveBadge", { count: searchCount })}
             </span>
           </div>
 
@@ -443,9 +450,9 @@ const Hero = () => {
               whiteSpace: "nowrap",
             }}
           >
-            L'objet que tu cherches{" "}
+            {t("hero.titleLine1")}{" "}
             <span style={{ fontStyle: "italic", fontWeight: 500 }}>
-              existe quelque part.
+              {t("hero.titleLine2")}
             </span>
           </h1>
 
@@ -461,7 +468,7 @@ const Hero = () => {
               margin: "0 auto 1.5rem",
             }}
           >
-            Décris-le. Une communauté de chineurs passionnés le déniche pour toi.
+            {t("hero.subtitle")}
           </p>
 
           {/* Simple CTA buttons */}
@@ -487,7 +494,7 @@ const Hero = () => {
                 cursor: "pointer",
               }}
             >
-              Poster une recherche
+              {t("nav.postSearch")}
             </button>
             <button
               onClick={() => navigate("/recherches")}
@@ -503,7 +510,7 @@ const Hero = () => {
                 cursor: "pointer",
               }}
             >
-              Devenir findr
+              {t("hero.ctaFindr")}
             </button>
           </div>
         </div>
