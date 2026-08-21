@@ -97,7 +97,6 @@ const Navbar = () => {
 
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center gap-2">
-              <LanguageSwitcher variant={isLightMode ? "navy" : "gold"} />
               {user ? (
                 <>
                   <HeaderActions variant={isLightMode ? "navy" : "gold"} />
@@ -130,6 +129,7 @@ const Navbar = () => {
                   {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la liste d'attente"}
                 </Button>
               )}
+              <LanguageSwitcher variant={isLightMode ? "navy" : "gold"} />
             </div>
 
             {/* Mobile Menu Button */}

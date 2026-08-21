@@ -139,7 +139,6 @@ const Hero = () => {
             style={{ flexShrink: 0, gap: 12 }}
           >
             {user && <HeaderActions variant="gold" />}
-            <LanguageSwitcher variant="gold" />
             <button
               onClick={() => navigate("/poster")}
               style={{
@@ -172,6 +171,7 @@ const Hero = () => {
             >
               {t("nav.mySpace")}
             </button>
+            <LanguageSwitcher variant="gold" />
           </div>
 
           {/* Mobile actions + burger */}
