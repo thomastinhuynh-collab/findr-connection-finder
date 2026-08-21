@@ -7,12 +7,14 @@ import AuthModal from "@/components/AuthModal";
 import CategoryNav from "@/components/CategoryNav";
 import { useAuth } from "@/hooks/useAuth";
 import HeaderActions from "@/components/HeaderActions";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const navLinks = [
-  { label: "Comment ça marche", to: "/comment-ca-marche" },
-  { label: "Je deviens buyr", to: "/poster" },
-  { label: "Je deviens findr", to: "/recherches" },
-  { label: "Blog", to: "/blog" },
+  { key: "howItWorks", to: "/comment-ca-marche" },
+  { key: "becomeBuyr", to: "/poster" },
+  { key: "becomeFindr", to: "/recherches" },
+  { key: "blog", to: "/blog" },
 ];
 
 const Navbar = () => {
@@ -22,6 +24,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const isHomePage = location.pathname === "/";
   const isDetailPage = location.pathname.startsWith("/recherche/");
 
@@ -87,13 +90,14 @@ const Navbar = () => {
                   to={link.to}
                   className={`text-sm font-medium transition-colors ${linkColorClass}`}
                 >
-                  {link.label}
+                  {t(`nav.${link.key}`)}
                 </Link>
               ))}
             </div>
 
             {/* Desktop CTA */}
             <div className="hidden md:flex items-center gap-2">
+              <LanguageSwitcher variant={isLightMode ? "navy" : "gold"} />
               {user ? (
                 <>
                   <HeaderActions variant={isLightMode ? "navy" : "gold"} />
@@ -107,14 +111,14 @@ const Navbar = () => {
                     }`}
                     onClick={() => navigate("/poster")}
                   >
-                    Poster une recherche
+                    {t("nav.postSearch")}
                   </Button>
                   <Button
                     size="sm"
                     className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full"
                     onClick={() => navigate("/mon-espace")}
                   >
-                    Mon espace
+                    {t("nav.mySpace")}
                   </Button>
                 </>
               ) : (
@@ -129,8 +133,11 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Button */}
+            <div className="md:hidden ml-auto mr-1">
+              <LanguageSwitcher variant={isLightMode ? "navy" : "gold"} />
+            </div>
             {user && (
-              <div className="md:hidden ml-auto mr-1">
+              <div className="md:hidden mr-1">
                 <HeaderActions variant={isLightMode ? "navy" : "gold"} />
               </div>
             )}
@@ -153,7 +160,7 @@ const Navbar = () => {
                     className={`text-sm font-medium transition-colors ${mobileLinkColor}`}
                     onClick={() => setIsOpen(false)}
                   >
-                    {link.label}
+                    {t(`nav.${link.key}`)}
                   </Link>
                 ))}
                 {user ? (
@@ -171,7 +178,7 @@ const Navbar = () => {
                         navigate("/poster");
                       }}
                     >
-                      Poster une recherche
+                      {t("nav.postSearch")}
                     </Button>
                     <Button
                       size="sm"
@@ -181,7 +188,7 @@ const Navbar = () => {
                         navigate("/mon-espace");
                       }}
                     >
-                      Mon espace
+                      {t("nav.mySpace")}
                     </Button>
                   </>
                 ) : (
