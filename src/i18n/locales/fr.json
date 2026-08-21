@@ -1,0 +1,205 @@
+{
+  "nav": {
+    "howItWorks": "Comment ça marche",
+    "becomeBuyr": "Je deviens buyr",
+    "becomeFindr": "Je deviens findr",
+    "blog": "Blog",
+    "postSearch": "Poster une recherche",
+    "postSearchShort": "Poster",
+    "mySpace": "Mon espace",
+    "menu": "Menu",
+    "language": "Langue"
+  },
+  "hero": {
+    "searchPlaceholder": "Chercher parmi les {{count}} recherches en cours…",
+    "searchButton": "Rechercher",
+    "liveBadge": "{{count}} recherches en direct",
+    "titleLine1": "L'objet que tu cherches",
+    "titleLine2": "existe quelque part.",
+    "subtitle": "Décris-le. Une communauté de chineurs passionnés le déniche pour toi.",
+    "ctaPost": "Poster une recherche",
+    "ctaFindr": "Devenir findr"
+  },
+  "card": {
+    "budget": "Budget",
+    "budgetUndefined": "Non défini",
+    "user": "Utilisateur",
+    "country": "France",
+    "proposalsReceived_one": "{{count}} proposition déjà reçue",
+    "proposalsReceived_other": "{{count}} propositions déjà reçues",
+    "firstFindr": "Sois le premier findr à proposer →",
+    "deadlinePassed": "Délai dépassé",
+    "daysLeft_one": "Il reste {{count}} jour",
+    "daysLeft_other": "Il reste {{count}} jours"
+  },
+  "expiring": {
+    "title": "⏳ Bientôt expiré",
+    "subtitle": "Ces recherches ont besoin d'une réponse rapide"
+  },
+  "active": {
+    "title": "Recherches en cours",
+    "cta": "Voir toutes les demandes actives"
+  },
+  "homeSteps": {
+    "eyebrow": "Simple et efficace",
+    "title": "Comment ça marche ?",
+    "subtitle": "En 4 étapes, passe de \"j'aimerais trouver\" à \"j'ai trouvé\"",
+    "more": "En savoir plus →",
+    "stepLabel": "Étape {{step}}",
+    "s1": {
+      "title": "Tu publies ta recherche",
+      "description": "Décris l'objet, ton budget, et ajoute des photos d'inspiration.",
+      "detailsTitle": "Comment publier ta recherche ?",
+      "d1": "Décris précisément l'objet que tu recherches (marque, modèle, époque, état souhaité)",
+      "d2": "Ajoute une ou plusieurs photos d'inspiration pour guider les findrs",
+      "d3": "Indique ton budget minimum et maximum",
+      "d4": "Choisis la catégorie appropriée (Mode & maroquinerie, Vinyles, Pop culture, etc.)",
+      "d5": "Précise le niveau d'urgence de ta recherche"
+    },
+    "s2": {
+      "title": "Les findrs partent à la chasse",
+      "description": "Notre communauté recherche en ligne et dans les brocantes, friperies, marchés.",
+      "detailsTitle": "Qui sont les findrs ?",
+      "d1": "Des passionnés et experts dans leur domaine",
+      "d2": "Ils parcourent brocantes, friperies, vide-greniers et marchés aux puces",
+      "d3": "Ils ont accès à des réseaux et sources exclusives",
+      "d4": "Chaque findr a un profil avec ses spécialités et évaluations",
+      "d5": "Tu peux réserver un findr pour une recherche exclusive"
+    },
+    "s3": {
+      "title": "Tu valides la meilleure proposition",
+      "description": "Compare les offres et choisis celle qui te convient.",
+      "detailsTitle": "Comment fonctionnent les propositions ?",
+      "d1": "Reçois des notifications dès qu'un findr trouve quelque chose",
+      "d2": "Chaque proposition inclut des photos réelles et détaillées",
+      "d3": "Compare les prix, l'état et les conditions de chaque trouvaille",
+      "d4": "Communique directement avec le findr via la messagerie",
+      "d5": "Tu es libre d'accepter ou de refuser chaque proposition"
+    },
+    "s4": {
+      "title": "Tu finalises en confiance",
+      "description": "findr suit la transaction et t'accompagne jusqu'à la livraison de ton objet.",
+      "detailsTitle": "Comment se passe la transaction ?",
+      "d1": "Paiement 100% sécurisé via notre plateforme",
+      "d2": "Les fonds sont bloqués jusqu'à réception et validation",
+      "d3": "Livraison suivie avec numéro de tracking",
+      "d4": "Tu disposes de 48h pour vérifier l'objet à réception",
+      "d5": "Évalue le findr pour aider la communauté"
+    }
+  },
+  "buyrFindr": {
+    "eyebrow": "— REJOINS LA COMMUNAUTÉ",
+    "titleLine1": "Deux façons de",
+    "titleLine2": "vivre findr.",
+    "buyr": {
+      "eyebrow": "01 — JE CHERCHE",
+      "title": "Je suis",
+      "text": "Je poste ma recherche en quelques secondes. Les findr partent en chasse et me trouvent la perle rare, où qu'elle se cache.",
+      "cta": "POSTER MA RECHERCHE →"
+    },
+    "findr": {
+      "eyebrow": "02 — JE DÉNICHE",
+      "title": "Je deviens",
+      "text": "Je monétise mon flair, mon carnet d'adresses et mes bons plans. Chaque trouvaille devient une opportunité.",
+      "cta": "REJOINDRE LES FINDR →"
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "GUIDE",
+    "title": "Comment ça marche ?",
+    "subtitle": "Tout comprendre en un coup d'œil, sans avoir à tout lire.",
+    "anchors": {
+      "buyr": "LE BUYR",
+      "findr": "LE FINDR",
+      "etapes": "ÉTAPE PAR ÉTAPE",
+      "reservation": "RÉSERVATION",
+      "frais": "FRAIS",
+      "savoirVivre": "SAVOIR-VIVRE"
+    },
+    "buyr": {
+      "title": "Le buyr",
+      "intro": "Celui qui cherche un objet précis et confie sa recherche à la communauté.",
+      "i1": "Poste une recherche détaillée avec photos d'inspiration et budget",
+      "i2": "Reçoit des propositions de findrs qui ont trouvé l'objet",
+      "i3": "Choisit la meilleure offre et valide l'achat en toute sécurité",
+      "i4": "Évalue le findr après réception pour aider la communauté"
+    },
+    "findr": {
+      "title": "Le findr",
+      "intro": "Celui qui part en chasse et déniche l'objet demandé, où qu'il se cache.",
+      "i1": "Parcourt les recherches et identifie celles qu'il peut satisfaire",
+      "i2": "Chine activement en brocantes, friperies, vide-greniers, en ligne…",
+      "i3": "Fait une proposition avec photos, prix et description détaillée",
+      "i4": "Gagne une commission sur chaque vente réussie"
+    },
+    "steps": {
+      "title": "Étape par étape",
+      "showDetails": "Voir le détail de chaque étape",
+      "hideDetails": "Masquer le détail",
+      "s1": {
+        "title": "Le buyr poste sa recherche",
+        "description": "Description détaillée de l'objet recherché, photos d'inspiration, fourchette de budget, niveau d'urgence. Plus la recherche est précise, plus les propositions seront pertinentes."
+      },
+      "s2": {
+        "title": "Les findrs découvrent et réservent",
+        "description": "Les findrs passionnés consultent les recherches. S'ils pensent pouvoir trouver l'objet, ils peuvent demander une réservation exclusive pour éviter la concurrence pendant leur recherche."
+      },
+      "s3": {
+        "title": "Le findr fait sa proposition",
+        "description": "Une fois l'objet trouvé, le findr soumet sa proposition avec photos réelles, prix proposé (incluant sa commission) et description de l'état."
+      },
+      "s4": {
+        "title": "Négociation et validation",
+        "description": "Le buyr et le findr échangent via la messagerie intégrée. Le buyr peut demander des photos supplémentaires, négocier, ou valider directement la proposition."
+      },
+      "s5": {
+        "title": "Paiement sécurisé",
+        "description": "Le buyr procède au paiement sécurisé. Les fonds sont conservés jusqu'à réception et validation de l'objet. Protection pour les deux parties."
+      },
+      "s6": {
+        "title": "Envoi et réception",
+        "description": "Le findr envoie l'objet avec suivi. À réception, le buyr confirme que tout est conforme. Les fonds sont alors libérés au findr."
+      },
+      "s7": {
+        "title": "Évaluation mutuelle",
+        "description": "Les deux parties s'évaluent mutuellement. Ces avis construisent la réputation et la confiance au sein de la communauté."
+      }
+    },
+    "reservation": {
+      "title": "Le système de réservation",
+      "summary": "FONCTIONNALITÉ CLÉ",
+      "whyTitle": "POURQUOI RÉSERVER ?",
+      "why1": "Éviter que plusieurs findrs cherchent le même objet",
+      "why2": "Investir du temps sereinement dans la recherche",
+      "why3": "Montrer son engagement au buyr",
+      "howTitle": "COMMENT ÇA FONCTIONNE ?",
+      "how1": "Le findr demande une réservation avec une durée",
+      "how2": "Le buyr approuve, modifie ou refuse la demande",
+      "how3": "La recherche devient exclusive pendant la durée"
+    },
+    "fees": {
+      "title": "Les frais de la plateforme",
+      "summary": "5% STANDARD · 3% PREMIUM",
+      "intro": "findr prélève une commission unique sur chaque transaction pour maintenir la plateforme, garantir la sécurité des paiements et accompagner la communauté.",
+      "standardLabel": "Frais standard — 5%",
+      "standardText": "prélevés sur chaque transaction, pour tous les utilisateurs.",
+      "premiumLabel": "Frais Premium — 3%",
+      "premiumText": "pour les membres Premium, avec des avantages exclusifs.",
+      "examplePrefix": "Exemple concret : un findr trouve un vinyle rare à 50 € ; le buyr paie 50 € + 5 % =",
+      "exampleMiddle": ". Avec Premium, 50 € + 3 % =",
+      "premiumLink": "Découvrir Premium"
+    },
+    "etiquette": {
+      "title": "Le savoir-vivre findr",
+      "summary": "6 RÈGLES DE BONNE CONDUITE",
+      "intro": "Pour que l'expérience soit agréable pour tous, quelques règles de bonne conduite.",
+      "r1": { "title": "Respect et bienveillance", "description": "Chaque membre mérite respect. Les échanges doivent rester courtois, même en cas de désaccord." },
+      "r2": { "title": "Communication claire", "description": "Répondez aux messages dans un délai raisonnable (24-48h). Soyez précis dans vos descriptions." },
+      "r3": { "title": "Honnêteté", "description": "Décrivez fidèlement l'état des objets. Les mauvaises surprises nuisent à la confiance de tous." },
+      "r4": { "title": "Ponctualité", "description": "Respectez vos engagements : délais de réservation, d'envoi, de réponse. Prévenez en cas d'imprévu." },
+      "r5": { "title": "Évaluations justes", "description": "Évaluez de manière constructive. Un avis négatif doit être justifié et factuel." },
+      "r6": { "title": "Pas de transactions externes", "description": "Toutes les transactions doivent passer par findr pour garantir la protection de chacun." }
+    },
+    "cta": "POSTER UNE RECHERCHE →"
+  }
+}
