@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const GOLD = "rgb(217, 187, 135)";
 const DARK = "#0A1628";
@@ -7,6 +8,7 @@ const inter = { fontFamily: "'Inter', system-ui, sans-serif" };
 const playfair = { fontFamily: "'Playfair Display', Georgia, serif" };
 
 const BuyrFindrSection = () => {
+  const { t } = useTranslation();
   return (
     <section
       style={{
@@ -32,7 +34,7 @@ const BuyrFindrSection = () => {
               marginBottom: "1rem",
             }}
           >
-            — REJOINS LA COMMUNAUTÉ
+            {t("buyrFindr.eyebrow")}
           </div>
           <h2
             style={{
@@ -45,9 +47,9 @@ const BuyrFindrSection = () => {
               margin: 0,
             }}
           >
-            Deux façons de{" "}
+            {t("buyrFindr.titleLine1")}{" "}
             <span style={{ fontStyle: "italic", fontWeight: 500 }}>
-              vivre findr.
+              {t("buyrFindr.titleLine2")}
             </span>
           </h2>
         </div>
@@ -94,7 +96,7 @@ const BuyrFindrSection = () => {
                 marginBottom: 16,
               }}
             >
-              01 — JE CHERCHE
+              {t("buyrFindr.buyr.eyebrow")}
             </div>
             <div
               style={{
@@ -106,7 +108,7 @@ const BuyrFindrSection = () => {
                 marginBottom: 12,
               }}
             >
-              Je suis <span style={{ fontStyle: "italic" }}>buyr</span>
+              {t("buyrFindr.buyr.title")} <span style={{ fontStyle: "italic" }}>buyr</span>
             </div>
             <p
               style={{
@@ -118,8 +120,7 @@ const BuyrFindrSection = () => {
                 maxWidth: 380,
               }}
             >
-              Je poste ma recherche en quelques secondes. Les findr partent en
-              chasse et me trouvent la perle rare, où qu'elle se cache.
+              {t("buyrFindr.buyr.text")}
             </p>
             <Link
               to="/poster"
@@ -135,7 +136,7 @@ const BuyrFindrSection = () => {
                 textDecoration: "none",
               }}
             >
-              POSTER MA RECHERCHE →
+              {t("buyrFindr.buyr.cta")}
             </Link>
           </div>
 
@@ -174,7 +175,7 @@ const BuyrFindrSection = () => {
                 marginBottom: 16,
               }}
             >
-              02 — JE DÉNICHE
+              {t("buyrFindr.findr.eyebrow")}
             </div>
             <div
               style={{
@@ -186,7 +187,7 @@ const BuyrFindrSection = () => {
                 marginBottom: 12,
               }}
             >
-              Je deviens <span style={{ fontStyle: "italic" }}>findr</span>
+              {t("buyrFindr.findr.title")} <span style={{ fontStyle: "italic" }}>findr</span>
             </div>
             <p
               style={{
@@ -198,8 +199,7 @@ const BuyrFindrSection = () => {
                 maxWidth: 380,
               }}
             >
-              Je monétise mon flair, mon carnet d'adresses et mes bons plans.
-              Chaque trouvaille devient une opportunité.
+              {t("buyrFindr.findr.text")}
             </p>
             <Link
               to="/recherches"
@@ -215,7 +215,7 @@ const BuyrFindrSection = () => {
                 textDecoration: "none",
               }}
             >
-              REJOINDRE LES FINDR →
+              {t("buyrFindr.findr.cta")}
             </Link>
           </div>
         </div>
