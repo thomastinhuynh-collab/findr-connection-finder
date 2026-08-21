@@ -494,7 +494,7 @@ const Hero = () => {
                 cursor: "pointer",
               }}
             >
-              {t("nav.postSearch")}
+              {t("hero.ctaPost")}
             </button>
             <button
               onClick={() => navigate("/recherches")}
