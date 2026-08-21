@@ -4,6 +4,8 @@ import { Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 
 interface SearchData {
   id: string;
@@ -27,14 +29,14 @@ interface ProfileData {
   xp_points: number | null;
 }
 
-const getDeadlineBadge = (deadline: string | null) => {
+const getDeadlineBadge = (deadline: string | null, t: TFunction) => {
   if (!deadline) return null;
   const diffMs = new Date(deadline).getTime() - Date.now();
   const days = Math.round(diffMs / (1000 * 60 * 60 * 24));
   if (days < 0) {
-    return { label: "Délai dépassé", bg: "rgba(140,140,140,0.92)", color: "#fff" };
+    return { label: t("card.deadlinePassed"), bg: "rgba(140,140,140,0.92)", color: "#fff" };
   }
-  const label = `Il reste ${days} jour${days > 1 ? "s" : ""}`;
+  const label = t("card.daysLeft", { count: days });
   if (days < 3) return { label, bg: "rgba(239,83,80,0.95)", color: "#fff" };
   if (days <= 7) return { label, bg: "rgba(245,158,11,0.95)", color: "#1B2A4A" };
   return { label, bg: "rgba(201,168,76,0.95)", color: "#1B2A4A" };
@@ -80,6 +82,7 @@ const CardImageCarousel = ({ images, alt }: { images: string[]; alt: string }) =
 
 const ActiveRequests = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searches, setSearches] = useState<SearchData[]>([]);
   const [profiles, setProfiles] = useState<Record<string, ProfileData>>({});
   const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
@@ -141,7 +144,7 @@ const ActiveRequests = () => {
     if (min && max) return `${min}€ – ${max}€`;
     if (max) return `< ${max}€`;
     if (min) return `> ${min}€`;
-    return "Non défini";
+    return t("card.budgetUndefined");
   };
 
   if (loading) {
@@ -172,7 +175,7 @@ const ActiveRequests = () => {
               lineHeight: 1.2,
             }}
           >
-            Recherches en cours
+            {t("active.title")}
           </h2>
           <div
             style={{
@@ -191,7 +194,7 @@ const ActiveRequests = () => {
           {searches.map((search) => {
             const profile = profiles[search.user_id];
             const images = getImages(search);
-            const deadlineBadge = getDeadlineBadge(search.deadline);
+            const deadlineBadge = getDeadlineBadge(search.deadline, t);
             const proposalCount = proposalCounts[search.id] || 0;
 
             return (
@@ -250,7 +253,7 @@ const ActiveRequests = () => {
                   </h3>
 
                   <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", color: "#8A7A4C", textTransform: "uppercase" }}>
-                    Budget
+                    {t("card.budget")}
                   </span>
                   <p style={{ fontSize: "20px", fontWeight: 700, color: "#1B2A4A", marginTop: "2px", marginBottom: "12px" }}>
                     {formatBudget(search.budget_min, search.budget_max)}
@@ -263,12 +266,12 @@ const ActiveRequests = () => {
                         <img src={profile.avatar_url} alt={profile.full_name || ""} className="w-6 h-6 rounded-full object-cover" />
                       )}
                       <span style={{ fontSize: "12px", fontWeight: 500, color: "#1B2A4A" }}>
-                        {profile?.full_name || "Utilisateur"}
+                        {profile?.full_name || t("card.user")}
                       </span>
                     </div>
                     <span className="flex items-center gap-1" style={{ fontSize: "12px", color: "#8A8070" }}>
                       <MapPin className="w-3 h-3" />
-                      {profile?.city || "France"}
+                      {profile?.city || t("card.country")}
                     </span>
                   </div>
 
@@ -276,11 +279,11 @@ const ActiveRequests = () => {
                   <div className="mt-2" style={{ fontSize: "12px" }}>
                     {proposalCount > 0 ? (
                       <span style={{ color: "#1B2A4A" }}>
-                        {proposalCount} proposition{proposalCount > 1 ? "s" : ""} déjà reçue{proposalCount > 1 ? "s" : ""}
+                        {t("card.proposalsReceived", { count: proposalCount })}
                       </span>
                     ) : (
                       <span style={{ color: "#C9A84C", fontStyle: "italic" }}>
-                        Sois le premier findr à proposer →
+                        {t("card.firstFindr")}
                       </span>
                     )}
                   </div>
@@ -302,7 +305,7 @@ const ActiveRequests = () => {
               padding: "0 28px", borderRadius: "8px", fontWeight: 600,
             }}
           >
-            Voir toutes les demandes actives
+            {t("active.cta")}
           </Button>
         </div>
       </div>

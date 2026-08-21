@@ -1,0 +1,205 @@
+{
+  "nav": {
+    "howItWorks": "How it works",
+    "becomeBuyr": "Become a buyr",
+    "becomeFindr": "Become a findr",
+    "blog": "Blog",
+    "postSearch": "Post a search",
+    "postSearchShort": "Post",
+    "mySpace": "My space",
+    "menu": "Menu",
+    "language": "Language"
+  },
+  "hero": {
+    "searchPlaceholder": "Search through {{count}} live requests…",
+    "searchButton": "Search",
+    "liveBadge": "{{count}} live searches",
+    "titleLine1": "The piece you're after",
+    "titleLine2": "is out there somewhere.",
+    "subtitle": "Describe it. A community of passionate hunters tracks it down for you.",
+    "ctaPost": "Post a search",
+    "ctaFindr": "Become a findr"
+  },
+  "card": {
+    "budget": "Budget",
+    "budgetUndefined": "Not set",
+    "user": "Member",
+    "country": "France",
+    "proposalsReceived_one": "{{count}} proposal already received",
+    "proposalsReceived_other": "{{count}} proposals already received",
+    "firstFindr": "Be the first findr to propose →",
+    "deadlinePassed": "Deadline passed",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left"
+  },
+  "expiring": {
+    "title": "⏳ Expiring soon",
+    "subtitle": "These searches need a quick answer"
+  },
+  "active": {
+    "title": "Live searches",
+    "cta": "See all active requests"
+  },
+  "homeSteps": {
+    "eyebrow": "Simple and effective",
+    "title": "How it works",
+    "subtitle": "Four steps to go from \"I wish I could find\" to \"I found it\"",
+    "more": "Learn more →",
+    "stepLabel": "Step {{step}}",
+    "s1": {
+      "title": "You post your search",
+      "description": "Describe the piece, set your budget, and add inspiration photos.",
+      "detailsTitle": "How do you post a search?",
+      "d1": "Describe exactly what you're looking for (brand, model, era, condition)",
+      "d2": "Add one or more inspiration photos to guide the findrs",
+      "d3": "Set your minimum and maximum budget",
+      "d4": "Pick the right category (Fashion & leather goods, Vinyl, Pop culture, etc.)",
+      "d5": "Tell us how urgent your search is"
+    },
+    "s2": {
+      "title": "findrs start the hunt",
+      "description": "Our community searches online and across flea markets, thrift shops and fairs.",
+      "detailsTitle": "Who are the findrs?",
+      "d1": "Enthusiasts and experts in their field",
+      "d2": "They comb flea markets, thrift shops, garage sales and antique fairs",
+      "d3": "They tap into exclusive networks and sources",
+      "d4": "Every findr has a profile with their specialities and ratings",
+      "d5": "You can book a findr for an exclusive search"
+    },
+    "s3": {
+      "title": "You pick the best proposal",
+      "description": "Compare the offers and choose the one that works for you.",
+      "detailsTitle": "How do proposals work?",
+      "d1": "Get notified the moment a findr finds something",
+      "d2": "Every proposal comes with real, detailed photos",
+      "d3": "Compare price, condition and terms for each find",
+      "d4": "Talk directly with the findr through the messaging",
+      "d5": "You're free to accept or decline any proposal"
+    },
+    "s4": {
+      "title": "You close the deal with confidence",
+      "description": "findr tracks the transaction and stays with you until your item arrives.",
+      "detailsTitle": "How does the transaction work?",
+      "d1": "100% secure payment through the platform",
+      "d2": "Funds are held until the item is received and approved",
+      "d3": "Tracked delivery with a tracking number",
+      "d4": "You have 48h to check the item on arrival",
+      "d5": "Rate the findr to help the community"
+    }
+  },
+  "buyrFindr": {
+    "eyebrow": "— JOIN THE COMMUNITY",
+    "titleLine1": "Two ways to",
+    "titleLine2": "live findr.",
+    "buyr": {
+      "eyebrow": "01 — I'M LOOKING",
+      "title": "I'm a",
+      "text": "I post my search in seconds. findrs go hunting and bring back the rare piece, wherever it's hiding.",
+      "cta": "POST MY SEARCH →"
+    },
+    "findr": {
+      "eyebrow": "02 — I HUNT",
+      "title": "I become a",
+      "text": "I turn my eye, my contacts and my best leads into income. Every find becomes an opportunity.",
+      "cta": "JOIN THE FINDRS →"
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "GUIDE",
+    "title": "How it works",
+    "subtitle": "Everything at a glance — no need to read it all.",
+    "anchors": {
+      "buyr": "THE BUYR",
+      "findr": "THE FINDR",
+      "etapes": "STEP BY STEP",
+      "reservation": "BOOKING",
+      "frais": "FEES",
+      "savoirVivre": "GOOD MANNERS"
+    },
+    "buyr": {
+      "title": "The buyr",
+      "intro": "The one looking for a specific piece, handing the search over to the community.",
+      "i1": "Posts a detailed search with inspiration photos and a budget",
+      "i2": "Receives proposals from findrs who tracked the item down",
+      "i3": "Picks the best offer and completes the purchase safely",
+      "i4": "Rates the findr on delivery to help the community"
+    },
+    "findr": {
+      "title": "The findr",
+      "intro": "The one who goes hunting and digs out the requested piece, wherever it hides.",
+      "i1": "Browses searches and spots the ones they can deliver on",
+      "i2": "Hunts actively in flea markets, thrift shops, garage sales, online…",
+      "i3": "Sends a proposal with photos, price and a detailed description",
+      "i4": "Earns a commission on every successful sale"
+    },
+    "steps": {
+      "title": "Step by step",
+      "showDetails": "Show the detail of each step",
+      "hideDetails": "Hide the detail",
+      "s1": {
+        "title": "The buyr posts a search",
+        "description": "A detailed description of the piece, inspiration photos, budget range, urgency level. The sharper the search, the more relevant the proposals."
+      },
+      "s2": {
+        "title": "findrs discover and book it",
+        "description": "findrs browse the open searches. If they believe they can find the item, they can request an exclusive booking to avoid competing while they hunt."
+      },
+      "s3": {
+        "title": "The findr sends a proposal",
+        "description": "Once the item is found, the findr submits a proposal with real photos, the asking price (commission included) and the condition."
+      },
+      "s4": {
+        "title": "Negotiation and approval",
+        "description": "buyr and findr talk through the built-in messaging. The buyr can ask for extra photos, negotiate, or approve the proposal right away."
+      },
+      "s5": {
+        "title": "Secure payment",
+        "description": "The buyr pays securely. Funds are held until the item is received and approved — protection for both sides."
+      },
+      "s6": {
+        "title": "Shipping and delivery",
+        "description": "The findr ships the item with tracking. On arrival, the buyr confirms everything matches. The funds are then released to the findr."
+      },
+      "s7": {
+        "title": "Mutual rating",
+        "description": "Both sides rate each other. Those reviews build reputation and trust across the community."
+      }
+    },
+    "reservation": {
+      "title": "The booking system",
+      "summary": "KEY FEATURE",
+      "whyTitle": "WHY BOOK A SEARCH?",
+      "why1": "Avoid several findrs hunting the same item",
+      "why2": "Invest time in the hunt with peace of mind",
+      "why3": "Show the buyr you're committed",
+      "howTitle": "HOW DOES IT WORK?",
+      "how1": "The findr requests a booking for a set duration",
+      "how2": "The buyr approves, adjusts or declines the request",
+      "how3": "The search becomes exclusive for that duration"
+    },
+    "fees": {
+      "title": "Platform fees",
+      "summary": "5% STANDARD · 3% PREMIUM",
+      "intro": "findr takes a single commission on each transaction to run the platform, secure payments and support the community.",
+      "standardLabel": "Standard fee — 5%",
+      "standardText": "charged on every transaction, for all members.",
+      "premiumLabel": "Premium fee — 3%",
+      "premiumText": "for Premium members, with exclusive perks.",
+      "examplePrefix": "A real example: a findr tracks down a rare vinyl at €50; the buyr pays €50 + 5% =",
+      "exampleMiddle": ". With Premium, €50 + 3% =",
+      "premiumLink": "Discover Premium"
+    },
+    "etiquette": {
+      "title": "findr good manners",
+      "summary": "6 RULES OF CONDUCT",
+      "intro": "A few simple rules to keep the experience great for everyone.",
+      "r1": { "title": "Respect and kindness", "description": "Every member deserves respect. Keep exchanges courteous, even when you disagree." },
+      "r2": { "title": "Clear communication", "description": "Reply to messages within a reasonable window (24-48h). Be precise in your descriptions." },
+      "r3": { "title": "Honesty", "description": "Describe item condition faithfully. Bad surprises damage everyone's trust." },
+      "r4": { "title": "Reliability", "description": "Honour your commitments: booking, shipping and reply times. Speak up if something comes up." },
+      "r5": { "title": "Fair ratings", "description": "Rate constructively. A negative review should be justified and factual." },
+      "r6": { "title": "No off-platform deals", "description": "Every transaction must go through findr so everyone stays protected." }
+    },
+    "cta": "POST A SEARCH →"
+  }
+}

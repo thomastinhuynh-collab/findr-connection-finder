@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useTranslation } from "react-i18next";
 
 const NAVY = "#0A1628";
 const GOLD = "#D9BB87";
@@ -10,13 +11,13 @@ const GOLD_GREY = "#9C8B6B";
 
 type SectionKey = "buyr" | "findr" | "etapes" | "reservation" | "frais" | "savoir-vivre";
 
-const anchors: { key: SectionKey; label: string }[] = [
-  { key: "buyr", label: "LE BUYR" },
-  { key: "findr", label: "LE FINDR" },
-  { key: "etapes", label: "ÉTAPE PAR ÉTAPE" },
-  { key: "reservation", label: "RÉSERVATION" },
-  { key: "frais", label: "FRAIS" },
-  { key: "savoir-vivre", label: "SAVOIR-VIVRE" },
+const anchors: { key: SectionKey; labelKey: string }[] = [
+  { key: "buyr", labelKey: "buyr" },
+  { key: "findr", labelKey: "findr" },
+  { key: "etapes", labelKey: "etapes" },
+  { key: "reservation", labelKey: "reservation" },
+  { key: "frais", labelKey: "frais" },
+  { key: "savoir-vivre", labelKey: "savoirVivre" },
 ];
 
 const romans: Record<SectionKey, string> = {
@@ -28,90 +29,9 @@ const romans: Record<SectionKey, string> = {
   "savoir-vivre": "VI",
 };
 
-const buyrItems = [
-  "Poste une recherche détaillée avec photos d'inspiration et budget",
-  "Reçoit des propositions de findrs qui ont trouvé l'objet",
-  "Choisit la meilleure offre et valide l'achat en toute sécurité",
-  "Évalue le findr après réception pour aider la communauté",
-];
-
-const findrItems = [
-  "Parcourt les recherches et identifie celles qu'il peut satisfaire",
-  "Chine activement en brocantes, friperies, vide-greniers, en ligne…",
-  "Fait une proposition avec photos, prix et description détaillée",
-  "Gagne une commission sur chaque vente réussie",
-];
-
-const steps = [
-  {
-    title: "Le buyr poste sa recherche",
-    description:
-      "Description détaillée de l'objet recherché, photos d'inspiration, fourchette de budget, niveau d'urgence. Plus la recherche est précise, plus les propositions seront pertinentes.",
-  },
-  {
-    title: "Les findrs découvrent et réservent",
-    description:
-      "Les findrs passionnés consultent les recherches. S'ils pensent pouvoir trouver l'objet, ils peuvent demander une réservation exclusive pour éviter la concurrence pendant leur recherche.",
-  },
-  {
-    title: "Le findr fait sa proposition",
-    description:
-      "Une fois l'objet trouvé, le findr soumet sa proposition avec photos réelles, prix proposé (incluant sa commission) et description de l'état.",
-  },
-  {
-    title: "Négociation et validation",
-    description:
-      "Le buyr et le findr échangent via la messagerie intégrée. Le buyr peut demander des photos supplémentaires, négocier, ou valider directement la proposition.",
-  },
-  {
-    title: "Paiement sécurisé",
-    description:
-      "Le buyr procède au paiement sécurisé. Les fonds sont conservés jusqu'à réception et validation de l'objet. Protection pour les deux parties.",
-  },
-  {
-    title: "Envoi et réception",
-    description:
-      "Le findr envoie l'objet avec suivi. À réception, le buyr confirme que tout est conforme. Les fonds sont alors libérés au findr.",
-  },
-  {
-    title: "Évaluation mutuelle",
-    description:
-      "Les deux parties s'évaluent mutuellement. Ces avis construisent la réputation et la confiance au sein de la communauté.",
-  },
-];
-
-const etiquette = [
-  {
-    title: "Respect et bienveillance",
-    description:
-      "Chaque membre mérite respect. Les échanges doivent rester courtois, même en cas de désaccord.",
-  },
-  {
-    title: "Communication claire",
-    description:
-      "Répondez aux messages dans un délai raisonnable (24-48h). Soyez précis dans vos descriptions.",
-  },
-  {
-    title: "Honnêteté",
-    description:
-      "Décrivez fidèlement l'état des objets. Les mauvaises surprises nuisent à la confiance de tous.",
-  },
-  {
-    title: "Ponctualité",
-    description:
-      "Respectez vos engagements : délais de réservation, d'envoi, de réponse. Prévenez en cas d'imprévu.",
-  },
-  {
-    title: "Évaluations justes",
-    description:
-      "Évaluez de manière constructive. Un avis négatif doit être justifié et factuel.",
-  },
-  {
-    title: "Pas de transactions externes",
-    description:
-      "Toutes les transactions doivent passer par findr pour garantir la protection de chacun.",
-  },
-];
+const listKeys = ["i1", "i2", "i3", "i4"];
+const stepKeys = ["s1", "s2", "s3", "s4", "s5", "s6", "s7"];
+const etiquetteKeys = ["r1", "r2", "r3", "r4", "r5", "r6"];
 
 const Dash = ({ children }: { children: React.ReactNode }) => (
   <li className="flex gap-3" style={{ color: "#4B5563", fontSize: 13.5, lineHeight: 1.65 }}>
@@ -121,6 +41,7 @@ const Dash = ({ children }: { children: React.ReactNode }) => (
 );
 
 const HowItWorksPage = () => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState<SectionKey | null>("buyr");
   const [showStepDetails, setShowStepDetails] = useState(false);
   const [activeAnchor, setActiveAnchor] = useState<SectionKey>("buyr");
@@ -262,7 +183,7 @@ const HowItWorksPage = () => {
       >
         <div className="text-center" style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px" }}>
           <p style={{ color: GOLD, fontSize: 11, letterSpacing: "0.22em", marginBottom: 14 }}>
-            GUIDE
+            {t("howItWorks.eyebrow")}
           </p>
           <h1
             className="font-barlow"
@@ -275,7 +196,7 @@ const HowItWorksPage = () => {
               lineHeight: 1.3,
             }}
           >
-            Comment ça marche ?
+            {t("howItWorks.title")}
           </h1>
           <div
             style={{
@@ -286,7 +207,7 @@ const HowItWorksPage = () => {
             }}
           />
           <p style={{ color: "rgba(245,241,232,0.7)", fontSize: 14.5 }}>
-            Tout comprendre en un coup d'œil, sans avoir à tout lire.
+            {t("howItWorks.subtitle")}
           </p>
         </div>
       </section>
@@ -315,7 +236,7 @@ const HowItWorksPage = () => {
                   borderBottom: active ? `1px solid ${GOLD}` : "1px solid transparent",
                 }}
               >
-                {a.label}
+                {t(`howItWorks.anchors.${a.labelKey}`)}
               </button>
             );
           })}
@@ -327,15 +248,15 @@ const HowItWorksPage = () => {
         <div style={{ borderTop: "1px solid rgba(10,22,40,0.08)" }}>
           {renderRow(
             "buyr",
-            "Le buyr",
+            t("howItWorks.buyr.title"),
             null,
             <>
               <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 14 }}>
-                Celui qui cherche un objet précis et confie sa recherche à la communauté.
+                {t("howItWorks.buyr.intro")}
               </p>
               <ul className="space-y-2.5">
-                {buyrItems.map((t) => (
-                  <Dash key={t}>{t}</Dash>
+                {listKeys.map((k) => (
+                  <Dash key={k}>{t(`howItWorks.buyr.${k}`)}</Dash>
                 ))}
               </ul>
             </>
@@ -343,15 +264,15 @@ const HowItWorksPage = () => {
 
           {renderRow(
             "findr",
-            "Le findr",
+            t("howItWorks.findr.title"),
             null,
             <>
               <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 14 }}>
-                Celui qui part en chasse et déniche l'objet demandé, où qu'il se cache.
+                {t("howItWorks.findr.intro")}
               </p>
               <ul className="space-y-2.5">
-                {findrItems.map((t) => (
-                  <Dash key={t}>{t}</Dash>
+                {listKeys.map((k) => (
+                  <Dash key={k}>{t(`howItWorks.findr.${k}`)}</Dash>
                 ))}
               </ul>
             </>
@@ -359,19 +280,19 @@ const HowItWorksPage = () => {
 
           {renderRow(
             "etapes",
-            "Étape par étape",
+            t("howItWorks.steps.title"),
             null,
             <>
               <ul className="space-y-2.5">
-                {steps.map((s) => (
-                  <li key={s.title}>
+                {stepKeys.map((k) => (
+                  <li key={k}>
                     <div className="flex gap-3" style={{ color: "#4B5563", fontSize: 13.5, lineHeight: 1.65 }}>
                       <span style={{ color: GOLD, flexShrink: 0 }}>—</span>
                       <span>
-                        <span style={{ color: NAVY }}>{s.title}</span>
+                        <span style={{ color: NAVY }}>{t(`howItWorks.steps.${k}.title`)}</span>
                         {showStepDetails && (
                           <span className="block" style={{ color: "#6B7280", fontSize: 13, marginTop: 4 }}>
-                            {s.description}
+                            {t(`howItWorks.steps.${k}.description`)}
                           </span>
                         )}
                       </span>
@@ -389,34 +310,34 @@ const HowItWorksPage = () => {
                   textUnderlineOffset: 3,
                 }}
               >
-                {showStepDetails ? "Masquer le détail" : "Voir le détail de chaque étape"}
+                {showStepDetails ? t("howItWorks.steps.hideDetails") : t("howItWorks.steps.showDetails")}
               </button>
             </>
           )}
 
           {renderRow(
             "reservation",
-            "Le système de réservation",
-            "FONCTIONNALITÉ CLÉ",
+            t("howItWorks.reservation.title"),
+            t("howItWorks.reservation.summary"),
             <div className="grid md:grid-cols-2 gap-8">
               <div>
                 <p style={{ fontSize: 10.5, letterSpacing: "0.12em", color: GOLD_GREY, marginBottom: 10 }}>
-                  POURQUOI RÉSERVER ?
+                  {t("howItWorks.reservation.whyTitle")}
                 </p>
                 <ul className="space-y-2.5">
-                  <Dash>Éviter que plusieurs findrs cherchent le même objet</Dash>
-                  <Dash>Investir du temps sereinement dans la recherche</Dash>
-                  <Dash>Montrer son engagement au buyr</Dash>
+                  <Dash>{t("howItWorks.reservation.why1")}</Dash>
+                  <Dash>{t("howItWorks.reservation.why2")}</Dash>
+                  <Dash>{t("howItWorks.reservation.why3")}</Dash>
                 </ul>
               </div>
               <div>
                 <p style={{ fontSize: 10.5, letterSpacing: "0.12em", color: GOLD_GREY, marginBottom: 10 }}>
-                  COMMENT ÇA FONCTIONNE ?
+                  {t("howItWorks.reservation.howTitle")}
                 </p>
                 <ul className="space-y-2.5">
-                  <Dash>Le findr demande une réservation avec une durée</Dash>
-                  <Dash>Le buyr approuve, modifie ou refuse la demande</Dash>
-                  <Dash>La recherche devient exclusive pendant la durée</Dash>
+                  <Dash>{t("howItWorks.reservation.how1")}</Dash>
+                  <Dash>{t("howItWorks.reservation.how2")}</Dash>
+                  <Dash>{t("howItWorks.reservation.how3")}</Dash>
                 </ul>
               </div>
             </div>
@@ -424,25 +345,25 @@ const HowItWorksPage = () => {
 
           {renderRow(
             "frais",
-            "Les frais de la plateforme",
-            "5% STANDARD · 3% PREMIUM",
+            t("howItWorks.fees.title"),
+            t("howItWorks.fees.summary"),
             <>
               <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 14 }}>
-                findr prélève une commission unique sur chaque transaction pour maintenir la
-                plateforme, garantir la sécurité des paiements et accompagner la communauté.
+                {t("howItWorks.fees.intro")}
               </p>
               <ul className="space-y-2.5">
                 <Dash>
-                  <span style={{ color: NAVY }}>Frais standard — 5%</span> prélevés sur chaque
-                  transaction, pour tous les utilisateurs.
+                  <span style={{ color: NAVY }}>{t("howItWorks.fees.standardLabel")}</span>{" "}
+                  {t("howItWorks.fees.standardText")}
                 </Dash>
                 <Dash>
-                  <span style={{ color: NAVY }}>Frais Premium — 3%</span> pour les membres Premium,
-                  avec des avantages exclusifs.
+                  <span style={{ color: NAVY }}>{t("howItWorks.fees.premiumLabel")}</span>{" "}
+                  {t("howItWorks.fees.premiumText")}
                 </Dash>
                 <Dash>
-                  Exemple concret : un findr trouve un vinyle rare à 50 € ; le buyr paie 50 € + 5 % ={" "}
-                  <span style={{ color: NAVY }}>52,50 €</span>. Avec Premium, 50 € + 3 % ={" "}
+                  {t("howItWorks.fees.examplePrefix")}{" "}
+                  <span style={{ color: NAVY }}>52,50 €</span>
+                  {t("howItWorks.fees.exampleMiddle")}{" "}
                   <span style={{ color: NAVY }}>51,50 €</span>.
                 </Dash>
               </ul>
@@ -457,27 +378,27 @@ const HowItWorksPage = () => {
                   textUnderlineOffset: 3,
                 }}
               >
-                Découvrir Premium
+                {t("howItWorks.fees.premiumLink")}
               </Link>
             </>
           )}
 
           {renderRow(
             "savoir-vivre",
-            "Le savoir-vivre findr",
-            "6 RÈGLES DE BONNE CONDUITE",
+            t("howItWorks.etiquette.title"),
+            t("howItWorks.etiquette.summary"),
             <>
               <p style={{ fontSize: 13, color: "#6B7280", marginBottom: 14 }}>
-                Pour que l'expérience soit agréable pour tous, quelques règles de bonne conduite.
+                {t("howItWorks.etiquette.intro")}
               </p>
               <ul className="space-y-3">
-                {etiquette.map((r) => (
-                  <li key={r.title} className="flex gap-3" style={{ fontSize: 13.5, lineHeight: 1.65 }}>
+                {etiquetteKeys.map((k) => (
+                  <li key={k} className="flex gap-3" style={{ fontSize: 13.5, lineHeight: 1.65 }}>
                     <span style={{ color: GOLD, flexShrink: 0 }}>—</span>
                     <span>
-                      <span style={{ color: NAVY }}>{r.title}</span>
+                      <span style={{ color: NAVY }}>{t(`howItWorks.etiquette.${k}.title`)}</span>
                       <span className="block" style={{ color: "#6B7280", fontSize: 13, marginTop: 2 }}>
-                        {r.description}
+                        {t(`howItWorks.etiquette.${k}.description`)}
                       </span>
                     </span>
                   </li>
@@ -501,7 +422,7 @@ const HowItWorksPage = () => {
               borderRadius: 2,
             }}
           >
-            POSTER UNE RECHERCHE →
+            {t("howItWorks.cta")}
           </Link>
         </div>
       </main>
