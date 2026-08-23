@@ -53,10 +53,10 @@ const Messaging = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const localImagesRef = useRef<Record<string, string[]>>({});
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -214,7 +214,7 @@ const Messaging = () => {
   };
 
   const handleSend = async () => {
-    if ((!message.trim() && photos.length === 0) || !user || !search) return;
+    if ((!message.trim() && photoFiles.length === 0) || !user || !search) return;
 
     const actualReceiverId = partnerId && partnerId !== user.id ? partnerId : search.user_id;
     if (!actualReceiverId || actualReceiverId === user.id) {
@@ -227,16 +227,41 @@ const Messaging = () => {
     }
 
     setSending(true);
-    const photosSnapshot = [...photos];
-    const contentToSend = message.trim() || (photosSnapshot.length > 0 ? "📷 Photo(s)" : "");
+    const filesSnapshot = [...photoFiles];
+    const contentToSend = message.trim() || (filesSnapshot.length > 0 ? "📷 Photo(s)" : "");
 
-    const { data, error } = await supabase
+    // Upload attached photos to storage first
+    const uploadedUrls: string[] = [];
+    for (const file of filesSnapshot) {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/messages/${id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("search-images")
+        .upload(path, file, { contentType: file.type || "image/jpeg" });
+
+      if (uploadError) {
+        console.error("Error uploading message image:", uploadError);
+        toast({
+          title: "Erreur",
+          description: "Impossible d'envoyer les photos.",
+          variant: "destructive",
+        });
+        setSending(false);
+        return;
+      }
+
+      const { data: publicUrl } = supabase.storage.from("search-images").getPublicUrl(path);
+      uploadedUrls.push(publicUrl.publicUrl);
+    }
+
+    const { error } = await supabase
       .from("messages")
       .insert({
         search_id: id,
         sender_id: user.id,
         receiver_id: actualReceiverId,
-        content: contentToSend
+        content: contentToSend,
+        images: uploadedUrls,
       })
       .select()
       .single();
@@ -249,9 +274,6 @@ const Messaging = () => {
         variant: "destructive",
       });
     } else {
-      if (data && photosSnapshot.length > 0) {
-        localImagesRef.current[data.id] = photosSnapshot;
-      }
       // Notify the recipient of the new message
       await supabase.from("notifications").insert({
         user_id: actualReceiverId,
@@ -261,10 +283,13 @@ const Messaging = () => {
         link: `/messagerie/${id}?with=${user.id}`,
       });
       setMessage("");
+      photos.forEach((url) => URL.revokeObjectURL(url));
       setPhotos([]);
+      setPhotoFiles([]);
       if (fileInputRef.current) fileInputRef.current.value = "";
+      fetchMessages();
     }
-    
+
     setSending(false);
   };
 
@@ -295,6 +320,7 @@ const Messaging = () => {
 
     const newPreviews = filesToAdd.map((f) => URL.createObjectURL(f));
     setPhotos((prev) => [...prev, ...newPreviews]);
+    setPhotoFiles((prev) => [...prev, ...filesToAdd]);
     if (e.target) e.target.value = "";
   };
 
@@ -304,6 +330,7 @@ const Messaging = () => {
       if (url) URL.revokeObjectURL(url);
       return prev.filter((_, i) => i !== index);
     });
+    setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const triggerFileInput = () => {
@@ -533,7 +560,7 @@ const Messaging = () => {
                       <div className="space-y-3">
                         {dayMessages.map((msg) => {
                           const isMine = msg.sender_id === user?.id;
-                          const msgImages = localImagesRef.current[msg.id] || msg.images || [];
+                          const msgImages = msg.images || [];
                           const hasImages = msgImages.length > 0;
                           const hasText = msg.content && msg.content !== "📷 Photo(s)";
                           const count = msgImages.length;
