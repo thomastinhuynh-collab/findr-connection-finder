@@ -320,6 +320,7 @@ const Messaging = () => {
 
     const newPreviews = filesToAdd.map((f) => URL.createObjectURL(f));
     setPhotos((prev) => [...prev, ...newPreviews]);
+    setPhotoFiles((prev) => [...prev, ...filesToAdd]);
     if (e.target) e.target.value = "";
   };
 
@@ -329,6 +330,7 @@ const Messaging = () => {
       if (url) URL.revokeObjectURL(url);
       return prev.filter((_, i) => i !== index);
     });
+    setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const triggerFileInput = () => {
