@@ -137,6 +137,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          images: string[] | null
           is_read: boolean | null
           receiver_id: string
           search_id: string
@@ -146,6 +147,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          images?: string[] | null
           is_read?: boolean | null
           receiver_id: string
           search_id: string
@@ -155,6 +157,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          images?: string[] | null
           is_read?: boolean | null
           receiver_id?: string
           search_id?: string
