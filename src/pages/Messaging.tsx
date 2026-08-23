@@ -560,7 +560,7 @@ const Messaging = () => {
                       <div className="space-y-3">
                         {dayMessages.map((msg) => {
                           const isMine = msg.sender_id === user?.id;
-                          const msgImages = localImagesRef.current[msg.id] || msg.images || [];
+                          const msgImages = msg.images || [];
                           const hasImages = msgImages.length > 0;
                           const hasText = msg.content && msg.content !== "📷 Photo(s)";
                           const count = msgImages.length;
