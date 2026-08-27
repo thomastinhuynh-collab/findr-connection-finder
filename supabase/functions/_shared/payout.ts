@@ -45,7 +45,7 @@ export async function releaseFundsForReservation(
 
   await admin
     .from("reservations")
-    .update({ payment_status: "termine", status: "termine", stripe_transfer_id: transfer.id })
+    .update({ payment_status: "termine", stripe_transfer_id: transfer.id })
     .eq("id", reservation.id);
 
   await admin.from("transactions").insert({

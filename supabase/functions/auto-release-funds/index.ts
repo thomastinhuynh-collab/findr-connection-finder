@@ -94,15 +94,20 @@ Deno.serve(async (req) => {
     const { data: expired } = await admin
       .from("reservations")
       .select("id, findr_id, search_id, proposal_id")
-      .eq("status", "approuve")
+      .eq("status", "approved")
       .is("proposal_id", null)
       .lt("expires_at", new Date(now).toISOString());
 
     for (const reservation of expired ?? []) {
       await admin
         .from("reservations")
-        .update({ status: "expiree", expired_without_proposal: true })
+        .update({ status: "expired", expired_without_proposal: true })
         .eq("id", reservation.id);
+      await admin
+        .from("searches")
+        .update({ status: "active" })
+        .eq("id", reservation.search_id)
+        .eq("status", "reserved");
       await admin.from("notifications").insert({
         user_id: reservation.findr_id,
         type: "reservation_expired",
