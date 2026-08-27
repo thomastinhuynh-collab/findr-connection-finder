@@ -81,6 +81,42 @@ const ReservationCard = ({
     reservation.requested_duration_days.toString()
   );
   const [processing, setProcessing] = useState(false);
+  const [renewing, setRenewing] = useState(false);
+
+  const handleRenew = async () => {
+    setRenewing(true);
+    try {
+      const base = reservation.expires_at ? new Date(reservation.expires_at) : new Date();
+      const newExpiry = new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+      const { error } = await supabase
+        .from("reservations")
+        .update({
+          expires_at: newExpiry.toISOString(),
+          renewal_count: 1,
+          renewal_requested: true,
+          approved_duration_days: (reservation.approved_duration_days ?? 7) + 7,
+        })
+        .eq("id", reservation.id);
+      if (error) throw error;
+
+      toast({
+        title: "Réservation renouvelée",
+        description: "Tu disposes de 7 jours supplémentaires (14 jours au total).",
+      });
+      onUpdate();
+    } catch (e) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de renouveler la réservation.",
+        variant: "destructive",
+      });
+    } finally {
+      setRenewing(false);
+    }
+  };
+
+
 
   const handleAccept = async () => {
     setProcessing(true);
