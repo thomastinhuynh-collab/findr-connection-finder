@@ -1,6 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import Stripe from "npm:stripe@18";
+import { releaseFundsForReservation } from "../_shared/payout.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -35,76 +36,25 @@ Deno.serve(async (req) => {
 
     const { data: reservation, error: rErr } = await admin
       .from("reservations")
-      .select("id, buyr_id, findr_id, proposal_id, payment_status, findr_payout_amount, stripe_payment_intent_id")
+      .select(
+        "id, buyr_id, findr_id, proposal_id, payment_status, dispute_open, findr_payout_amount, stripe_payment_intent_id",
+      )
       .eq("id", reservationId)
       .maybeSingle();
     if (rErr || !reservation) return json({ error: "Réservation introuvable" }, 404);
     if (reservation.buyr_id !== user.id) return json({ error: "Non autorisé" }, 403);
-    if (reservation.payment_status !== "paye_en_attente_reception") {
+    if (!["paye_en_attente_reception", "livre"].includes(reservation.payment_status ?? "")) {
       return json({ error: "Cette réservation n'est pas en attente de réception." }, 400);
     }
-
-    const { data: findrProfile } = await admin
-      .from("profiles")
-      .select("stripe_account_id, stripe_onboarding_complete")
-      .eq("user_id", reservation.findr_id)
-      .maybeSingle();
-
-    if (!findrProfile?.stripe_account_id) {
-      return json({ error: "Le findr n'a pas encore configuré ses paiements." }, 400);
+    if (reservation.dispute_open) {
+      return json({ error: "Une réclamation est en cours sur cette transaction." }, 400);
     }
 
-    const amount = Math.round(Number(reservation.findr_payout_amount) * 100);
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    const result = await releaseFundsForReservation(admin, stripe, reservation, false);
+    if (!result.ok) return json({ error: result.error }, 400);
 
-    // On rattache le virement à la charge du buyr (source_transaction) :
-    // Stripe puise directement dans ce paiement, sans dépendre du solde
-    // disponible de la plateforme (essentiel en mode Test).
-    let sourceTransaction: string | undefined;
-    if (reservation.stripe_payment_intent_id) {
-      try {
-        const pi = await stripe.paymentIntents.retrieve(reservation.stripe_payment_intent_id);
-        const latest = pi.latest_charge;
-        sourceTransaction = typeof latest === "string" ? latest : latest?.id;
-      } catch (e) {
-        console.error("Impossible de récupérer la charge d'origine:", e);
-      }
-    }
-
-    const transfer = await stripe.transfers.create({
-      amount,
-      currency: "eur",
-      destination: findrProfile.stripe_account_id,
-      ...(sourceTransaction ? { source_transaction: sourceTransaction } : {}),
-      metadata: { reservation_id: reservation.id },
-    });
-
-
-    const { error: upErr } = await admin
-      .from("reservations")
-      .update({ payment_status: "termine", stripe_transfer_id: transfer.id })
-      .eq("id", reservation.id);
-    if (upErr) throw upErr;
-
-    await admin.from("transactions").insert({
-      findr_id: reservation.findr_id,
-      reservation_id: reservation.id,
-      amount: Number(reservation.findr_payout_amount),
-    });
-
-    if (reservation.proposal_id) {
-      await admin.from("proposals").update({ status: "completed" }).eq("id", reservation.proposal_id);
-    }
-
-    await admin.from("notifications").insert({
-      user_id: reservation.findr_id,
-      type: "payout_released",
-      title: "Paiement reçu ! 💰",
-      message: `${Number(reservation.findr_payout_amount).toFixed(2)} € ont été versés sur ton compte.`,
-      link: "/mon-espace",
-    });
-
-    return json({ success: true, transferId: transfer.id });
+    return json({ success: true, transferId: result.transferId });
   } catch (err) {
     console.error("release-funds-to-findr error:", err);
     return json({ error: (err as Error).message ?? "Erreur serveur" }, 500);
