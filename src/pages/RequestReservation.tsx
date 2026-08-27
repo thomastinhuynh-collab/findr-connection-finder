@@ -130,8 +130,39 @@ const RequestReservation = () => {
 
     if (data) {
       setExistingReservation(true);
+      return;
+    }
+
+    // Limite : 3 réservations actives simultanées maximum
+    const { count: activeCount } = await supabase
+      .from("reservations")
+      .select("id", { count: "exact", head: true })
+      .eq("findr_id", user.id)
+      .in("status", ["pending", "approved"]);
+
+    if ((activeCount ?? 0) >= MAX_ACTIVE_RESERVATIONS) {
+      setBlockReason(
+        `Tu as déjà ${MAX_ACTIVE_RESERVATIONS} réservations actives. Termine ou laisse expirer l'une d'elles avant d'en demander une nouvelle.`,
+      );
+      return;
+    }
+
+    // Blocage 7 jours après 3 réservations expirées sans proposition
+    const since = new Date(Date.now() - COOLDOWN_DAYS * 24 * 60 * 60 * 1000).toISOString();
+    const { count: expiredCount } = await supabase
+      .from("reservations")
+      .select("id", { count: "exact", head: true })
+      .eq("findr_id", user.id)
+      .eq("expired_without_proposal", true)
+      .gte("updated_at", since);
+
+    if ((expiredCount ?? 0) >= 3) {
+      setBlockReason(
+        `Trois de tes réservations ont expiré sans proposition. Pour préserver la disponibilité des recherches, tu ne peux pas réserver pendant ${COOLDOWN_DAYS} jours.`,
+      );
     }
   };
+
 
   const onSubmit = async (formData: ReservationFormData) => {
     if (!user || !search) return;
