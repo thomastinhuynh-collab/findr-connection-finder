@@ -43,6 +43,7 @@ interface Reservation {
   status: string;
   expires_at: string | null;
   created_at: string;
+  renewal_count?: number | null;
   findr_profile?: {
     full_name: string | null;
     avatar_url: string | null;
@@ -64,12 +65,8 @@ const statusLabels: Record<string, { label: string; variant: "default" | "second
   cancelled: { label: "Annulée", variant: "outline" },
 };
 
-const durationOptions = [
-  { value: "3", label: "3 jours" },
-  { value: "7", label: "1 semaine" },
-  { value: "14", label: "2 semaines" },
-  { value: "30", label: "1 mois" },
-];
+// Durée unique : 7 jours, renouvelable une fois (14 jours maximum)
+const durationOptions = [{ value: "7", label: "7 jours" }];
 
 const ReservationCard = ({
   reservation,
@@ -84,6 +81,42 @@ const ReservationCard = ({
     reservation.requested_duration_days.toString()
   );
   const [processing, setProcessing] = useState(false);
+  const [renewing, setRenewing] = useState(false);
+
+  const handleRenew = async () => {
+    setRenewing(true);
+    try {
+      const base = reservation.expires_at ? new Date(reservation.expires_at) : new Date();
+      const newExpiry = new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+      const { error } = await supabase
+        .from("reservations")
+        .update({
+          expires_at: newExpiry.toISOString(),
+          renewal_count: 1,
+          renewal_requested: true,
+          approved_duration_days: (reservation.approved_duration_days ?? 7) + 7,
+        })
+        .eq("id", reservation.id);
+      if (error) throw error;
+
+      toast({
+        title: "Réservation renouvelée",
+        description: "Tu disposes de 7 jours supplémentaires (14 jours au total).",
+      });
+      onUpdate();
+    } catch (e) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de renouveler la réservation.",
+        variant: "destructive",
+      });
+    } finally {
+      setRenewing(false);
+    }
+  };
+
+
 
   const handleAccept = async () => {
     setProcessing(true);
@@ -264,6 +297,27 @@ const ReservationCard = ({
                 {reservation.justification}
               </p>
             </div>
+
+            {/* Renouvellement (findr, une seule fois) */}
+            {!isOwner && reservation.status === "approved" && (
+              <div className="pt-2">
+                {(reservation.renewal_count ?? 0) === 0 ? (
+                  <Button
+                    variant="outline"
+                    className="w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                    disabled={renewing}
+                    onClick={handleRenew}
+                  >
+                    <CalendarClock className="w-4 h-4 mr-2" />
+                    {renewing ? "Renouvellement…" : "Renouveler 7 jours de plus"}
+                  </Button>
+                ) : (
+                  <p className="text-xs text-muted-foreground text-center">
+                    Réservation déjà renouvelée — 14 jours maximum au total.
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Actions for Owner */}
             {isOwner && reservation.status === "pending" && (

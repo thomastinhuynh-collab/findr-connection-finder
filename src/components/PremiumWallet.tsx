@@ -13,7 +13,7 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Wallet, CreditCard, ArrowUpRight, ArrowDownLeft, Crown, Euro, Building2, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { Wallet, CreditCard, ArrowUpRight, ArrowDownLeft, Euro, Building2, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Transaction {
@@ -87,12 +87,6 @@ const PremiumWallet = ({ balance, isPremium, transactions, onAddFunds }: Premium
               <Wallet className="w-5 h-5" />
               <CardTitle className="text-lg">Portefeuille findr</CardTitle>
             </div>
-            {isPremium && (
-              <Badge className="bg-accent text-accent-foreground">
-                <Crown className="w-3 h-3 mr-1" />
-                Premium
-              </Badge>
-            )}
           </div>
         </CardHeader>
         
@@ -104,16 +98,8 @@ const PremiumWallet = ({ balance, isPremium, transactions, onAddFunds }: Premium
               <Euro className="w-6 h-6" />
             </div>
           </div>
-          
-          {!isPremium && (
-            <div className="bg-primary-foreground/10 rounded-lg p-3 mb-4">
-              <p className="text-sm flex items-center gap-2">
-                <Crown className="w-4 h-4 text-accent" />
-                <span>Passez <span className="font-semibold text-accent">Premium</span> pour 0% de commission !</span>
-              </p>
-            </div>
-          )}
         </CardContent>
+
       </Card>
 
       {/* Info - Mixed Payment */}

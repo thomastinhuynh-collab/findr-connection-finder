@@ -312,69 +312,102 @@ export type Database = {
       }
       reservations: {
         Row: {
+          accepted_at: string | null
           approved_duration_days: number | null
           buyr_fee: number | null
           buyr_id: string
+          carrier: string | null
           created_at: string
+          delivered_at: string | null
+          dispute_open: boolean
+          expired_without_proposal: boolean
           expires_at: string | null
           findr_fee: number | null
           findr_id: string
           findr_payout_amount: number | null
           id: string
           justification: string
+          lost_notified_at: string | null
           object_price: number | null
           payment_status: string | null
           proposal_id: string | null
+          renewal_count: number
+          renewal_requested: boolean
           requested_duration_days: number
           search_id: string
+          shipped_at: string | null
           status: string
           stripe_payment_intent_id: string | null
           stripe_transfer_id: string | null
           total_buyr_amount: number | null
+          tracking_number: string | null
+          tracking_status: string | null
           updated_at: string
         }
         Insert: {
+          accepted_at?: string | null
           approved_duration_days?: number | null
           buyr_fee?: number | null
           buyr_id: string
+          carrier?: string | null
           created_at?: string
+          delivered_at?: string | null
+          dispute_open?: boolean
+          expired_without_proposal?: boolean
           expires_at?: string | null
           findr_fee?: number | null
           findr_id: string
           findr_payout_amount?: number | null
           id?: string
           justification: string
+          lost_notified_at?: string | null
           object_price?: number | null
           payment_status?: string | null
           proposal_id?: string | null
+          renewal_count?: number
+          renewal_requested?: boolean
           requested_duration_days?: number
           search_id: string
+          shipped_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
           stripe_transfer_id?: string | null
           total_buyr_amount?: number | null
+          tracking_number?: string | null
+          tracking_status?: string | null
           updated_at?: string
         }
         Update: {
+          accepted_at?: string | null
           approved_duration_days?: number | null
           buyr_fee?: number | null
           buyr_id?: string
+          carrier?: string | null
           created_at?: string
+          delivered_at?: string | null
+          dispute_open?: boolean
+          expired_without_proposal?: boolean
           expires_at?: string | null
           findr_fee?: number | null
           findr_id?: string
           findr_payout_amount?: number | null
           id?: string
           justification?: string
+          lost_notified_at?: string | null
           object_price?: number | null
           payment_status?: string | null
           proposal_id?: string | null
+          renewal_count?: number
+          renewal_requested?: boolean
           requested_duration_days?: number
           search_id?: string
+          shipped_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
           stripe_transfer_id?: string | null
           total_buyr_amount?: number | null
+          tracking_number?: string | null
+          tracking_status?: string | null
           updated_at?: string
         }
         Relationships: [

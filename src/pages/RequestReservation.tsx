@@ -39,12 +39,12 @@ interface SearchInfo {
   image_url: string | null;
 }
 
-const durationOptions = [
-  { value: "3", label: "3 jours" },
-  { value: "7", label: "1 semaine" },
-  { value: "14", label: "2 semaines" },
-  { value: "30", label: "1 mois" },
-];
+// Durée unique : 7 jours, renouvelable une fois (14 jours maximum au total)
+const durationOptions = [{ value: "7", label: "7 jours (renouvelable une fois)" }];
+
+const MAX_ACTIVE_RESERVATIONS = 3;
+const COOLDOWN_DAYS = 7;
+
 
 const RequestReservation = () => {
   const { id } = useParams();
@@ -55,6 +55,8 @@ const RequestReservation = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [existingReservation, setExistingReservation] = useState(false);
+  const [blockReason, setBlockReason] = useState<string | null>(null);
+
 
   const {
     register,
@@ -128,8 +130,39 @@ const RequestReservation = () => {
 
     if (data) {
       setExistingReservation(true);
+      return;
+    }
+
+    // Limite : 3 réservations actives simultanées maximum
+    const { count: activeCount } = await supabase
+      .from("reservations")
+      .select("id", { count: "exact", head: true })
+      .eq("findr_id", user.id)
+      .in("status", ["pending", "approved"]);
+
+    if ((activeCount ?? 0) >= MAX_ACTIVE_RESERVATIONS) {
+      setBlockReason(
+        `Tu as déjà ${MAX_ACTIVE_RESERVATIONS} réservations actives. Termine ou laisse expirer l'une d'elles avant d'en demander une nouvelle.`,
+      );
+      return;
+    }
+
+    // Blocage 7 jours après 3 réservations expirées sans proposition
+    const since = new Date(Date.now() - COOLDOWN_DAYS * 24 * 60 * 60 * 1000).toISOString();
+    const { count: expiredCount } = await supabase
+      .from("reservations")
+      .select("id", { count: "exact", head: true })
+      .eq("findr_id", user.id)
+      .eq("expired_without_proposal", true)
+      .gte("updated_at", since);
+
+    if ((expiredCount ?? 0) >= 3) {
+      setBlockReason(
+        `Trois de tes réservations ont expiré sans proposition. Pour préserver la disponibilité des recherches, tu ne peux pas réserver pendant ${COOLDOWN_DAYS} jours.`,
+      );
     }
   };
+
 
   const onSubmit = async (formData: ReservationFormData) => {
     if (!user || !search) return;
@@ -192,7 +225,7 @@ const RequestReservation = () => {
     );
   }
 
-  if (existingReservation) {
+  if (existingReservation || blockReason) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
@@ -204,14 +237,15 @@ const RequestReservation = () => {
                   <AlertCircle className="w-8 h-8 text-destructive" />
                   <div>
                     <h2 className="text-lg font-semibold text-primary">
-                      Réservation déjà existante
+                      {blockReason ? "Réservation impossible" : "Réservation déjà existante"}
                     </h2>
                     <p className="text-muted-foreground">
-                      Tu as déjà une demande de réservation en cours pour cette
-                      annonce.
+                      {blockReason ??
+                        "Tu as déjà une demande de réservation en cours pour cette annonce."}
                     </p>
                   </div>
                 </div>
+
                 <Button
                   className="mt-6 w-full"
                   onClick={() => navigate(`/recherche/${id}`)}
