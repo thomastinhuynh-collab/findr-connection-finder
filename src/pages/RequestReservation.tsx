@@ -225,7 +225,7 @@ const RequestReservation = () => {
     );
   }
 
-  if (existingReservation) {
+  if (existingReservation || blockReason) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
@@ -237,14 +237,15 @@ const RequestReservation = () => {
                   <AlertCircle className="w-8 h-8 text-destructive" />
                   <div>
                     <h2 className="text-lg font-semibold text-primary">
-                      Réservation déjà existante
+                      {blockReason ? "Réservation impossible" : "Réservation déjà existante"}
                     </h2>
                     <p className="text-muted-foreground">
-                      Tu as déjà une demande de réservation en cours pour cette
-                      annonce.
+                      {blockReason ??
+                        "Tu as déjà une demande de réservation en cours pour cette annonce."}
                     </p>
                   </div>
                 </div>
+
                 <Button
                   className="mt-6 w-full"
                   onClick={() => navigate(`/recherche/${id}`)}
