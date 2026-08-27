@@ -13,7 +13,7 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Wallet, CreditCard, ArrowUpRight, ArrowDownLeft, Crown, Euro, Building2, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { Wallet, CreditCard, ArrowUpRight, ArrowDownLeft, Euro, Building2, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Transaction {
