@@ -502,19 +502,32 @@ const ProposalList = ({
                     )}
 
                   {isOwner &&
+                    payments[proposal.id]?.dispute_status !== "ouvert" &&
                     ["paye_en_attente_reception", "livre"].includes(
                       payments[proposal.id]?.payment_status ?? "",
                     ) && (
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          setSelectedProposal(proposal);
-                          setConfirmReceiptDialog(true);
-                        }}
-                      >
-                        <Package className="w-4 h-4 mr-1" />
-                        Confirmer la réception de l'objet
-                      </Button>
+                      <>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setSelectedProposal(proposal);
+                            setConfirmReceiptDialog(true);
+                          }}
+                        >
+                          <Package className="w-4 h-4 mr-1" />
+                          Confirmer la réception de l'objet
+                        </Button>
+                        <button
+                          type="button"
+                          className="text-xs text-muted-foreground underline hover:text-destructive transition-colors"
+                          onClick={() => {
+                            setSelectedProposal(proposal);
+                            setDisputeDialogOpen(true);
+                          }}
+                        >
+                          Signaler un problème
+                        </button>
+                      </>
                     )}
 
                   {isOwner && canBuyrCancel(payments[proposal.id]) && (
