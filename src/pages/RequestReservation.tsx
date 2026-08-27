@@ -39,12 +39,12 @@ interface SearchInfo {
   image_url: string | null;
 }
 
-const durationOptions = [
-  { value: "3", label: "3 jours" },
-  { value: "7", label: "1 semaine" },
-  { value: "14", label: "2 semaines" },
-  { value: "30", label: "1 mois" },
-];
+// Durée unique : 7 jours, renouvelable une fois (14 jours maximum au total)
+const durationOptions = [{ value: "7", label: "7 jours (renouvelable une fois)" }];
+
+const MAX_ACTIVE_RESERVATIONS = 3;
+const COOLDOWN_DAYS = 7;
+
 
 const RequestReservation = () => {
   const { id } = useParams();
