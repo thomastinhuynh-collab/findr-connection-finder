@@ -55,6 +55,8 @@ const RequestReservation = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [existingReservation, setExistingReservation] = useState(false);
+  const [blockReason, setBlockReason] = useState<string | null>(null);
+
 
   const {
     register,
