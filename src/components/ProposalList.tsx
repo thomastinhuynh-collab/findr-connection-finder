@@ -33,8 +33,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Truck,
+  AlertTriangle
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -919,6 +923,96 @@ const ProposalList = ({
                   <CheckCircle2 className="w-4 h-4 mr-2" />
                   Confirmer et libérer le paiement
                 </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialogue expédition (findr) */}
+      <Dialog open={shipDialogOpen} onOpenChange={setShipDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Marquer comme expédié</DialogTitle>
+            <DialogDescription>
+              Le numéro de suivi est obligatoire : il permet de suivre le colis automatiquement et
+              de libérer ton paiement dès la livraison.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="carrier">Transporteur</Label>
+              <Input
+                id="carrier"
+                placeholder="Colissimo, Chronopost, Mondial Relay, UPS…"
+                value={carrier}
+                onChange={(e) => setCarrier(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tracking">Numéro de suivi</Label>
+              <Input
+                id="tracking"
+                placeholder="Ex. 6A12345678901"
+                value={trackingNumber}
+                onChange={(e) => setTrackingNumber(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShipDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleMarkShipped} disabled={isProcessing}>
+              {isProcessing ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Enregistrement...
+                </>
+              ) : (
+                <>
+                  <Truck className="w-4 h-4 mr-2" />
+                  Confirmer l'expédition
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialogue annulation & remboursement */}
+      <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Annuler et rembourser</DialogTitle>
+            <DialogDescription>
+              La transaction sera annulée et le buyr intégralement remboursé, frais de service
+              inclus.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm">
+            <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+            <p className="text-muted-foreground">
+              Cette action est définitive. Le remboursement apparaît sur le moyen de paiement
+              d'origine sous quelques jours.
+            </p>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCancelDialogOpen(false)}>
+              Retour
+            </Button>
+            <Button variant="destructive" onClick={handleCancelRefund} disabled={isProcessing}>
+              {isProcessing ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Traitement...
+                </>
+              ) : (
+                "Confirmer l'annulation"
               )}
             </Button>
           </DialogFooter>
