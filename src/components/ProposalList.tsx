@@ -43,6 +43,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import DisputeBanner from "@/components/DisputeBanner";
+import DisputeDialog from "@/components/DisputeDialog";
 
 interface Proposal {
   id: string;
