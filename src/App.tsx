@@ -27,6 +27,7 @@ import LegalNotice from "./pages/LegalNotice";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
+import AdminDisputes from "./pages/AdminDisputes";
 import NotFound from "./pages/NotFound";
 import BackButton from "./components/BackButton";
 import Navbar from "./components/Navbar";
