@@ -113,6 +113,7 @@ const ProposalList = ({
   const [payments, setPayments] = useState<Record<string, ReservationPayment>>({});
   const [shipDialogOpen, setShipDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [disputeDialogOpen, setDisputeDialogOpen] = useState(false);
   const [trackingNumber, setTrackingNumber] = useState("");
   const [carrier, setCarrier] = useState("");
 
