@@ -76,6 +76,9 @@ interface ReservationPayment {
   tracking_status?: string | null;
   accepted_at?: string | null;
   created_at?: string | null;
+  dispute_status?: string | null;
+  dispute_reason?: string | null;
+  dispute_description?: string | null;
 }
 
 interface ProposalListProps {
