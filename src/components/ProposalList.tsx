@@ -65,6 +65,13 @@ interface ReservationPayment {
   buyr_fee: number | null;
   total_buyr_amount: number | null;
   findr_payout_amount: number | null;
+  tracking_number?: string | null;
+  carrier?: string | null;
+  shipped_at?: string | null;
+  delivered_at?: string | null;
+  tracking_status?: string | null;
+  accepted_at?: string | null;
+  created_at?: string | null;
 }
 
 interface ProposalListProps {
@@ -95,6 +102,10 @@ const ProposalList = ({
   const [confirmReceiptDialog, setConfirmReceiptDialog] = useState(false);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [payments, setPayments] = useState<Record<string, ReservationPayment>>({});
+  const [shipDialogOpen, setShipDialogOpen] = useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [trackingNumber, setTrackingNumber] = useState("");
+  const [carrier, setCarrier] = useState("");
 
   // Check if current user is the findr of the selected proposal
   const isCurrentUserFindr = selectedProposal && user?.id === selectedProposal.findr_id;
@@ -116,7 +127,7 @@ const ProposalList = ({
     if (!user) return;
     const { data } = await supabase
       .from("reservations")
-      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount")
+      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at")
       .eq("search_id", searchId);
     const map: Record<string, ReservationPayment> = {};
     (data || []).forEach((r: any) => {
@@ -134,6 +145,70 @@ const ProposalList = ({
     setPaymentDialogOpen(true);
   };
 
+
+  const DAY = 24 * 60 * 60 * 1000;
+
+  // Le buyr peut demander l'annulation : 5 jours sans expédition,
+  // ou 10 jours après une expédition jamais livrée.
+  const canBuyrCancel = (p?: ReservationPayment) => {
+    if (!p || p.payment_status !== "paye_en_attente_reception") return false;
+    if (p.shipped_at) return Date.now() - new Date(p.shipped_at).getTime() >= 10 * DAY;
+    const since = new Date(p.accepted_at ?? p.created_at ?? Date.now()).getTime();
+    return Date.now() - since >= 5 * DAY;
+  };
+
+  const handleMarkShipped = async () => {
+    const reservation = selectedProposal ? payments[selectedProposal.id] : null;
+    if (!reservation) return;
+    if (trackingNumber.trim().length < 4 || carrier.trim().length < 2) {
+      toast({
+        title: "Informations manquantes",
+        description: "Le transporteur et le numéro de suivi sont obligatoires.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsProcessing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("mark-shipped", {
+        body: {
+          reservationId: reservation.id,
+          trackingNumber: trackingNumber.trim(),
+          carrier: carrier.trim(),
+        },
+      });
+      if (error || (data as any)?.error) throw new Error((data as any)?.error ?? error?.message);
+      toast({ title: "Colis expédié 📦", description: "Le buyr a été notifié, le suivi est actif." });
+      setShipDialogOpen(false);
+      setTrackingNumber("");
+      setCarrier("");
+      fetchPayments();
+    } catch (e: any) {
+      toast({ title: "Erreur", description: e?.message ?? "Impossible d'enregistrer l'expédition.", variant: "destructive" });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleCancelRefund = async () => {
+    const reservation = selectedProposal ? payments[selectedProposal.id] : null;
+    if (!reservation) return;
+    setIsProcessing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("cancel-reservation-refund", {
+        body: { reservationId: reservation.id },
+      });
+      if (error || (data as any)?.error) throw new Error((data as any)?.error ?? error?.message);
+      toast({ title: "Annulation confirmée", description: "Le remboursement intégral est en cours." });
+      setCancelDialogOpen(false);
+      fetchPayments();
+      onProposalUpdate();
+    } catch (e: any) {
+      toast({ title: "Erreur", description: e?.message ?? "Annulation impossible.", variant: "destructive" });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handleReject = async (proposal: Proposal) => {
     try {
@@ -367,22 +442,78 @@ const ProposalList = ({
                     </>
                   )}
 
-                  {payments[proposal.id]?.payment_status === "paye_en_attente_reception" && (
-                    <div className="w-full flex items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
+                  {["paye_en_attente_reception", "livre"].includes(
+                    payments[proposal.id]?.payment_status ?? "",
+                  ) && (
+                    <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
                       🛡️ Paiement sécurisé — en attente de confirmation de réception.
+                      {payments[proposal.id]?.tracking_status && (
+                        <span className="font-medium text-primary">
+                          · {payments[proposal.id]?.tracking_status}
+                          {payments[proposal.id]?.tracking_number
+                            ? ` (${payments[proposal.id]?.carrier} — ${payments[proposal.id]?.tracking_number})`
+                            : ""}
+                        </span>
+                      )}
                     </div>
                   )}
 
-                  {isOwner && payments[proposal.id]?.payment_status === "paye_en_attente_reception" && (
+                  {/* Findr : marquer comme expédié */}
+                  {user?.id === proposal.findr_id &&
+                    payments[proposal.id]?.payment_status === "paye_en_attente_reception" &&
+                    !payments[proposal.id]?.shipped_at && (
+                      <>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setSelectedProposal(proposal);
+                            setShipDialogOpen(true);
+                          }}
+                        >
+                          <Truck className="w-4 h-4 mr-1" />
+                          Marquer comme expédié
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                          onClick={() => {
+                            setSelectedProposal(proposal);
+                            setCancelDialogOpen(true);
+                          }}
+                        >
+                          Je ne peux plus fournir l'objet
+                        </Button>
+                      </>
+                    )}
+
+                  {isOwner &&
+                    ["paye_en_attente_reception", "livre"].includes(
+                      payments[proposal.id]?.payment_status ?? "",
+                    ) && (
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setSelectedProposal(proposal);
+                          setConfirmReceiptDialog(true);
+                        }}
+                      >
+                        <Package className="w-4 h-4 mr-1" />
+                        Confirmer la réception de l'objet
+                      </Button>
+                    )}
+
+                  {isOwner && canBuyrCancel(payments[proposal.id]) && (
                     <Button
                       size="sm"
+                      variant="outline"
+                      className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
                       onClick={() => {
                         setSelectedProposal(proposal);
-                        setConfirmReceiptDialog(true);
+                        setCancelDialogOpen(true);
                       }}
                     >
-                      <Package className="w-4 h-4 mr-1" />
-                      Confirmer la réception de l'objet
+                      Le findr n'a pas donné de nouvelles ? Demander l'annulation et le remboursement
                     </Button>
                   )}
 
