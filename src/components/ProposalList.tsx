@@ -1047,6 +1047,18 @@ const ProposalList = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {selectedProposal && payments[selectedProposal.id]?.id && (
+        <DisputeDialog
+          open={disputeDialogOpen}
+          onOpenChange={setDisputeDialogOpen}
+          reservationId={payments[selectedProposal.id]!.id}
+          findrId={selectedProposal.findr_id}
+          searchId={searchId}
+          itemTitle={selectedProposal.title}
+          onSubmitted={fetchPayments}
+        />
+      )}
     </div>
   );
 };
