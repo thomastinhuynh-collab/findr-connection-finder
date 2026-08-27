@@ -446,21 +446,31 @@ const ProposalList = ({
                     </>
                   )}
 
-                  {["paye_en_attente_reception", "livre"].includes(
-                    payments[proposal.id]?.payment_status ?? "",
-                  ) && (
-                    <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
-                      🛡️ Paiement sécurisé — en attente de confirmation de réception.
-                      {payments[proposal.id]?.tracking_status && (
-                        <span className="font-medium text-primary">
-                          · {payments[proposal.id]?.tracking_status}
-                          {payments[proposal.id]?.tracking_number
-                            ? ` (${payments[proposal.id]?.carrier} — ${payments[proposal.id]?.tracking_number})`
-                            : ""}
-                        </span>
-                      )}
-                    </div>
+                  {/* Litige en cours : remplace l'affichage normal du statut */}
+                  {payments[proposal.id]?.dispute_status === "ouvert" && (
+                    <DisputeBanner
+                      reason={payments[proposal.id]?.dispute_reason}
+                      description={payments[proposal.id]?.dispute_description}
+                      showDetails={user?.id === proposal.findr_id}
+                    />
                   )}
+
+                  {payments[proposal.id]?.dispute_status !== "ouvert" &&
+                    ["paye_en_attente_reception", "livre"].includes(
+                      payments[proposal.id]?.payment_status ?? "",
+                    ) && (
+                      <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
+                        🛡️ Paiement sécurisé — en attente de confirmation de réception.
+                        {payments[proposal.id]?.tracking_status && (
+                          <span className="font-medium text-primary">
+                            · {payments[proposal.id]?.tracking_status}
+                            {payments[proposal.id]?.tracking_number
+                              ? ` (${payments[proposal.id]?.carrier} — ${payments[proposal.id]?.tracking_number})`
+                              : ""}
+                          </span>
+                        )}
+                      </div>
+                    )}
 
                   {/* Findr : marquer comme expédié */}
                   {user?.id === proposal.findr_id &&
