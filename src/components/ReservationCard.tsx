@@ -43,6 +43,7 @@ interface Reservation {
   status: string;
   expires_at: string | null;
   created_at: string;
+  renewal_count?: number | null;
   findr_profile?: {
     full_name: string | null;
     avatar_url: string | null;
@@ -64,12 +65,8 @@ const statusLabels: Record<string, { label: string; variant: "default" | "second
   cancelled: { label: "Annulée", variant: "outline" },
 };
 
-const durationOptions = [
-  { value: "3", label: "3 jours" },
-  { value: "7", label: "1 semaine" },
-  { value: "14", label: "2 semaines" },
-  { value: "30", label: "1 mois" },
-];
+// Durée unique : 7 jours, renouvelable une fois (14 jours maximum)
+const durationOptions = [{ value: "7", label: "7 jours" }];
 
 const ReservationCard = ({
   reservation,
@@ -264,6 +261,27 @@ const ReservationCard = ({
                 {reservation.justification}
               </p>
             </div>
+
+            {/* Renouvellement (findr, une seule fois) */}
+            {!isOwner && reservation.status === "approved" && (
+              <div className="pt-2">
+                {(reservation.renewal_count ?? 0) === 0 ? (
+                  <Button
+                    variant="outline"
+                    className="w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
+                    disabled={renewing}
+                    onClick={handleRenew}
+                  >
+                    <CalendarClock className="w-4 h-4 mr-2" />
+                    {renewing ? "Renouvellement…" : "Renouveler 7 jours de plus"}
+                  </Button>
+                ) : (
+                  <p className="text-xs text-muted-foreground text-center">
+                    Réservation déjà renouvelée — 14 jours maximum au total.
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Actions for Owner */}
             {isOwner && reservation.status === "pending" && (
