@@ -64,6 +64,7 @@ Deno.serve(async (req) => {
           .from("reservations")
           .update({
             payment_status: "paye_en_attente_reception",
+            accepted_at: new Date().toISOString(),
             stripe_payment_intent_id: paymentIntentId,
           })
           .eq("id", reservationId)
