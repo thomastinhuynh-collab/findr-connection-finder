@@ -319,7 +319,15 @@ export type Database = {
           carrier: string | null
           created_at: string
           delivered_at: string | null
+          dispute_description: string | null
           dispute_open: boolean
+          dispute_opened_at: string | null
+          dispute_photo_url: string | null
+          dispute_reason: string | null
+          dispute_resolution_notes: string | null
+          dispute_resolution_type: string | null
+          dispute_resolved_at: string | null
+          dispute_status: string | null
           expired_without_proposal: boolean
           expires_at: string | null
           findr_fee: number | null
@@ -352,7 +360,15 @@ export type Database = {
           carrier?: string | null
           created_at?: string
           delivered_at?: string | null
+          dispute_description?: string | null
           dispute_open?: boolean
+          dispute_opened_at?: string | null
+          dispute_photo_url?: string | null
+          dispute_reason?: string | null
+          dispute_resolution_notes?: string | null
+          dispute_resolution_type?: string | null
+          dispute_resolved_at?: string | null
+          dispute_status?: string | null
           expired_without_proposal?: boolean
           expires_at?: string | null
           findr_fee?: number | null
@@ -385,7 +401,15 @@ export type Database = {
           carrier?: string | null
           created_at?: string
           delivered_at?: string | null
+          dispute_description?: string | null
           dispute_open?: boolean
+          dispute_opened_at?: string | null
+          dispute_photo_url?: string | null
+          dispute_reason?: string | null
+          dispute_resolution_notes?: string | null
+          dispute_resolution_type?: string | null
+          dispute_resolved_at?: string | null
+          dispute_status?: string | null
           expired_without_proposal?: boolean
           expires_at?: string | null
           findr_fee?: number | null
@@ -513,6 +537,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       waitlist: {
         Row: {
           consent_given: boolean | null
@@ -546,9 +591,16 @@ export type Database = {
     }
     Functions: {
       get_waitlist_count: { Args: never; Returns: number }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -675,6 +727,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
