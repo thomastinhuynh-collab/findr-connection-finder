@@ -43,6 +43,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import DisputeBanner from "@/components/DisputeBanner";
+import DisputeDialog from "@/components/DisputeDialog";
 
 interface Proposal {
   id: string;
@@ -76,6 +78,9 @@ interface ReservationPayment {
   tracking_status?: string | null;
   accepted_at?: string | null;
   created_at?: string | null;
+  dispute_status?: string | null;
+  dispute_reason?: string | null;
+  dispute_description?: string | null;
 }
 
 interface ProposalListProps {
@@ -108,6 +113,7 @@ const ProposalList = ({
   const [payments, setPayments] = useState<Record<string, ReservationPayment>>({});
   const [shipDialogOpen, setShipDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [disputeDialogOpen, setDisputeDialogOpen] = useState(false);
   const [trackingNumber, setTrackingNumber] = useState("");
   const [carrier, setCarrier] = useState("");
 
@@ -131,7 +137,7 @@ const ProposalList = ({
     if (!user) return;
     const { data } = await supabase
       .from("reservations")
-      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at")
+      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description")
       .eq("search_id", searchId);
     const map: Record<string, ReservationPayment> = {};
     (data || []).forEach((r: any) => {
@@ -446,21 +452,31 @@ const ProposalList = ({
                     </>
                   )}
 
-                  {["paye_en_attente_reception", "livre"].includes(
-                    payments[proposal.id]?.payment_status ?? "",
-                  ) && (
-                    <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
-                      🛡️ Paiement sécurisé — en attente de confirmation de réception.
-                      {payments[proposal.id]?.tracking_status && (
-                        <span className="font-medium text-primary">
-                          · {payments[proposal.id]?.tracking_status}
-                          {payments[proposal.id]?.tracking_number
-                            ? ` (${payments[proposal.id]?.carrier} — ${payments[proposal.id]?.tracking_number})`
-                            : ""}
-                        </span>
-                      )}
-                    </div>
+                  {/* Litige en cours : remplace l'affichage normal du statut */}
+                  {payments[proposal.id]?.dispute_status === "ouvert" && (
+                    <DisputeBanner
+                      reason={payments[proposal.id]?.dispute_reason}
+                      description={payments[proposal.id]?.dispute_description}
+                      showDetails={user?.id === proposal.findr_id}
+                    />
                   )}
+
+                  {payments[proposal.id]?.dispute_status !== "ouvert" &&
+                    ["paye_en_attente_reception", "livre"].includes(
+                      payments[proposal.id]?.payment_status ?? "",
+                    ) && (
+                      <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
+                        🛡️ Paiement sécurisé — en attente de confirmation de réception.
+                        {payments[proposal.id]?.tracking_status && (
+                          <span className="font-medium text-primary">
+                            · {payments[proposal.id]?.tracking_status}
+                            {payments[proposal.id]?.tracking_number
+                              ? ` (${payments[proposal.id]?.carrier} — ${payments[proposal.id]?.tracking_number})`
+                              : ""}
+                          </span>
+                        )}
+                      </div>
+                    )}
 
                   {/* Findr : marquer comme expédié */}
                   {user?.id === proposal.findr_id &&
@@ -492,19 +508,32 @@ const ProposalList = ({
                     )}
 
                   {isOwner &&
+                    payments[proposal.id]?.dispute_status !== "ouvert" &&
                     ["paye_en_attente_reception", "livre"].includes(
                       payments[proposal.id]?.payment_status ?? "",
                     ) && (
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          setSelectedProposal(proposal);
-                          setConfirmReceiptDialog(true);
-                        }}
-                      >
-                        <Package className="w-4 h-4 mr-1" />
-                        Confirmer la réception de l'objet
-                      </Button>
+                      <>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setSelectedProposal(proposal);
+                            setConfirmReceiptDialog(true);
+                          }}
+                        >
+                          <Package className="w-4 h-4 mr-1" />
+                          Confirmer la réception de l'objet
+                        </Button>
+                        <button
+                          type="button"
+                          className="text-xs text-muted-foreground underline hover:text-destructive transition-colors"
+                          onClick={() => {
+                            setSelectedProposal(proposal);
+                            setDisputeDialogOpen(true);
+                          }}
+                        >
+                          Signaler un problème
+                        </button>
+                      </>
                     )}
 
                   {isOwner && canBuyrCancel(payments[proposal.id]) && (
@@ -1018,6 +1047,18 @@ const ProposalList = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {selectedProposal && payments[selectedProposal.id]?.id && (
+        <DisputeDialog
+          open={disputeDialogOpen}
+          onOpenChange={setDisputeDialogOpen}
+          reservationId={payments[selectedProposal.id]!.id}
+          findrId={selectedProposal.findr_id}
+          searchId={searchId}
+          itemTitle={selectedProposal.title}
+          onSubmitted={fetchPayments}
+        />
+      )}
     </div>
   );
 };
