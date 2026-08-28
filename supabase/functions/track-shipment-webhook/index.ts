@@ -1,6 +1,7 @@
 // Webhook 17TRACK : met à jour le statut de livraison des réservations.
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { sendEmailToUser } from "../_shared/brevo.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -82,6 +83,8 @@ Deno.serve(async (req) => {
           link: "/mon-espace",
         },
       ]);
+
+      await sendEmailToUser(admin, reservation.buyr_id, "delivered", {});
     }
 
     return json({ received: true });

@@ -1,6 +1,7 @@
 // Logique de versement des fonds au findr, partagée entre la libération
 // manuelle (buyr) et la libération automatique (tâche planifiée).
 import Stripe from "npm:stripe@18";
+import { sendEmailToUser } from "./brevo.ts";
 
 // deno-lint-ignore no-explicit-any
 type Admin = any;
@@ -78,6 +79,36 @@ export async function releaseFundsForReservation(
     });
   }
   await admin.from("notifications").insert(notifications);
+
+  // Emails (jamais bloquants)
+  let itemTitle: string | undefined;
+  if (reservation.proposal_id) {
+    const { data: proposal } = await admin
+      .from("proposals")
+      .select("title")
+      .eq("id", reservation.proposal_id)
+      .maybeSingle();
+    itemTitle = proposal?.title ?? undefined;
+  }
+  const amount = Number(reservation.findr_payout_amount);
+
+  if (auto) {
+    await sendEmailToUser(admin, reservation.findr_id, "auto_release", {
+      role: "findr",
+      amount,
+      itemTitle,
+    });
+    await sendEmailToUser(admin, reservation.buyr_id, "auto_release", {
+      role: "buyr",
+      amount,
+      itemTitle,
+    });
+  } else {
+    await sendEmailToUser(admin, reservation.findr_id, "funds_released", {
+      amount,
+      itemTitle,
+    });
+  }
 
   return { ok: true, transferId: transfer.id };
 }

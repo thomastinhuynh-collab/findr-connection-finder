@@ -3,6 +3,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
+import { sendEmailToUser } from "../_shared/brevo.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -84,6 +85,11 @@ Deno.serve(async (req) => {
       title: "Ton objet est en route 📦",
       message: `Expédié via ${carrier} — suivi n° ${trackingNumber}.`,
       link: "/mon-espace",
+    });
+
+    await sendEmailToUser(admin, reservation.buyr_id, "shipped", {
+      trackingNumber,
+      carrier,
     });
 
     return json({ success: true });

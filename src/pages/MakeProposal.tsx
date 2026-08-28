@@ -242,6 +242,26 @@ const MakeProposal = () => {
           message: `${findrProfile?.full_name || "Un findr"} a fait une proposition de ${price}€ pour "${search.title}"`,
           link: `/recherche/${id}`
         });
+
+      // Email au buyr — un échec d'envoi ne bloque pas la proposition.
+      supabase.functions
+        .invoke("send-transactional-email", {
+          body: {
+            type: "new_proposal",
+            userId: search.user_id,
+            data: {
+              searchTitle: search.title,
+              searchId: id,
+              findrName: findrProfile?.full_name ?? "Un findr",
+              proposalTitle: `${brand} - ${conditions.find(c => c.value === condition)?.label}`,
+              price: parseFloat(price),
+              imageUrl: uploadedImageUrls?.[0] ?? null,
+            },
+          },
+        })
+        .catch((e) => console.error("new_proposal email failed:", e));
+
+
       
       toast({
         title: "Proposition envoyée ! 🎉",

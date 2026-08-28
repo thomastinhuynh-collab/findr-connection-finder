@@ -96,6 +96,22 @@ const DisputeDialog = ({
         link: `/messagerie/${searchId}`,
       });
 
+      // Email au findr — non bloquant.
+      supabase.functions
+        .invoke("send-transactional-email", {
+          body: {
+            type: "dispute_opened",
+            userId: findrId,
+            data: {
+              itemTitle,
+              reasonLabel: DISPUTE_REASONS[reason],
+              searchId,
+            },
+          },
+        })
+        .catch((e) => console.error("dispute email failed:", e));
+
+
       toast({
         title: "Signalement envoyé",
         description: "Notre équipe examine ta réclamation. Le paiement reste bloqué.",

@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import Stripe from "npm:stripe@18";
+import { sendEmailToUser } from "../_shared/brevo.ts";
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") {
@@ -68,7 +69,7 @@ Deno.serve(async (req) => {
             stripe_payment_intent_id: paymentIntentId,
           })
           .eq("id", reservationId)
-          .select("findr_id, search_id")
+          .select("findr_id, search_id, findr_payout_amount")
           .maybeSingle();
 
         if (error) {
@@ -91,6 +92,21 @@ Deno.serve(async (req) => {
             message:
               "Le paiement est sécurisé jusqu'à la confirmation de réception de l'article.",
             link: "/mes-propositions",
+          });
+
+          let itemTitle: string | undefined;
+          if (proposalId) {
+            const { data: proposal } = await admin
+              .from("proposals")
+              .select("title")
+              .eq("id", proposalId)
+              .maybeSingle();
+            itemTitle = proposal?.title ?? undefined;
+          }
+
+          await sendEmailToUser(admin, reservation.findr_id, "proposal_accepted", {
+            itemTitle,
+            payoutAmount: reservation.findr_payout_amount,
           });
         }
         console.log(`checkout.session.completed -> reservation ${reservationId} paid`);
