@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -49,6 +49,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       },
     });
+
+    // Email de bienvenue — un échec ne doit jamais bloquer l'inscription.
+    if (!error && data.user?.id) {
+      supabase.functions
+        .invoke("send-transactional-email", {
+          body: {
+            type: "welcome",
+            userId: data.user.id,
+            data: { firstName: fullName.split(" ")[0] },
+          },
+        })
+        .catch((e) => console.error("welcome email failed:", e));
+    }
+
     return { error };
   };
 

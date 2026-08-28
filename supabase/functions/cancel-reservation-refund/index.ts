@@ -5,6 +5,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import Stripe from "npm:stripe@18";
 import { z } from "npm:zod@3";
+import { sendEmailToUser } from "../_shared/brevo.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -122,6 +123,13 @@ Deno.serve(async (req) => {
         link: "/mon-espace",
       },
     ]);
+
+    await sendEmailToUser(admin, reservation.buyr_id, "refund", {
+      amount: reservation.total_buyr_amount,
+      reason: isBuyr
+        ? "annulation demandée faute d'expédition ou de livraison dans les délais"
+        : "le findr n'a finalement pas pu fournir l'objet",
+    });
 
     return json({ success: true, refundId: refund.id });
   } catch (err) {
