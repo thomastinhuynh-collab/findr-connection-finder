@@ -77,7 +77,7 @@ export function renderEmail(block: Block): string {
 <tr><td align="center">
   <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="width:100%;max-width:520px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(10,22,40,0.08);">
     <tr><td align="center" bgcolor="${HEADER_NAVY}" style="padding:26px 24px;">
-      <img src="${LOGO_URL}" alt="findr" width="132" style="display:block;border:0;width:132px;height:auto;" />
+      <img src="cid:${LOGO_CID}" alt="findr" width="132" style="display:block;border:0;width:132px;height:auto;" />
     </td></tr>
     <tr><td style="padding:30px 24px 26px 24px;">
       <p style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:${GOLD_TEXT};font-weight:bold;">${esc(
