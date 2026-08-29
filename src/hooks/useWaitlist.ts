@@ -34,6 +34,12 @@ export function useWaitlist() {
       }
       setSubmitted(true);
       setCount((prev) => (prev !== null ? prev + 1 : 1));
+      // Alerte interne par email — fire-and-forget, jamais bloquante.
+      supabase.functions
+        .invoke("notify-waitlist-signup", {
+          body: { email: trimmed, role, count: count !== null ? count + 1 : undefined },
+        })
+        .catch(() => {});
       toast.success("🎉 Tu es sur la liste ! On te prévient dès l'ouverture.");
       return true;
     } catch {
