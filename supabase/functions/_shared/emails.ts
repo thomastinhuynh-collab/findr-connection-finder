@@ -7,6 +7,8 @@ export const LOGO_URL = `${SITE_URL}/logo-email.png`;
 export const LOGO_CID = "findr-logo.png";
 export const CONTACT_EMAIL = "contact@findrapp.fr";
 export const SENDER = { name: "Findr", email: "notifications@findrapp.fr" };
+/** Expéditeur utilisé pour les emails relationnels (liste d'attente / beta). */
+export const CONTACT_SENDER = { name: "Findr", email: "contact@findrapp.fr" };
 
 const NAVY = "#0A1628";
 const HEADER_NAVY = "#070E42";
@@ -134,7 +136,8 @@ export type EmailType =
   | "refund"
   | "dispute_opened"
   | "reservation_reminder"
-  | "waitlist_signup";
+  | "waitlist_signup"
+  | "waitlist_welcome";
 
 // deno-lint-ignore no-explicit-any
 type Data = Record<string, any>;
