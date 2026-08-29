@@ -22,8 +22,10 @@ const esc = (v: unknown) =>
     .replace(/"/g, "&quot;");
 
 interface Block {
-  eyebrow: string;
-  title: string;
+  /** surtitre doré — omis pour les emails minimalistes */
+  eyebrow?: string;
+  /** titre serif — omis pour les emails minimalistes */
+  title?: string;
   /** paragraphes de texte courant (déjà échappés par le builder) */
   paragraphs: string[];
   cta?: { label: string; url: string };
@@ -32,7 +34,10 @@ interface Block {
   imageUrl?: string | null;
   /** lien discret sous le CTA */
   secondary?: { label: string; url: string };
+  /** titre du document HTML quand aucun titre visible n'est affiché */
+  documentTitle?: string;
 }
+
 
 export function renderEmail(block: Block): string {
   const facts = block.facts?.length
