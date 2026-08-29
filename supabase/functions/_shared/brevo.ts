@@ -1,36 +1,12 @@
 // Envoi d'emails transactionnels via l'API Brevo.
 // Toutes les erreurs sont loguées et jamais propagées : un échec d'email
 // ne doit jamais interrompre l'action métier en cours.
-import { buildEmail, LOGO_CID, LOGO_URL, SENDER, type EmailType } from "./emails.ts";
+import { buildEmail, SENDER, type EmailType } from "./emails.ts";
 
 const BREVO_URL = "https://api.brevo.com/v3/smtp/email";
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/brevo/smtp/email";
-
-/**
- * Logo joint en pièce jointe inline (CID) : méthode standard des emails
- * transactionnels, contrairement au base64 souvent bloqué par Gmail.
- * Le PNG est téléchargé une seule fois puis mis en cache pour l'instance.
- */
-let logoAttachmentCache: { name: string; content: string } | null = null;
-
-async function getLogoAttachment(): Promise<{ name: string; content: string } | null> {
-  if (logoAttachmentCache) return logoAttachmentCache;
-  try {
-    const res = await fetch(LOGO_URL);
-    if (!res.ok) {
-      console.error(`[email] logo indisponible (${res.status}) — envoi sans logo inline`);
-      return null;
-    }
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    let binary = "";
-    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-    logoAttachmentCache = { name: LOGO_CID, content: btoa(binary) };
-    return logoAttachmentCache;
-  } catch (e) {
-    console.error("[email] échec récupération logo:", e);
-    return null;
-  }
-}
+// Le logo est référencé par son URL publique dans le gabarit HTML :
+// pas de pièce jointe, donc aucun fichier visible dans le client mail.
 
 // deno-lint-ignore no-explicit-any
 type Admin = any;
