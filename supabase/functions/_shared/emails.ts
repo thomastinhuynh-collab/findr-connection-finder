@@ -332,5 +332,22 @@ export function buildEmail(
           secondary: { label: "Renouveler ma réservation", url: `${SITE_URL}/mon-espace` },
         }),
       };
+
+    case "waitlist_signup":
+      return {
+        subject: `Nouvelle inscription à la liste d'attente : ${esc(data.email ?? "")}`,
+        html: renderEmail({
+          eyebrow: "Liste d'attente",
+          title: "Nouvelle inscription à la liste d'attente",
+          paragraphs: [
+            "Une nouvelle personne vient de rejoindre la liste d'attente findr.",
+          ],
+          facts: [
+            { label: "Email", value: data.email ?? "—" },
+            { label: "Rôle déclaré", value: data.role ?? "inconnu" },
+            ...(data.count ? [{ label: "Total sur la liste", value: String(data.count) }] : []),
+          ],
+        }),
+      };
   }
 }
