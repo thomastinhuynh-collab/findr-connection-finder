@@ -31,15 +31,12 @@ export async function sendEmailTo(
   }
 
   const { subject, html } = buildEmail(type, data);
-  const logo = await getLogoAttachment();
   const payload = {
     sender,
     to: [{ email: to, ...(data.firstName ? { name: String(data.firstName) } : {}) }],
     subject,
     htmlContent: html,
     tags: [type],
-    // Pièce jointe inline référencée par `cid:` dans le gabarit.
-    ...(logo ? { attachment: [logo] } : {}),
   };
 
 
