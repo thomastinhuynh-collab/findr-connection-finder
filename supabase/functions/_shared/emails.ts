@@ -120,7 +120,8 @@ export type EmailType =
   | "auto_release"
   | "refund"
   | "dispute_opened"
-  | "reservation_reminder";
+  | "reservation_reminder"
+  | "waitlist_signup";
 
 // deno-lint-ignore no-explicit-any
 type Data = Record<string, any>;
