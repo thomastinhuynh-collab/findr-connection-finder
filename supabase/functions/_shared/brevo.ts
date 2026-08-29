@@ -42,6 +42,7 @@ export async function sendEmailTo(
   to: string,
   type: EmailType,
   data: Data = {},
+  sender: { name: string; email: string } = SENDER,
 ): Promise<boolean> {
   const key = Deno.env.get("BREVO_API_KEY");
   if (!key) {
@@ -56,7 +57,7 @@ export async function sendEmailTo(
   const { subject, html } = buildEmail(type, data);
   const logo = await getLogoAttachment();
   const payload = {
-    sender: SENDER,
+    sender,
     to: [{ email: to, ...(data.firstName ? { name: String(data.firstName) } : {}) }],
     subject,
     htmlContent: html,
@@ -64,6 +65,7 @@ export async function sendEmailTo(
     // Pièce jointe inline référencée par `cid:` dans le gabarit.
     ...(logo ? { attachment: [logo] } : {}),
   };
+
 
   const attempt = async (url: string, headers: Record<string, string>) => {
     const res = await fetch(url, {
