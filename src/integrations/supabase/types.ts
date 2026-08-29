@@ -585,6 +585,45 @@ export type Database = {
         }
         Relationships: []
       }
+      waitlist_welcome_emails: {
+        Row: {
+          email: string
+          id: string
+          sent_at: string
+          waitlist_id: string | null
+        }
+        Insert: {
+          email: string
+          id?: string
+          sent_at?: string
+          waitlist_id?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          sent_at?: string
+          waitlist_id?: string | null
+        }
+        Relationships: []
+      }
+      webhook_secrets: {
+        Row: {
+          created_at: string
+          name: string
+          secret: string
+        }
+        Insert: {
+          created_at?: string
+          name: string
+          secret: string
+        }
+        Update: {
+          created_at?: string
+          name?: string
+          secret?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

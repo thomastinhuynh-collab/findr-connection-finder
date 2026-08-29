@@ -7,6 +7,8 @@ export const LOGO_URL = `${SITE_URL}/logo-email.png`;
 export const LOGO_CID = "findr-logo.png";
 export const CONTACT_EMAIL = "contact@findrapp.fr";
 export const SENDER = { name: "Findr", email: "notifications@findrapp.fr" };
+/** Expéditeur utilisé pour les emails relationnels (liste d'attente / beta). */
+export const CONTACT_SENDER = { name: "Findr", email: "contact@findrapp.fr" };
 
 const NAVY = "#0A1628";
 const HEADER_NAVY = "#070E42";
@@ -22,8 +24,10 @@ const esc = (v: unknown) =>
     .replace(/"/g, "&quot;");
 
 interface Block {
-  eyebrow: string;
-  title: string;
+  /** surtitre doré — omis pour les emails minimalistes */
+  eyebrow?: string;
+  /** titre serif — omis pour les emails minimalistes */
+  title?: string;
   /** paragraphes de texte courant (déjà échappés par le builder) */
   paragraphs: string[];
   cta?: { label: string; url: string };
@@ -32,7 +36,10 @@ interface Block {
   imageUrl?: string | null;
   /** lien discret sous le CTA */
   secondary?: { label: string; url: string };
+  /** titre du document HTML quand aucun titre visible n'est affiché */
+  documentTitle?: string;
 }
+
 
 export function renderEmail(block: Block): string {
   const facts = block.facts?.length
@@ -68,9 +75,21 @@ export function renderEmail(block: Block): string {
       )}" style="color:#6B7280;text-decoration:underline;">${esc(block.secondary.label)}</a></p>`
     : "";
 
+  const eyebrow = block.eyebrow
+    ? `<p style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:${GOLD_TEXT};font-weight:bold;">${esc(
+        block.eyebrow,
+      )}</p>`
+    : "";
+
+  const heading = block.title
+    ? `<h1 style="margin:0 0 16px 0;font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.3;color:${NAVY};font-weight:normal;">${esc(
+        block.title,
+      )}</h1>`
+    : "";
+
   return `<!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(
-    block.title,
+    block.title ?? block.documentTitle ?? "Findr",
   )}</title></head>
 <body style="margin:0;padding:0;background:${CREAM};">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CREAM};padding:28px 12px;">
@@ -80,12 +99,8 @@ export function renderEmail(block: Block): string {
       <img src="cid:${LOGO_CID}" alt="findr" width="132" style="display:block;border:0;width:132px;height:auto;" />
     </td></tr>
     <tr><td style="padding:30px 24px 26px 24px;">
-      <p style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:${GOLD_TEXT};font-weight:bold;">${esc(
-        block.eyebrow,
-      )}</p>
-      <h1 style="margin:0 0 16px 0;font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.3;color:${NAVY};font-weight:normal;">${esc(
-        block.title,
-      )}</h1>
+      ${eyebrow}
+      ${heading}
       ${image}
       ${block.paragraphs
         .map(
@@ -121,7 +136,8 @@ export type EmailType =
   | "refund"
   | "dispute_opened"
   | "reservation_reminder"
-  | "waitlist_signup";
+  | "waitlist_signup"
+  | "waitlist_welcome";
 
 // deno-lint-ignore no-explicit-any
 type Data = Record<string, any>;
@@ -332,6 +348,21 @@ export function buildEmail(
           secondary: { label: "Renouveler ma réservation", url: `${SITE_URL}/mon-espace` },
         }),
       };
+
+    case "waitlist_welcome":
+      return {
+        subject: "Bienvenue chez les beta testeurs Findr 🎉",
+        html: renderEmail({
+          documentTitle: "Bienvenue chez les beta testeurs Findr",
+          paragraphs: [
+            `Merci${first ? ` ${first}` : ""}, c'est officiel : tu es beta testeur de Findr.`,
+            "On te tient au courant de l'avancée du projet au fur et à mesure.",
+            "L'équipe Findr",
+          ],
+        }),
+      };
+
+
 
     case "waitlist_signup":
       return {
