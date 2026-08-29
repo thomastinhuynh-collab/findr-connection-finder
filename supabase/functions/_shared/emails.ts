@@ -349,6 +349,21 @@ export function buildEmail(
         }),
       };
 
+    case "waitlist_welcome":
+      return {
+        subject: "Bienvenue chez les beta testeurs Findr 🎉",
+        html: renderEmail({
+          documentTitle: "Bienvenue chez les beta testeurs Findr",
+          paragraphs: [
+            `Merci${first ? ` ${first}` : ""}, c'est officiel : tu es beta testeur de Findr.`,
+            "On te tient au courant de l'avancée du projet au fur et à mesure.",
+            "L'équipe Findr",
+          ],
+        }),
+      };
+
+
+
     case "waitlist_signup":
       return {
         subject: `Nouvelle inscription à la liste d'attente : ${esc(data.email ?? "")}`,
