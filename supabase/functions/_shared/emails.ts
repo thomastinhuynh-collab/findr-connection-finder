@@ -73,9 +73,21 @@ export function renderEmail(block: Block): string {
       )}" style="color:#6B7280;text-decoration:underline;">${esc(block.secondary.label)}</a></p>`
     : "";
 
+  const eyebrow = block.eyebrow
+    ? `<p style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:${GOLD_TEXT};font-weight:bold;">${esc(
+        block.eyebrow,
+      )}</p>`
+    : "";
+
+  const heading = block.title
+    ? `<h1 style="margin:0 0 16px 0;font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.3;color:${NAVY};font-weight:normal;">${esc(
+        block.title,
+      )}</h1>`
+    : "";
+
   return `<!DOCTYPE html>
 <html lang="fr"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(
-    block.title,
+    block.title ?? block.documentTitle ?? "Findr",
   )}</title></head>
 <body style="margin:0;padding:0;background:${CREAM};">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CREAM};padding:28px 12px;">
@@ -85,12 +97,8 @@ export function renderEmail(block: Block): string {
       <img src="cid:${LOGO_CID}" alt="findr" width="132" style="display:block;border:0;width:132px;height:auto;" />
     </td></tr>
     <tr><td style="padding:30px 24px 26px 24px;">
-      <p style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:${GOLD_TEXT};font-weight:bold;">${esc(
-        block.eyebrow,
-      )}</p>
-      <h1 style="margin:0 0 16px 0;font-family:Georgia,'Times New Roman',serif;font-size:22px;line-height:1.3;color:${NAVY};font-weight:normal;">${esc(
-        block.title,
-      )}</h1>
+      ${eyebrow}
+      ${heading}
       ${image}
       ${block.paragraphs
         .map(
