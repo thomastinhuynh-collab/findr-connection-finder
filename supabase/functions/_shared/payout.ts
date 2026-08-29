@@ -90,25 +90,26 @@ export async function releaseFundsForReservation(
       .maybeSingle();
     itemTitle = proposal?.title ?? undefined;
   }
-  const amount = Number(reservation.findr_payout_amount);
+  const payoutAmount = Number(reservation.findr_payout_amount);
 
   if (auto) {
     await sendEmailToUser(admin, reservation.findr_id, "auto_release", {
       role: "findr",
-      amount,
+      amount: payoutAmount,
       itemTitle,
     });
     await sendEmailToUser(admin, reservation.buyr_id, "auto_release", {
       role: "buyr",
-      amount,
+      amount: payoutAmount,
       itemTitle,
     });
   } else {
     await sendEmailToUser(admin, reservation.findr_id, "funds_released", {
-      amount,
+      amount: payoutAmount,
       itemTitle,
     });
   }
+
 
   return { ok: true, transferId: transfer.id };
 }
