@@ -89,7 +89,7 @@ const ReservationCard = ({
       const base = reservation.expires_at ? new Date(reservation.expires_at) : new Date();
       const newExpiry = new Date(base.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-      const { error } = await supabase
+      const { data: updated, error } = await supabase
         .from("reservations")
         .update({
           expires_at: newExpiry.toISOString(),
@@ -97,8 +97,11 @@ const ReservationCard = ({
           renewal_requested: true,
           approved_duration_days: (reservation.approved_duration_days ?? 7) + 7,
         })
-        .eq("id", reservation.id);
+        .eq("id", reservation.id)
+        .select("id");
       if (error) throw error;
+      if (!updated || updated.length === 0) throw new Error("no_rows_updated");
+
 
       toast({
         title: "Réservation renouvelée",
