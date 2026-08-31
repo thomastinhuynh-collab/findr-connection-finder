@@ -17,10 +17,16 @@ const LegalNotice = () => (
 
     <h2>Hébergement</h2>
     <p>
-      Le site est hébergé par <strong>Lovable</strong> et utilise les services
-      d'infrastructure cloud associés (Supabase pour la base de données et
-      l'authentification).
+      Le site est hébergé par <strong>Lovable Labs Incorporated</strong> et utilise
+      les services d'infrastructure cloud associés (Supabase pour la base de
+      données et l'authentification).
     </p>
+    <ul>
+      <li><strong>Raison sociale :</strong> Lovable Labs Incorporated</li>
+      <li><strong>Adresse postale :</strong> One Lincoln Street, Suite 2500, Boston, MA 02111, États-Unis</li>
+      <li><strong>Téléphone :</strong> +1 (323) 719-0419</li>
+      <li><strong>Email :</strong> <a href="mailto:support@lovable.dev">support@lovable.dev</a></li>
+    </ul>
 
     <h2>Propriété intellectuelle</h2>
     <p>
