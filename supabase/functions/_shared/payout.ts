@@ -110,7 +110,7 @@ export async function releaseFundsForReservation(
   await admin.from("transactions").insert({
     findr_id: reservation.findr_id,
     reservation_id: reservation.id,
-    amount: Number(reservation.findr_payout_amount),
+    amount: netAmount,
   });
 
   if (reservation.proposal_id) {
@@ -122,10 +122,11 @@ export async function releaseFundsForReservation(
       user_id: reservation.findr_id,
       type: "payout_released",
       title: auto ? "Paiement libéré automatiquement 💰" : "Paiement reçu ! 💰",
-      message: `${Number(reservation.findr_payout_amount).toFixed(2)} € ont été versés sur ton compte.`,
+      message: `${netAmount.toFixed(2)} € ont été versés sur ton compte.`,
       link: "/mon-espace",
     },
   ];
+
   if (auto) {
     notifications.push({
       user_id: reservation.buyr_id,
