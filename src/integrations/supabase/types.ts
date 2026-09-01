@@ -132,6 +132,53 @@ export type Database = {
           },
         ]
       }
+      findr_debits: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string
+          findr_id: string
+          id: string
+          reason: string
+          reservation_id: string | null
+          resolved_at: string | null
+          status: string
+          stripe_dispute_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          findr_id: string
+          id?: string
+          reason?: string
+          reservation_id?: string | null
+          resolved_at?: string | null
+          status?: string
+          stripe_dispute_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          findr_id?: string
+          id?: string
+          reason?: string
+          reservation_id?: string | null
+          resolved_at?: string | null
+          status?: string
+          stripe_dispute_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "findr_debits_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
@@ -218,6 +265,8 @@ export type Database = {
           is_findr: boolean | null
           is_premium: boolean | null
           level: number | null
+          negative_balance: number
+          payout_hold: boolean
           stripe_account_id: string | null
           stripe_onboarding_complete: boolean
           updated_at: string
@@ -235,6 +284,8 @@ export type Database = {
           is_findr?: boolean | null
           is_premium?: boolean | null
           level?: number | null
+          negative_balance?: number
+          payout_hold?: boolean
           stripe_account_id?: string | null
           stripe_onboarding_complete?: boolean
           updated_at?: string
@@ -252,6 +303,8 @@ export type Database = {
           is_findr?: boolean | null
           is_premium?: boolean | null
           level?: number | null
+          negative_balance?: number
+          payout_hold?: boolean
           stripe_account_id?: string | null
           stripe_onboarding_complete?: boolean
           updated_at?: string

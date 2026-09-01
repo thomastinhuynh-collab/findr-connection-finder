@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import PremiumWallet from "@/components/PremiumWallet";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
+import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
 
 
 interface Profile {
@@ -35,6 +36,9 @@ interface Profile {
   city: string | null;
   stripe_account_id?: string | null;
   stripe_onboarding_complete?: boolean | null;
+  negative_balance?: number | null;
+  payout_hold?: boolean | null;
+
 }
 
 
@@ -1050,13 +1054,22 @@ const MySpace = () => {
                     style={{ border: "1px solid #E5E1D8" }}
                   >
                     {activePanel === "wallet" && (
-                      <PremiumWallet
-                        balance={walletBalance}
-                        isPremium={profile?.is_premium || false}
-                        transactions={walletTransactions}
-                        onAddFunds={() => navigate("/premium")}
-                      />
+                      <div className="space-y-5">
+                        {user && (
+                          <NegativeBalanceBanner
+                            userId={user.id}
+                            negativeBalance={Number(profile?.negative_balance ?? 0)}
+                          />
+                        )}
+                        <PremiumWallet
+                          balance={walletBalance}
+                          isPremium={profile?.is_premium || false}
+                          transactions={walletTransactions}
+                          onAddFunds={() => navigate("/premium")}
+                        />
+                      </div>
                     )}
+
 
                     {activePanel === "proposals" && (
                       loadingProposals ? (

@@ -135,6 +135,7 @@ export type EmailType =
   | "auto_release"
   | "refund"
   | "dispute_opened"
+  | "chargeback_opened"
   | "reservation_reminder"
   | "waitlist_signup"
   | "waitlist_welcome";
@@ -328,6 +329,28 @@ export function buildEmail(
           },
         }),
       };
+
+    case "chargeback_opened":
+      return {
+        subject: "Contestation bancaire sur une transaction déjà réglée",
+        html: renderEmail({
+          eyebrow: "Contestation bancaire",
+          title: "Une contestation bancaire a été ouverte",
+          paragraphs: [
+            `${hello} une contestation bancaire a été ouverte sur une transaction déjà réglée.`,
+            `Conformément à l'article 12 de nos CGV, le montant de <strong>${money(
+              data.amount,
+            )}</strong> sera déduit de tes prochains versements. Aucune action n'est requise de ta part pour l'instant.`,
+            "Si la contestation est finalement rejetée par la banque, ce montant sera automatiquement annulé.",
+          ],
+          facts: [
+            ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
+            { label: "Montant concerné", value: money(data.amount) },
+          ],
+          cta: { label: "Voir le détail", url: `${SITE_URL}/mon-espace` },
+        }),
+      };
+
 
     case "reservation_reminder":
       return {
