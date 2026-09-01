@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import PremiumWallet from "@/components/PremiumWallet";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
+import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
 
 
 interface Profile {
