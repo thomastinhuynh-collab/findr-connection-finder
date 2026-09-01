@@ -135,6 +135,7 @@ export type EmailType =
   | "auto_release"
   | "refund"
   | "dispute_opened"
+  | "chargeback_opened"
   | "reservation_reminder"
   | "waitlist_signup"
   | "waitlist_welcome";
