@@ -1054,13 +1054,22 @@ const MySpace = () => {
                     style={{ border: "1px solid #E5E1D8" }}
                   >
                     {activePanel === "wallet" && (
-                      <PremiumWallet
-                        balance={walletBalance}
-                        isPremium={profile?.is_premium || false}
-                        transactions={walletTransactions}
-                        onAddFunds={() => navigate("/premium")}
-                      />
+                      <div className="space-y-5">
+                        {user && (
+                          <NegativeBalanceBanner
+                            userId={user.id}
+                            negativeBalance={Number(profile?.negative_balance ?? 0)}
+                          />
+                        )}
+                        <PremiumWallet
+                          balance={walletBalance}
+                          isPremium={profile?.is_premium || false}
+                          transactions={walletTransactions}
+                          onAddFunds={() => navigate("/premium")}
+                        />
+                      </div>
                     )}
+
 
                     {activePanel === "proposals" && (
                       loadingProposals ? (
