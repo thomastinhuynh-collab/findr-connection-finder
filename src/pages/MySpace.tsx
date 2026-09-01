@@ -36,6 +36,9 @@ interface Profile {
   city: string | null;
   stripe_account_id?: string | null;
   stripe_onboarding_complete?: boolean | null;
+  negative_balance?: number | null;
+  payout_hold?: boolean | null;
+
 }
 
 
