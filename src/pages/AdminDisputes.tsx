@@ -268,7 +268,10 @@ const AdminDisputes = () => {
             ))}
           </div>
         )}
+
+        <AdminNegativeBalances />
       </div>
+
     </main>
   );
 };
