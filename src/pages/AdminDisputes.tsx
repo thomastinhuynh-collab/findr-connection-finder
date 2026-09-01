@@ -11,6 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { DISPUTE_REASONS } from "@/components/DisputeDialog";
+import AdminNegativeBalances from "@/components/AdminNegativeBalances";
 
 interface DisputeRow {
   id: string;
