@@ -149,7 +149,7 @@ export async function releaseFundsForReservation(
       .maybeSingle();
     itemTitle = proposal?.title ?? undefined;
   }
-  const payoutAmount = Number(reservation.findr_payout_amount);
+  const payoutAmount = netAmount;
 
   if (auto) {
     await sendEmailToUser(admin, reservation.findr_id, "auto_release", {
