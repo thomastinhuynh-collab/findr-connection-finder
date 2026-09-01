@@ -1,6 +1,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import Stripe from "npm:stripe@18";
-import { sendEmailToUser } from "../_shared/brevo.ts";
+import { sendEmailTo, sendEmailToUser } from "../_shared/brevo.ts";
+
+const ADMIN_EMAIL = "thomas@findrapp.fr";
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") {
