@@ -170,5 +170,5 @@ export async function releaseFundsForReservation(
   }
 
 
-  return { ok: true, transferId: transfer.id };
+  return { ok: true, transferId, compensated };
 }
