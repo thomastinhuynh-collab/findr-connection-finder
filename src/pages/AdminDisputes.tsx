@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { DISPUTE_REASONS } from "@/components/DisputeDialog";
 import AdminNegativeBalances from "@/components/AdminNegativeBalances";
+import AdminForceShipped from "@/components/AdminForceShipped";
 
 interface DisputeRow {
   id: string;
@@ -270,6 +271,7 @@ const AdminDisputes = () => {
         )}
 
         <AdminNegativeBalances />
+        <AdminForceShipped />
       </div>
 
     </main>
