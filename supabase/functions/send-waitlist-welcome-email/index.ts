@@ -8,6 +8,8 @@ import { z } from "npm:zod@3";
 import { sendEmailTo } from "../_shared/brevo.ts";
 import { CONTACT_SENDER } from "../_shared/emails.ts";
 
+const ADMIN_EMAIL = "thomas@findrapp.fr";
+
 const BodySchema = z.object({
   record: z.object({
     id: z.string().uuid().optional(),
@@ -83,6 +85,18 @@ Deno.serve(async (req) => {
     // Si Brevo refuse, on libère le verrou pour permettre un renvoi ultérieur.
     if (!sent) {
       await admin.from("waitlist_welcome_emails").delete().eq("email", email.toLowerCase());
+    }
+
+    // 3. Alerte interne : notification de la nouvelle inscription (non bloquante).
+    try {
+      await sendEmailTo(
+        ADMIN_EMAIL,
+        "waitlist_signup",
+        { email, firstName: first_name ?? undefined, createdAt: new Date().toISOString() },
+        CONTACT_SENDER,
+      );
+    } catch (e) {
+      console.error("[waitlist-welcome] alerte admin échouée:", e);
     }
 
     return json({ sent });
