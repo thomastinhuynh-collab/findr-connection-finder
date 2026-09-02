@@ -271,6 +271,7 @@ const AdminDisputes = () => {
         )}
 
         <AdminNegativeBalances />
+        <AdminForceShipped />
       </div>
 
     </main>
