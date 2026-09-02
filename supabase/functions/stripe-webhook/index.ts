@@ -91,6 +91,33 @@ Deno.serve(async (req) => {
             .eq("id", proposalId);
         }
 
+        // La recherche passe en "réservée" et les autres propositions sont refusées
+        if (reservation?.search_id) {
+          await admin
+            .from("searches")
+            .update({ status: "reserved" })
+            .eq("id", reservation.search_id);
+
+          const { data: others } = await admin
+            .from("proposals")
+            .select("id, findr_id")
+            .eq("search_id", reservation.search_id)
+            .eq("status", "pending");
+
+          for (const other of others ?? []) {
+            if (proposalId && other.id === proposalId) continue;
+            await admin.from("proposals").update({ status: "rejected" }).eq("id", other.id);
+            await admin.from("notifications").insert({
+              user_id: other.findr_id,
+              type: "proposal_rejected",
+              title: "Proposition non retenue",
+              message: "Une autre proposition a été acceptée pour cette recherche.",
+              link: "/mes-propositions",
+            });
+          }
+        }
+
+
         if (reservation?.findr_id) {
           await admin.from("notifications").insert({
             user_id: reservation.findr_id,
