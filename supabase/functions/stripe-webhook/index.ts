@@ -10,17 +10,21 @@ Deno.serve(async (req) => {
   }
 
   const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-  const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+  const rawBody = await req.text();
+  const webhookType = (JSON.parse(rawBody) as { type?: string }).type ?? "";
+
+  const webhookSecret = webhookType === "account.updated"
+    ? Deno.env.get("STRIPE_WEBHOOK_SECRET")
+    : Deno.env.get("STRIPE_WEBHOOK_SECRET_PLATFORM");
+
   if (!stripeKey || !webhookSecret) {
-    console.error("Missing STRIPE_SECRET_KEY or STRIPE_WEBHOOK_SECRET");
+    console.error("Missing STRIPE_SECRET_KEY or appropriate webhook secret");
     return new Response("Server not configured", { status: 500 });
   }
 
   const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
   const signature = req.headers.get("stripe-signature");
   if (!signature) return new Response("Missing signature", { status: 400 });
-
-  const rawBody = await req.text();
 
   let event: Stripe.Event;
   try {
@@ -29,6 +33,7 @@ Deno.serve(async (req) => {
     console.error("Signature verification failed:", (err as Error).message);
     return new Response("Invalid signature", { status: 400 });
   }
+
 
   try {
     const admin = createClient(
