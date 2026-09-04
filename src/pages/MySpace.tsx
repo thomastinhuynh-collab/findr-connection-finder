@@ -58,6 +58,13 @@ interface SearchItem {
   accepted_count?: number;
   unread_count?: number;
   completed_at?: string | null;
+  urgent_reason?: "reservation_pending" | "payment_pending" | null;
+  tab_status?: "active" | "ongoing" | "done" | "cancelled";
+  findr_name?: string | null;
+  final_amount?: number | null;
+  finalized_at?: string | null;
+  cancel_reason?: string | null;
+  has_invoice?: boolean;
 }
 
 interface Evaluation {
@@ -106,6 +113,7 @@ const MySpace = () => {
   const [loadingProposals, setLoadingProposals] = useState(false);
   type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals";
   const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
+  const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
   const togglePanel = (p: PanelKey) =>
     setActivePanel((cur) => (cur === p ? null : p));
 
@@ -294,13 +302,16 @@ const MySpace = () => {
             .filter((p) => p.status === "completed")
             .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
 
-          const { data: reservations } = await supabase
+          const { data: allReservations } = await supabase
             .from("reservations")
-            .select("created_at, status")
+            .select(
+              "created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason"
+            )
             .eq("search_id", search.id)
-            .eq("status", "pending");
+            .order("updated_at", { ascending: false });
 
-          const reservationRows = reservations || [];
+          const allRes = allReservations || [];
+          const reservationRows = allRes.filter((r) => r.status === "pending");
           const hasRecentReservation = reservationRows.some(
             (r) => now - new Date(r.created_at).getTime() < 48 * 3600 * 1000
           );
@@ -312,6 +323,29 @@ const MySpace = () => {
               ? "payment_pending"
               : null;
 
+          const paid = allRes.find((r) =>
+            ["paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine", "annule"].includes(
+              r.payment_status ?? ""
+            )
+          );
+          const ps = paid?.payment_status ?? null;
+
+          let tab_status: "active" | "ongoing" | "done" | "cancelled" = "active";
+          if (ps === "termine") tab_status = "done";
+          else if (ps === "annule") tab_status = "cancelled";
+          else if (ps) tab_status = "ongoing";
+          else if (paymentPending || acceptedCount > 0) tab_status = "ongoing";
+
+          let findr_name: string | null = null;
+          if (paid?.findr_id && (tab_status === "done" || tab_status === "cancelled")) {
+            const { data: findrProfile } = await supabase
+              .from("profiles")
+              .select("full_name")
+              .eq("user_id", paid.findr_id)
+              .maybeSingle();
+            findr_name = findrProfile?.full_name?.split(" ")[0] || null;
+          }
+
           return {
             ...search,
             proposal_count: proposalCount,
@@ -320,6 +354,12 @@ const MySpace = () => {
             completed_at: completed?.updated_at || null,
             reservation_count: reservationRows.length,
             urgent_reason,
+            tab_status,
+            findr_name,
+            final_amount: paid?.total_buyr_amount ?? paid?.object_price ?? null,
+            finalized_at: paid?.updated_at || null,
+            cancel_reason: paid?.dispute_reason || null,
+            has_invoice: tab_status === "done",
           };
         })
       );
@@ -1297,15 +1337,65 @@ const MySpace = () => {
                     </Button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {searches.map((search) => (
-                      <SearchCardAccordion
-                        key={search.id}
-                        search={search}
-                        onDataChange={fetchSearches}
-                      />
-                    ))}
-                  </div>
+                  <>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {([
+                        { key: "active", label: "Actives" },
+                        { key: "ongoing", label: "En cours" },
+                        { key: "done", label: "Terminées" },
+                        { key: "cancelled", label: "Annulées" },
+                      ] as const).map((tab) => {
+                        const count = searches.filter(
+                          (s) => (s.tab_status ?? "active") === tab.key
+                        ).length;
+                        const isActive = searchTab === tab.key;
+                        return (
+                          <button
+                            key={tab.key}
+                            type="button"
+                            onClick={() => setSearchTab(tab.key)}
+                            style={{
+                              borderRadius: 999,
+                              padding: "7px 14px",
+                              fontSize: 13,
+                              fontWeight: isActive ? 600 : 500,
+                              cursor: "pointer",
+                              backgroundColor: isActive ? "#112150" : "transparent",
+                              color: isActive ? "#F5F0EA" : "#6B7280",
+                              border: `1px solid ${isActive ? "#112150" : "rgba(17,33,80,0.15)"}`,
+                            }}
+                          >
+                            {tab.label}
+                            <span style={{ marginLeft: 6, opacity: 0.75 }}>{count}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {(() => {
+                      const filtered = searches.filter(
+                        (s) => (s.tab_status ?? "active") === searchTab
+                      );
+                      if (filtered.length === 0) {
+                        return (
+                          <div className="py-12 text-center" style={{ color: "#6B7280", fontSize: 14 }}>
+                            Aucune recherche dans cette catégorie
+                          </div>
+                        );
+                      }
+                      return (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {filtered.map((search) => (
+                            <SearchCardAccordion
+                              key={search.id}
+                              search={search}
+                              onDataChange={fetchSearches}
+                            />
+                          ))}
+                        </div>
+                      );
+                    })()}
+                  </>
                 )}
               </TabsContent>
             </Tabs>

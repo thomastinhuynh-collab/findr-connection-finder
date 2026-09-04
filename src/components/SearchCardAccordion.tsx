@@ -18,6 +18,12 @@ interface SearchItem {
   unread_count?: number;
   completed_at?: string | null;
   urgent_reason?: "reservation_pending" | "payment_pending" | null;
+  tab_status?: "active" | "ongoing" | "done" | "cancelled";
+  findr_name?: string | null;
+  final_amount?: number | null;
+  finalized_at?: string | null;
+  cancel_reason?: string | null;
+  has_invoice?: boolean;
 }
 
 interface SearchCardAccordionProps {
@@ -44,7 +50,10 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
   const proposalCount = search.proposal_count ?? 0;
   const acceptedCount = search.accepted_count ?? 0;
   const unreadCount = search.unread_count ?? 0;
-  const isTerminee = search.status === "completed" || search.status === "closed";
+  const tabStatus = search.tab_status ?? "active";
+  const isDone = tabStatus === "done";
+  const isCancelled = tabStatus === "cancelled";
+  const isTerminee = isDone || search.status === "completed" || search.status === "closed";
   const isReservee = search.status === "reserved";
   const urgentReason = search.urgent_reason ?? null;
   const isUrgent = !!urgentReason && !isTerminee;
@@ -67,6 +76,26 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
   };
 
   const statusBadge = () => {
+    if (isCancelled) {
+      return {
+        label: "Annulée",
+        style: {
+          backgroundColor: "#EEEEEE",
+          color: "#6B6259",
+          border: "none",
+        } as React.CSSProperties,
+      };
+    }
+    if (isDone) {
+      return {
+        label: "✓ Terminée",
+        style: {
+          backgroundColor: "#E2F3E6",
+          color: "#1F7A34",
+          border: "none",
+        } as React.CSSProperties,
+      };
+    }
     if (isTerminee) {
       return {
         label: "Terminée",
@@ -114,7 +143,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
         border: isUrgent ? "1.5px solid #D85A30" : "none",
         borderRadius: 11,
         overflow: "hidden",
-        opacity: isTerminee ? 0.85 : 1,
+        opacity: isDone || isCancelled ? 0.9 : isTerminee ? 0.85 : 1,
         boxShadow: "0 3px 10px rgba(10,22,40,0.06)",
         transition: "opacity 0.15s, box-shadow 0.15s",
       }}
@@ -219,12 +248,45 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
             color: "#6B6259",
           }}
         >
-          {isTerminee && search.completed_at
+          {isDone
+            ? [
+                search.findr_name ? `Vendue par ${search.findr_name}` : "Transaction conclue",
+                search.final_amount != null ? `${search.final_amount} €` : null,
+              ]
+                .filter(Boolean)
+                .join(" — ") +
+              (search.finalized_at || search.completed_at
+                ? ` · le ${formatCompletedDate(search.finalized_at || search.completed_at)}`
+                : "")
+            : isCancelled
+            ? `Annulée${
+                search.finalized_at ? ` le ${formatCompletedDate(search.finalized_at)}` : ""
+              }${search.cancel_reason ? ` — ${search.cancel_reason}` : ""}`
+            : isTerminee && search.completed_at
             ? `Transaction conclue le ${formatCompletedDate(search.completed_at)}`
             : `${proposalCount} proposition${proposalCount !== 1 ? "s" : ""} reçue${proposalCount !== 1 ? "s" : ""}, dont ${acceptedCount} acceptée${acceptedCount !== 1 ? "s" : ""}`}
         </p>
 
-        <div className="flex justify-end" style={{ marginTop: 10 }}>
+        {(isDone || isCancelled) && (
+          <div className="flex items-center gap-3" style={{ marginTop: 10 }}>
+            <Link
+              to={`/recherche/${search.id}`}
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#112150",
+                textDecoration: "underline",
+              }}
+            >
+              Voir le détail
+            </Link>
+            {isDone && search.has_invoice && (
+              <span style={{ fontSize: 11, color: "#8B7333" }}>Facture disponible</span>
+            )}
+          </div>
+        )}
+
+        <div className="flex justify-end" style={{ marginTop: 10, display: isDone || isCancelled ? "none" : undefined }}>
           <Link
             to={`/modifier-recherche/${search.id}`}
             style={{

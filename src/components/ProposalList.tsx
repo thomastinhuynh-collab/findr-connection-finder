@@ -32,6 +32,7 @@ import {
   Crown,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Eye,
   Image as ImageIcon,
   Truck,
@@ -116,6 +117,7 @@ const ProposalList = ({
   const [disputeDialogOpen, setDisputeDialogOpen] = useState(false);
   const [trackingNumber, setTrackingNumber] = useState("");
   const [carrier, setCarrier] = useState("");
+  const [showOthers, setShowOthers] = useState(false);
 
   // Check if current user is the findr of the selected proposal
   const isCurrentUserFindr = selectedProposal && user?.id === selectedProposal.findr_id;
@@ -367,10 +369,27 @@ const ProposalList = ({
     );
   }
 
-  return (
-    <div className="space-y-4">
-      <AnimatePresence>
-        {proposals.map((proposal, index) => (
+  const renderProposal = (proposal: Proposal, index: number, highlight = false) => (
+    <div key={proposal.id} style={highlight ? { border: "2px solid #D9BD8B", borderRadius: 14, padding: 3, position: "relative" } : undefined}>
+      {highlight && (
+        <span
+          style={{
+            position: "absolute",
+            top: -10,
+            left: 14,
+            zIndex: 2,
+            backgroundColor: "#D9BD8B",
+            color: "#112150",
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: "0.04em",
+            padding: "3px 10px",
+            borderRadius: 999,
+          }}
+        >
+          Retenue
+        </span>
+      )}
           <motion.div
             key={proposal.id}
             initial={{ opacity: 0, y: 20 }}
@@ -591,8 +610,80 @@ const ProposalList = ({
               </CardContent>
             </Card>
           </motion.div>
-        ))}
-      </AnimatePresence>
+    </div>
+  );
+
+  const acceptedProposal = proposals.find(
+    (p) => p.status === "accepted_pending" || p.status === "completed"
+  );
+  const otherProposals = proposals.filter((p) => p.id !== acceptedProposal?.id);
+  const acceptedPayment = acceptedProposal ? payments[acceptedProposal.id] : null;
+  const dealDone =
+    acceptedProposal?.status === "completed" ||
+    acceptedPayment?.payment_status === "termine";
+
+  return (
+    <div className="space-y-4">
+      {acceptedProposal ? (
+        <>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              backgroundColor: dealDone ? "#E2F3E6" : "#FBF3E3",
+              color: dealDone ? "#1F7A34" : "#8B7333",
+              border: `1px solid ${dealDone ? "rgba(31,122,52,0.25)" : "#D9BD8B"}`,
+              borderRadius: 999,
+              padding: "6px 14px",
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            {dealDone ? "✓ Accord conclu" : "Paiement en cours"}
+          </div>
+
+          {renderProposal(acceptedProposal, 0, true)}
+
+          {otherProposals.length > 0 && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowOthers((v) => !v)}
+                className="w-full flex items-center justify-between"
+                style={{
+                  backgroundColor: "#F5F0EA",
+                  border: "1px solid rgba(17,33,80,0.10)",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "#112150",
+                  cursor: "pointer",
+                }}
+              >
+                <span>
+                  Voir les {otherProposals.length} proposition
+                  {otherProposals.length > 1 ? "s" : ""} non retenue
+                  {otherProposals.length > 1 ? "s" : ""}
+                </span>
+                <ChevronDown
+                  className="w-4 h-4 transition-transform"
+                  style={{ transform: showOthers ? "rotate(180deg)" : "none" }}
+                />
+              </button>
+              {showOthers && (
+                <div className="space-y-4 mt-3" style={{ opacity: 0.85 }}>
+                  {otherProposals.map((p, i) => renderProposal(p, i))}
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      ) : (
+        <AnimatePresence>
+          {proposals.map((proposal, index) => renderProposal(proposal, index))}
+        </AnimatePresence>
+      )}
 
       {/* Payment Dialog */}
       <Dialog open={paymentDialogOpen} onOpenChange={setPaymentDialogOpen}>
