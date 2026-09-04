@@ -1336,15 +1336,65 @@ const MySpace = () => {
                     </Button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {searches.map((search) => (
-                      <SearchCardAccordion
-                        key={search.id}
-                        search={search}
-                        onDataChange={fetchSearches}
-                      />
-                    ))}
-                  </div>
+                  <>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {([
+                        { key: "active", label: "Actives" },
+                        { key: "ongoing", label: "En cours" },
+                        { key: "done", label: "Terminées" },
+                        { key: "cancelled", label: "Annulées" },
+                      ] as const).map((tab) => {
+                        const count = searches.filter(
+                          (s) => (s.tab_status ?? "active") === tab.key
+                        ).length;
+                        const isActive = searchTab === tab.key;
+                        return (
+                          <button
+                            key={tab.key}
+                            type="button"
+                            onClick={() => setSearchTab(tab.key)}
+                            style={{
+                              borderRadius: 999,
+                              padding: "7px 14px",
+                              fontSize: 13,
+                              fontWeight: isActive ? 600 : 500,
+                              cursor: "pointer",
+                              backgroundColor: isActive ? "#112150" : "transparent",
+                              color: isActive ? "#F5F0EA" : "#6B7280",
+                              border: `1px solid ${isActive ? "#112150" : "rgba(17,33,80,0.15)"}`,
+                            }}
+                          >
+                            {tab.label}
+                            <span style={{ marginLeft: 6, opacity: 0.75 }}>{count}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {(() => {
+                      const filtered = searches.filter(
+                        (s) => (s.tab_status ?? "active") === searchTab
+                      );
+                      if (filtered.length === 0) {
+                        return (
+                          <div className="py-12 text-center" style={{ color: "#6B7280", fontSize: 14 }}>
+                            Aucune recherche dans cette catégorie
+                          </div>
+                        );
+                      }
+                      return (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {filtered.map((search) => (
+                            <SearchCardAccordion
+                              key={search.id}
+                              search={search}
+                              onDataChange={fetchSearches}
+                            />
+                          ))}
+                        </div>
+                      );
+                    })()}
+                  </>
                 )}
               </TabsContent>
             </Tabs>
