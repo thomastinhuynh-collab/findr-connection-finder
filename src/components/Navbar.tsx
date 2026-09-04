@@ -30,7 +30,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { t } = useTranslation();
   const isHomePage = location.pathname === "/";
   const isDetailPage = location.pathname.startsWith("/recherche/");
