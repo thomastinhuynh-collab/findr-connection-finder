@@ -32,6 +32,7 @@ import {
   Crown,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Eye,
   Image as ImageIcon,
   Truck,
