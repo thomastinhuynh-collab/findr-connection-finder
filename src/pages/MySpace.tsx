@@ -113,6 +113,7 @@ const MySpace = () => {
   const [loadingProposals, setLoadingProposals] = useState(false);
   type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals";
   const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
+  const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
   const togglePanel = (p: PanelKey) =>
     setActivePanel((cur) => (cur === p ? null : p));
 
