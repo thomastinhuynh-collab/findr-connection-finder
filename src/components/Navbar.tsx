@@ -223,6 +223,22 @@ const Navbar = () => {
                     >
                       {t("nav.mySpace")}
                     </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className={`font-poppins font-semibold rounded-full w-full ${
+                        isLightMode
+                          ? "border-[#112150] text-[#112150] bg-transparent hover:bg-[#112150] hover:text-[#F5F0EA]"
+                          : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#112150]"
+                      }`}
+                      onClick={async () => {
+                        setIsOpen(false);
+                        await signOut();
+                        navigate("/");
+                      }}
+                    >
+                      {t("nav.logout")}
+                    </Button>
                   </>
                 ) : (
                   <Button
