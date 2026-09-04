@@ -6,9 +6,10 @@
     "blog": "Blog",
     "postSearch": "Post a search",
     "postSearchShort": "Post",
-    "mySpace": "My space",
-    "menu": "Menu",
-    "language": "Language"
+      "mySpace": "My space",
+      "logout": "Log out",
+      "menu": "Menu",
+      "language": "Language"
   },
   "hero": {
     "searchPlaceholder": "Search through {{count}} live requests…",
