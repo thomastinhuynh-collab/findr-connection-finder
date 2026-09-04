@@ -119,13 +119,39 @@ const Navbar = () => {
                   >
                     {t("nav.postSearch")}
                   </Button>
-                  <Button
-                    size="sm"
-                    className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full"
-                    onClick={() => navigate("/mon-espace")}
-                  >
-                    {t("nav.mySpace")}
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        size="sm"
+                        className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full"
+                      >
+                        {t("nav.mySpace")}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="bg-[#F5F0EA] border-[#112150]/10 text-[#112150] min-w-[180px]"
+                    >
+                      <DropdownMenuItem
+                        className="cursor-pointer focus:bg-[#D9BD8B]/20 focus:text-[#112150]"
+                        onClick={() => navigate("/mon-espace")}
+                      >
+                        <User className="w-4 h-4 mr-2" />
+                        {t("nav.mySpace")}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="bg-[#112150]/10" />
+                      <DropdownMenuItem
+                        className="cursor-pointer focus:bg-[#D9BD8B]/20 focus:text-[#112150]"
+                        onClick={async () => {
+                          await signOut();
+                          navigate("/");
+                        }}
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        {t("nav.logout")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </>
               ) : (
                 <Button
