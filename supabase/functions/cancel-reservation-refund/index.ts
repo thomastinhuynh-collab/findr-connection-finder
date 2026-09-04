@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
     const isFindr = reservation.findr_id === user.id;
     if (!isBuyr && !isFindr) return json({ error: "Non autorisé" }, 403);
 
-    if (!["paye_en_attente_reception"].includes(reservation.payment_status ?? "")) {
+    if (!["paye_en_attente_reception", "expedie"].includes(reservation.payment_status ?? "")) {
       return json({ error: "Cette réservation ne peut plus être annulée." }, 400);
     }
 

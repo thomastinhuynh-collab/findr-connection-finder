@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
     const { data: lost } = await admin
       .from("reservations")
       .select("id, buyr_id, findr_id")
-      .eq("payment_status", "paye_en_attente_reception")
+      .in("payment_status", ["paye_en_attente_reception", "expedie"])
       .is("delivered_at", null)
       .is("lost_notified_at", null)
       .not("shipped_at", "is", null)
