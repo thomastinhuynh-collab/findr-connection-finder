@@ -43,8 +43,19 @@ Deno.serve(async (req) => {
       .maybeSingle();
     if (rErr || !reservation) return json({ error: "Réservation introuvable" }, 404);
     if (reservation.buyr_id !== user.id) return json({ error: "Non autorisé" }, 403);
-    if (!["paye_en_attente_reception", "livre"].includes(reservation.payment_status ?? "")) {
-      return json({ error: "Cette réservation n'est pas en attente de réception." }, 400);
+    // Le buyr peut toujours confirmer manuellement la réception, indépendamment du suivi
+    // automatique 17TRACK (faux numéro, transporteur non couvert, etc.).
+    const CONFIRMABLE = ["paye_en_attente_reception", "expedie", "livre"];
+    if (!CONFIRMABLE.includes(reservation.payment_status ?? "")) {
+      const already = ["termine", "versement_en_revue"].includes(reservation.payment_status ?? "");
+      return json(
+        {
+          error: already
+            ? "Les fonds de cette réservation ont déjà été libérés."
+            : `Cette réservation n'est pas en cours (statut : ${reservation.payment_status ?? "aucun"}).`,
+        },
+        400,
+      );
     }
     if (reservation.dispute_open) {
       return json({ error: "Une réclamation est en cours sur cette transaction." }, 400);
