@@ -295,8 +295,22 @@ const ProposalList = ({
       const { data, error } = await supabase.functions.invoke("release-funds-to-findr", {
         body: { reservationId: reservation.id },
       });
-      if (error) throw error;
+      if (error) {
+        // Récupère le message d'erreur réel renvoyé par la fonction (statut non-2xx)
+        let detail = error.message;
+        const res = (error as { context?: Response })?.context;
+        if (res && typeof res.json === "function") {
+          try {
+            const payload = await res.json();
+            if (payload?.error) detail = payload.error;
+          } catch {
+            /* corps non JSON */
+          }
+        }
+        throw new Error(detail);
+      }
       if (data?.error) throw new Error(data.error);
+
 
       toast({
         title: "Transaction finalisée ! 🎉",
