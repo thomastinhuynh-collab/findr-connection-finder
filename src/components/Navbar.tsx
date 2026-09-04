@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu, X, LogOut, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
 import AuthModal from "@/components/AuthModal";
@@ -23,7 +30,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { t } = useTranslation();
   const isHomePage = location.pathname === "/";
   const isDetailPage = location.pathname.startsWith("/recherche/");
@@ -112,13 +119,39 @@ const Navbar = () => {
                   >
                     {t("nav.postSearch")}
                   </Button>
-                  <Button
-                    size="sm"
-                    className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full"
-                    onClick={() => navigate("/mon-espace")}
-                  >
-                    {t("nav.mySpace")}
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        size="sm"
+                        className="bg-[#D9BD8B] text-[#112150] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full"
+                      >
+                        {t("nav.mySpace")}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="bg-[#F5F0EA] border-[#112150]/10 text-[#112150] min-w-[180px]"
+                    >
+                      <DropdownMenuItem
+                        className="cursor-pointer focus:bg-[#D9BD8B]/20 focus:text-[#112150]"
+                        onClick={() => navigate("/mon-espace")}
+                      >
+                        <User className="w-4 h-4 mr-2" />
+                        {t("nav.mySpace")}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="bg-[#112150]/10" />
+                      <DropdownMenuItem
+                        className="cursor-pointer focus:bg-[#D9BD8B]/20 focus:text-[#112150]"
+                        onClick={async () => {
+                          await signOut();
+                          navigate("/");
+                        }}
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        {t("nav.logout")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </>
               ) : (
                 <Button
@@ -189,6 +222,22 @@ const Navbar = () => {
                       }}
                     >
                       {t("nav.mySpace")}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className={`font-poppins font-semibold rounded-full w-full ${
+                        isLightMode
+                          ? "border-[#112150] text-[#112150] bg-transparent hover:bg-[#112150] hover:text-[#F5F0EA]"
+                          : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#112150]"
+                      }`}
+                      onClick={async () => {
+                        setIsOpen(false);
+                        await signOut();
+                        navigate("/");
+                      }}
+                    >
+                      {t("nav.logout")}
                     </Button>
                   </>
                 ) : (
