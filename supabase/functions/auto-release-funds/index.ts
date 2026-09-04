@@ -55,6 +55,31 @@ Deno.serve(async (req) => {
       }
     }
 
+    // 1 bis. Filet de sécurité : colis expédié depuis + de 14 jours mais jamais détecté
+    // "livré" par le transporteur (faux numéro, transporteur non couvert par 17TRACK…).
+    // Sans cela une transaction resterait bloquée indéfiniment.
+    const { data: staleShipped } = await admin
+      .from("reservations")
+      .select(
+        "id, buyr_id, findr_id, proposal_id, findr_payout_amount, stripe_payment_intent_id",
+      )
+      .in("payment_status", ["paye_en_attente_reception", "expedie"])
+      .eq("dispute_open", false)
+      .is("delivered_at", null)
+      .not("shipped_at", "is", null)
+      .lt("shipped_at", new Date(now - 14 * DAY).toISOString());
+
+    for (const reservation of staleShipped ?? []) {
+      try {
+        const result = await releaseFundsForReservation(admin, stripe, reservation, true);
+        if (result.ok) released.push(reservation.id);
+        else failed.push(reservation.id);
+      } catch (e) {
+        console.error("auto-release (stale shipped) failed for", reservation.id, e);
+        failed.push(reservation.id);
+      }
+    }
+
     // 2. Filet de sécurité : colis expédié depuis 10 jours et jamais livré
     const { data: lost } = await admin
       .from("reservations")
