@@ -321,7 +321,14 @@ const HeaderActions = ({ variant = "navy" }: HeaderActionsProps) => {
                     onClick={() => {
                       markNotificationRead(n.id);
                       setNotifOpen(false);
-                      if (n.link) navigate(n.link);
+                      if (n.link) {
+                        if (/^https?:\/\//.test(n.link)) {
+                          window.open(n.link, "_blank", "noopener,noreferrer");
+                        } else {
+                          navigate(n.link);
+                        }
+                      }
+
                     }}
                   >
                     <div className="flex gap-2">
