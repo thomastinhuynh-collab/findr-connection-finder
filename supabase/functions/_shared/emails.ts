@@ -1,6 +1,8 @@
 // Gabarit HTML partagé + contenu des 10 emails transactionnels findr.
 // Aucun web font : le logo est une image PNG hébergée sur le site publié.
 
+import { trackingUrl } from "./tracking.ts";
+
 export const SITE_URL = "https://findr-connection-finder.lovable.app";
 export const LOGO_URL = `${SITE_URL}/logo-email.png`;
 /** Nom de la pièce jointe inline : `<img src="cid:LOGO_CID">` (standard CID). */
