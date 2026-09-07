@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
 
     // deno-lint-ignore no-explicit-any
     const update: any = { tracking_status: label };
-    if (isDelivered && reservation.payment_status === "paye_en_attente_reception") {
+    if (isDelivered && ["paye_en_attente_reception", "expedie"].includes(reservation.payment_status ?? "")) {
       update.delivered_at = new Date().toISOString();
       update.payment_status = "livre";
     }

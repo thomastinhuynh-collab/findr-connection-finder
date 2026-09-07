@@ -166,7 +166,7 @@ const ProposalList = ({
   // Le buyr peut demander l'annulation : 5 jours sans expédition,
   // ou 10 jours après une expédition jamais livrée.
   const canBuyrCancel = (p?: ReservationPayment) => {
-    if (!p || !["paye_en_attente_reception", "expedie"].includes(p.payment_status ?? "")) return false;
+    if (!p || !["paye_en_attente_reception", "expedie", "livre"].includes(p.payment_status ?? "")) return false;
     if (p.shipped_at) return Date.now() - new Date(p.shipped_at).getTime() >= 10 * DAY;
     const since = new Date(p.accepted_at ?? p.created_at ?? Date.now()).getTime();
     return Date.now() - since >= 5 * DAY;
