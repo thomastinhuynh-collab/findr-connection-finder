@@ -165,12 +165,34 @@ const ProposalList = ({
 
   // Le buyr peut demander l'annulation : 5 jours sans expédition,
   // ou 10 jours après une expédition jamais livrée.
-  const canBuyrCancel = (p?: ReservationPayment) => {
-    if (!p || !["paye_en_attente_reception", "expedie", "livre"].includes(p.payment_status ?? "")) return false;
-    if (p.shipped_at) return Date.now() - new Date(p.shipped_at).getTime() >= 10 * DAY;
+  const cancelUnlockAt = (p?: ReservationPayment) => {
+    if (!p || !["paye_en_attente_reception", "expedie", "livre"].includes(p.payment_status ?? "")) return null;
+    if (p.shipped_at) return new Date(p.shipped_at).getTime() + 10 * DAY;
     const since = new Date(p.accepted_at ?? p.created_at ?? Date.now()).getTime();
-    return Date.now() - since >= 5 * DAY;
+    return since + 5 * DAY;
   };
+
+  const canBuyrCancel = (p?: ReservationPayment) => {
+    const unlock = cancelUnlockAt(p);
+    return unlock !== null && Date.now() >= unlock;
+  };
+
+  // Compte à rebours lisible avant l'ouverture du droit d'annulation.
+  const cancelCountdown = (p?: ReservationPayment) => {
+    const unlock = cancelUnlockAt(p);
+    if (unlock === null) return null;
+    const remaining = unlock - Date.now();
+    if (remaining <= 0) return null;
+    const days = Math.floor(remaining / DAY);
+    const hours = Math.floor((remaining % DAY) / (60 * 60 * 1000));
+    const delay = days > 0
+      ? `${days} jour${days > 1 ? "s" : ""}${hours > 0 ? ` et ${hours} h` : ""}`
+      : `${Math.max(hours, 1)} h`;
+    return p?.shipped_at
+      ? `Colis jamais livré ? Tu pourras demander l'annulation et le remboursement dans ${delay}.`
+      : `Pas de nouvelles du findr ? Tu pourras demander l'annulation et le remboursement dans ${delay}.`;
+  };
+
 
   const handleMarkShipped = async () => {
     const reservation = selectedProposal ? payments[selectedProposal.id] : null;
