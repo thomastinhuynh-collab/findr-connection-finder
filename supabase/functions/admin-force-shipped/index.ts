@@ -3,6 +3,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
+import { sendEmailToUser } from "../_shared/brevo.ts";
+import { trackingUrl } from "../_shared/tracking.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
