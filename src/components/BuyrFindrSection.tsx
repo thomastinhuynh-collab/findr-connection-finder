@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const GOLD = "rgb(217, 187, 135)";
-const DARK = "#0A1628";
+const DARK = "#070E42";
 
 const inter = { fontFamily: "'Inter', system-ui, sans-serif" };
 const playfair = { fontFamily: "'Playfair Display', Georgia, serif" };
@@ -13,7 +13,7 @@ const BuyrFindrSection = () => {
     <section
       style={{
         width: "100%",
-        background: "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)",
+        background: "linear-gradient(180deg, #070E42 0%, #0F1F3D 100%)",
         padding: "5rem 32px",
       }}
     >

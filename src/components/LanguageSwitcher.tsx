@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 const GOLD = "rgb(217, 187, 135)";
-const NAVY = "#0A1628";
+const NAVY = "#070E42";
 
 interface Props {
   variant?: "gold" | "navy";

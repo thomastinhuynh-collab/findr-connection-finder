@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 
-const NAVY = "#0A1628";
+const NAVY = "#070E42";
 const GOLD = "#D9BB87";
 const GOLD_GREY = "#9C8B6B";
 

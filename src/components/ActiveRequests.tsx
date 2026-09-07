@@ -220,7 +220,7 @@ const ActiveRequests = () => {
                   <Badge
                     style={{
                       position: "absolute", top: "10px", right: "10px",
-                      background: "#0A1628", color: "#FFFFFF",
+                      background: "#070E42", color: "#FFFFFF",
                       fontSize: "11px", fontWeight: 500, borderRadius: "20px",
                       padding: "4px 12px", border: "none",
                     }}

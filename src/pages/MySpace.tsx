@@ -552,7 +552,7 @@ const MySpace = () => {
                   height: 90,
                   background: profile.banner_url
                     ? undefined
-                    : "linear-gradient(120deg, #0A1628 0%, #132a4d 100%)",
+                    : "linear-gradient(120deg, #070E42 0%, #132a4d 100%)",
                 }}
               >
                 {profile.banner_url && (
@@ -578,7 +578,7 @@ const MySpace = () => {
                     className="inline-flex items-center gap-1.5 transition-all"
                     style={{
                       backgroundColor: "rgba(255,255,255,0.92)",
-                      color: "#0A1628",
+                      color: "#070E42",
                       border: "1px solid rgba(10,22,40,0.1)",
                       fontSize: 12,
                       padding: "5px 11px",
@@ -663,7 +663,7 @@ const MySpace = () => {
                   <AvatarImage src={profile.avatar_url || undefined} className="object-cover" />
                   <AvatarFallback
                     style={{
-                      backgroundColor: '#0A1628',
+                      backgroundColor: '#070E42',
                       color: '#D9BB87',
                       fontFamily: "'Playfair Display', Georgia, serif",
                       fontStyle: 'italic',
@@ -738,7 +738,7 @@ const MySpace = () => {
                           />
                         ))}
                       </div>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: '#0A1628' }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#070E42' }}>
                         {averageRating}
                       </span>
                       <span className="text-xs" style={{ color: '#6B7280' }}>
@@ -785,7 +785,7 @@ const MySpace = () => {
                         style={{
                           backgroundColor: '#D9BB87',
                           border: '1.5px solid #D9BB87',
-                          color: '#0A1628',
+                          color: '#070E42',
                           fontSize: 12,
                           borderRadius: 999,
                           padding: '6px 16px',
@@ -814,7 +814,7 @@ const MySpace = () => {
                           alignItems: 'center',
                           gap: 6,
                           fontSize: 11,
-                          color: '#0A1628',
+                          color: '#070E42',
                           backgroundColor: '#F5F1E8',
                           border: '1px solid #E5DFD1',
                           padding: '4px 12px',
@@ -840,7 +840,7 @@ const MySpace = () => {
                       style={{ gap: 16, color: '#6B6259' }}
                     >
                       <span style={{ fontSize: 13 }}>
-                        <span style={{ fontWeight: 600, color: '#0A1628' }}>{searches.length}</span>
+                        <span style={{ fontWeight: 600, color: '#070E42' }}>{searches.length}</span>
                         <span style={{ color: '#9A8570', marginLeft: 4 }}>
                           {searches.length > 1 ? 'recherches actives' : 'recherche active'}
                         </span>
@@ -887,7 +887,7 @@ const MySpace = () => {
                   return (
                     <div className="mt-3" style={{ maxWidth: 340 }}>
                       <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, color: '#0A1628', fontWeight: 600 }}>
+                        <span style={{ fontSize: 12, color: '#070E42', fontWeight: 600 }}>
                           Profil complété à {pct}%
                         </span>
                       </div>
@@ -909,8 +909,8 @@ const MySpace = () => {
                   onClick={openEditProfile}
                   className="mt-5 inline-flex items-center gap-1.5 transition-colors"
                   style={{
-                    border: '1.5px solid #0A1628',
-                    color: '#0A1628',
+                    border: '1.5px solid #070E42',
+                    color: '#070E42',
                     fontSize: 12,
                     padding: '6px 16px',
                     borderRadius: 999,
@@ -1292,7 +1292,7 @@ const MySpace = () => {
               <TabsContent value="searches" className="mt-0" forceMount>
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#0A1628" }}>
+                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#070E42" }}>
                       Mes recherches en cours
                     </h2>
                     <div style={{ width: 60, height: 2, backgroundColor: "#D9BB87", borderRadius: 2, marginTop: 8 }} />
@@ -1410,7 +1410,7 @@ const MySpace = () => {
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle style={{ color: '#0A1628' }}>Modifier mon profil</DialogTitle>
+            <DialogTitle style={{ color: '#070E42' }}>Modifier mon profil</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
@@ -1453,7 +1453,7 @@ const MySpace = () => {
             <Button
               onClick={handleSaveProfile}
               disabled={savingProfile}
-              style={{ backgroundColor: '#0A1628', color: '#F5F0EA' }}
+              style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
             >
               {savingProfile ? "Enregistrement…" : "Enregistrer"}
             </Button>

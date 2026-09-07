@@ -159,7 +159,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
             height: 22,
             borderRadius: "50%",
             backgroundColor: "#D9BB87",
-            color: "#0A1628",
+            color: "#070E42",
             fontSize: 11,
             fontWeight: 700,
             display: "flex",
@@ -205,7 +205,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
                   style={{
                     fontSize: 14,
                     fontWeight: 600,
-                    color: "#0A1628",
+                    color: "#070E42",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -236,7 +236,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
 
             <p style={{ fontSize: 12, color: "#6B6259", margin: 0 }}>
               Budget :{" "}
-              <span style={{ fontWeight: 600, color: "#0A1628" }}>{formatBudget()}</span>
+              <span style={{ fontWeight: 600, color: "#070E42" }}>{formatBudget()}</span>
             </p>
           </div>
         </div>
@@ -293,9 +293,9 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              border: "1.5px solid #0A1628",
+              border: "1.5px solid #070E42",
               backgroundColor: "transparent",
-              color: "#0A1628",
+              color: "#070E42",
               borderRadius: 999,
               padding: "6px 14px",
               fontSize: 12,
