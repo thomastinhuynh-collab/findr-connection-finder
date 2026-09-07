@@ -1,0 +1,1 @@
+revoke execute on function public.notify_admins_on_dispute() from public, anon, authenticated;
