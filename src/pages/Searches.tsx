@@ -14,6 +14,7 @@ import { Search, Clock, Euro, MessageCircle, Filter, SlidersHorizontal, Loader2,
 import { supabase } from "@/integrations/supabase/client";
 import UserBadge from "@/components/UserBadge";
 import SearchImageCarousel from "@/components/SearchImageCarousel";
+import FavoriteButton from "@/components/FavoriteButton";
 
 interface SearchItem {
   id: string;
@@ -522,6 +523,9 @@ const Searches = () => {
                 >
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden bg-secondary">
+                    <div className="absolute top-2.5 left-2.5 z-10" onClick={(e) => e.stopPropagation()}>
+                      <FavoriteButton searchId={search.id} />
+                    </div>
                     <SearchImageCarousel
                       images={[
                         ...(search.image_urls?.length ? search.image_urls : search.image_url ? [search.image_url] : []),

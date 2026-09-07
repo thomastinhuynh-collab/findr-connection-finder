@@ -4,6 +4,7 @@ import { Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import FavoriteButton from "@/components/FavoriteButton";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 
@@ -208,6 +209,9 @@ const ActiveRequests = () => {
               >
                 {/* Image */}
                 <div className="relative h-[200px] overflow-hidden">
+                  <div className="absolute top-2.5 left-2.5 z-10" onClick={(e) => e.stopPropagation()}>
+                    <FavoriteButton searchId={search.id} />
+                  </div>
                   {images.length > 0 ? (
                     <CardImageCarousel images={images} alt={search.title} />
                   ) : (
