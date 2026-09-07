@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 const GOLD = "rgb(217, 187, 135)";
-const NAVY = "#112150";
+const NAVY = "#070E42";
 
 interface NotificationRow {
   id: string;

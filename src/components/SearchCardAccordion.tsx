@@ -274,7 +274,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
               style={{
                 fontSize: 12,
                 fontWeight: 600,
-                color: "#112150",
+                color: "#070E42",
                 textDecoration: "underline",
               }}
             >

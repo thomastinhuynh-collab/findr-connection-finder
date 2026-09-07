@@ -14,7 +14,7 @@ const NotFound = () => {
   return (
     <div
       className="flex min-h-screen items-center justify-center px-4"
-      style={{ backgroundColor: "#112150" }}
+      style={{ backgroundColor: "#070E42" }}
     >
       <div className="text-center max-w-lg">
         {/* Logo */}

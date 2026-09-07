@@ -11,27 +11,27 @@ const Contact = () => (
     <div className="grid md:grid-cols-3 gap-4 not-prose mt-8">
       <a
         href="mailto:contact@findr.app"
-        className="block p-6 bg-white rounded-xl border border-[#112150]/10 hover:border-[#D9BD8B] hover:shadow-md transition-all"
+        className="block p-6 bg-white rounded-xl border border-[#070E42]/10 hover:border-[#D9BD8B] hover:shadow-md transition-all"
       >
-        <Mail className="w-6 h-6 text-[#112150] mb-3" />
-        <h3 className="font-poppins font-semibold text-[#112150] mb-1">Général</h3>
-        <p className="text-sm text-[#112150]/70">contact@findr.app</p>
+        <Mail className="w-6 h-6 text-[#070E42] mb-3" />
+        <h3 className="font-poppins font-semibold text-[#070E42] mb-1">Général</h3>
+        <p className="text-sm text-[#070E42]/70">contact@findr.app</p>
       </a>
       <a
         href="mailto:support@findr.app"
-        className="block p-6 bg-white rounded-xl border border-[#112150]/10 hover:border-[#D9BD8B] hover:shadow-md transition-all"
+        className="block p-6 bg-white rounded-xl border border-[#070E42]/10 hover:border-[#D9BD8B] hover:shadow-md transition-all"
       >
-        <MessageCircle className="w-6 h-6 text-[#112150] mb-3" />
-        <h3 className="font-poppins font-semibold text-[#112150] mb-1">Support</h3>
-        <p className="text-sm text-[#112150]/70">support@findr.app</p>
+        <MessageCircle className="w-6 h-6 text-[#070E42] mb-3" />
+        <h3 className="font-poppins font-semibold text-[#070E42] mb-1">Support</h3>
+        <p className="text-sm text-[#070E42]/70">support@findr.app</p>
       </a>
       <a
         href="mailto:privacy@findr.app"
-        className="block p-6 bg-white rounded-xl border border-[#112150]/10 hover:border-[#D9BD8B] hover:shadow-md transition-all"
+        className="block p-6 bg-white rounded-xl border border-[#070E42]/10 hover:border-[#D9BD8B] hover:shadow-md transition-all"
       >
-        <Shield className="w-6 h-6 text-[#112150] mb-3" />
-        <h3 className="font-poppins font-semibold text-[#112150] mb-1">Données / RGPD</h3>
-        <p className="text-sm text-[#112150]/70">privacy@findr.app</p>
+        <Shield className="w-6 h-6 text-[#070E42] mb-3" />
+        <h3 className="font-poppins font-semibold text-[#070E42] mb-1">Données / RGPD</h3>
+        <p className="text-sm text-[#070E42]/70">privacy@findr.app</p>
       </a>
     </div>
 

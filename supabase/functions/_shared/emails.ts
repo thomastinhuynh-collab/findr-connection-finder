@@ -12,7 +12,7 @@ export const SENDER = { name: "Findr", email: "notifications@findrapp.fr" };
 /** Expéditeur utilisé pour les emails relationnels (liste d'attente / beta). */
 export const CONTACT_SENDER = { name: "Findr", email: "contact@findrapp.fr" };
 
-const NAVY = "#0A1628";
+const NAVY = "#070E42";
 const HEADER_NAVY = "#070E42";
 const CREAM = "#F5F1E8";
 const GOLD_TEXT = "#9A7A3D";

@@ -102,7 +102,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4" style={{ backgroundColor: "#112150" }}>
+    <div className="flex min-h-screen items-center justify-center px-4" style={{ backgroundColor: "#070E42" }}>
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <Logo />

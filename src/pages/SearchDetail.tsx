@@ -932,7 +932,7 @@ const SearchDetail = () => {
       <Dialog open={stripeGateOpen} onOpenChange={setStripeGateOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle style={{ color: '#112150' }}>Configure tes paiements</DialogTitle>
+            <DialogTitle style={{ color: '#070E42' }}>Configure tes paiements</DialogTitle>
             <DialogDescription>
               Configure tes paiements avant de pouvoir proposer un objet — ça prend 2 minutes.
             </DialogDescription>
@@ -944,7 +944,7 @@ const SearchDetail = () => {
             <Button
               onClick={startOnboarding}
               disabled={stripeLoading}
-              style={{ backgroundColor: '#112150', color: '#F5F0EA' }}
+              style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
             >
               {stripeLoading ? (
                 <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>

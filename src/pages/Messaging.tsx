@@ -391,7 +391,7 @@ const Messaging = () => {
       <div className="min-h-screen" style={{ backgroundColor: "#F5F0E8" }}>
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-2xl font-serif font-bold mb-4" style={{ color: "#112150" }}>
+            <h1 className="text-2xl font-serif font-bold mb-4" style={{ color: "#070E42" }}>
               Conversation non trouvée
             </h1>
             <Button onClick={() => navigate("/recherches")}>
@@ -462,7 +462,7 @@ const Messaging = () => {
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="font-semibold truncate" style={{ color: "#112150" }}>
+                  <p className="font-semibold truncate" style={{ color: "#070E42" }}>
                     {search.profiles?.full_name || "Utilisateur"}
                   </p>
                   <span
@@ -519,7 +519,7 @@ const Messaging = () => {
                     />
                   </svg>
 
-                  <p className="text-lg font-semibold mb-1" style={{ color: "#112150" }}>
+                  <p className="text-lg font-semibold mb-1" style={{ color: "#070E42" }}>
                     Commencez la conversation
                   </p>
                   <p className="text-sm max-w-sm" style={{ color: "#6B7280" }}>
@@ -762,7 +762,7 @@ const Messaging = () => {
                         style={{ borderColor: "#D9D2C2" }}
                         aria-label="Supprimer la photo"
                       >
-                        <X className="w-3 h-3" style={{ color: "#112150" }} />
+                        <X className="w-3 h-3" style={{ color: "#070E42" }} />
                       </button>
                     </div>
                   ))}
