@@ -65,7 +65,11 @@ const AdminForceShipped = () => {
     setProcessing(id);
     try {
       const { data, error } = await supabase.functions.invoke("admin-force-shipped", {
-        body: { reservationId: id, trackingNumber: tracking[id]?.trim() || undefined },
+        body: {
+          reservationId: id,
+          trackingNumber: tracking[id]?.trim() || undefined,
+          carrier: carriers[id] || undefined,
+        },
       });
       if (error || (data as { error?: string })?.error) {
         throw new Error((data as { error?: string })?.error ?? error?.message);
