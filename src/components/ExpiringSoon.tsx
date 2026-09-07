@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Clock, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import FavoriteButton from "@/components/FavoriteButton";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 
@@ -131,6 +132,9 @@ const ExpiringSoon = () => {
                 onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "translateY(0)"; }}
               >
                 <div className="relative h-[180px] overflow-hidden">
+                  <div className="absolute top-2.5 left-2.5 z-10" onClick={(e) => e.stopPropagation()}>
+                    <FavoriteButton searchId={search.id} />
+                  </div>
                   {image ? (
                     <img src={image} alt={search.title} className="w-full h-full object-cover object-center" />
                   ) : (
