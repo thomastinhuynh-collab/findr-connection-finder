@@ -70,8 +70,8 @@ const NegativeBalanceBanner = ({ userId, negativeBalance }: Props) => {
         className="rounded-xl p-4 flex flex-wrap items-center gap-3"
         style={{ backgroundColor: "#F5F0EA", border: "1px solid #D9BD8B" }}
       >
-        <Info className="w-5 h-5 flex-shrink-0" style={{ color: "#112150" }} />
-        <p className="text-sm flex-1 min-w-[220px]" style={{ color: "#112150" }}>
+        <Info className="w-5 h-5 flex-shrink-0" style={{ color: "#070E42" }} />
+        <p className="text-sm flex-1 min-w-[220px]" style={{ color: "#070E42" }}>
           <strong>Solde à régulariser : {negativeBalance.toFixed(2)} €.</strong>{" "}
           Ce montant sera automatiquement déduit de tes prochains versements.
         </p>
@@ -79,7 +79,7 @@ const NegativeBalanceBanner = ({ userId, negativeBalance }: Props) => {
           variant="outline"
           size="sm"
           onClick={() => setOpen(true)}
-          style={{ borderColor: "#112150", color: "#112150" }}
+          style={{ borderColor: "#070E42", color: "#070E42" }}
         >
           Voir le détail
         </Button>

@@ -238,7 +238,7 @@ const Searches = () => {
       }
     });
 
-  const NAVY = "#0A1628";
+  const NAVY = "#070E42";
   const GOLD_ACCENT = "#D9BD8B";
   const pillBase: React.CSSProperties = {
     fontFamily: "'Inter', sans-serif",
@@ -535,7 +535,7 @@ const Searches = () => {
                       style={{
                         top: "10px",
                         right: "10px",
-                        backgroundColor: "#0A1628",
+                        backgroundColor: "#070E42",
                         color: "#FFFFFF",
                         fontSize: "11px",
                         fontWeight: 600,

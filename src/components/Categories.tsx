@@ -68,7 +68,7 @@ const Categories = () => {
               <div
                 className="absolute inset-0 transition-opacity duration-300"
                 style={{
-                  background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(17,33,80,0.78) 70%, rgba(17,33,80,0.92) 100%)',
+                  background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(7,14,66,0.78) 70%, rgba(7,14,66,0.92) 100%)',
                 }}
               />
 

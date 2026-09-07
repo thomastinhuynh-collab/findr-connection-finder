@@ -495,7 +495,7 @@ const MySpace = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#112150' }}></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#070E42' }}></div>
       </div>
     );
   }
@@ -552,7 +552,7 @@ const MySpace = () => {
                   height: 90,
                   background: profile.banner_url
                     ? undefined
-                    : "linear-gradient(120deg, #0A1628 0%, #132a4d 100%)",
+                    : "linear-gradient(120deg, #070E42 0%, #132a4d 100%)",
                 }}
               >
                 {profile.banner_url && (
@@ -578,7 +578,7 @@ const MySpace = () => {
                     className="inline-flex items-center gap-1.5 transition-all"
                     style={{
                       backgroundColor: "rgba(255,255,255,0.92)",
-                      color: "#0A1628",
+                      color: "#070E42",
                       border: "1px solid rgba(10,22,40,0.1)",
                       fontSize: 12,
                       padding: "5px 11px",
@@ -663,7 +663,7 @@ const MySpace = () => {
                   <AvatarImage src={profile.avatar_url || undefined} className="object-cover" />
                   <AvatarFallback
                     style={{
-                      backgroundColor: '#0A1628',
+                      backgroundColor: '#070E42',
                       color: '#D9BB87',
                       fontFamily: "'Playfair Display', Georgia, serif",
                       fontStyle: 'italic',
@@ -692,13 +692,13 @@ const MySpace = () => {
                     {profile.full_name || "Utilisateur"}
                   </h1>
                   {profile.is_premium && (
-                    <Badge style={{ backgroundColor: '#D9BD8B', color: '#112150' }}>
+                    <Badge style={{ backgroundColor: '#D9BD8B', color: '#070E42' }}>
                       <Crown className="w-3 h-3 mr-1" />
                       Premium
                     </Badge>
                   )}
                   {profile.is_findr && (
-                    <Badge style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>findr</Badge>
+                    <Badge style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>findr</Badge>
                   )}
                   {(user as any)?.email_confirmed_at && (
                     <span
@@ -738,7 +738,7 @@ const MySpace = () => {
                           />
                         ))}
                       </div>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: '#0A1628' }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#070E42' }}>
                         {averageRating}
                       </span>
                       <span className="text-xs" style={{ color: '#6B7280' }}>
@@ -785,7 +785,7 @@ const MySpace = () => {
                         style={{
                           backgroundColor: '#D9BB87',
                           border: '1.5px solid #D9BB87',
-                          color: '#0A1628',
+                          color: '#070E42',
                           fontSize: 12,
                           borderRadius: 999,
                           padding: '6px 16px',
@@ -814,7 +814,7 @@ const MySpace = () => {
                           alignItems: 'center',
                           gap: 6,
                           fontSize: 11,
-                          color: '#0A1628',
+                          color: '#070E42',
                           backgroundColor: '#F5F1E8',
                           border: '1px solid #E5DFD1',
                           padding: '4px 12px',
@@ -840,7 +840,7 @@ const MySpace = () => {
                       style={{ gap: 16, color: '#6B6259' }}
                     >
                       <span style={{ fontSize: 13 }}>
-                        <span style={{ fontWeight: 600, color: '#0A1628' }}>{searches.length}</span>
+                        <span style={{ fontWeight: 600, color: '#070E42' }}>{searches.length}</span>
                         <span style={{ color: '#9A8570', marginLeft: 4 }}>
                           {searches.length > 1 ? 'recherches actives' : 'recherche active'}
                         </span>
@@ -887,7 +887,7 @@ const MySpace = () => {
                   return (
                     <div className="mt-3" style={{ maxWidth: 340 }}>
                       <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, color: '#0A1628', fontWeight: 600 }}>
+                        <span style={{ fontSize: 12, color: '#070E42', fontWeight: 600 }}>
                           Profil complété à {pct}%
                         </span>
                       </div>
@@ -909,8 +909,8 @@ const MySpace = () => {
                   onClick={openEditProfile}
                   className="mt-5 inline-flex items-center gap-1.5 transition-colors"
                   style={{
-                    border: '1.5px solid #0A1628',
-                    color: '#0A1628',
+                    border: '1.5px solid #070E42',
+                    color: '#070E42',
                     fontSize: 12,
                     padding: '6px 16px',
                     borderRadius: 999,
@@ -979,7 +979,7 @@ const MySpace = () => {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-semibold" style={{ color: '#112150' }}>Paiements</h3>
+                    <h3 className="font-semibold" style={{ color: '#070E42' }}>Paiements</h3>
                     {profile.stripe_onboarding_complete ? (
                       <p className="text-sm font-medium" style={{ color: '#1F6B47' }}>
                         ✓ Paiements configurés — tu peux recevoir tes gains.
@@ -995,7 +995,7 @@ const MySpace = () => {
                   <Button
                     onClick={() => setStripeModalOpen(true)}
                     disabled={stripeLoading}
-                    style={{ backgroundColor: '#112150', color: '#F5F0EA' }}
+                    style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
                   >
                     {stripeLoading ? (
                       <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
@@ -1011,7 +1011,7 @@ const MySpace = () => {
             <Dialog open={stripeModalOpen} onOpenChange={setStripeModalOpen}>
               <DialogContent className="sm:max-w-md" style={{ backgroundColor: '#FBFAF6' }}>
                 <DialogHeader>
-                  <DialogTitle style={{ fontFamily: "'Playfair Display', serif", color: '#112150' }}>
+                  <DialogTitle style={{ fontFamily: "'Playfair Display', serif", color: '#070E42' }}>
                     Avant de continuer
                   </DialogTitle>
                 </DialogHeader>
@@ -1029,7 +1029,7 @@ const MySpace = () => {
                   <Button
                     onClick={() => { setStripeModalOpen(false); startOnboarding(); }}
                     disabled={stripeLoading}
-                    style={{ backgroundColor: '#112150', color: '#F5F0EA' }}
+                    style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
                   >
                     {stripeLoading ? (
                       <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
@@ -1062,9 +1062,9 @@ const MySpace = () => {
                     aria-controls={`panel-${key}`}
                     className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all"
                     style={{
-                      backgroundColor: isOpen ? "#112150" : "transparent",
+                      backgroundColor: isOpen ? "#070E42" : "transparent",
                       color: isOpen ? "#F5F0EA" : "#6B7280",
-                      border: `1px solid ${isOpen ? "#112150" : "#E5E1D8"}`,
+                      border: `1px solid ${isOpen ? "#070E42" : "#E5E1D8"}`,
                     }}
                   >
                     <Icon className="w-4 h-4" />
@@ -1120,7 +1120,7 @@ const MySpace = () => {
                           <p className="mb-4" style={{ color: '#374151' }}>
                             Tu n'as pas encore envoyé de proposition.
                           </p>
-                          <Button asChild size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                          <Button asChild size="sm" style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>
                             <Link to="/recherches">Voir les recherches</Link>
                           </Button>
                         </div>
@@ -1158,12 +1158,12 @@ const MySpace = () => {
                                     >
                                       {st.label}
                                     </span>
-                                    <span className="flex items-center gap-1 font-bold text-sm" style={{ color: '#112150' }}>
+                                    <span className="flex items-center gap-1 font-bold text-sm" style={{ color: '#070E42' }}>
                                       <Euro className="w-3.5 h-3.5" />
                                       {p.proposed_price}
                                     </span>
                                   </div>
-                                  <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#112150' }}>
+                                  <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>
                                     {p.title}
                                   </h3>
                                   {p.search && (
@@ -1188,7 +1188,7 @@ const MySpace = () => {
                         <div className="py-16 text-center">
                           <Heart className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
                           <p style={{ color: '#6B7280' }}>Aucun favori pour le moment</p>
-                          <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                          <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>
                             <Link to="/recherches">Parcourir les annonces</Link>
                           </Button>
                         </div>
@@ -1214,7 +1214,7 @@ const MySpace = () => {
                                 <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: '#F0EBE3', color: '#8B7355' }}>
                                   {search.category}
                                 </span>
-                                <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#112150' }}>
+                                <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>
                                   {search.title}
                                 </h3>
                                 {search.description && (
@@ -1292,7 +1292,7 @@ const MySpace = () => {
               <TabsContent value="searches" className="mt-0" forceMount>
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#0A1628" }}>
+                    <h2 style={{ fontSize: 18, fontWeight: 600, color: "#070E42" }}>
                       Mes recherches en cours
                     </h2>
                     <div style={{ width: 60, height: 2, backgroundColor: "#D9BB87", borderRadius: 2, marginTop: 8 }} />
@@ -1300,7 +1300,7 @@ const MySpace = () => {
 
                   <div className="flex gap-2">
                     {profile.is_findr && (
-                      <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BD8B', color: '#112150' }}>
+                      <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BD8B', color: '#070E42' }}>
                         <Link to="/mes-propositions">
                           <Package className="w-4 h-4 mr-2" />
                           Mes propositions
@@ -1332,7 +1332,7 @@ const MySpace = () => {
                   <div className="py-16 text-center">
                     <Search className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
                     <p style={{ color: '#6B7280' }}>Aucune recherche pour le moment</p>
-                    <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#112150', color: '#F5F0EA' }}>
+                    <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>
                       <Link to="/poster">Poster ma première recherche</Link>
                     </Button>
                   </div>
@@ -1360,9 +1360,9 @@ const MySpace = () => {
                               fontSize: 13,
                               fontWeight: isActive ? 600 : 500,
                               cursor: "pointer",
-                              backgroundColor: isActive ? "#112150" : "transparent",
+                              backgroundColor: isActive ? "#070E42" : "transparent",
                               color: isActive ? "#F5F0EA" : "#6B7280",
-                              border: `1px solid ${isActive ? "#112150" : "rgba(17,33,80,0.15)"}`,
+                              border: `1px solid ${isActive ? "#070E42" : "rgba(7,14,66,0.15)"}`,
                             }}
                           >
                             {tab.label}
@@ -1410,7 +1410,7 @@ const MySpace = () => {
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle style={{ color: '#0A1628' }}>Modifier mon profil</DialogTitle>
+            <DialogTitle style={{ color: '#070E42' }}>Modifier mon profil</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
@@ -1453,7 +1453,7 @@ const MySpace = () => {
             <Button
               onClick={handleSaveProfile}
               disabled={savingProfile}
-              style={{ backgroundColor: '#0A1628', color: '#F5F0EA' }}
+              style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
             >
               {savingProfile ? "Enregistrement…" : "Enregistrer"}
             </Button>

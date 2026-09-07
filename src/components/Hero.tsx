@@ -8,7 +8,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
 const GOLD = "rgb(217, 187, 135)";
-const DARK = "#0A1628";
+const DARK = "#070E42";
 
 const navLinks = [
   { key: "howItWorks", to: "/comment-ca-marche" },
@@ -64,7 +64,7 @@ const Hero = () => {
     <section
       style={{
         width: "100%",
-        background: "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)",
+        background: "linear-gradient(180deg, #070E42 0%, #0F1F3D 100%)",
       }}
     >
       <div
@@ -75,7 +75,7 @@ const Hero = () => {
           right: 0,
           zIndex: 50,
           background: isStuck
-            ? "linear-gradient(180deg, #0A1628 0%, #0F1F3D 100%)"
+            ? "linear-gradient(180deg, #070E42 0%, #0F1F3D 100%)"
             : "transparent",
           borderBottom: isStuck
             ? "0.5px solid rgba(217, 187, 135, 0.12)"
@@ -351,7 +351,7 @@ const Hero = () => {
                 background: "transparent",
                 border: "none",
                 outline: "none",
-                color: "#0A1628",
+                color: "#070E42",
                 fontSize: 13,
                 padding: "8px 0",
                 minWidth: 0,
@@ -364,7 +364,7 @@ const Hero = () => {
                 fontSize: 13,
                 fontWeight: 600,
                 color: GOLD,
-                background: "#0A1628",
+                background: "#070E42",
                 border: "none",
                 padding: "9px 22px",
                 borderRadius: 999,

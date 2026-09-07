@@ -404,7 +404,7 @@ const ProposalList = ({
             left: 14,
             zIndex: 2,
             backgroundColor: "#D9BD8B",
-            color: "#112150",
+            color: "#070E42",
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: "0.04em",
@@ -702,12 +702,12 @@ const ProposalList = ({
                 className="w-full flex items-center justify-between"
                 style={{
                   backgroundColor: "#F5F0EA",
-                  border: "1px solid rgba(17,33,80,0.10)",
+                  border: "1px solid rgba(7,14,66,0.10)",
                   borderRadius: 10,
                   padding: "10px 14px",
                   fontSize: 13,
                   fontWeight: 500,
-                  color: "#112150",
+                  color: "#070E42",
                   cursor: "pointer",
                 }}
               >

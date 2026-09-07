@@ -9,7 +9,7 @@ interface LogoProps {
 }
 
 export const LOGO_CREAM = "#F5F1E8";
-export const LOGO_NAVY = "#0A1628";
+export const LOGO_NAVY = "#070E42";
 
 /**
  * findr wordmark — Space Grotesk 700, always lowercase.

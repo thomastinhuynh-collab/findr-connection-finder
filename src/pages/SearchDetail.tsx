@@ -916,12 +916,12 @@ const SearchDetail = () => {
       {!isOwner && canInteract && (
         <div
           className="lg:hidden fixed bottom-0 left-0 right-0 z-50 px-4 py-3"
-          style={{ backgroundColor: '#0A1628', boxShadow: '0 -4px 16px rgba(10,22,40,0.25)' }}
+          style={{ backgroundColor: '#070E42', boxShadow: '0 -4px 16px rgba(10,22,40,0.25)' }}
         >
           <Button
             onClick={handleProposal}
             className="w-full gap-2 rounded-lg"
-            style={{ height: '48px', fontSize: '15px', fontWeight: 600, backgroundColor: '#0A1628', color: '#C9A84C', border: '1.5px solid #C9A84C' }}
+            style={{ height: '48px', fontSize: '15px', fontWeight: 600, backgroundColor: '#070E42', color: '#C9A84C', border: '1.5px solid #C9A84C' }}
           >
             🏷️ Faire une proposition
           </Button>
@@ -932,7 +932,7 @@ const SearchDetail = () => {
       <Dialog open={stripeGateOpen} onOpenChange={setStripeGateOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle style={{ color: '#112150' }}>Configure tes paiements</DialogTitle>
+            <DialogTitle style={{ color: '#070E42' }}>Configure tes paiements</DialogTitle>
             <DialogDescription>
               Configure tes paiements avant de pouvoir proposer un objet — ça prend 2 minutes.
             </DialogDescription>
@@ -944,7 +944,7 @@ const SearchDetail = () => {
             <Button
               onClick={startOnboarding}
               disabled={stripeLoading}
-              style={{ backgroundColor: '#112150', color: '#F5F0EA' }}
+              style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
             >
               {stripeLoading ? (
                 <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>

@@ -7,22 +7,22 @@
 @layer base {
   :root {
     /* Findr Brand Colors - Official Palette */
-    /* #112150 - Navy Primary */
+    /* #070E42 - Navy Primary */
     /* #3B507D - Navy Secondary */
     /* #F5F0EA - Cream Background */
     /* #D9BD8B - Gold Accent */
     /* #DACAC2 - Warm Neutral */
 
     --background: 42 33% 94%; /* #F5F0EA Cream */
-    --foreground: 224 67% 19%; /* #112150 Navy */
+    --foreground: 233 81% 14%; /* #070E42 Navy */
 
     --card: 42 25% 96%;
-    --card-foreground: 224 67% 19%;
+    --card-foreground: 233 81% 14%;
 
     --popover: 42 25% 96%;
-    --popover-foreground: 224 67% 19%;
+    --popover-foreground: 233 81% 14%;
 
-    --primary: 224 67% 19%; /* #112150 Navy */
+    --primary: 233 81% 14%; /* #070E42 Navy */
     --primary-foreground: 42 33% 94%;
 
     --secondary: 222 37% 36%; /* #3B507D Navy Secondary */
@@ -32,19 +32,19 @@
     --muted-foreground: 224 40% 40%;
 
     --accent: 38 52% 69%; /* #D9BD8B Gold */
-    --accent-foreground: 224 67% 19%;
+    --accent-foreground: 233 81% 14%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 42 33% 94%;
 
     --border: 224 20% 80%;
     --input: 224 20% 85%;
-    --ring: 224 67% 19%;
+    --ring: 233 81% 14%;
 
     --radius: 1rem;
 
     /* Custom tokens */
-    --navy-primary: 224 67% 19%; /* #112150 */
+    --navy-primary: 233 81% 14%; /* #070E42 */
     --navy-secondary: 222 37% 36%; /* #3B507D */
     --cream: 42 33% 94%; /* #F5F0EA */
     --gold: 38 52% 69%; /* #D9BD8B */
@@ -57,23 +57,23 @@
     --vintage-cream: 42 33% 94%;
     
     /* Enhanced Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(224 67% 19%) 0%, hsl(222 37% 36%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(233 81% 14%) 0%, hsl(222 37% 36%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(42 25% 98%) 0%, hsl(42 20% 95%) 100%);
     --gradient-gold: linear-gradient(135deg, hsl(38 52% 69%) 0%, hsl(38 60% 75%) 100%);
     --gradient-warm: linear-gradient(135deg, hsl(42 33% 94%) 0%, hsl(22 22% 88%) 100%);
 
     /* Refined Shadows */
-    --shadow-sm: 0 2px 8px -2px hsl(224 67% 19% / 0.06);
-    --shadow-md: 0 8px 24px -4px hsl(224 67% 19% / 0.1);
-    --shadow-lg: 0 16px 48px -8px hsl(224 67% 19% / 0.14);
+    --shadow-sm: 0 2px 8px -2px hsl(233 81% 14% / 0.06);
+    --shadow-md: 0 8px 24px -4px hsl(233 81% 14% / 0.1);
+    --shadow-lg: 0 16px 48px -8px hsl(233 81% 14% / 0.14);
     --shadow-glow: 0 0 40px -10px hsl(38 52% 69% / 0.35);
 
     --sidebar-background: 42 33% 94%;
-    --sidebar-foreground: 224 67% 19%;
-    --sidebar-primary: 224 67% 19%;
+    --sidebar-foreground: 233 81% 14%;
+    --sidebar-primary: 233 81% 14%;
     --sidebar-primary-foreground: 42 33% 94%;
     --sidebar-accent: 22 22% 88%;
-    --sidebar-accent-foreground: 224 67% 19%;
+    --sidebar-accent-foreground: 233 81% 14%;
     --sidebar-border: 224 20% 80%;
     --sidebar-ring: 38 52% 69%;
   }
@@ -89,7 +89,7 @@
     --popover-foreground: 42 33% 92%;
 
     --primary: 42 33% 90%;
-    --primary-foreground: 224 67% 19%;
+    --primary-foreground: 233 81% 14%;
 
     --secondary: 222 37% 28%;
     --secondary-foreground: 42 33% 92%;
@@ -98,7 +98,7 @@
     --muted-foreground: 42 20% 70%;
 
     --accent: 38 52% 69%;
-    --accent-foreground: 224 67% 19%;
+    --accent-foreground: 233 81% 14%;
 
     --destructive: 0 62% 40%;
     --destructive-foreground: 42 33% 92%;
@@ -110,7 +110,7 @@
     --sidebar-background: 224 67% 12%;
     --sidebar-foreground: 42 33% 92%;
     --sidebar-primary: 38 52% 69%;
-    --sidebar-primary-foreground: 224 67% 19%;
+    --sidebar-primary-foreground: 233 81% 14%;
     --sidebar-accent: 224 50% 18%;
     --sidebar-accent-foreground: 42 33% 92%;
     --sidebar-border: 224 50% 20%;
