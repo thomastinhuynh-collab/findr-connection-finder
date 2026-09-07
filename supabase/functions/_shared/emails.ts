@@ -212,7 +212,8 @@ export function buildEmail(
         }),
       };
 
-    case "shipped":
+    case "shipped": {
+      const trackUrl = trackingUrl(data.carrier, data.trackingNumber);
       return {
         subject: "Ton objet est en route !",
         html: renderEmail({
@@ -220,15 +221,26 @@ export function buildEmail(
           title: "Ton objet est en route !",
           paragraphs: [
             `${hello} le findr vient d'expédier ton objet.`,
+            trackUrl
+              ? `Suis l'avancée de ton colis directement chez le transporteur : <a href="${esc(
+                  trackUrl,
+                )}" style="color:${NAVY};font-weight:bold;">${esc(data.trackingNumber ?? "")}</a>`
+              : "Le numéro de suivi te sera communiqué prochainement.",
           ],
           facts: [
             { label: "Numéro de suivi", value: data.trackingNumber ?? "—" },
             ...(data.carrier ? [{ label: "Transporteur", value: data.carrier }] : []),
             ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
           ],
-          cta: { label: "Suivre mon colis", url: `${SITE_URL}/mon-espace` },
+          cta: {
+            label: trackUrl ? "Suivre mon colis" : "Voir ma commande",
+            url: trackUrl ?? `${SITE_URL}/mon-espace`,
+          },
+          secondary: { label: "Voir dans mon espace", url: `${SITE_URL}/mon-espace` },
         }),
       };
+    }
+
 
     case "delivered":
       return {
