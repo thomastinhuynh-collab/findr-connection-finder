@@ -27,6 +27,7 @@ import { useToast } from "@/hooks/use-toast";
 import ProposalList from "@/components/ProposalList";
 import ReservationCard from "@/components/ReservationCard";
 import ReservationBadge from "@/components/ReservationBadge";
+import FavoriteButton from "@/components/FavoriteButton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 
@@ -543,9 +544,14 @@ const SearchDetail = () => {
   const deadlineBadge = getDeadlineBadge(search.deadline);
 
   const titleBlock = (
-    <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary mb-4">
-      {search.title}
-    </h1>
+    <div className="flex items-start justify-between gap-4 mb-4">
+      <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary">
+        {search.title}
+      </h1>
+      {!isOwner && (
+        <FavoriteButton searchId={search.id} className="flex-shrink-0 border border-[#E8E0D4]" />
+      )}
+    </div>
   );
 
   const badgesBlock = (
