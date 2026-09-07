@@ -36,8 +36,11 @@ import {
   Eye,
   Image as ImageIcon,
   Truck,
-  AlertTriangle
+  AlertTriangle,
+
 } from "lucide-react";
+import { trackingUrl } from "@/lib/tracking";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
@@ -503,12 +506,27 @@ const ProposalList = ({
                         {payments[proposal.id]?.tracking_status && (
                           <span className="font-medium text-primary">
                             · {payments[proposal.id]?.tracking_status}
-                            {payments[proposal.id]?.tracking_number
-                              ? ` (${payments[proposal.id]?.carrier} — ${payments[proposal.id]?.tracking_number})`
-                              : ""}
                           </span>
                         )}
+                        {payments[proposal.id]?.tracking_number && (
+                          <a
+                            href={
+                              trackingUrl(
+                                payments[proposal.id]?.carrier,
+                                payments[proposal.id]?.tracking_number,
+                              ) ?? "#"
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 font-semibold text-primary underline underline-offset-2 hover:text-accent"
+                          >
+                            {payments[proposal.id]?.carrier} —{" "}
+                            {payments[proposal.id]?.tracking_number}
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        )}
                       </div>
+
                     )}
 
                   {/* Findr : marquer comme expédié */}
