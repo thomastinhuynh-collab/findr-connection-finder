@@ -116,6 +116,7 @@ const DisputeDialog = ({
         .invoke("send-transactional-email", {
           body: {
             type: "dispute_received",
+            userId: (await supabase.auth.getUser()).data.user?.id,
             data: {
               itemTitle,
               reasonLabel: DISPUTE_REASONS[reason],
