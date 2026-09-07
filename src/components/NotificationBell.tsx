@@ -170,12 +170,24 @@ const NotificationBell = () => {
                   }}
                 >
                   {notification.link ? (
-                    <Link to={notification.link} onClick={() => setOpen(false)}>
-                      <NotificationContent notification={notification} formatTime={formatTime} />
-                    </Link>
+                    /^https?:\/\//.test(notification.link) ? (
+                      <a
+                        href={notification.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setOpen(false)}
+                      >
+                        <NotificationContent notification={notification} formatTime={formatTime} />
+                      </a>
+                    ) : (
+                      <Link to={notification.link} onClick={() => setOpen(false)}>
+                        <NotificationContent notification={notification} formatTime={formatTime} />
+                      </Link>
+                    )
                   ) : (
                     <NotificationContent notification={notification} formatTime={formatTime} />
                   )}
+
                 </div>
               ))}
             </div>
