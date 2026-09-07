@@ -64,8 +64,20 @@ Deno.serve(async (req) => {
       return json({ error: "Ce litige n'est plus ouvert." }, 400);
     }
 
+    // Titre de l'objet pour les emails de décision (non bloquant).
+    let itemTitle: string | undefined;
+    if (reservation.proposal_id) {
+      const { data: proposal } = await admin
+        .from("proposals")
+        .select("title")
+        .eq("id", reservation.proposal_id)
+        .maybeSingle();
+      itemTitle = proposal?.title ?? undefined;
+    }
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const resolvedAt = new Date().toISOString();
+
 
     if (resolution === "verse_findr") {
       // La libération partage la même logique que release-funds-to-findr.
