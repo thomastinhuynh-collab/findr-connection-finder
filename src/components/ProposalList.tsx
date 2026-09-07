@@ -38,7 +38,6 @@ import {
   Truck,
   AlertTriangle,
 
-  ExternalLink,
 } from "lucide-react";
 import { trackingUrl } from "@/lib/tracking";
 
