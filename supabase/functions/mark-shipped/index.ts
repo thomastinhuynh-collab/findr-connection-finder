@@ -76,6 +76,7 @@ Deno.serve(async (req) => {
         tracking_number: trackingNumber,
         carrier,
         shipped_at: new Date().toISOString(),
+        payment_status: "expedie",
         tracking_status: "expedie",
       })
       .eq("id", reservation.id);

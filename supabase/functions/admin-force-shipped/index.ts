@@ -50,11 +50,19 @@ Deno.serve(async (req) => {
 
     const { data: reservation } = await admin
       .from("reservations")
-      .select("id, buyr_id, shipped_at")
+      .select("id, buyr_id, payment_status, shipped_at")
       .eq("id", reservationId)
       .maybeSingle();
     if (!reservation) return json({ error: "Réservation introuvable" }, 404);
     if (reservation.shipped_at) return json({ error: "Déjà marquée comme expédiée." }, 400);
+    if (reservation.payment_status !== "paye_en_attente_reception") {
+      return json(
+        {
+          error: `Cette réservation n'est pas au stade de l'expédition (statut : ${reservation.payment_status ?? "aucun"}).`,
+        },
+        400,
+      );
+    }
 
     const { error: upErr } = await admin
       .from("reservations")
@@ -62,6 +70,7 @@ Deno.serve(async (req) => {
         tracking_number: trackingNumber,
         carrier,
         shipped_at: new Date().toISOString(),
+        payment_status: "expedie",
         tracking_status: "expedie",
       })
       .eq("id", reservation.id);
