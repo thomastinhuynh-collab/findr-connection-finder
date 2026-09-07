@@ -21,9 +21,23 @@ interface Row {
  * Action de test réservée aux admins : force une réservation en "expédiée"
  * avec un numéro de suivi factice. La sécurité réelle est côté Edge Function.
  */
+const CARRIERS = [
+  "Colissimo",
+  "Mondial Relay",
+  "Chronopost",
+  "DHL",
+  "UPS",
+  "FedEx",
+  "DPD",
+  "GLS",
+  "TNT",
+  "Colis Privé",
+];
+
 const AdminForceShipped = () => {
   const [rows, setRows] = useState<Row[]>([]);
   const [tracking, setTracking] = useState<Record<string, string>>({});
+  const [carriers, setCarriers] = useState<Record<string, string>>({});
   const [processing, setProcessing] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +65,11 @@ const AdminForceShipped = () => {
     setProcessing(id);
     try {
       const { data, error } = await supabase.functions.invoke("admin-force-shipped", {
-        body: { reservationId: id, trackingNumber: tracking[id]?.trim() || undefined },
+        body: {
+          reservationId: id,
+          trackingNumber: tracking[id]?.trim() || undefined,
+          carrier: carriers[id] || undefined,
+        },
       });
       if (error || (data as { error?: string })?.error) {
         throw new Error((data as { error?: string })?.error ?? error?.message);
@@ -117,6 +135,26 @@ const AdminForceShipped = () => {
                     }
                     placeholder="TEST-123456"
                   />
+                </div>
+                <div className="min-w-[180px] space-y-1">
+                  <Label htmlFor={`car-${r.id}`} className="text-xs">
+                    Transporteur
+                  </Label>
+                  <select
+                    id={`car-${r.id}`}
+                    value={carriers[r.id] ?? ""}
+                    onChange={(e) =>
+                      setCarriers((p) => ({ ...p, [r.id]: e.target.value }))
+                    }
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                  >
+                    <option value="">Test interne (17TRACK)</option>
+                    {CARRIERS.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <Button
                   size="sm"
