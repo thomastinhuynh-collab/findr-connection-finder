@@ -180,10 +180,20 @@ Deno.serve(async (req) => {
       },
     ]);
 
-    await sendEmailToUser(admin, reservation.buyr_id, "refund", {
-      amount: reservation.total_buyr_amount,
-      reason: "ta réclamation a été acceptée par l'équipe findr",
-    });
+    await Promise.allSettled([
+      sendEmailToUser(admin, reservation.buyr_id, "dispute_resolved_buyr", {
+        outcome: "rembourse_buyr",
+        itemTitle,
+        amount: reservation.total_buyr_amount,
+        notes,
+      }),
+      sendEmailToUser(admin, reservation.findr_id, "dispute_resolved_findr", {
+        outcome: "rembourse_buyr",
+        itemTitle,
+        notes,
+      }),
+    ]);
+
 
     return json({ success: true, refundId: refund.id });
   } catch (err) {
