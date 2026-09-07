@@ -64,8 +64,20 @@ Deno.serve(async (req) => {
       return json({ error: "Ce litige n'est plus ouvert." }, 400);
     }
 
+    // Titre de l'objet pour les emails de décision (non bloquant).
+    let itemTitle: string | undefined;
+    if (reservation.proposal_id) {
+      const { data: proposal } = await admin
+        .from("proposals")
+        .select("title")
+        .eq("id", reservation.proposal_id)
+        .maybeSingle();
+      itemTitle = proposal?.title ?? undefined;
+    }
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const resolvedAt = new Date().toISOString();
+
 
     if (resolution === "verse_findr") {
       // La libération partage la même logique que release-funds-to-findr.
@@ -101,8 +113,24 @@ Deno.serve(async (req) => {
         },
       ]);
 
+      await Promise.allSettled([
+        sendEmailToUser(admin, reservation.buyr_id, "dispute_resolved_buyr", {
+          outcome: "verse_findr",
+          itemTitle,
+          amount: reservation.total_buyr_amount,
+          notes,
+        }),
+        sendEmailToUser(admin, reservation.findr_id, "dispute_resolved_findr", {
+          outcome: "verse_findr",
+          itemTitle,
+          amount: reservation.findr_payout_amount,
+          notes,
+        }),
+      ]);
+
       return json({ success: true, transferId: result.transferId });
     }
+
 
     // Remboursement intégral du buyr
     if (!reservation.stripe_payment_intent_id) {
@@ -152,10 +180,20 @@ Deno.serve(async (req) => {
       },
     ]);
 
-    await sendEmailToUser(admin, reservation.buyr_id, "refund", {
-      amount: reservation.total_buyr_amount,
-      reason: "ta réclamation a été acceptée par l'équipe findr",
-    });
+    await Promise.allSettled([
+      sendEmailToUser(admin, reservation.buyr_id, "dispute_resolved_buyr", {
+        outcome: "rembourse_buyr",
+        itemTitle,
+        amount: reservation.total_buyr_amount,
+        notes,
+      }),
+      sendEmailToUser(admin, reservation.findr_id, "dispute_resolved_findr", {
+        outcome: "rembourse_buyr",
+        itemTitle,
+        notes,
+      }),
+    ]);
+
 
     return json({ success: true, refundId: refund.id });
   } catch (err) {

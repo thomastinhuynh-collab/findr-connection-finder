@@ -25,6 +25,9 @@ const TYPES = [
   "auto_release",
   "refund",
   "dispute_opened",
+  "dispute_received",
+  "dispute_resolved_buyr",
+  "dispute_resolved_findr",
   "reservation_reminder",
 ] as const;
 

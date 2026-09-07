@@ -137,6 +137,9 @@ export type EmailType =
   | "auto_release"
   | "refund"
   | "dispute_opened"
+  | "dispute_received"
+  | "dispute_resolved_buyr"
+  | "dispute_resolved_findr"
   | "chargeback_opened"
   | "reservation_reminder"
   | "waitlist_signup"
@@ -343,6 +346,81 @@ export function buildEmail(
           },
         }),
       };
+
+    case "dispute_received":
+      return {
+        subject: "Ton signalement a bien été enregistré",
+        html: renderEmail({
+          eyebrow: "Signalement",
+          title: "Nous avons reçu ton signalement",
+          paragraphs: [
+            `${hello} ton signalement a bien été enregistré. Le paiement reste bloqué : aucune somme ne sera versée au findr avant la fin de l'examen.`,
+            "L'équipe findr examine ta réclamation et revient vers toi sous 48 heures ouvrées. Tu peux ajouter des éléments à tout moment via la messagerie.",
+          ],
+          facts: [
+            ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
+            { label: "Motif du signalement", value: data.reasonLabel ?? "Non précisé" },
+          ],
+          cta: {
+            label: "Ouvrir la messagerie",
+            url: data.searchId ? `${SITE_URL}/messagerie/${esc(data.searchId)}` : `${SITE_URL}/messagerie`,
+          },
+        }),
+      };
+
+    case "dispute_resolved_buyr": {
+      const refunded = data.outcome === "rembourse_buyr";
+      return {
+        subject: refunded
+          ? "Litige résolu — tu es remboursé"
+          : "Litige résolu — décision de l'équipe findr",
+        html: renderEmail({
+          eyebrow: "Litige résolu",
+          title: refunded ? "Ta réclamation a été acceptée" : "Décision sur ton signalement",
+          paragraphs: [
+            refunded
+              ? `${hello} après examen des éléments, ta réclamation a été acceptée. La transaction est annulée et tu es intégralement remboursé, frais de service inclus.`
+              : `${hello} après examen des éléments, l'équipe findr a estimé que la transaction devait être réglée au findr. Le paiement a donc été versé.`,
+            refunded
+              ? "Le remboursement apparaît généralement sous 5 à 10 jours ouvrés selon ta banque."
+              : "Si tu penses que des éléments n'ont pas été pris en compte, réponds à cet email : nous réexaminerons le dossier.",
+          ],
+          facts: [
+            ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
+            ...(data.amount ? [{ label: refunded ? "Montant remboursé" : "Montant versé", value: money(data.amount) }] : []),
+            ...(data.notes ? [{ label: "Motif de la décision", value: data.notes }] : []),
+          ],
+          cta: { label: "Voir mes transactions", url: `${SITE_URL}/mon-espace` },
+        }),
+      };
+    }
+
+    case "dispute_resolved_findr": {
+      const refunded = data.outcome === "rembourse_buyr";
+      return {
+        subject: refunded
+          ? "Litige résolu — le buyr a été remboursé"
+          : "Litige résolu — ton paiement est débloqué",
+        html: renderEmail({
+          eyebrow: "Litige résolu",
+          title: refunded ? "Le buyr a été remboursé" : "Ton paiement est débloqué",
+          paragraphs: [
+            refunded
+              ? `${hello} après examen des éléments, l'équipe findr a décidé de rembourser intégralement le buyr. La transaction est annulée.`
+              : `${hello} après examen des éléments, l'équipe findr a tranché en ta faveur. Ton paiement a été débloqué et versé sur ton compte.`,
+            refunded
+              ? "Si tu souhaites apporter des éléments complémentaires, réponds à cet email."
+              : "Le virement arrive généralement sous 1 à 3 jours ouvrés selon ta banque.",
+          ],
+          facts: [
+            ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
+            ...(data.amount && !refunded ? [{ label: "Montant versé", value: money(data.amount) }] : []),
+            ...(data.notes ? [{ label: "Motif de la décision", value: data.notes }] : []),
+          ],
+          cta: { label: "Voir mes transactions", url: `${SITE_URL}/mon-espace` },
+        }),
+      };
+    }
 
     case "chargeback_opened":
       return {

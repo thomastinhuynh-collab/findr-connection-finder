@@ -111,6 +111,22 @@ const DisputeDialog = ({
         })
         .catch((e) => console.error("dispute email failed:", e));
 
+      // Accusé de réception au buyr (auteur du signalement) — non bloquant.
+      supabase.functions
+        .invoke("send-transactional-email", {
+          body: {
+            type: "dispute_received",
+            userId: (await supabase.auth.getUser()).data.user?.id,
+            data: {
+              itemTitle,
+              reasonLabel: DISPUTE_REASONS[reason],
+              searchId,
+            },
+          },
+        })
+        .catch((e) => console.error("dispute receipt email failed:", e));
+
+
 
       toast({
         title: "Signalement envoyé",
