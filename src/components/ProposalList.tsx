@@ -37,7 +37,10 @@ import {
   Image as ImageIcon,
   Truck,
   AlertTriangle
+  ExternalLink,
 } from "lucide-react";
+import { trackingUrl } from "@/lib/tracking";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
