@@ -67,6 +67,21 @@ Deno.serve(async (req) => {
       .eq("id", reservation.id);
     if (upErr) throw upErr;
 
+    const trackUrl = trackingUrl(carrier, trackingNumber);
+
+    await admin.from("notifications").insert({
+      user_id: reservation.buyr_id,
+      type: "shipment",
+      title: "Ton objet est en route 📦",
+      message: `Expédié via ${carrier} — suivi n° ${trackingNumber}. Clique pour suivre ton colis.`,
+      link: trackUrl ?? "/mon-espace",
+    });
+
+    await sendEmailToUser(admin, reservation.buyr_id, "shipped", {
+      trackingNumber,
+      carrier,
+    });
+
     return json({ success: true, trackingNumber, carrier });
   } catch (err) {
     console.error("admin-force-shipped error:", err);
