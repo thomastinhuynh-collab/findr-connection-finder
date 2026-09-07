@@ -623,6 +623,16 @@ const ProposalList = ({
                     </Button>
                   )}
 
+                  {isOwner &&
+                    payments[proposal.id]?.dispute_status !== "ouvert" &&
+                    cancelCountdown(payments[proposal.id]) && (
+                      <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 shrink-0" />
+                        {cancelCountdown(payments[proposal.id])}
+                      </p>
+                    )}
+
+
 
                   {proposal.product_link && (
                     <a
