@@ -21,9 +21,23 @@ interface Row {
  * Action de test réservée aux admins : force une réservation en "expédiée"
  * avec un numéro de suivi factice. La sécurité réelle est côté Edge Function.
  */
+const CARRIERS = [
+  "Colissimo",
+  "Mondial Relay",
+  "Chronopost",
+  "DHL",
+  "UPS",
+  "FedEx",
+  "DPD",
+  "GLS",
+  "TNT",
+  "Colis Privé",
+];
+
 const AdminForceShipped = () => {
   const [rows, setRows] = useState<Row[]>([]);
   const [tracking, setTracking] = useState<Record<string, string>>({});
+  const [carriers, setCarriers] = useState<Record<string, string>>({});
   const [processing, setProcessing] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
