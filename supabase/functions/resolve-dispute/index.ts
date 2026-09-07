@@ -113,8 +113,24 @@ Deno.serve(async (req) => {
         },
       ]);
 
+      await Promise.allSettled([
+        sendEmailToUser(admin, reservation.buyr_id, "dispute_resolved_buyr", {
+          outcome: "verse_findr",
+          itemTitle,
+          amount: reservation.total_buyr_amount,
+          notes,
+        }),
+        sendEmailToUser(admin, reservation.findr_id, "dispute_resolved_findr", {
+          outcome: "verse_findr",
+          itemTitle,
+          amount: reservation.findr_payout_amount,
+          notes,
+        }),
+      ]);
+
       return json({ success: true, transferId: result.transferId });
     }
+
 
     // Remboursement intégral du buyr
     if (!reservation.stripe_payment_intent_id) {
