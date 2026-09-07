@@ -36,7 +36,8 @@ import {
   Eye,
   Image as ImageIcon,
   Truck,
-  AlertTriangle
+  AlertTriangle,
+
   ExternalLink,
 } from "lucide-react";
 import { trackingUrl } from "@/lib/tracking";
