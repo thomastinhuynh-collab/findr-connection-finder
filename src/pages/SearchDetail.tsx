@@ -911,8 +911,8 @@ const SearchDetail = () => {
               {actionsBlock}
               {isOwner && (
                 <div className="space-y-6">
-                  {ownerReservationsBlock}
                   {proposalsPanel}
+                  {ownerReservationsBlock}
                 </div>
               )}
               {trustBlock}
@@ -930,8 +930,8 @@ const SearchDetail = () => {
             {userCard}
             {isOwner ? (
               <div className="space-y-6">
-                {ownerReservationsBlock}
                 {proposalsPanel}
+                {ownerReservationsBlock}
               </div>
             ) : (
               proposalsPanel
