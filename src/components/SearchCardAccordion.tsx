@@ -86,17 +86,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
         } as React.CSSProperties,
       };
     }
-    if (isDone) {
-      return {
-        label: "✓ Terminée",
-        style: {
-          backgroundColor: "#E2F3E6",
-          color: "#1F7A34",
-          border: "none",
-        } as React.CSSProperties,
-      };
-    }
-    if (isTerminee) {
+    if (isDone || isTerminee) {
       return {
         label: "Terminée",
         style: {
@@ -108,7 +98,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
     }
     if (isReservee) {
       return {
-        label: "Réservée",
+        label: "En traitement",
         style: {
           backgroundColor: "#E2F3E6",
           color: "#1F7A34",
