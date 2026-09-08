@@ -1045,13 +1045,13 @@ const MySpace = () => {
 
             <div className="flex flex-wrap items-center gap-2 mb-3">
               {([
-                { key: "favorites" as const, label: "Favoris", icon: Heart },
-                { key: "wallet" as const, label: "Portefeuille", icon: Wallet },
-                { key: "evaluations" as const, label: "Évaluations", icon: Star },
+                { key: "favorites" as const, label: "Favoris" },
+                { key: "wallet" as const, label: "Portefeuille" },
+                { key: "evaluations" as const, label: "Évaluations" },
                 ...(profile.is_findr || hasProposals
-                  ? [{ key: "proposals" as const, label: "Mes propositions", icon: Package }]
+                  ? [{ key: "proposals" as const, label: "Mes propositions" }]
                   : []),
-              ]).map(({ key, label, icon: Icon }) => {
+              ] as const).map(({ key, label }) => {
                 const isOpen = activePanel === key;
                 return (
                   <button
@@ -1060,19 +1060,21 @@ const MySpace = () => {
                     onClick={() => togglePanel(key)}
                     aria-expanded={isOpen}
                     aria-controls={`panel-${key}`}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all hover:underline"
                     style={{
                       backgroundColor: isOpen ? "#070E42" : "transparent",
                       color: isOpen ? "#F5F0EA" : "#6B7280",
                       border: `1px solid ${isOpen ? "#070E42" : "#E5E1D8"}`,
+                      textDecoration: isOpen ? "none" : undefined,
                     }}
                   >
-                    <Icon className="w-4 h-4" />
                     {label}
-                    <ChevronDown
-                      className="w-4 h-4 transition-transform"
+                    <span
+                      className="text-xs transition-transform inline-block"
                       style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
-                    />
+                    >
+                      ▼
+                    </span>
                   </button>
                 );
               })}
