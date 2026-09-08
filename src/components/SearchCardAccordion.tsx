@@ -133,7 +133,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
         border: isUrgent ? "1.5px solid #D85A30" : "none",
         borderRadius: 11,
         overflow: "hidden",
-        opacity: isDone || isCancelled ? 0.9 : isTerminee ? 0.85 : 1,
+        opacity: isTerminee ? 0.85 : isCancelled ? 0.9 : 1,
         boxShadow: "0 3px 10px rgba(10,22,40,0.06)",
         transition: "opacity 0.15s, box-shadow 0.15s",
       }}
