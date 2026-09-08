@@ -265,10 +265,10 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
                 fontSize: 12,
                 fontWeight: 600,
                 color: "#070E42",
-                textDecoration: "underline",
+                textDecoration: "none",
               }}
             >
-              Voir le détail
+              Détails →
             </Link>
             {isDone && search.has_invoice && (
               <span style={{ fontSize: 11, color: "#8B7333" }}>Facture disponible</span>
