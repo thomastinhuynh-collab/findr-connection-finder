@@ -54,7 +54,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
   const isDone = tabStatus === "done";
   const isCancelled = tabStatus === "cancelled";
   const isTerminee = isDone || search.status === "completed" || search.status === "closed";
-  const isReservee = search.status === "reserved";
+  const isReservee = search.status === "reserved" || (acceptedCount > 0 && !isDone && !isCancelled && !isTerminee);
   const urgentReason = search.urgent_reason ?? null;
   const isUrgent = !!urgentReason && !isTerminee;
 
@@ -86,17 +86,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
         } as React.CSSProperties,
       };
     }
-    if (isDone) {
-      return {
-        label: "✓ Terminée",
-        style: {
-          backgroundColor: "#E2F3E6",
-          color: "#1F7A34",
-          border: "none",
-        } as React.CSSProperties,
-      };
-    }
-    if (isTerminee) {
+    if (isDone || isTerminee) {
       return {
         label: "Terminée",
         style: {
@@ -108,7 +98,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
     }
     if (isReservee) {
       return {
-        label: "Réservée",
+        label: "En traitement",
         style: {
           backgroundColor: "#E2F3E6",
           color: "#1F7A34",
@@ -143,7 +133,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
         border: isUrgent ? "1.5px solid #D85A30" : "none",
         borderRadius: 11,
         overflow: "hidden",
-        opacity: isDone || isCancelled ? 0.9 : isTerminee ? 0.85 : 1,
+        opacity: isTerminee ? 0.85 : isCancelled ? 0.9 : 1,
         boxShadow: "0 3px 10px rgba(10,22,40,0.06)",
         transition: "opacity 0.15s, box-shadow 0.15s",
       }}
@@ -275,10 +265,10 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
                 fontSize: 12,
                 fontWeight: 600,
                 color: "#070E42",
-                textDecoration: "underline",
+                textDecoration: "none",
               }}
             >
-              Voir le détail
+              Détails →
             </Link>
             {isDone && search.has_invoice && (
               <span style={{ fontSize: 11, color: "#8B7333" }}>Facture disponible</span>
@@ -331,7 +321,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
           }}
         >
           <span>{urgentMessage}</span>
-          <span style={{ textDecoration: "underline" }}>Voir →</span>
+          <span>Détails →</span>
         </button>
       )}
     </div>
