@@ -115,6 +115,29 @@ Deno.serve(async (req) => {
               link: "/mes-propositions",
             });
           }
+
+          // Les demandes de réservation encore en attente sont annulées
+          const { data: pendingReservations } = await admin
+            .from("reservations")
+            .select("id, findr_id")
+            .eq("search_id", reservation.search_id)
+            .eq("status", "pending");
+
+          for (const pending of pendingReservations ?? []) {
+            if (pending.id === reservationId) continue;
+            await admin
+              .from("reservations")
+              .update({ status: "cancelled" })
+              .eq("id", pending.id);
+            await admin.from("notifications").insert({
+              user_id: pending.findr_id,
+              type: "reservation_cancelled",
+              title: "Demande de réservation annulée",
+              message:
+                "Cette recherche a trouvé son objet auprès d'un autre findr — ta demande de réservation n'est plus applicable.",
+              link: `/recherche/${reservation.search_id}`,
+            });
+          }
         }
 
 

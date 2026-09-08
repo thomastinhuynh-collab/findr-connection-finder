@@ -784,19 +784,42 @@ const SearchDetail = () => {
     </div>
   ) : null;
 
-  const ownerReservationsBlock = isOwner && (reservations.filter(r => r.status === "pending").length > 0 || activeReservation) ? (
+  const hasAcceptedProposal = proposals.some(
+    p => p.status === "accepted_pending" || p.status === "completed"
+  );
+
+  const reservationsHeader = (
+    <>
+      <h3 className="font-semibold text-primary flex items-center gap-2">
+        <CalendarClock className="w-5 h-5 text-accent" />
+        Demandes de réservation
+      </h3>
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-accent font-medium">
+          {reservations.filter(r => r.status === "pending" || r.status === "approved").length} réservation{reservations.filter(r => r.status === "pending" || r.status === "approved").length !== 1 ? "s" : ""}
+        </span>
+        {!hasAcceptedProposal && (
+          <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+        )}
+      </div>
+    </>
+  );
+
+  const ownerReservationsBlock = !isOwner || (reservations.filter(r => r.status === "pending").length === 0 && !activeReservation) ? null : hasAcceptedProposal ? (
+    <div className="bg-card border border-border rounded-2xl overflow-hidden opacity-80">
+      <div className="flex items-center justify-between w-full p-6 cursor-not-allowed">
+        {reservationsHeader}
+      </div>
+      <div className="px-6 pb-6">
+        <p className="text-sm text-muted-foreground">
+          Une proposition a été acceptée pour cette recherche — les réservations ne sont plus modifiables.
+        </p>
+      </div>
+    </div>
+  ) : (
     <Collapsible defaultOpen className="bg-card border border-border rounded-2xl overflow-hidden">
       <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors">
-        <h3 className="font-semibold text-primary flex items-center gap-2">
-          <CalendarClock className="w-5 h-5 text-accent" />
-          Demandes de réservation
-        </h3>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-accent font-medium">
-            {reservations.filter(r => r.status === "pending" || r.status === "approved").length} réservation{reservations.filter(r => r.status === "pending" || r.status === "approved").length !== 1 ? "s" : ""}
-          </span>
-          <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-        </div>
+        {reservationsHeader}
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="px-6 pb-6 space-y-4">
@@ -834,7 +857,7 @@ const SearchDetail = () => {
         </div>
       </CollapsibleContent>
     </Collapsible>
-  ) : null;
+  );
 
   const trustBlock = (
     <div
@@ -888,8 +911,8 @@ const SearchDetail = () => {
               {actionsBlock}
               {isOwner && (
                 <div className="space-y-6">
-                  {ownerReservationsBlock}
                   {proposalsPanel}
+                  {ownerReservationsBlock}
                 </div>
               )}
               {trustBlock}
@@ -907,8 +930,8 @@ const SearchDetail = () => {
             {userCard}
             {isOwner ? (
               <div className="space-y-6">
-                {ownerReservationsBlock}
                 {proposalsPanel}
+                {ownerReservationsBlock}
               </div>
             ) : (
               proposalsPanel

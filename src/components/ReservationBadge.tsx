@@ -25,7 +25,7 @@ const ReservationBadge = ({ expiresAt, className = "" }: ReservationBadgeProps) 
           className={`bg-accent/20 text-accent border border-accent/50 gap-1 cursor-help ${className}`}
         >
           <Lock className="w-3 h-3" />
-          Réservée
+          Réservation active
         </Badge>
       </TooltipTrigger>
       <TooltipContent>
