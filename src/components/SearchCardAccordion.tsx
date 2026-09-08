@@ -54,7 +54,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
   const isDone = tabStatus === "done";
   const isCancelled = tabStatus === "cancelled";
   const isTerminee = isDone || search.status === "completed" || search.status === "closed";
-  const isReservee = search.status === "reserved";
+  const isReservee = search.status === "reserved" || (acceptedCount > 0 && !isDone && !isCancelled && !isTerminee);
   const urgentReason = search.urgent_reason ?? null;
   const isUrgent = !!urgentReason && !isTerminee;
 
