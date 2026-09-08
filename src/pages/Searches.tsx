@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -74,6 +74,8 @@ const categories = [
 
 type SortOption = "relevance" | "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc" | "deadline-asc";
 type DeadlineFilter = "all" | "urgent" | "week" | "none";
+
+const PAGE_SIZE = 24;
 
 
 const Searches = () => {
