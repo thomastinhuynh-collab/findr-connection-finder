@@ -179,8 +179,16 @@ const EditProposal = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
+      const { valid, oversized } = splitBySize(Array.from(files));
+      if (oversized.length > 0) {
+        toast({
+          title: "Image trop lourde",
+          description: oversizedDescription(oversized),
+          variant: "destructive",
+        });
+      }
       const totalImages = existingImageUrls.length + newImages.length;
-      const newFiles = Array.from(files).slice(0, 4 - totalImages);
+      const newFiles = valid.slice(0, 4 - totalImages);
       setNewImages((prev) => [...prev, ...newFiles]);
       
       // Create preview URLs

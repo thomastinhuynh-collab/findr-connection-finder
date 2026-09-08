@@ -53,7 +53,16 @@ const PostSearch = () => {
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+    const selected = Array.from(e.target.files || []);
+    const { valid: files, oversized } = splitBySize(selected);
+    if (oversized.length > 0) {
+      toast({
+        title: "Image trop lourde",
+        description: oversizedDescription(oversized),
+        variant: "destructive",
+      });
+    }
+    if (files.length === 0) return;
     if (files.length + images.length > 5) {
       toast({
         title: "Trop d'images",

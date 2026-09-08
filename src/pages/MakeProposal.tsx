@@ -133,7 +133,15 @@ const MakeProposal = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newFiles = Array.from(files).slice(0, 4 - images.length);
+      const { valid, oversized } = splitBySize(Array.from(files));
+      if (oversized.length > 0) {
+        toast({
+          title: "Image trop lourde",
+          description: oversizedDescription(oversized),
+          variant: "destructive",
+        });
+      }
+      const newFiles = valid.slice(0, 4 - images.length);
       setImages((prev) => [...prev, ...newFiles]);
       
       // Create preview URLs
