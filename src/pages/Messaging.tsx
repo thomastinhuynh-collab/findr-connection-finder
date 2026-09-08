@@ -8,6 +8,7 @@ import { ArrowLeft, Send, Loader2, CheckCheck, Check, Info, Paperclip, X, Plus, 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
 
 interface SearchData {
   id: string;

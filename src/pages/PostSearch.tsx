@@ -12,6 +12,7 @@ import { Euro, Clock, MapPin, ArrowRight, ArrowLeft, Image as ImageIcon, X, Load
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
 
 const categories = [
   "Mode & Maroquinerie",

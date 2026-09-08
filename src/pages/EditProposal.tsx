@@ -18,6 +18,7 @@ import { ArrowLeft, Upload, Euro, Tag, Sparkles, Save, ImagePlus, Loader2, Crown
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
 
 interface ProposalData {
   id: string;

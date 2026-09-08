@@ -19,6 +19,7 @@ import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus, Loader2, Shiel
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
 
 interface SearchData {
   id: string;
