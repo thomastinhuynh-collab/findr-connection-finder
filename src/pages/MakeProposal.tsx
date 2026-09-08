@@ -19,6 +19,7 @@ import { ArrowLeft, Upload, Euro, Tag, Sparkles, Send, ImagePlus, Loader2, Shiel
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
 
 interface SearchData {
   id: string;
@@ -133,7 +134,15 @@ const MakeProposal = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newFiles = Array.from(files).slice(0, 4 - images.length);
+      const { valid, oversized } = splitBySize(Array.from(files));
+      if (oversized.length > 0) {
+        toast({
+          title: "Image trop lourde",
+          description: oversizedDescription(oversized),
+          variant: "destructive",
+        });
+      }
+      const newFiles = valid.slice(0, 4 - images.length);
       setImages((prev) => [...prev, ...newFiles]);
       
       // Create preview URLs

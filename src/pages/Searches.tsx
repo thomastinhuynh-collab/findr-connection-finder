@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -75,6 +75,8 @@ const categories = [
 type SortOption = "relevance" | "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc" | "deadline-asc";
 type DeadlineFilter = "all" | "urgent" | "week" | "none";
 
+const PAGE_SIZE = 24;
+
 
 const Searches = () => {
   const navigate = useNavigate();
@@ -91,6 +93,9 @@ const Searches = () => {
   const [budgetRange, setBudgetRange] = useState<[number, number]>([0, 5000]);
   const [budgetTouched, setBudgetTouched] = useState(false);
   const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const pageRef = useRef(0);
 
 
   useEffect(() => {
@@ -108,16 +113,23 @@ const Searches = () => {
 
 
   useEffect(() => {
-    fetchSearches();
+    pageRef.current = 0;
+    fetchSearches(true);
   }, [selectedCategory]);
 
-  const fetchSearches = async () => {
-    setLoading(true);
+  const fetchSearches = async (reset = false) => {
+    if (reset) setLoading(true);
+    else setLoadingMore(true);
+
+    const page = reset ? 0 : pageRef.current;
+    const from = page * PAGE_SIZE;
+
     let query = supabase
       .from("searches")
       .select("id, title, category, budget_min, budget_max, urgency, deadline, image_url, image_urls, created_at, user_id")
       .eq("status", "active")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, from + PAGE_SIZE - 1);
 
     if (selectedCategory !== "Toutes") {
       query = query.eq("category", selectedCategory);
@@ -128,11 +140,16 @@ const Searches = () => {
     if (error) {
       console.error("Error fetching searches:", error);
       setLoading(false);
+      setLoadingMore(false);
       return;
     }
 
-    if (data && data.length > 0) {
-      const filtered = data.filter(s => !s.deadline || new Date(s.deadline).getTime() > Date.now());
+    const batch = data || [];
+    setHasMore(batch.length === PAGE_SIZE);
+    pageRef.current = page + 1;
+
+    if (batch.length > 0) {
+      const filtered = batch.filter(s => !s.deadline || new Date(s.deadline).getTime() > Date.now());
       const userIds = [...new Set(filtered.map(s => s.user_id))];
       const searchIds = filtered.map(s => s.id);
       const [profilesRes, proposalsRes] = await Promise.all([
@@ -149,14 +166,17 @@ const Searches = () => {
 
       const counts: Record<string, number> = {};
       proposalsRes.data?.forEach(p => { counts[p.search_id] = (counts[p.search_id] || 0) + 1; });
-      setProposalCounts(counts);
+      setProposalCounts(prev => (reset ? counts : { ...prev, ...counts }));
 
-      setSearches(searchesWithProfiles as any);
-    } else {
+      setSearches(prev => (reset ? (searchesWithProfiles as any) : [...prev, ...(searchesWithProfiles as any)]));
+    } else if (reset) {
       setSearches([]);
+      setProposalCounts({});
     }
     setLoading(false);
+    setLoadingMore(false);
   };
+
 
   const formatBudget = (min: number | null, max: number | null) => {
     if (min && max) return `${min}-${max}€`;
@@ -676,6 +696,26 @@ const Searches = () => {
                 </motion.div>
                 );
               })}
+            </div>
+          )}
+
+          {!loading && hasMore && (
+            <div className="flex justify-center mt-10">
+              <Button
+                onClick={() => fetchSearches(false)}
+                disabled={loadingMore}
+                size="lg"
+                style={{ backgroundColor: "#070E42", color: "#F5F0EA" }}
+              >
+                {loadingMore ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Chargement...
+                  </>
+                ) : (
+                  "Charger plus"
+                )}
+              </Button>
             </div>
           )}
         </div>

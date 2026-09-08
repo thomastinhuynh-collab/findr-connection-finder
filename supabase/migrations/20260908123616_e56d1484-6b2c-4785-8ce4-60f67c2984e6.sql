@@ -1,0 +1,12 @@
+CREATE INDEX IF NOT EXISTS idx_proposals_search_id ON public.proposals(search_id);
+CREATE INDEX IF NOT EXISTS idx_proposals_findr_id ON public.proposals(findr_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON public.notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_messages_search_id ON public.messages(search_id);
+CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON public.messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_messages_receiver_id ON public.messages(receiver_id);
+CREATE INDEX IF NOT EXISTS idx_reservations_search_id ON public.reservations(search_id);
+CREATE INDEX IF NOT EXISTS idx_reservations_findr_id ON public.reservations(findr_id);
+CREATE INDEX IF NOT EXISTS idx_reservations_buyr_id ON public.reservations(buyr_id);
+CREATE INDEX IF NOT EXISTS idx_searches_status ON public.searches(status);
+CREATE INDEX IF NOT EXISTS idx_searches_category ON public.searches(category);
+CREATE INDEX IF NOT EXISTS idx_favorites_search_id ON public.favorites(search_id);

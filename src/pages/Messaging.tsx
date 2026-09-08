@@ -8,6 +8,7 @@ import { ArrowLeft, Send, Loader2, CheckCheck, Check, Info, Paperclip, X, Plus, 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
 
 interface SearchData {
   id: string;
@@ -305,8 +306,19 @@ const Messaging = () => {
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length === 0) return;
+    const selected = Array.from(e.target.files || []);
+    const { valid: files, oversized } = splitBySize(selected);
+    if (oversized.length > 0) {
+      toast({
+        title: "Image trop lourde",
+        description: oversizedDescription(oversized),
+        variant: "destructive",
+      });
+    }
+    if (files.length === 0) {
+      if (e.target) e.target.value = "";
+      return;
+    }
 
     const remainingSlots = MAX_PHOTOS - photos.length;
     const filesToAdd = files.slice(0, remainingSlots);
