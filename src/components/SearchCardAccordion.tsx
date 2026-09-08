@@ -321,7 +321,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
           }}
         >
           <span>{urgentMessage}</span>
-          <span style={{ textDecoration: "underline" }}>Voir →</span>
+          <span>Détails →</span>
         </button>
       )}
     </div>
