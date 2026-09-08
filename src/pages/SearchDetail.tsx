@@ -857,7 +857,7 @@ const SearchDetail = () => {
         </div>
       </CollapsibleContent>
     </Collapsible>
-  ) : null;
+  );
 
   const trustBlock = (
     <div
