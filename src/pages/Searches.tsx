@@ -698,6 +698,26 @@ const Searches = () => {
               })}
             </div>
           )}
+
+          {!loading && hasMore && (
+            <div className="flex justify-center mt-10">
+              <Button
+                onClick={() => fetchSearches(false)}
+                disabled={loadingMore}
+                size="lg"
+                style={{ backgroundColor: "#070E42", color: "#F5F0EA" }}
+              >
+                {loadingMore ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Chargement...
+                  </>
+                ) : (
+                  "Charger plus"
+                )}
+              </Button>
+            </div>
+          )}
         </div>
       </main>
 
