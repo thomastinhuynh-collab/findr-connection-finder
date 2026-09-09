@@ -109,12 +109,7 @@ const Navbar = () => {
                   <HeaderActions variant={isLightMode ? "navy" : "gold"} />
                   <Button
                     size="sm"
-                    variant="outline"
-                    className={`font-semibold rounded-full ${
-                      isLightMode
-                        ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
-                        : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
-                    }`}
+                    className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full"
                     onClick={() => navigate("/poster")}
                   >
                     {t("nav.postSearch")}
@@ -123,7 +118,12 @@ const Navbar = () => {
                     <DropdownMenuTrigger asChild>
                       <Button
                         size="sm"
-                        className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full"
+                        variant="outline"
+                        className={`font-semibold rounded-full ${
+                          isLightMode
+                            ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
+                            : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
+                        }`}
                       >
                         {t("nav.mySpace")}
                       </Button>
@@ -200,12 +200,7 @@ const Navbar = () => {
                   <>
                     <Button
                       size="sm"
-                      variant="outline"
-                      className={`font-semibold rounded-full w-full mt-2 ${
-                        isLightMode
-                          ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
-                          : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
-                      }`}
+                      className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full w-full mt-2"
                       onClick={() => {
                         setIsOpen(false);
                         navigate("/poster");
@@ -215,7 +210,12 @@ const Navbar = () => {
                     </Button>
                     <Button
                       size="sm"
-                      className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full w-full"
+                      variant="outline"
+                      className={`font-semibold rounded-full w-full ${
+                        isLightMode
+                          ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
+                          : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
+                      }`}
                       onClick={() => {
                         setIsOpen(false);
                         navigate("/mon-espace");
