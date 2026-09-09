@@ -15,7 +15,7 @@ export default {
     extend: {
       fontFamily: {
         barlow: ["Space Grotesk", "sans-serif"],
-        poppins: ["Poppins", "sans-serif"],
+        display: ["Playfair Display", "serif"],
         sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
       },
       colors: {
