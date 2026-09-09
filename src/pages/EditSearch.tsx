@@ -40,13 +40,14 @@ const EditSearch = () => {
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
+  const [deadlineOpen, setDeadlineOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     category: "",
     budgetMin: "",
     budgetMax: "",
-    deadline: "",
+    deadline: "no-rush",
     status: "active",
   });
 
@@ -80,15 +81,17 @@ const EditSearch = () => {
       return;
     }
 
+    const urgency = data.urgency || "no-rush";
     setFormData({
       title: data.title,
       description: data.description || "",
       category: data.category,
       budgetMin: data.budget_min?.toString() || "",
       budgetMax: data.budget_max?.toString() || "",
-      deadline: data.urgency || "",
+      deadline: urgency,
       status: data.status || "active",
     });
+    setDeadlineOpen(urgency !== "no-rush");
     setExistingImageUrl(data.image_url);
     setLoading(false);
   };
@@ -464,24 +467,57 @@ const EditSearch = () => {
             {/* Deadline */}
             <div className="space-y-2">
               <Label>Délai souhaité</Label>
-              <div className="relative">
-                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Select 
-                  value={formData.deadline}
-                  onValueChange={(value) => setFormData({ ...formData, deadline: value })}
-                >
-                  <SelectTrigger className="h-12 pl-10">
-                    <SelectValue placeholder="Sélectionner" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-card border-border">
-                    <SelectItem value="3-days">3 jours</SelectItem>
-                    <SelectItem value="1-week">1 semaine</SelectItem>
-                    <SelectItem value="2-weeks">2 semaines</SelectItem>
-                    <SelectItem value="1-month">1 mois</SelectItem>
-                    <SelectItem value="no-rush">Pas pressé</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {!deadlineOpen ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-secondary/30">
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm text-foreground">Pas de délai particulier — à ton rythme</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setDeadlineOpen(true)}
+                    className="text-sm text-primary hover:underline underline-offset-2 bg-transparent border-0 p-0 cursor-pointer"
+                  >
+                    + Ajouter une échéance souhaitée
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="relative">
+                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Select 
+                      value={formData.deadline}
+                      onValueChange={(value) => {
+                        if (value === "no-rush") {
+                          setDeadlineOpen(false);
+                        }
+                        setFormData({ ...formData, deadline: value });
+                      }}
+                    >
+                      <SelectTrigger className="h-12 pl-10">
+                        <SelectValue placeholder="Sélectionner" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card border-border">
+                        <SelectItem value="3-days">3 jours</SelectItem>
+                        <SelectItem value="1-week">1 semaine</SelectItem>
+                        <SelectItem value="2-weeks">2 semaines</SelectItem>
+                        <SelectItem value="1-month">1 mois</SelectItem>
+                        <SelectItem value="no-rush">Pas pressé</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDeadlineOpen(false);
+                      setFormData({ ...formData, deadline: "no-rush" });
+                    }}
+                    className="text-sm text-muted-foreground hover:text-foreground bg-transparent border-0 p-0 cursor-pointer"
+                  >
+                    Replier
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Actions */}
