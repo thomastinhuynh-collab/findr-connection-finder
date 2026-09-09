@@ -21,26 +21,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://findrapp.fr/recherches?category=Vinyles%20%26%20Musique</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://findrapp.fr/recherches?category=Photo%20%26%20%C3%89lectronique</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://findrapp.fr/recherches?category=Bijoux%20%26%20Accessoires</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://findrapp.fr/recherches?category=D%C3%A9co%20%26%20Mobilier</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://findrapp.fr/comment-ca-marche</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
