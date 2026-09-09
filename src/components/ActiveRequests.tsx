@@ -182,7 +182,7 @@ const ActiveRequests = () => {
             style={{
               width: "64px",
               height: "4px",
-              backgroundColor: "#D9BD8B",
+              backgroundColor: "#D9BB87",
               borderRadius: "2px",
               marginTop: "10px",
             }}

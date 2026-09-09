@@ -461,7 +461,7 @@ const Messaging = () => {
                   src={search.profiles.avatar_url}
                   alt={search.profiles.full_name || "User"}
                   className="w-12 h-12 rounded-full object-cover border-2"
-                  style={{ borderColor: "#D9BD8B" }}
+                  style={{ borderColor: "#D9BB87" }}
                 />
               ) : (
                 <div

@@ -260,7 +260,7 @@ const Searches = () => {
     });
 
   const NAVY = "#070E42";
-  const GOLD_ACCENT = "#D9BD8B";
+  const GOLD_ACCENT = "#D9BB87";
   const pillBase: React.CSSProperties = {
     fontFamily: "'Inter', sans-serif",
     fontSize: 13,
