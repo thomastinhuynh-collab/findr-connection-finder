@@ -1,14 +1,56 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /mon-espace
+Disallow: /messagerie/
+Disallow: /admin/
+Disallow: /reset-password
+Disallow: /proposition/
+Disallow: /modifier-proposition/
+Disallow: /modifier-recherche/
+Disallow: /reservation/
 
 User-agent: Bingbot
 Allow: /
+Disallow: /mon-espace
+Disallow: /messagerie/
+Disallow: /admin/
+Disallow: /reset-password
+Disallow: /proposition/
+Disallow: /modifier-proposition/
+Disallow: /modifier-recherche/
+Disallow: /reservation/
 
 User-agent: Twitterbot
 Allow: /
+Disallow: /mon-espace
+Disallow: /messagerie/
+Disallow: /admin/
+Disallow: /reset-password
+Disallow: /proposition/
+Disallow: /modifier-proposition/
+Disallow: /modifier-recherche/
+Disallow: /reservation/
 
 User-agent: facebookexternalhit
 Allow: /
+Disallow: /mon-espace
+Disallow: /messagerie/
+Disallow: /admin/
+Disallow: /reset-password
+Disallow: /proposition/
+Disallow: /modifier-proposition/
+Disallow: /modifier-recherche/
+Disallow: /reservation/
 
 User-agent: *
 Allow: /
+Disallow: /mon-espace
+Disallow: /messagerie/
+Disallow: /admin/
+Disallow: /reset-password
+Disallow: /proposition/
+Disallow: /modifier-proposition/
+Disallow: /modifier-recherche/
+Disallow: /reservation/
+
+Sitemap: https://findrapp.fr/sitemap.xml
