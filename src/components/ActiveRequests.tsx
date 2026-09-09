@@ -167,7 +167,7 @@ const ActiveRequests = () => {
         <div className="mb-8">
           <h2
             style={{
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: "'Playfair Display', serif",
               fontSize: "28px",
               fontWeight: 700,
               color: "#1B2A4A",

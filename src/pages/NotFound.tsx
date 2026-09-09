@@ -74,7 +74,7 @@ const NotFound = () => {
                 x="48"
                 y="56"
                 textAnchor="middle"
-                fontFamily="Poppins, sans-serif"
+                fontFamily="'Playfair Display', serif"
                 fontWeight="700"
                 fontSize="24"
                 fill="#D9BB87"

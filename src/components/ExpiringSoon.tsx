@@ -98,7 +98,7 @@ const ExpiringSoon = () => {
         <div className="mb-5">
           <h2
             style={{
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: "'Playfair Display', serif",
               fontSize: "24px",
               fontWeight: 700,
               color: "#1B2A4A",
