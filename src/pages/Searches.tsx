@@ -16,6 +16,8 @@ import { supabase } from "@/integrations/supabase/client";
 import UserBadge from "@/components/UserBadge";
 import SearchImageCarousel from "@/components/SearchImageCarousel";
 import FavoriteButton from "@/components/FavoriteButton";
+import ComingSoonCategory from "@/components/ComingSoonCategory";
+import { CATEGORIES, isComingSoonCategory } from "@/lib/categories";
 
 interface SearchItem {
   id: string;
@@ -63,15 +65,7 @@ const urgencyOrder: Record<string, number> = {
   "no-rush": 6,
 };
 
-const categories = [
-  "Toutes",
-  "Mode & Maroquinerie",
-  "Pop Culture & TCG",
-  "Vinyles & Musique",
-  "Photo & Électronique",
-  "Bijoux & Accessoires",
-  "Déco & Mobilier",
-];
+const categories = ["Toutes", ...CATEGORIES.map((c) => c.name)];
 
 type SortOption = "relevance" | "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc" | "deadline-asc";
 type DeadlineFilter = "all" | "urgent" | "week" | "none";
@@ -98,9 +92,15 @@ const Searches = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const pageRef = useRef(0);
 
+  const comingSoonCategory = (() => {
+    const cat = searchParams.get("category");
+    return cat && isComingSoonCategory(cat) ? cat : null;
+  })();
+
   usePageMeta({
-    title:
-      selectedCategory !== "Toutes"
+    title: comingSoonCategory
+      ? `${comingSoonCategory} — bientôt disponible sur findr`
+      : selectedCategory !== "Toutes"
         ? `${selectedCategory} — recherches actives sur findr`
         : "Toutes les recherches actives — findr",
     description:
@@ -296,6 +296,10 @@ const Searches = () => {
     border: `1px solid ${NAVY}`,
   };
 
+
+  if (comingSoonCategory) {
+    return <ComingSoonCategory categoryName={comingSoonCategory} />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
