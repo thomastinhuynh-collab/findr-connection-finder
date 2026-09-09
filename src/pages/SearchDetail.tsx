@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
@@ -273,6 +274,16 @@ const SearchDetail = () => {
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [stripeGateOpen, setStripeGateOpen] = useState(false);
   const stripeReady = !!userProfile?.stripe_onboarding_complete;
+
+  usePageMeta({
+    title: search ? `${search.title} — recherché sur findr` : undefined,
+    description: search
+      ? (search.description?.trim()
+          ? `${search.description.trim().slice(0, 155)}${search.description.trim().length > 155 ? "…" : ""}`
+          : `Recherche ${search.category} publiée sur findr. Propose cet objet et gagne de l'argent en chinant.`)
+      : undefined,
+  });
+
 
   useEffect(() => {
     if (id) {

@@ -1,3 +1,4 @@
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -96,6 +97,18 @@ const Searches = () => {
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const pageRef = useRef(0);
+
+  usePageMeta({
+    title:
+      selectedCategory !== "Toutes"
+        ? `${selectedCategory} — recherches actives sur findr`
+        : "Toutes les recherches actives — findr",
+    description:
+      selectedCategory !== "Toutes"
+        ? `Découvre les recherches actives en ${selectedCategory} sur findr. Trouve l'objet demandé et gagne de l'argent en chinant.`
+        : "Parcours toutes les recherches actives publiées sur findr : mode vintage, pop culture, vinyles, photo et objets rares.",
+  });
+
 
 
   useEffect(() => {
