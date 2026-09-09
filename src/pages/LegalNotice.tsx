@@ -11,7 +11,7 @@ const LegalNotice = () => (
     <ul>
       <li><strong>Dénomination sociale :</strong> findr SAS</li>
       <li><strong>Siège social :</strong> France</li>
-      <li><strong>Email de contact :</strong> contact@findr.app</li>
+      <li><strong>Email de contact :</strong> contact@findrapp.fr</li>
       <li><strong>Directeur de la publication :</strong> Le représentant légal de findr SAS</li>
     </ul>
 
@@ -48,7 +48,7 @@ const LegalNotice = () => (
     <h2>Contact</h2>
     <p>
       Pour toute question relative aux présentes mentions légales, vous pouvez
-      nous écrire à <a href="mailto:contact@findr.app">contact@findr.app</a>.
+      nous écrire à <a href="mailto:contact@findrapp.fr">contact@findrapp.fr</a>.
     </p>
   </LegalLayout>
 );

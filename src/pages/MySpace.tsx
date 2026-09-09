@@ -1107,7 +1107,12 @@ const MySpace = () => {
                           balance={walletBalance}
                           isPremium={profile?.is_premium || false}
                           transactions={walletTransactions}
-                          onAddFunds={() => navigate("/premium")}
+                          onAddFunds={() =>
+                            toast({
+                              title: "Bientôt disponible",
+                              description: "Le programme Premium est temporairement indisponible.",
+                            })
+                          }
                         />
                       </div>
                     )}
