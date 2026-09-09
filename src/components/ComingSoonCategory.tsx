@@ -22,12 +22,12 @@ const ComingSoonCategory = ({ categoryName }: ComingSoonCategoryProps) => {
       <h1
         className="mt-12 uppercase"
         style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontWeight: 700,
-          fontSize: "clamp(28px, 5vw, 48px)",
-          letterSpacing: "0.04em",
+          fontFamily: "'Anton', sans-serif",
+          fontWeight: 400,
+          fontSize: "clamp(36px, 6vw, 64px)",
+          letterSpacing: "0.02em",
           color: "#F5F0EA",
-          lineHeight: 1.15,
+          lineHeight: 1.05,
         }}
       >
         Bientôt disponible
