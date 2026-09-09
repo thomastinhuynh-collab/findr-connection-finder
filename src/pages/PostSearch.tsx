@@ -13,16 +13,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
+import { CATEGORIES, OTHER_CATEGORY } from "@/lib/categories";
 
-const categories = [
-  "Mode & Maroquinerie",
-  "Pop Culture & TCG",
-  "Vinyles & Musique",
-  "Photo & Électronique",
-  "Bijoux & Accessoires",
-  "Déco & Mobilier",
-  "Autre",
-];
+const categories = [...CATEGORIES, { name: OTHER_CATEGORY, slug: OTHER_CATEGORY, status: "active" as const, subcategories: [] }];
 
 const conditionOptions = [
   "Neuf / Jamais utilisé",
@@ -287,7 +280,14 @@ const PostSearch = () => {
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
                         {categories.map((cat) => (
-                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                          <SelectItem
+                            key={cat.slug}
+                            value={cat.slug}
+                            disabled={cat.status === "coming_soon"}
+                            className={cat.status === "coming_soon" ? "opacity-50" : ""}
+                          >
+                            {cat.name}{cat.status === "coming_soon" ? " (bientôt disponible)" : ""}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
