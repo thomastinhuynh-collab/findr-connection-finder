@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { translateAuthError } from "@/lib/authErrors";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -27,12 +28,17 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
     setLoading(true);
 
     if (mode === "signup") {
-      const { error } = await signUp(email, password, fullName);
+      const { error, session } = await signUp(email, password, fullName);
       if (error) {
         toast({
           title: "Erreur d'inscription",
-          description: error.message,
+          description: translateAuthError(error.message),
           variant: "destructive",
+        });
+      } else if (!session) {
+        toast({
+          title: "Inscription enregistrée",
+          description: "Vérifie ta boîte mail pour confirmer ton inscription avant de te connecter",
         });
       } else {
         toast({
@@ -46,7 +52,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
       if (error) {
         toast({
           title: "Erreur de connexion",
-          description: error.message,
+          description: translateAuthError(error.message),
           variant: "destructive",
         });
       } else {
@@ -126,7 +132,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
                     redirectTo: `${window.location.origin}/reset-password`,
                   });
                   if (error) {
-                    toast({ title: "Erreur", description: error.message, variant: "destructive" });
+                    toast({ title: "Erreur", description: translateAuthError(error.message), variant: "destructive" });
                   } else {
                     toast({
                       title: "Email envoyé !",

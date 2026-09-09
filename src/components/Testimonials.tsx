@@ -81,7 +81,7 @@ const Testimonials = () => {
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Témoignages
           </span>
-          <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4 text-foreground">
+          <h2 className="text-3xl md:text-5xl font-display font-bold mt-4 text-foreground">
             Ce qu'ils disent de findr
           </h2>
         </div>
@@ -122,7 +122,7 @@ const Testimonials = () => {
             <span className="text-sm font-barlow font-medium text-cream/70">Liste d'attente</span>
           </div>
 
-          <p className="text-2xl md:text-3xl font-poppins font-bold mb-1 text-cream">
+          <p className="text-2xl md:text-3xl font-display font-bold mb-1 text-cream">
             Déjà {waitlistCount.toLocaleString('fr-FR')} curieux inscrits
           </p>
           <p className="text-xs mb-5 text-cream/50">

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { translateAuthError } from "@/lib/authErrors";
 import Logo from "@/components/Logo";
 import { Lock, CheckCircle, CircleAlert } from "lucide-react";
 
@@ -86,7 +87,7 @@ const ResetPassword = () => {
     if (error) {
       toast({
         title: "Erreur",
-        description: error.message,
+        description: translateAuthError(error.message),
         variant: "destructive",
       });
     } else {

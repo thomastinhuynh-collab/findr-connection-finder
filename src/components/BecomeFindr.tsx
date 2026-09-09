@@ -29,7 +29,7 @@ const BecomeFindr = () => {
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Deux profils, une communauté
           </span>
-          <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4 text-cream">
+          <h2 className="text-3xl md:text-5xl font-display font-bold mt-4 text-cream">
             Quel est ton rôle ?
           </h2>
         </div>
@@ -44,7 +44,7 @@ const BecomeFindr = () => {
               <Search className="w-7 h-7 text-accent" />
             </div>
 
-            <h3 className="text-2xl font-poppins font-bold mb-2 text-cream">
+            <h3 className="text-2xl font-display font-bold mb-2 text-cream">
               Tu es buyr
             </h3>
             <p className="text-sm mb-8 text-cream/60">
@@ -64,7 +64,7 @@ const BecomeFindr = () => {
 
             <Button
               size="lg"
-              className="cta-hover w-full text-base py-6 rounded-full font-poppins font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
+              className="cta-hover w-full text-base py-6 rounded-full font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
               asChild
             >
               <Link to="/poster">
@@ -83,7 +83,7 @@ const BecomeFindr = () => {
               <Heart className="w-7 h-7 text-accent" />
             </div>
 
-            <h3 className="text-2xl font-poppins font-bold mb-2 text-cream">
+            <h3 className="text-2xl font-display font-bold mb-2 text-cream">
               Tu es findr
             </h3>
             <p className="text-sm mb-8 text-cream/60">
@@ -104,7 +104,7 @@ const BecomeFindr = () => {
             <Button
               size="lg"
               variant="outline"
-              className="cta-hover w-full text-base py-6 rounded-full font-poppins font-semibold border-2 border-cream text-cream bg-transparent hover:bg-cream/5"
+              className="cta-hover w-full text-base py-6 rounded-full font-semibold border-2 border-cream text-cream bg-transparent hover:bg-cream/5"
               asChild
             >
               <Link to="/recherches">

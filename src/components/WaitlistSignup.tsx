@@ -41,12 +41,12 @@ const WaitlistSignup = () => {
             transition={{ duration: 0.6 }}
           >
             {count !== null && (
-              <p className="text-sm font-poppins text-cream/70 mb-4 flex items-center justify-center gap-2">
+              <p className="text-sm text-cream/70 mb-4 flex items-center justify-center gap-2">
                 <Users className="w-4 h-4" />
                 Déjà {count} personne{count !== 1 ? "s" : ""} sur la liste d'attente
               </p>
             )}
-            <h2 className="text-3xl md:text-4xl font-poppins font-bold mb-4 leading-tight text-cream">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 leading-tight text-cream">
               Sois parmi les premiers à rejoindre Findr
             </h2>
             <p className="text-base md:text-lg mb-8 text-cream/75">
@@ -65,7 +65,7 @@ const WaitlistSignup = () => {
                 <div className="w-16 h-16 rounded-full flex items-center justify-center bg-accent/20">
                   <CheckCircle className="w-8 h-8 text-accent" />
                 </div>
-                <p className="text-xl font-poppins font-semibold text-cream">
+                <p className="text-xl font-semibold text-cream">
                   C'est noté ! On te prévient dès l'ouverture 🎉
                 </p>
               </div>
@@ -73,12 +73,12 @@ const WaitlistSignup = () => {
               <div className="space-y-5">
                 {/* Role toggle */}
                 <div>
-                  <p className="text-sm font-poppins text-cream/60 mb-3">Je suis plutôt...</p>
+                  <p className="text-sm text-cream/60 mb-3">Je suis plutôt...</p>
                   <div className="inline-flex rounded-full p-1 bg-cream/10 border border-cream/20">
                     <button
                       type="button"
                       onClick={() => setRole("buyr")}
-                      className={`px-5 py-2 rounded-full text-sm font-poppins font-medium transition-all duration-200 ${
+                      className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                         role === "buyr"
                           ? "bg-accent text-accent-foreground shadow-sm"
                           : "text-cream/70 hover:text-cream"
@@ -89,7 +89,7 @@ const WaitlistSignup = () => {
                     <button
                       type="button"
                       onClick={() => setRole("findr")}
-                      className={`px-5 py-2 rounded-full text-sm font-poppins font-medium transition-all duration-200 ${
+                      className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                         role === "findr"
                           ? "bg-accent text-accent-foreground shadow-sm"
                           : "text-cream/70 hover:text-cream"
@@ -117,7 +117,7 @@ const WaitlistSignup = () => {
                     type="submit"
                     size="lg"
                     disabled={loading}
-                    className="h-14 px-8 rounded-full text-base font-poppins font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
+                    className="h-14 px-8 rounded-full text-base font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
                   >
                     {loading ? "..." : "Rejoindre la liste d'attente"}
                     {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
