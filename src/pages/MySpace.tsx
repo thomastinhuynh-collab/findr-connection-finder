@@ -692,7 +692,7 @@ const MySpace = () => {
                     {profile.full_name || "Utilisateur"}
                   </h1>
                   {profile.is_premium && (
-                    <Badge style={{ backgroundColor: '#D9BD8B', color: '#070E42' }}>
+                    <Badge style={{ backgroundColor: '#D9BB87', color: '#070E42' }}>
                       <Crown className="w-3 h-3 mr-1" />
                       Premium
                     </Badge>
@@ -752,7 +752,7 @@ const MySpace = () => {
                 <div className="mt-5">
                   <h3
                     className="text-xs font-semibold uppercase tracking-wider mb-2"
-                    style={{ color: '#D9BD8B', letterSpacing: '0.08em' }}
+                    style={{ color: '#D9BB87', letterSpacing: '0.08em' }}
                   >
                     À propos
                   </h3>
@@ -1123,7 +1123,7 @@ const MySpace = () => {
                         <div className="py-12 text-center" style={{ color: '#6B7280' }}>Chargement…</div>
                       ) : myProposals.length === 0 ? (
                         <div className="py-12 text-center">
-                          <Package className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
+                          <Package className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BB87' }} />
                           <p className="mb-4" style={{ color: '#374151' }}>
                             Tu n'as pas encore envoyé de proposition.
                           </p>
@@ -1153,7 +1153,7 @@ const MySpace = () => {
                                     <img src={p.image_urls[0]} alt={p.title} className="w-full h-full object-cover" />
                                   ) : (
                                     <div className="w-full h-full flex items-center justify-center">
-                                      <Package className="w-6 h-6" style={{ color: '#D9BD8B' }} />
+                                      <Package className="w-6 h-6" style={{ color: '#D9BB87' }} />
                                     </div>
                                   )}
                                 </div>
@@ -1193,7 +1193,7 @@ const MySpace = () => {
                     {activePanel === "favorites" && (
                       favorites.length === 0 ? (
                         <div className="py-16 text-center">
-                          <Heart className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
+                          <Heart className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BB87' }} />
                           <p style={{ color: '#6B7280' }}>Aucun favori pour le moment</p>
                           <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>
                             <Link to="/recherches">Parcourir les annonces</Link>
@@ -1251,7 +1251,7 @@ const MySpace = () => {
                     {activePanel === "evaluations" && (
                       evaluations.length === 0 ? (
                         <div className="py-16 text-center">
-                          <Star className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
+                          <Star className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BB87' }} />
                           <p style={{ color: '#6B7280' }}>Aucune évaluation pour le moment</p>
                         </div>
                       ) : (
@@ -1307,7 +1307,7 @@ const MySpace = () => {
 
                   <div className="flex gap-2">
                     {profile.is_findr && (
-                      <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BD8B', color: '#070E42' }}>
+                      <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BB87', color: '#070E42' }}>
                         <Link to="/mes-propositions">
                           <Package className="w-4 h-4 mr-2" />
                           Mes propositions
@@ -1337,7 +1337,7 @@ const MySpace = () => {
 
                 {searches.length === 0 ? (
                   <div className="py-16 text-center">
-                    <Search className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BD8B' }} />
+                    <Search className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BB87' }} />
                     <p style={{ color: '#6B7280' }}>Aucune recherche pour le moment</p>
                     <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>
                       <Link to="/poster">Poster ma première recherche</Link>

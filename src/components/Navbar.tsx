@@ -109,12 +109,7 @@ const Navbar = () => {
                   <HeaderActions variant={isLightMode ? "navy" : "gold"} />
                   <Button
                     size="sm"
-                    variant="outline"
-                    className={`font-semibold rounded-full ${
-                      isLightMode
-                        ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
-                        : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
-                    }`}
+                    className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full"
                     onClick={() => navigate("/poster")}
                   >
                     {t("nav.postSearch")}
@@ -123,7 +118,12 @@ const Navbar = () => {
                     <DropdownMenuTrigger asChild>
                       <Button
                         size="sm"
-                        className="bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-semibold rounded-full"
+                        variant="outline"
+                        className={`font-semibold rounded-full ${
+                          isLightMode
+                            ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
+                            : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
+                        }`}
                       >
                         {t("nav.mySpace")}
                       </Button>
@@ -133,7 +133,7 @@ const Navbar = () => {
                       className="bg-[#F5F0EA] border-[#070E42]/10 text-[#070E42] min-w-[180px]"
                     >
                       <DropdownMenuItem
-                        className="cursor-pointer focus:bg-[#D9BD8B]/20 focus:text-[#070E42]"
+                        className="cursor-pointer focus:bg-[#D9BB87]/20 focus:text-[#070E42]"
                         onClick={() => navigate("/mon-espace")}
                       >
                         <User className="w-4 h-4 mr-2" />
@@ -141,7 +141,7 @@ const Navbar = () => {
                       </DropdownMenuItem>
                       <DropdownMenuSeparator className="bg-[#070E42]/10" />
                       <DropdownMenuItem
-                        className="cursor-pointer focus:bg-[#D9BD8B]/20 focus:text-[#070E42]"
+                        className="cursor-pointer focus:bg-[#D9BB87]/20 focus:text-[#070E42]"
                         onClick={async () => {
                           await signOut();
                           navigate("/");
@@ -156,7 +156,7 @@ const Navbar = () => {
               ) : (
                 <Button
                   size="sm"
-                  className={`bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
+                  className={`bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
                   onClick={() => setAuthModalOpen(true)}
                 >
                   {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la liste d'attente"}
@@ -200,12 +200,7 @@ const Navbar = () => {
                   <>
                     <Button
                       size="sm"
-                      variant="outline"
-                      className={`font-semibold rounded-full w-full mt-2 ${
-                        isLightMode
-                          ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
-                          : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
-                      }`}
+                      className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full w-full mt-2"
                       onClick={() => {
                         setIsOpen(false);
                         navigate("/poster");
@@ -215,7 +210,12 @@ const Navbar = () => {
                     </Button>
                     <Button
                       size="sm"
-                      className="bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-semibold rounded-full w-full"
+                      variant="outline"
+                      className={`font-semibold rounded-full w-full ${
+                        isLightMode
+                          ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
+                          : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
+                      }`}
                       onClick={() => {
                         setIsOpen(false);
                         navigate("/mon-espace");
@@ -243,7 +243,7 @@ const Navbar = () => {
                 ) : (
                   <Button
                     size="sm"
-                    className="bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-semibold rounded-full w-full mt-2"
+                    className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full w-full mt-2"
                     onClick={() => {
                       setIsOpen(false);
                       setAuthModalOpen(true);

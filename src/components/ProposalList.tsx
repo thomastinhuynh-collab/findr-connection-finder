@@ -395,7 +395,7 @@ const ProposalList = ({
   }
 
   const renderProposal = (proposal: Proposal, index: number, highlight = false) => (
-    <div key={proposal.id} style={highlight ? { border: "2px solid #D9BD8B", borderRadius: 14, padding: 3, position: "relative" } : undefined}>
+    <div key={proposal.id} style={highlight ? { border: "2px solid #D9BB87", borderRadius: 14, padding: 3, position: "relative" } : undefined}>
       {highlight && (
         <span
           style={{
@@ -403,7 +403,7 @@ const ProposalList = ({
             top: -10,
             left: 14,
             zIndex: 2,
-            backgroundColor: "#D9BD8B",
+            backgroundColor: "#D9BB87",
             color: "#070E42",
             fontSize: 10,
             fontWeight: 700,
@@ -682,7 +682,7 @@ const ProposalList = ({
               alignItems: "center",
               backgroundColor: dealDone ? "#E2F3E6" : "#FBF3E3",
               color: dealDone ? "#1F7A34" : "#8B7333",
-              border: `1px solid ${dealDone ? "rgba(31,122,52,0.25)" : "#D9BD8B"}`,
+              border: `1px solid ${dealDone ? "rgba(31,122,52,0.25)" : "#D9BB87"}`,
               borderRadius: 999,
               padding: "6px 14px",
               fontSize: 13,
