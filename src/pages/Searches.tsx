@@ -92,9 +92,15 @@ const Searches = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const pageRef = useRef(0);
 
+  const comingSoonCategory = (() => {
+    const cat = searchParams.get("category");
+    return cat && isComingSoonCategory(cat) ? cat : null;
+  })();
+
   usePageMeta({
-    title:
-      selectedCategory !== "Toutes"
+    title: comingSoonCategory
+      ? `${comingSoonCategory} — bientôt disponible sur findr`
+      : selectedCategory !== "Toutes"
         ? `${selectedCategory} — recherches actives sur findr`
         : "Toutes les recherches actives — findr",
     description:
