@@ -32,7 +32,7 @@ const Hero = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isStuck, setIsStuck] = useState(false);
-  const [searchCount, setSearchCount] = useState<number>(847);
+  const [searchCount, setSearchCount] = useState<number | null>(null);
   const [heroQuery, setHeroQuery] = useState("");
 
   useEffect(() => {
@@ -46,12 +46,16 @@ const Hero = () => {
     (async () => {
       try {
         const { supabase } = await import("@/integrations/supabase/client");
-        const { count } = await supabase
+        const { count, error } = await supabase
           .from("searches")
           .select("id", { count: "exact", head: true })
           .eq("status", "active");
-        if (typeof count === "number") setSearchCount(count);
-      } catch {}
+        if (error) throw error;
+        setSearchCount(typeof count === "number" ? count : null);
+      } catch (err) {
+        console.error("Failed to load active search count", err);
+        setSearchCount(null);
+      }
     })();
   }, []);
 
@@ -344,7 +348,7 @@ const Hero = () => {
               type="text"
               value={heroQuery}
               onChange={(e) => setHeroQuery(e.target.value)}
-              placeholder={t("hero.searchPlaceholder", { count: searchCount })}
+              placeholder={t("hero.searchPlaceholder")}
               style={{
                 ...inter,
                 flex: 1,
@@ -402,39 +406,41 @@ const Hero = () => {
           }}
         >
           {/* Live badge */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "rgba(217, 187, 135, 0.08)",
-              border: "0.5px solid rgba(217, 187, 135, 0.2)",
-              borderRadius: 20,
-              padding: "6px 14px",
-              marginBottom: "1rem",
-            }}
-          >
-            <span
+          {searchCount !== null && searchCount >= 5000 && (
+            <div
               style={{
-                width: 5,
-                height: 5,
-                borderRadius: "50%",
-                background: GOLD,
-                display: "inline-block",
-                animation: "pulse 1.8s ease-in-out infinite",
-              }}
-            />
-            <span
-              style={{
-                ...inter,
-                fontSize: 11,
-                color: GOLD,
-                letterSpacing: "0.5px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "rgba(217, 187, 135, 0.08)",
+                border: "0.5px solid rgba(217, 187, 135, 0.2)",
+                borderRadius: 20,
+                padding: "6px 14px",
+                marginBottom: "1rem",
               }}
             >
-              {t("hero.liveBadge", { count: searchCount })}
-            </span>
-          </div>
+              <span
+                style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: "50%",
+                  background: GOLD,
+                  display: "inline-block",
+                  animation: "pulse 1.8s ease-in-out infinite",
+                }}
+              />
+              <span
+                style={{
+                  ...inter,
+                  fontSize: 11,
+                  color: GOLD,
+                  letterSpacing: "0.5px",
+                }}
+              >
+                {t("hero.liveBadge", { count: searchCount })}
+              </span>
+            </div>
+          )}
 
           {/* Title */}
           <h1
