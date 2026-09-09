@@ -14,7 +14,7 @@ const Contact = () => (
         className="block p-6 bg-white rounded-xl border border-[#070E42]/10 hover:border-[#D9BD8B] hover:shadow-md transition-all"
       >
         <Mail className="w-6 h-6 text-[#070E42] mb-3" />
-        <h3 className="font-poppins font-semibold text-[#070E42] mb-1">Général</h3>
+        <h3 className="font-display font-semibold text-[#070E42] mb-1">Général</h3>
         <p className="text-sm text-[#070E42]/70">contact@findrapp.fr</p>
       </a>
       <a
@@ -22,7 +22,7 @@ const Contact = () => (
         className="block p-6 bg-white rounded-xl border border-[#070E42]/10 hover:border-[#D9BD8B] hover:shadow-md transition-all"
       >
         <MessageCircle className="w-6 h-6 text-[#070E42] mb-3" />
-        <h3 className="font-poppins font-semibold text-[#070E42] mb-1">Support</h3>
+        <h3 className="font-display font-semibold text-[#070E42] mb-1">Support</h3>
         <p className="text-sm text-[#070E42]/70">support@findrapp.fr</p>
       </a>
       <a
@@ -30,7 +30,7 @@ const Contact = () => (
         className="block p-6 bg-white rounded-xl border border-[#070E42]/10 hover:border-[#D9BD8B] hover:shadow-md transition-all"
       >
         <Shield className="w-6 h-6 text-[#070E42] mb-3" />
-        <h3 className="font-poppins font-semibold text-[#070E42] mb-1">Données / RGPD</h3>
+        <h3 className="font-display font-semibold text-[#070E42] mb-1">Données / RGPD</h3>
         <p className="text-sm text-[#070E42]/70">privacy@findrapp.fr</p>
       </a>
     </div>

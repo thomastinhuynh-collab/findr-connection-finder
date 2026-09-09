@@ -43,7 +43,7 @@ const NotFound = () => {
                 cx="48"
                 cy="48"
                 r="28"
-                stroke="#D9BD8B"
+                stroke="#D9BB87"
                 strokeWidth="4"
                 strokeLinecap="round"
                 fill="none"
@@ -64,7 +64,7 @@ const NotFound = () => {
                 y1="68"
                 x2="96"
                 y2="96"
-                stroke="#D9BD8B"
+                stroke="#D9BB87"
                 strokeWidth="5"
                 strokeLinecap="round"
                 opacity="0.7"
@@ -77,7 +77,7 @@ const NotFound = () => {
                 fontFamily="Poppins, sans-serif"
                 fontWeight="700"
                 fontSize="24"
-                fill="#D9BD8B"
+                fill="#D9BB87"
                 opacity="0.5"
               >
                 ?
@@ -87,7 +87,7 @@ const NotFound = () => {
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl md:text-4xl font-poppins font-bold mb-4 text-cream">
+        <h1 className="text-3xl md:text-4xl font-display font-bold mb-4 text-cream">
           Oups, cette pépite est introuvable
         </h1>
 
@@ -99,7 +99,7 @@ const NotFound = () => {
         {/* CTA */}
         <Button
           size="lg"
-          className="cta-hover h-14 px-8 rounded-full text-base font-poppins font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
+          className="cta-hover h-14 px-8 rounded-full text-base font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
           asChild
         >
           <Link to="/">

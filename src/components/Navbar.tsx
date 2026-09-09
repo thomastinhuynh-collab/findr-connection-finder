@@ -110,7 +110,7 @@ const Navbar = () => {
                   <Button
                     size="sm"
                     variant="outline"
-                    className={`font-poppins font-semibold rounded-full ${
+                    className={`font-semibold rounded-full ${
                       isLightMode
                         ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
                         : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
@@ -123,7 +123,7 @@ const Navbar = () => {
                     <DropdownMenuTrigger asChild>
                       <Button
                         size="sm"
-                        className="bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full"
+                        className="bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-semibold rounded-full"
                       >
                         {t("nav.mySpace")}
                       </Button>
@@ -156,7 +156,7 @@ const Navbar = () => {
               ) : (
                 <Button
                   size="sm"
-                  className={`bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
+                  className={`bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
                   onClick={() => setAuthModalOpen(true)}
                 >
                   {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la liste d'attente"}
@@ -201,7 +201,7 @@ const Navbar = () => {
                     <Button
                       size="sm"
                       variant="outline"
-                      className={`font-poppins font-semibold rounded-full w-full mt-2 ${
+                      className={`font-semibold rounded-full w-full mt-2 ${
                         isLightMode
                           ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
                           : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
@@ -215,7 +215,7 @@ const Navbar = () => {
                     </Button>
                     <Button
                       size="sm"
-                      className="bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full w-full"
+                      className="bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-semibold rounded-full w-full"
                       onClick={() => {
                         setIsOpen(false);
                         navigate("/mon-espace");
@@ -226,7 +226,7 @@ const Navbar = () => {
                     <Button
                       size="sm"
                       variant="outline"
-                      className={`font-poppins font-semibold rounded-full w-full ${
+                      className={`font-semibold rounded-full w-full ${
                         isLightMode
                           ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
                           : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
@@ -243,7 +243,7 @@ const Navbar = () => {
                 ) : (
                   <Button
                     size="sm"
-                    className="bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-poppins font-semibold rounded-full w-full mt-2"
+                    className="bg-[#D9BD8B] text-[#070E42] hover:bg-[#D9BD8B]/90 font-semibold rounded-full w-full mt-2"
                     onClick={() => {
                       setIsOpen(false);
                       setAuthModalOpen(true);

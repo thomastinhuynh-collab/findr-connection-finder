@@ -34,7 +34,7 @@ const CallToAction = () => {
 
           <div className="relative z-10 py-20 px-8 md:px-16 text-center">
             {count !== null && (
-              <p className="text-sm font-poppins mb-4 flex items-center justify-center gap-2" style={{ color: 'hsl(42 33% 94% / 0.7)' }}>
+              <p className="text-sm mb-4 flex items-center justify-center gap-2" style={{ color: 'hsl(42 33% 94% / 0.7)' }}>
                 <Users className="w-4 h-4" />
                 Déjà {count} personne{count !== 1 ? "s" : ""} sur la liste d'attente
               </p>
@@ -48,7 +48,7 @@ const CallToAction = () => {
             </p>
 
             {submitted ? (
-              <p className="text-xl font-poppins font-semibold" style={{ color: 'hsl(42 33% 94%)' }}>
+              <p className="text-xl font-semibold" style={{ color: 'hsl(42 33% 94%)' }}>
                 🎉 C'est noté ! On te prévient dès l'ouverture.
               </p>
             ) : (

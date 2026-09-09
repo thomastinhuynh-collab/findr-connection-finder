@@ -44,7 +44,7 @@ const Categories = () => {
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             Catégories
           </span>
-          <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4 text-foreground">
+          <h2 className="text-3xl md:text-5xl font-display font-bold mt-4 text-foreground">
             Qu'est-ce qu'on trouve sur Findr ?
           </h2>
         </div>
@@ -80,7 +80,7 @@ const Categories = () => {
               />
 
               <div className="absolute inset-0 flex flex-col justify-end p-6">
-                <h3 className="text-xl font-poppins font-bold mb-1 text-cream">
+                <h3 className="text-xl font-display font-bold mb-1 text-cream">
                   {cat.name}
                 </h3>
                 <p className="text-sm text-cream/80 group-hover:text-cream transition-opacity">

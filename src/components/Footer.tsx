@@ -28,7 +28,7 @@ const Footer = () => {
 
           {/* Middle - Plateforme */}
           <div>
-            <h4 className="font-poppins font-semibold text-cream mb-4">Plateforme</h4>
+            <h4 className="font-display font-semibold text-cream mb-4">Plateforme</h4>
             <ul className="space-y-3 text-sm text-cream/70">
               <li><Link to="/comment-ca-marche" className="hover:text-accent transition-colors">Comment ça marche</Link></li>
               <li><Link to="/poster" className="hover:text-accent transition-colors">Devenir buyr</Link></li>
@@ -39,7 +39,7 @@ const Footer = () => {
 
           {/* Right - Légal */}
           <div>
-            <h4 className="font-poppins font-semibold text-cream mb-4">Légal</h4>
+            <h4 className="font-display font-semibold text-cream mb-4">Légal</h4>
             <ul className="space-y-3 text-sm text-cream/70">
               <li><Link to="/mentions-legales" className="hover:text-accent transition-colors">Mentions légales</Link></li>
               <li><Link to="/cgu" className="hover:text-accent transition-colors">CGU</Link></li>

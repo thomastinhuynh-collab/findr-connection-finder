@@ -39,7 +39,7 @@ const HowItWorks = () => {
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
             {t("homeSteps.eyebrow")}
           </span>
-          <h2 className="text-3xl md:text-5xl font-poppins font-bold mt-4 mb-6 text-foreground">
+          <h2 className="text-3xl md:text-5xl font-display font-bold mt-4 mb-6 text-foreground">
             {t("homeSteps.title")}
           </h2>
           <p className="max-w-2xl mx-auto text-lg text-foreground/70">
@@ -70,7 +70,7 @@ const HowItWorks = () => {
                   <step.icon className="step-icon w-9 h-9 absolute transition-all duration-300 text-accent opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 group-hover:text-cream" />
                 </div>
                 
-                <h3 className="text-lg font-poppins font-semibold mb-2 text-foreground">
+                <h3 className="text-lg font-display font-semibold mb-2 text-foreground">
                   {t(`homeSteps.${step.key}.title`)}
                 </h3>
                 <p className="text-sm leading-relaxed max-w-[220px] text-foreground/65">
@@ -103,7 +103,7 @@ const HowItWorks = () => {
                     {t("homeSteps.stepLabel", { step: steps[selectedStep].step })}
                   </span>
                 </div>
-                <DialogTitle className="text-xl font-poppins font-bold text-foreground">
+                <DialogTitle className="text-xl font-display font-bold text-foreground">
                   {t(`homeSteps.${steps[selectedStep].key}.detailsTitle`)}
                 </DialogTitle>
               </DialogHeader>
