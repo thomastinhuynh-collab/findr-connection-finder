@@ -297,6 +297,10 @@ const Searches = () => {
   };
 
 
+  if (comingSoonCategory) {
+    return <ComingSoonCategory categoryName={comingSoonCategory} />;
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
