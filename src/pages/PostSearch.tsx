@@ -33,6 +33,7 @@ const PostSearch = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deadlineOpen, setDeadlineOpen] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ const PostSearch = () => {
     condition: "",
     budgetMin: "",
     budgetMax: "",
-    deadline: "",
+    deadline: "no-rush",
     location: "",
   });
 
@@ -145,7 +146,7 @@ const PostSearch = () => {
         category: formData.category,
         budget_min: budgetMinNum,
         budget_max: budgetMaxNum,
-        urgency: formData.deadline || "normal",
+        urgency: formData.deadline || "no-rush",
         image_url: imageUrl,
         status: "active",
       });
@@ -517,24 +518,83 @@ const PostSearch = () => {
 
                   <div className="space-y-2">
                     <Label>Délai souhaité</Label>
-                    <div className="relative input-with-icon">
-                      <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
-                      <Select
-                        value={formData.deadline}
-                        onValueChange={(value) => setFormData({ ...formData, deadline: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionner" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-border">
-                          <SelectItem value="3-days">3 jours</SelectItem>
-                          <SelectItem value="1-week">1 semaine</SelectItem>
-                          <SelectItem value="2-weeks">2 semaines</SelectItem>
-                          <SelectItem value="1-month">1 mois</SelectItem>
-                          <SelectItem value="no-rush">Pas pressé</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    {!deadlineOpen ? (
+                      <div className="space-y-2">
+                        <div
+                          className="flex items-center gap-3"
+                          style={{
+                            backgroundColor: "#FDFAF5",
+                            border: "1.5px solid #E8E2D9",
+                            borderRadius: "8px",
+                            padding: "12px 14px",
+                          }}
+                        >
+                          <Clock className="w-4 h-4" style={{ color: "#C9A84C" }} />
+                          <span style={{ fontSize: "14px", color: "#1B2A4A" }}>
+                            Pas de délai particulier — à ton rythme
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setDeadlineOpen(true)}
+                          style={{
+                            fontSize: "13px",
+                            color: "#1B2A4A",
+                            textDecoration: "underline",
+                            textUnderlineOffset: "2px",
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            cursor: "pointer",
+                          }}
+                        >
+                          + Ajouter une échéance souhaitée
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="relative input-with-icon">
+                          <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
+                          <Select
+                            value={formData.deadline}
+                            onValueChange={(value) => {
+                              if (value === "no-rush") {
+                                setDeadlineOpen(false);
+                              }
+                              setFormData({ ...formData, deadline: value });
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Sélectionner" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-card border-border">
+                              <SelectItem value="3-days">3 jours</SelectItem>
+                              <SelectItem value="1-week">1 semaine</SelectItem>
+                              <SelectItem value="2-weeks">2 semaines</SelectItem>
+                              <SelectItem value="1-month">1 mois</SelectItem>
+                              <SelectItem value="no-rush">Pas pressé</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDeadlineOpen(false);
+                            setFormData({ ...formData, deadline: "no-rush" });
+                          }}
+                          style={{
+                            fontSize: "13px",
+                            color: "#9A8F84",
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            cursor: "pointer",
+                          }}
+                        >
+                          Replier
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-2">
