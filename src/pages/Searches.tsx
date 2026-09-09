@@ -97,6 +97,18 @@ const Searches = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const pageRef = useRef(0);
 
+  usePageMeta({
+    title:
+      selectedCategory !== "Toutes"
+        ? `${selectedCategory} — recherches actives sur findr`
+        : "Toutes les recherches actives — findr",
+    description:
+      selectedCategory !== "Toutes"
+        ? `Découvre les recherches actives en ${selectedCategory} sur findr. Trouve l'objet demandé et gagne de l'argent en chinant.`
+        : "Parcours toutes les recherches actives publiées sur findr : mode vintage, pop culture, vinyles, photo et objets rares.",
+  });
+
+
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get("category");
