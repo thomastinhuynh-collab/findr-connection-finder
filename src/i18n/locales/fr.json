@@ -12,7 +12,7 @@
       "language": "Langue"
   },
   "hero": {
-    "searchPlaceholder": "Chercher parmi les {{count}} recherches en cours…",
+    "searchPlaceholder": "Cherche un objet, une marque, une pièce rare…",
     "searchButton": "Rechercher",
     "liveBadge": "{{count}} recherches en direct",
     "titleLine1": "L'objet que tu cherches",

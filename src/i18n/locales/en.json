@@ -12,7 +12,7 @@
       "language": "Language"
   },
   "hero": {
-    "searchPlaceholder": "Search through {{count}} live requests…",
+    "searchPlaceholder": "Search for an item, a brand, a rare piece…",
     "searchButton": "Search",
     "liveBadge": "{{count}} live searches",
     "titleLine1": "The piece you're after",
