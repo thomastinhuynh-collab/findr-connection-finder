@@ -132,7 +132,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
                     redirectTo: `${window.location.origin}/reset-password`,
                   });
                   if (error) {
-                    toast({ title: "Erreur", description: error.message, variant: "destructive" });
+                    toast({ title: "Erreur", description: translateAuthError(error.message), variant: "destructive" });
                   } else {
                     toast({
                       title: "Email envoyé !",
