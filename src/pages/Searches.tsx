@@ -16,6 +16,8 @@ import { supabase } from "@/integrations/supabase/client";
 import UserBadge from "@/components/UserBadge";
 import SearchImageCarousel from "@/components/SearchImageCarousel";
 import FavoriteButton from "@/components/FavoriteButton";
+import ComingSoonCategory from "@/components/ComingSoonCategory";
+import { CATEGORIES, isComingSoonCategory } from "@/lib/categories";
 
 interface SearchItem {
   id: string;
@@ -63,15 +65,7 @@ const urgencyOrder: Record<string, number> = {
   "no-rush": 6,
 };
 
-const categories = [
-  "Toutes",
-  "Mode & Maroquinerie",
-  "Pop Culture & TCG",
-  "Vinyles & Musique",
-  "Photo & Électronique",
-  "Bijoux & Accessoires",
-  "Déco & Mobilier",
-];
+const categories = ["Toutes", ...CATEGORIES.map((c) => c.name)];
 
 type SortOption = "relevance" | "recent" | "price-asc" | "price-desc" | "urgency-asc" | "urgency-desc" | "deadline-asc";
 type DeadlineFilter = "all" | "urgent" | "week" | "none";
