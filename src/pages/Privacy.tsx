@@ -11,7 +11,7 @@ const Privacy = () => (
     <h2>1. Responsable de traitement</h2>
     <p>
       Le responsable de traitement est findr SAS. Pour toute question, vous
-      pouvez nous contacter à <a href="mailto:privacy@findr.app">privacy@findr.app</a>.
+      pouvez nous contacter à <a href="mailto:privacy@findrapp.fr">privacy@findrapp.fr</a>.
     </p>
 
     <h2>2. Données collectées</h2>
@@ -55,7 +55,7 @@ const Privacy = () => (
     <p>
       Vous disposez d'un droit d'accès, de rectification, d'effacement, de
       portabilité, de limitation et d'opposition. Vous pouvez les exercer à
-      <a href="mailto:privacy@findr.app"> privacy@findr.app</a>. Vous pouvez
+      <a href="mailto:privacy@findrapp.fr"> privacy@findrapp.fr</a>. Vous pouvez
       également introduire une réclamation auprès de la CNIL
       (<a href="https://www.cnil.fr" target="_blank" rel="noreferrer">www.cnil.fr</a>).
     </p>

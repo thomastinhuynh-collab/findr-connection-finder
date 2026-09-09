@@ -367,19 +367,16 @@ const HowItWorksPage = () => {
                   <span style={{ color: NAVY }}>51,50 €</span>.
                 </Dash>
               </ul>
-              <Link
-                to="/premium"
+              <span
                 style={{
                   display: "inline-block",
                   marginTop: 18,
                   fontSize: 12.5,
-                  color: GOLD,
-                  textDecoration: "underline",
-                  textUnderlineOffset: 3,
+                  color: GOLD_GREY,
                 }}
               >
-                {t("howItWorks.fees.premiumLink")}
-              </Link>
+                {t("howItWorks.fees.premiumLink")} — bientôt disponible
+              </span>
             </>
           )}
 

@@ -21,6 +21,29 @@ const Premium = () => {
     setShowCheckout(false);
     toast.success("Félicitations ! Vous êtes maintenant Premium !");
   };
+
+  // Le programme Premium est volontairement mis de côté pour le lancement.
+  // Le code existant est conservé ; on affiche un message temporaire.
+  const premiumEnabled = false;
+  if (!premiumEnabled) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="pt-24 pb-16 flex items-center justify-center">
+          <div className="text-center max-w-md mx-auto px-4">
+            <Crown className="w-16 h-16 text-primary mx-auto mb-6" />
+            <h1 className="text-3xl font-bold text-foreground mb-4">
+              Bientôt disponible
+            </h1>
+            <p className="text-muted-foreground">
+              Le programme Premium est temporairement mis de côté pour le lancement.
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   const findrBenefits = [
     {
       icon: Star,
