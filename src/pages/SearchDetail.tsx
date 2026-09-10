@@ -585,10 +585,10 @@ const SearchDetail = () => {
       )}
       <span
         className="flex items-center gap-2 rounded-[20px] px-[14px] py-[6px]"
-        style={{ backgroundColor: '#F5F0E8', color: '#1B2A4A', fontSize: '13px', fontWeight: 500, border: '1.5px solid #C9A84C' }}
+        style={{ backgroundColor: '#F0F0F0', color: '#555555', fontSize: '13px', fontWeight: 500, border: '1.5px solid #E0E0E0' }}
       >
-        <Calendar className="w-4 h-4" style={{ color: '#C9A84C' }} />
-        {formatDate(search.created_at)}
+        <Calendar className="w-4 h-4" style={{ color: '#777777' }} />
+        Publié le {formatDate(search.created_at)}
       </span>
     </div>
   );
@@ -749,7 +749,7 @@ const SearchDetail = () => {
     <div className="bg-card border border-border rounded-2xl p-6">
       <Button
         className="w-full gap-2 rounded-lg"
-        style={{ height: '52px', fontSize: '15px', fontWeight: 600, backgroundColor: '#1B2A4A', color: '#FFFFFF' }}
+        style={{ height: '52px', fontSize: '15px', fontWeight: 600, backgroundColor: '#D9BB87', color: '#070E42' }}
         onClick={handleProposal}
       >
         <Tag className="w-5 h-5" />
@@ -961,9 +961,10 @@ const SearchDetail = () => {
           <Button
             onClick={handleProposal}
             className="w-full gap-2 rounded-lg"
-            style={{ height: '48px', fontSize: '15px', fontWeight: 600, backgroundColor: '#070E42', color: '#C9A84C', border: '1.5px solid #C9A84C' }}
+            style={{ height: '48px', fontSize: '15px', fontWeight: 600, backgroundColor: '#D9BB87', color: '#070E42' }}
           >
-            🏷️ Faire une proposition
+            <Tag className="w-5 h-5" />
+            Faire une proposition
           </Button>
         </div>
       )}
