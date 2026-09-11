@@ -8,7 +8,7 @@ import { ArrowLeft, Send, Loader2, CheckCheck, Check, Info, Paperclip, X, Plus, 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
+import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
 
 interface SearchData {
   id: string;
@@ -305,9 +305,9 @@ const Messaging = () => {
     setMessage(text);
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files || []);
-    const { valid: files, oversized } = splitBySize(selected);
+    const { valid: files, oversized } = await compressAndValidate(selected);
     if (oversized.length > 0) {
       toast({
         title: "Image trop lourde",
