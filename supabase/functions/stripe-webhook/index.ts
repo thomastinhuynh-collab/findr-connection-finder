@@ -68,6 +68,31 @@ Deno.serve(async (req) => {
             ? session.payment_intent
             : session.payment_intent?.id ?? null;
 
+        // Idempotence : si le paiement est déjà enregistré (ou plus avancé), on ignore.
+        const ALREADY_PAID_STATUSES = [
+          "paye_en_attente_reception",
+          "expedie",
+          "livre",
+          "versement_en_revue",
+          "termine",
+          "annule",
+        ];
+        const { data: current } = await admin
+          .from("reservations")
+          .select("payment_status")
+          .eq("id", reservationId)
+          .maybeSingle();
+
+        if (current?.payment_status && ALREADY_PAID_STATUSES.includes(current.payment_status)) {
+          console.log(
+            `checkout.session.completed ignoré (doublon) — réservation ${reservationId} déjà en ${current.payment_status}`,
+          );
+          return new Response(JSON.stringify({ received: true, ignored: true }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+
         const { data: reservation, error } = await admin
           .from("reservations")
           .update({

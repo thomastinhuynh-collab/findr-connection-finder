@@ -18,7 +18,7 @@ import { ArrowLeft, Upload, Euro, Tag, Sparkles, Save, ImagePlus, Loader2, Crown
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
+import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
 
 interface ProposalData {
   id: string;
@@ -177,10 +177,10 @@ const EditProposal = () => {
     return "Non défini";
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const { valid, oversized } = splitBySize(Array.from(files));
+      const { valid, oversized } = await compressAndValidate(Array.from(files));
       if (oversized.length > 0) {
         toast({
           title: "Image trop lourde",

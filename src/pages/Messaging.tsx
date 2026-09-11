@@ -8,7 +8,7 @@ import { ArrowLeft, Send, Loader2, CheckCheck, Check, Info, Paperclip, X, Plus, 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
+import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
 
 interface SearchData {
   id: string;
@@ -32,6 +32,7 @@ interface Message {
 
 const MAX_CHARS = 240;
 const MAX_PHOTOS = 5;
+const PAGE_SIZE = 50;
 
 const QUICK_SUGGESTIONS = [
   "J'ai peut-être ce que vous cherchez 👀",
@@ -51,6 +52,8 @@ const Messaging = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [search, setSearch] = useState<SearchData | null>(null);
+  const [hasMoreMessages, setHasMoreMessages] = useState(false);
+  const [loadingOlder, setLoadingOlder] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
@@ -111,8 +114,9 @@ const Messaging = () => {
   }, [id, user]);
 
   useEffect(() => {
+    if (loadingOlder) return;
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loadingOlder]);
 
   // Lightbox keyboard navigation
   useEffect(() => {
@@ -179,32 +183,59 @@ const Messaging = () => {
     setLoading(false);
   };
 
+  const markBatchAsRead = async (batch: Message[]) => {
+    if (!user) return;
+    const unreadIds = batch
+      .filter((m) => m.receiver_id === user.id && !m.is_read)
+      .map((m) => m.id);
+    if (unreadIds.length > 0) {
+      await supabase.from("messages").update({ is_read: true }).in("id", unreadIds);
+    }
+  };
+
   const fetchMessages = async () => {
     const { data, error } = await supabase
       .from("messages")
       .select("*")
       .eq("search_id", id)
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: false })
+      .range(0, PAGE_SIZE - 1);
 
     if (error) {
       console.error("Error fetching messages:", error);
       return;
     }
 
-    setMessages(data || []);
-    
-    if (user && data) {
-      const unreadIds = data
-        .filter(m => m.receiver_id === user.id && !m.is_read)
-        .map(m => m.id);
-      
-      if (unreadIds.length > 0) {
-        await supabase
-          .from("messages")
-          .update({ is_read: true })
-          .in("id", unreadIds);
-      }
+    const batch = (data || []).slice().reverse();
+    setMessages(batch);
+    setHasMoreMessages((data || []).length === PAGE_SIZE);
+    await markBatchAsRead(batch);
+  };
+
+  const loadOlderMessages = async () => {
+    if (loadingOlder) return;
+    setLoadingOlder(true);
+    const { data, error } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("search_id", id)
+      .order("created_at", { ascending: false })
+      .range(messages.length, messages.length + PAGE_SIZE - 1);
+
+    if (error) {
+      console.error("Error fetching older messages:", error);
+      setLoadingOlder(false);
+      return;
     }
+
+    const older = (data || []).slice().reverse();
+    setMessages((prev) => {
+      const existing = new Set(prev.map((m) => m.id));
+      return [...older.filter((m) => !existing.has(m.id)), ...prev];
+    });
+    setHasMoreMessages((data || []).length === PAGE_SIZE);
+    await markBatchAsRead(older);
+    setLoadingOlder(false);
   };
 
   const markAsRead = async (messageId: string) => {
@@ -305,9 +336,9 @@ const Messaging = () => {
     setMessage(text);
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files || []);
-    const { valid: files, oversized } = splitBySize(selected);
+    const { valid: files, oversized } = await compressAndValidate(selected);
     if (oversized.length > 0) {
       toast({
         title: "Image trop lourde",
@@ -558,6 +589,19 @@ const Messaging = () => {
                 </div>
               ) : (
                 <div className="space-y-6">
+                  {hasMoreMessages && (
+                    <div className="flex justify-center">
+                      <button
+                        type="button"
+                        onClick={loadOlderMessages}
+                        disabled={loadingOlder}
+                        className="text-xs px-4 py-2 rounded-full bg-white border transition-colors disabled:opacity-60"
+                        style={{ borderColor: "#ECE6DA", color: "#6B7B9E" }}
+                      >
+                        {loadingOlder ? "Chargement..." : "Charger les messages plus anciens"}
+                      </button>
+                    </div>
+                  )}
                   {Object.entries(groupedMessages).map(([date, dayMessages]) => (
                     <div key={date}>
                       <div className="flex items-center justify-center mb-4">
