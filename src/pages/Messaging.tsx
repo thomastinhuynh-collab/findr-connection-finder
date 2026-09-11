@@ -114,8 +114,9 @@ const Messaging = () => {
   }, [id, user]);
 
   useEffect(() => {
+    if (loadingOlder) return;
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loadingOlder]);
 
   // Lightbox keyboard navigation
   useEffect(() => {
@@ -588,6 +589,19 @@ const Messaging = () => {
                 </div>
               ) : (
                 <div className="space-y-6">
+                  {hasMoreMessages && (
+                    <div className="flex justify-center">
+                      <button
+                        type="button"
+                        onClick={loadOlderMessages}
+                        disabled={loadingOlder}
+                        className="text-xs px-4 py-2 rounded-full bg-white border transition-colors disabled:opacity-60"
+                        style={{ borderColor: "#ECE6DA", color: "#6B7B9E" }}
+                      >
+                        {loadingOlder ? "Chargement..." : "Charger les messages plus anciens"}
+                      </button>
+                    </div>
+                  )}
                   {Object.entries(groupedMessages).map(([date, dayMessages]) => (
                     <div key={date}>
                       <div className="flex items-center justify-center mb-4">
