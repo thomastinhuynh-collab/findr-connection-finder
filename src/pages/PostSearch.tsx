@@ -12,7 +12,7 @@ import { Euro, Clock, MapPin, ArrowRight, ArrowLeft, Image as ImageIcon, X, Load
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
+import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
 import { CATEGORIES, OTHER_CATEGORY } from "@/lib/categories";
 
 const categories = [...CATEGORIES, { name: OTHER_CATEGORY, slug: OTHER_CATEGORY, status: "active" as const, subcategories: [] }];
@@ -47,9 +47,9 @@ const PostSearch = () => {
     location: "",
   });
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files || []);
-    const { valid: files, oversized } = splitBySize(selected);
+    const { valid: files, oversized } = await compressAndValidate(selected);
     if (oversized.length > 0) {
       toast({
         title: "Image trop lourde",

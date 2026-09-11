@@ -12,7 +12,7 @@ import { Euro, Clock, MapPin, ArrowRight, Image as ImageIcon, X, Loader2, Trash2
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { splitBySize, oversizedDescription } from "@/lib/fileValidation";
+import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -96,9 +96,9 @@ const EditSearch = () => {
     setLoading(false);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files || []);
-    const { valid: files, oversized } = splitBySize(selected);
+    const { valid: files, oversized } = await compressAndValidate(selected);
     if (oversized.length > 0) {
       toast({
         title: "Image trop lourde",
