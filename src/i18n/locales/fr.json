@@ -105,6 +105,121 @@
       "cta": "REJOINDRE LES FINDR →"
     }
   },
+  "footer": {
+    "platform": "Plateforme",
+    "links": {
+      "howItWorks": "Comment ça marche",
+      "becomeBuyr": "Devenir buyr",
+      "becomeFindr": "Devenir findr",
+      "categories": "Les catégories"
+    },
+    "legal": {
+      "title": "Légal",
+      "notice": "Mentions légales",
+      "terms": "CGU",
+      "privacy": "Politique de confidentialité",
+      "contact": "Contact"
+    },
+    "copyright": "© 2025 findr — Tous droits réservés"
+  },
+  "categoryNav": {
+    "viewAll": "Tout voir"
+  },
+  "comingSoon": {
+    "title": "Bientôt disponible",
+    "subtitle": "{{categoryName}} arrive bientôt sur findr",
+    "back": "Retour aux recherches actives"
+  },
+  "categories": {
+    "eyebrow": "Catégories",
+    "title": "Qu'est-ce qu'on trouve sur Findr ?",
+    "viewSearches": "Voir les recherches →",
+    "items": {
+      "fashion": {
+        "name": "Mode & Maroquinerie",
+        "description": "Vestes en cuir, denim, fripes 70s-90s, sacs",
+        "subcategories": "Mode & Maroquinerie · Vinyles & Musique · Bijoux & Accessoires"
+      },
+      "popCulture": {
+        "name": "Pop Culture",
+        "description": "Figurines, comics, cartes, vinyles",
+        "subcategories": "Comics · Figurines · Cartes TCG · Jeux vidéo"
+      },
+      "misc": {
+        "name": "Objets Divers",
+        "description": "Montres, appareils photo, curiosités",
+        "subcategories": "Photo & Électronique · Horlogerie · Livres · Curiosités"
+      }
+    }
+  },
+  "callToAction": {
+    "imageAlt": "Brocante vintage",
+    "waitlistCount_one": "Déjà {{count}} personne sur la liste d'attente",
+    "waitlistCount_other": "Déjà {{count}} personnes sur la liste d'attente",
+    "title": "Prêt à trouver tes pépites ?",
+    "subtitle": "Rejoins la liste d'attente et sois parmi les premiers à accéder à la plateforme de chinage communautaire.",
+    "success": "🎉 C'est noté ! On te prévient dès l'ouverture.",
+    "emailPlaceholder": "ton@email.com",
+    "submit": "Je m'inscris"
+  },
+  "testimonials": {
+    "guarantees": {
+      "payment": "Paiement sécurisé",
+      "protection": "Protection buyr",
+      "community": "Communauté vérifiée"
+    },
+    "eyebrow": "Témoignages",
+    "title": "Ce qu'ils disent de findr",
+    "items": {
+      "camille": { "quote": "J'ai trouvé ma veste Levi's 70s en 3 jours grâce à un findr de Lille. Exactement ce que je cherchais depuis des mois !" },
+      "antoine": { "quote": "Je déniche depuis toujours dans les brocantes. Maintenant je suis payé pour le faire. Le concept est génial !" },
+      "julien": { "quote": "Carte Pokémon 1ère édition, état mint. Le findr l'a dénichée à un vide-grenier pour 30€. Je n'y croyais pas." }
+    },
+    "disclaimer": "Exemple illustratif · bêta en cours",
+    "waitlist": {
+      "label": "Liste d'attente",
+      "count": "Déjà {{count}} curieux inscrits",
+      "goal": "Objectif : {{count}} inscrits"
+    }
+  },
+  "waitlistSignup": {
+    "waitlistCount_one": "Déjà {{count}} personne sur la liste d'attente",
+    "waitlistCount_other": "Déjà {{count}} personnes sur la liste d'attente",
+    "title": "Sois parmi les premiers à rejoindre Findr",
+    "subtitle": "Lance-toi en avant-première et façonne la plateforme avec nous.",
+    "success": "C'est noté ! On te prévient dès l'ouverture 🎉",
+    "rolePrompt": "Je suis plutôt...",
+    "roles": { "buyr": "Un buyr", "findr": "Un findr" },
+    "emailPlaceholder": "ton@email.com",
+    "submit": "Rejoindre la liste d'attente",
+    "privacy": "Pas de spam. Juste les vraies nouvelles de Findr."
+  },
+  "becomeFindr": {
+    "eyebrow": "Deux profils, une communauté",
+    "title": "Quel est ton rôle ?",
+    "buyr": {
+      "title": "Tu es buyr",
+      "subtitle": "Publie ta demande et laisse les findrs trouver pour toi.",
+      "benefits": {
+        "rare": "Trouve des pièces introuvables",
+        "free": "Publie gratuitement ta recherche",
+        "fast": "Reçois tes premières propositions rapidement",
+        "support": "Transaction suivie par l'équipe findr"
+      },
+      "cta": "Je deviens buyr"
+    },
+    "findr": {
+      "title": "Tu es findr",
+      "subtitle": "Transforme ta passion du dénichage en source de revenus.",
+      "benefits": {
+        "expertise": "Monétise ton expertise",
+        "choose": "Choisis les recherches qui t'intéressent",
+        "earn": "Choisis tes missions, gagne à la trouvaille",
+        "reputation": "Construis ta réputation"
+      },
+      "cta": "Je deviens findr"
+    }
+  },
   "howItWorks": {
     "eyebrow": "GUIDE",
     "title": "Comment ça marche ?",

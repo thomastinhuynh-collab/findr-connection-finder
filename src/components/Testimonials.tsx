@@ -90,24 +90,24 @@ const Testimonials = () => {
 
         {/* Testimonial cards */}
         <div ref={cardsRef} className="stagger-group grid md:grid-cols-3 gap-4 max-w-5xl mx-auto mb-10">
-          {testimonials.map((t, index) => (
+          {testimonials.map((testimonial, index) => (
             <div
               key={index}
               className="stagger-item rounded-2xl p-7 border border-foreground/8 bg-background"
             >
               <div className="flex gap-1 mb-4">
-                {Array.from({ length: t.rating }).map((_, i) => (
+                {Array.from({ length: testimonial.rating }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 text-accent fill-accent" />
                 ))}
               </div>
               <p className="text-sm leading-relaxed mb-6 text-foreground/80">
-                “{t(t.quoteKey)}”
+                “{t(testimonial.quoteKey)}”
               </p>
               <div className="flex items-center gap-3">
-                <img src={t.avatar} alt={t.author} loading="lazy" className="w-10 h-10 rounded-full" />
+                <img src={testimonial.avatar} alt={testimonial.author} loading="lazy" className="w-10 h-10 rounded-full" />
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{t.author}</p>
-                  <p className="text-xs text-foreground/50">{t.role}</p>
+                  <p className="text-sm font-semibold text-foreground">{testimonial.author}</p>
+                  <p className="text-xs text-foreground/50">{testimonial.role}</p>
                 </div>
               </div>
               <p className="mt-4 text-foreground/60" style={{ fontSize: '11px', opacity: 0.6 }}>
