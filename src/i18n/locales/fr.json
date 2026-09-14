@@ -560,6 +560,18 @@
     "securePayment": "Paiement sécurisé via findr",
     "fundsHeld": "Fonds bloqués jusqu'à confirmation de réception",
     "loginRequired": "Connexion requise"
+    ,"proposals": "Propositions",
+    "noProposals": "Aucune proposition pour l'instant — sois le premier findr à en faire une",
+    "reserved": "Annonce réservée",
+    "reservedByYou": "Tu as réservé cette annonce. Tu es le seul à pouvoir interagir avec le buyr.",
+    "reservedByOther": "Cette annonce est actuellement réservée par un autre findr.",
+    "reservationRequests": "Demandes de réservation",
+    "activeReservation": "Réservation active",
+    "reservationLocked": "Une proposition a été acceptée pour cette recherche — les réservations ne sont plus modifiables.",
+    "paymentsSetup": "Configure tes paiements",
+    "paymentsSetupText": "Configure tes paiements avant de pouvoir proposer un objet — ça prend 2 minutes.",
+    "later": "Plus tard",
+    "configurePayments": "Configurer mes paiements"
   },
   "proposal": {
     "pending": "En attente",
@@ -579,6 +591,18 @@
     "contactFindr": "Contacter le findr",
     "contactBuyr": "Contacter le buyr",
     "close": "Fermer"
+    ,"secureAwaiting": "Paiement sécurisé — en attente de confirmation de réception.",
+    "markShipped": "Marquer comme expédié",
+    "confirmReceipt": "Confirmer la réception de l'objet",
+    "reportProblem": "Signaler un problème",
+    "shipTitle": "Marquer comme expédié",
+    "shipDescription": "Le numéro de suivi est obligatoire : il permet de suivre le colis automatiquement et de libérer ton paiement dès la livraison.",
+    "carrier": "Transporteur",
+    "tracking": "Numéro de suivi",
+    "confirmShipment": "Confirmer l'expédition",
+    "cancelRefund": "Annuler et rembourser",
+    "back": "Retour",
+    "cancel": "Annuler"
   },
   "terms": {
     "title": "Conditions Générales d'Utilisation",

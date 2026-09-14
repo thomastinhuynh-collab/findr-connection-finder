@@ -616,12 +616,12 @@ const SearchDetail = () => {
       <CollapsibleTrigger className="flex items-center justify-between w-full p-6 hover:bg-secondary/30 transition-colors text-left">
         <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-accent" />
-          Propositions
+           {t("searchDetail.proposals")}
         </h2>
         <div className="flex items-center gap-2">
           {proposals.length === 0 ? (
             <span style={{ fontSize: '13px', color: '#C9A84C', fontStyle: 'italic' }}>
-              Aucune proposition pour l'instant — sois le premier findr à en faire une
+              {t("searchDetail.noProposals")}
             </span>
           ) : (
             <>
@@ -744,12 +744,12 @@ const SearchDetail = () => {
     <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6 mb-6">
       <div className="flex items-center gap-3 mb-3">
         <Lock className="w-5 h-5 text-accent" />
-        <h3 className="font-semibold text-accent">Annonce réservée</h3>
+        <h3 className="font-semibold text-accent">{t("searchDetail.reserved")}</h3>
       </div>
       <p className="text-sm text-muted-foreground">
         {canInteract
-          ? "Tu as réservé cette annonce. Tu es le seul à pouvoir interagir avec le buyr."
-          : "Cette annonce est actuellement réservée par un autre findr."}
+          ? t("searchDetail.reservedByYou")
+          : t("searchDetail.reservedByOther")}
       </p>
     </div>
   ) : null;
@@ -812,7 +812,7 @@ const SearchDetail = () => {
     <>
       <h3 className="font-semibold text-primary flex items-center gap-2">
         <CalendarClock className="w-5 h-5 text-accent" />
-        Demandes de réservation
+        {t("searchDetail.reservationRequests")}
       </h3>
       <div className="flex items-center gap-2">
         <span className="text-sm text-accent font-medium">
@@ -832,7 +832,7 @@ const SearchDetail = () => {
       </div>
       <div className="px-6 pb-6">
         <p className="text-sm text-muted-foreground">
-          Une proposition a été acceptée pour cette recherche — les réservations ne sont plus modifiables.
+          {t("searchDetail.reservationLocked")}
         </p>
       </div>
     </div>
@@ -861,7 +861,7 @@ const SearchDetail = () => {
             <>
               <h4 className="font-medium text-primary flex items-center gap-2 pt-2">
                 <Lock className="w-4 h-4 text-accent" />
-                Réservation active
+                {t("searchDetail.activeReservation")}
               </h4>
               <ReservationCard
                 reservation={activeReservation}
@@ -982,14 +982,14 @@ const SearchDetail = () => {
       <Dialog open={stripeGateOpen} onOpenChange={setStripeGateOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle style={{ color: '#070E42' }}>Configure tes paiements</DialogTitle>
+             <DialogTitle style={{ color: '#070E42' }}>{t("searchDetail.paymentsSetup")}</DialogTitle>
             <DialogDescription>
-              Configure tes paiements avant de pouvoir proposer un objet — ça prend 2 minutes.
+               {t("searchDetail.paymentsSetupText")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:gap-2">
             <Button variant="outline" onClick={() => setStripeGateOpen(false)}>
-              Plus tard
+               {t("searchDetail.later")}
             </Button>
             <Button
               onClick={startOnboarding}
@@ -999,7 +999,7 @@ const SearchDetail = () => {
               {stripeLoading ? (
                 <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
               ) : (
-                "Configurer mes paiements"
+                 t("searchDetail.configurePayments")
               )}
             </Button>
           </DialogFooter>

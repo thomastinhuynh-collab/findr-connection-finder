@@ -560,6 +560,18 @@
     "securePayment": "Secure payment through findr",
     "fundsHeld": "Funds held until delivery is confirmed",
     "loginRequired": "Sign in required"
+    ,"proposals": "Proposals",
+    "noProposals": "No proposals yet — be the first findr to make one",
+    "reserved": "Reserved search",
+    "reservedByYou": "You booked this search. You are the only findr who can interact with the buyr.",
+    "reservedByOther": "This search is currently booked by another findr.",
+    "reservationRequests": "Booking requests",
+    "activeReservation": "Active booking",
+    "reservationLocked": "A proposal has been accepted for this search — bookings can no longer be changed.",
+    "paymentsSetup": "Set up your payouts",
+    "paymentsSetupText": "Set up your payouts before proposing an item — it only takes two minutes.",
+    "later": "Later",
+    "configurePayments": "Set up payouts"
   },
   "proposal": {
     "pending": "Pending",
@@ -579,6 +591,18 @@
     "contactFindr": "Contact the findr",
     "contactBuyr": "Contact the buyr",
     "close": "Close"
+    ,"secureAwaiting": "Secure payment — awaiting delivery confirmation.",
+    "markShipped": "Mark as shipped",
+    "confirmReceipt": "Confirm item received",
+    "reportProblem": "Report a problem",
+    "shipTitle": "Mark as shipped",
+    "shipDescription": "A tracking number is required so the parcel can be tracked automatically and your payment released after delivery.",
+    "carrier": "Carrier",
+    "tracking": "Tracking number",
+    "confirmShipment": "Confirm shipment",
+    "cancelRefund": "Cancel and refund",
+    "back": "Back",
+    "cancel": "Cancel"
   },
   "terms": {
     "title": "Terms of Use",

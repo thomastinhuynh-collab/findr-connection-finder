@@ -528,7 +528,7 @@ const ProposalList = ({
                       payments[proposal.id]?.payment_status ?? "",
                     ) && (
                       <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
-                        🛡️ Paiement sécurisé — en attente de confirmation de réception.
+                        🛡️ {t("proposal.secureAwaiting")}
                         {payments[proposal.id]?.tracking_status && (
                           <span className="font-medium text-primary">
                             · {payments[proposal.id]?.tracking_status}
@@ -568,7 +568,7 @@ const ProposalList = ({
                           }}
                         >
                           <Truck className="w-4 h-4 mr-1" />
-                          Marquer comme expédié
+                          {t("proposal.markShipped")}
                         </Button>
                         <Button
                           size="sm"
@@ -598,7 +598,7 @@ const ProposalList = ({
                           }}
                         >
                           <Package className="w-4 h-4 mr-1" />
-                          Confirmer la réception de l'objet
+                          {t("proposal.confirmReceipt")}
                         </Button>
                         <button
                           type="button"
@@ -608,7 +608,7 @@ const ProposalList = ({
                             setDisputeDialogOpen(true);
                           }}
                         >
-                          Signaler un problème
+                          {t("proposal.reportProblem")}
                         </button>
                       </>
                     )}
@@ -991,7 +991,7 @@ const ProposalList = ({
                   }}
                 >
                   <Package className="w-4 h-4 mr-2 flex-shrink-0" />
-                  Confirmer la réception de l'objet
+                  {t("proposal.confirmReceipt")}
                 </Button>
               )}
 
@@ -1125,16 +1125,15 @@ const ProposalList = ({
       <Dialog open={shipDialogOpen} onOpenChange={setShipDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Marquer comme expédié</DialogTitle>
+            <DialogTitle>{t("proposal.shipTitle")}</DialogTitle>
             <DialogDescription>
-              Le numéro de suivi est obligatoire : il permet de suivre le colis automatiquement et
-              de libérer ton paiement dès la livraison.
+              {t("proposal.shipDescription")}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="carrier">Transporteur</Label>
+              <Label htmlFor="carrier">{t("proposal.carrier")}</Label>
               <Input
                 id="carrier"
                 placeholder="Colissimo, Chronopost, Mondial Relay, UPS…"
@@ -1143,7 +1142,7 @@ const ProposalList = ({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="tracking">Numéro de suivi</Label>
+              <Label htmlFor="tracking">{t("proposal.tracking")}</Label>
               <Input
                 id="tracking"
                 placeholder="Ex. 6A12345678901"
@@ -1155,7 +1154,7 @@ const ProposalList = ({
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setShipDialogOpen(false)}>
-              Annuler
+              {t("proposal.cancel")}
             </Button>
             <Button onClick={handleMarkShipped} disabled={isProcessing}>
               {isProcessing ? (
@@ -1166,7 +1165,7 @@ const ProposalList = ({
               ) : (
                 <>
                   <Truck className="w-4 h-4 mr-2" />
-                  Confirmer l'expédition
+                  {t("proposal.confirmShipment")}
                 </>
               )}
             </Button>
@@ -1178,7 +1177,7 @@ const ProposalList = ({
       <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Annuler et rembourser</DialogTitle>
+            <DialogTitle>{t("proposal.cancelRefund")}</DialogTitle>
             <DialogDescription>
               La transaction sera annulée et le buyr intégralement remboursé, frais de service
               inclus.
@@ -1195,7 +1194,7 @@ const ProposalList = ({
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setCancelDialogOpen(false)}>
-              Retour
+              {t("proposal.back")}
             </Button>
             <Button variant="destructive" onClick={handleCancelRefund} disabled={isProcessing}>
               {isProcessing ? (
