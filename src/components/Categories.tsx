@@ -3,32 +3,34 @@ import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import catModeVintage from "@/assets/cat-mode-vintage.jpg";
 import catPopCulture from "@/assets/cat-pop-culture.jpg";
 import catObjetsDivers from "@/assets/cat-objets-divers.jpg";
+import { useTranslation } from "react-i18next";
 
 const categories = [
   {
-    name: "Mode & Maroquinerie",
+    nameKey: "categories.items.fashion.name",
     slug: "Mode & Maroquinerie",
     image: catModeVintage,
-    description: "Vestes en cuir, denim, fripes 70s-90s, sacs",
-    subcategories: "Mode & Maroquinerie · Vinyles & Musique · Bijoux & Accessoires",
+    descriptionKey: "categories.items.fashion.description",
+    subcategoriesKey: "categories.items.fashion.subcategories",
   },
   {
-    name: "Pop Culture",
+    nameKey: "categories.items.popCulture.name",
     slug: "Pop Culture & TCG",
     image: catPopCulture,
-    description: "Figurines, comics, cartes, vinyles",
-    subcategories: "Comics · Figurines · Cartes TCG · Jeux vidéo",
+    descriptionKey: "categories.items.popCulture.description",
+    subcategoriesKey: "categories.items.popCulture.subcategories",
   },
   {
-    name: "Objets Divers",
+    nameKey: "categories.items.misc.name",
     slug: "Bijoux & Accessoires",
     image: catObjetsDivers,
-    description: "Montres, appareils photo, curiosités",
-    subcategories: "Photo & Électronique · Horlogerie · Livres · Curiosités",
+    descriptionKey: "categories.items.misc.description",
+    subcategoriesKey: "categories.items.misc.subcategories",
   },
 ];
 
 const Categories = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const headingRef = useScrollReveal();
   const gridRef = useScrollRevealGroup();
@@ -42,10 +44,10 @@ const Categories = () => {
       <div className="container mx-auto px-4">
         <div ref={headingRef} className="scroll-reveal text-center mb-14">
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
-            Catégories
+            {t("categories.eyebrow")}
           </span>
           <h2 className="text-3xl md:text-5xl font-display font-bold mt-4 text-foreground">
-            Qu'est-ce qu'on trouve sur Findr ?
+            {t("categories.title")}
           </h2>
         </div>
 
@@ -58,7 +60,7 @@ const Categories = () => {
             >
               <img
                 src={cat.image}
-                alt={cat.name}
+                alt={t(cat.nameKey)}
                 loading="lazy"
                 width={640}
                 height={800}
@@ -81,16 +83,16 @@ const Categories = () => {
 
               <div className="absolute inset-0 flex flex-col justify-end p-6">
                 <h3 className="text-xl font-display font-bold mb-1 text-cream">
-                  {cat.name}
+                  {t(cat.nameKey)}
                 </h3>
                 <p className="text-sm text-cream/80 group-hover:text-cream transition-opacity">
-                  {cat.description}
+                  {t(cat.descriptionKey)}
                 </p>
                 <p className="mt-2 text-xs text-cream/60 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 leading-relaxed">
-                  {cat.subcategories}
+                  {t(cat.subcategoriesKey)}
                 </p>
                 <div className="mt-2 text-xs font-barlow font-medium flex items-center gap-1 text-accent opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 delay-75">
-                  <span>Voir les recherches →</span>
+                  <span>{t("categories.viewSearches")}</span>
                 </div>
               </div>
             </button>

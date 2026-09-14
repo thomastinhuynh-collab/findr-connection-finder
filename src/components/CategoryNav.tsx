@@ -3,8 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { useGoBack } from "@/hooks/useGoBack";
 import { CATEGORIES } from "@/lib/categories";
+import { useTranslation } from "react-i18next";
 
 const CategoryNav = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
@@ -56,7 +58,7 @@ const CategoryNav = () => {
                     onClick={() => handleCategoryClick(category.slug)}
                     className="w-full text-left px-4 py-2 text-sm font-semibold text-primary hover:bg-muted transition-colors"
                   >
-                    Tout voir
+                    {t("categoryNav.viewAll")}
                   </button>
                   <div className="border-t border-border my-1" />
                   {category.subcategories.map((sub) => (

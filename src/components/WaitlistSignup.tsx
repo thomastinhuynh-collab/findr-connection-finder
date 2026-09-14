@@ -4,8 +4,10 @@ import { Mail, Lock, ArrowRight, CheckCircle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useWaitlist } from "@/hooks/useWaitlist";
+import { useTranslation } from "react-i18next";
 
 const WaitlistSignup = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<"buyr" | "findr">("buyr");
   const { count, loading, submitted, submit } = useWaitlist();
@@ -43,14 +45,14 @@ const WaitlistSignup = () => {
             {count !== null && (
               <p className="text-sm text-cream/70 mb-4 flex items-center justify-center gap-2">
                 <Users className="w-4 h-4" />
-                Déjà {count} personne{count !== 1 ? "s" : ""} sur la liste d'attente
+                {t("waitlistSignup.waitlistCount", { count })}
               </p>
             )}
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 leading-tight text-cream">
-              Sois parmi les premiers à rejoindre Findr
+              {t("waitlistSignup.title")}
             </h2>
             <p className="text-base md:text-lg mb-8 text-cream/75">
-              Lance-toi en avant-première et façonne la plateforme avec nous.
+              {t("waitlistSignup.subtitle")}
             </p>
           </motion.div>
 
@@ -66,14 +68,14 @@ const WaitlistSignup = () => {
                   <CheckCircle className="w-8 h-8 text-accent" />
                 </div>
                 <p className="text-xl font-semibold text-cream">
-                  C'est noté ! On te prévient dès l'ouverture 🎉
+                  {t("waitlistSignup.success")}
                 </p>
               </div>
             ) : (
               <div className="space-y-5">
                 {/* Role toggle */}
                 <div>
-                  <p className="text-sm text-cream/60 mb-3">Je suis plutôt...</p>
+                  <p className="text-sm text-cream/60 mb-3">{t("waitlistSignup.rolePrompt")}</p>
                   <div className="inline-flex rounded-full p-1 bg-cream/10 border border-cream/20">
                     <button
                       type="button"
@@ -84,7 +86,7 @@ const WaitlistSignup = () => {
                           : "text-cream/70 hover:text-cream"
                       }`}
                     >
-                      🔍 Un buyr
+                      🔍 {t("waitlistSignup.roles.buyr")}
                     </button>
                     <button
                       type="button"
@@ -95,7 +97,7 @@ const WaitlistSignup = () => {
                           : "text-cream/70 hover:text-cream"
                       }`}
                     >
-                      🧭 Un findr
+                      🧭 {t("waitlistSignup.roles.findr")}
                     </button>
                   </div>
                 </div>
@@ -106,7 +108,7 @@ const WaitlistSignup = () => {
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cream/50" />
                     <Input
                       type="email"
-                      placeholder="ton@email.com"
+                      placeholder={t("waitlistSignup.emailPlaceholder")}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-12 h-14 rounded-full text-base border-2 bg-cream/10 border-cream/25 text-cream placeholder:text-cream/40"
@@ -119,7 +121,7 @@ const WaitlistSignup = () => {
                     disabled={loading}
                     className="h-14 px-8 rounded-full text-base font-semibold bg-accent text-accent-foreground hover:bg-accent/90"
                   >
-                    {loading ? "..." : "Rejoindre la liste d'attente"}
+                    {loading ? "..." : t("waitlistSignup.submit")}
                     {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
                   </Button>
                 </form>
@@ -136,7 +138,7 @@ const WaitlistSignup = () => {
               className="mt-5 text-sm flex items-center justify-center gap-1.5 text-cream/50"
             >
               <Lock className="w-3.5 h-3.5" />
-              Pas de spam. Juste les vraies nouvelles de Findr.
+              {t("waitlistSignup.privacy")}
             </motion.p>
           )}
         </div>

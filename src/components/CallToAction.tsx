@@ -4,8 +4,10 @@ import { useState } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useWaitlist } from "@/hooks/useWaitlist";
 import heroImage from "@/assets/hero-vintage.jpg";
+import { useTranslation } from "react-i18next";
 
 const CallToAction = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const sectionRef = useScrollReveal();
   const { count, loading, submitted, submit } = useWaitlist();
@@ -26,7 +28,7 @@ const CallToAction = () => {
           <div className="absolute inset-0">
             <img
               src={heroImage}
-              alt="Brocante vintage"
+              alt={t("callToAction.imageAlt")}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-primary/85" />
@@ -36,20 +38,19 @@ const CallToAction = () => {
             {count !== null && (
               <p className="text-sm mb-4 flex items-center justify-center gap-2" style={{ color: 'hsl(42 33% 94% / 0.7)' }}>
                 <Users className="w-4 h-4" />
-                Déjà {count} personne{count !== 1 ? "s" : ""} sur la liste d'attente
+                {t("callToAction.waitlistCount", { count })}
               </p>
             )}
             <h2 className="text-3xl md:text-5xl font-barlow font-bold mb-6" style={{ color: 'hsl(42 33% 94%)' }}>
-              Prêt à trouver tes pépites ?
+              {t("callToAction.title")}
             </h2>
             <p className="text-lg max-w-xl mx-auto mb-10" style={{ color: 'hsl(42 33% 94% / 0.85)' }}>
-              Rejoins la liste d'attente et sois parmi les premiers 
-              à accéder à la plateforme de chinage communautaire.
+              {t("callToAction.subtitle")}
             </p>
 
             {submitted ? (
               <p className="text-xl font-semibold" style={{ color: 'hsl(42 33% 94%)' }}>
-                🎉 C'est noté ! On te prévient dès l'ouverture.
+                {t("callToAction.success")}
               </p>
             ) : (
               <form 
@@ -62,7 +63,7 @@ const CallToAction = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="ton@email.com"
+                    placeholder={t("callToAction.emailPlaceholder")}
                     className="w-full h-14 pl-12 pr-4 rounded-full bg-secondary text-primary placeholder:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                     required
                   />
@@ -73,7 +74,7 @@ const CallToAction = () => {
                   disabled={loading}
                   className="cta-hover btn-gold h-14 px-8 rounded-full whitespace-nowrap"
                 >
-                  {loading ? "..." : "Je m'inscris"}
+                  {loading ? "..." : t("callToAction.submit")}
                   {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
                 </Button>
               </form>

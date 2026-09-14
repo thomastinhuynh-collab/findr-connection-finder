@@ -2,22 +2,24 @@ import { Button } from "@/components/ui/button";
 import { Search, ArrowRight, Gem, Clock, ShieldCheck, Send, Coins, Heart, TrendingUp, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useTranslation } from "react-i18next";
 
 const buyerBenefits = [
-  { icon: Gem, text: "Trouve des pièces introuvables" },
-  { icon: Send, text: "Publie gratuitement ta recherche" },
-  { icon: Clock, text: "Reçois tes premières propositions rapidement" },
-  { icon: ShieldCheck, text: "Transaction suivie par l'équipe findr" },
+  { icon: Gem, textKey: "becomeFindr.buyr.benefits.rare" },
+  { icon: Send, textKey: "becomeFindr.buyr.benefits.free" },
+  { icon: Clock, textKey: "becomeFindr.buyr.benefits.fast" },
+  { icon: ShieldCheck, textKey: "becomeFindr.buyr.benefits.support" },
 ];
 
 const finderBenefits = [
-  { icon: Coins, text: "Monétise ton expertise" },
-  { icon: Heart, text: "Choisis les recherches qui t'intéressent" },
-  { icon: Calendar, text: "Choisis tes missions, gagne à la trouvaille" },
-  { icon: TrendingUp, text: "Construis ta réputation" },
+  { icon: Coins, textKey: "becomeFindr.findr.benefits.expertise" },
+  { icon: Heart, textKey: "becomeFindr.findr.benefits.choose" },
+  { icon: Calendar, textKey: "becomeFindr.findr.benefits.earn" },
+  { icon: TrendingUp, textKey: "becomeFindr.findr.benefits.reputation" },
 ];
 
 const BecomeFindr = () => {
+  const { t } = useTranslation();
   const headingRef = useScrollReveal();
   const leftCardRef = useScrollReveal();
   const rightCardRef = useScrollReveal();
@@ -27,10 +29,10 @@ const BecomeFindr = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div ref={headingRef} className="scroll-reveal text-center mb-7">
           <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
-            Deux profils, une communauté
+            {t("becomeFindr.eyebrow")}
           </span>
           <h2 className="text-3xl md:text-5xl font-display font-bold mt-4 text-cream">
-            Quel est ton rôle ?
+            {t("becomeFindr.title")}
           </h2>
         </div>
 
@@ -45,10 +47,10 @@ const BecomeFindr = () => {
             </div>
 
             <h3 className="text-2xl font-display font-bold mb-2 text-cream">
-              Tu es buyr
+              {t("becomeFindr.buyr.title")}
             </h3>
             <p className="text-sm mb-8 text-cream/60">
-              Publie ta demande et laisse les findrs trouver pour toi.
+              {t("becomeFindr.buyr.subtitle")}
             </p>
 
             <ul className="space-y-4 mb-10 flex-grow">
@@ -57,7 +59,7 @@ const BecomeFindr = () => {
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-accent/12">
                     <b.icon className="w-4 h-4 text-accent" />
                   </div>
-                  <span className="text-sm font-medium text-cream/90">{b.text}</span>
+                  <span className="text-sm font-medium text-cream/90">{t(b.textKey)}</span>
                 </li>
               ))}
             </ul>
@@ -68,7 +70,7 @@ const BecomeFindr = () => {
               asChild
             >
               <Link to="/poster">
-                Je deviens buyr
+                {t("becomeFindr.buyr.cta")}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
@@ -84,10 +86,10 @@ const BecomeFindr = () => {
             </div>
 
             <h3 className="text-2xl font-display font-bold mb-2 text-cream">
-              Tu es findr
+              {t("becomeFindr.findr.title")}
             </h3>
             <p className="text-sm mb-8 text-cream/60">
-              Transforme ta passion du dénichage en source de revenus.
+              {t("becomeFindr.findr.subtitle")}
             </p>
 
             <ul className="space-y-4 mb-10 flex-grow">
@@ -96,7 +98,7 @@ const BecomeFindr = () => {
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-accent/12">
                     <b.icon className="w-4 h-4 text-accent" />
                   </div>
-                  <span className="text-sm font-medium text-cream/90">{b.text}</span>
+                  <span className="text-sm font-medium text-cream/90">{t(b.textKey)}</span>
                 </li>
               ))}
             </ul>
@@ -108,7 +110,7 @@ const BecomeFindr = () => {
               asChild
             >
               <Link to="/recherches">
-                Je deviens findr
+                {t("becomeFindr.findr.cta")}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>

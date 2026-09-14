@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Instagram } from "lucide-react";
 import Logo from "@/components/Logo";
+import { useTranslation } from "react-i18next";
 
 const TikTokIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -9,6 +10,8 @@ const TikTokIcon = () => (
 );
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-primary py-16">
       <div className="container mx-auto px-4">
@@ -28,23 +31,23 @@ const Footer = () => {
 
           {/* Middle - Plateforme */}
           <div>
-            <h4 className="font-display font-semibold text-cream mb-4">Plateforme</h4>
+            <h4 className="font-display font-semibold text-cream mb-4">{t("footer.platform")}</h4>
             <ul className="space-y-3 text-sm text-cream/70">
-              <li><Link to="/comment-ca-marche" className="hover:text-accent transition-colors">Comment ça marche</Link></li>
-              <li><Link to="/poster" className="hover:text-accent transition-colors">Devenir buyr</Link></li>
-              <li><Link to="/recherches" className="hover:text-accent transition-colors">Devenir findr</Link></li>
-              <li><Link to="/recherches" className="hover:text-accent transition-colors">Les catégories</Link></li>
+              <li><Link to="/comment-ca-marche" className="hover:text-accent transition-colors">{t("footer.links.howItWorks")}</Link></li>
+              <li><Link to="/poster" className="hover:text-accent transition-colors">{t("footer.links.becomeBuyr")}</Link></li>
+              <li><Link to="/recherches" className="hover:text-accent transition-colors">{t("footer.links.becomeFindr")}</Link></li>
+              <li><Link to="/recherches" className="hover:text-accent transition-colors">{t("footer.links.categories")}</Link></li>
             </ul>
           </div>
 
           {/* Right - Légal */}
           <div>
-            <h4 className="font-display font-semibold text-cream mb-4">Légal</h4>
+            <h4 className="font-display font-semibold text-cream mb-4">{t("footer.legal.title")}</h4>
             <ul className="space-y-3 text-sm text-cream/70">
-              <li><Link to="/mentions-legales" className="hover:text-accent transition-colors">Mentions légales</Link></li>
-              <li><Link to="/cgu" className="hover:text-accent transition-colors">CGU</Link></li>
-              <li><Link to="/confidentialite" className="hover:text-accent transition-colors">Politique de confidentialité</Link></li>
-              <li><Link to="/contact" className="hover:text-accent transition-colors">Contact</Link></li>
+              <li><Link to="/mentions-legales" className="hover:text-accent transition-colors">{t("footer.legal.notice")}</Link></li>
+              <li><Link to="/cgu" className="hover:text-accent transition-colors">{t("footer.legal.terms")}</Link></li>
+              <li><Link to="/confidentialite" className="hover:text-accent transition-colors">{t("footer.legal.privacy")}</Link></li>
+              <li><Link to="/contact" className="hover:text-accent transition-colors">{t("footer.legal.contact")}</Link></li>
             </ul>
           </div>
         </div>
@@ -52,7 +55,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="border-t border-secondary pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-cream/50">
-            © 2025 findr — Tous droits réservés
+            {t("footer.copyright")}
           </p>
           <div className="flex gap-4">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-cream/70 hover:text-accent transition-colors">
