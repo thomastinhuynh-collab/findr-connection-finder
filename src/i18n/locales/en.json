@@ -699,7 +699,10 @@
   },
   "common": {
     "back": "Back",
-    "notDefined": "Not specified"
+    "notDefined": "Not specified",
+    "continue": "Continue",
+    "select": "Select",
+    "collapse": "Collapse"
   },
   "publicProfile": {
     "notFound": "Profile not found",
@@ -721,5 +724,49 @@
     "duration": "Requested booking period",
     "selectDuration": "Select a period",
     "why": "Why do you want to book this search?"
+  },
+  "postSearch": {
+    "title": "Post your search",
+    "subtitle": "Describe your dream item and let the community find it for you",
+    "steps": {
+      "essentials": "Essentials",
+      "details": "Details",
+      "conditions": "Preferences"
+    },
+    "objectLabel": "What are you looking for?",
+    "objectPlaceholder": "E.g. 1980s oversized leather jacket",
+    "objectHint": "Be specific: brand, model, period and size where relevant.",
+    "category": "Category",
+    "selectCategory": "Select a category",
+    "condition": "Desired condition",
+    "conditions": {
+      "new": "New / Never used",
+      "veryGood": "Very good condition",
+      "good": "Good condition",
+      "wearAccepted": "Signs of wear accepted"
+    },
+    "description": "Detailed description",
+    "descriptionPlaceholder": "Describe the desired condition, important details and inspiration…",
+    "photos": "Inspiration photos",
+    "addPhotos": "Add inspiration photos",
+    "photosHint": "A picture of the product you want or a reference found online…",
+    "budget": "Budget",
+    "budgetError": "The minimum budget must be lower than the maximum.",
+    "deadline": "Desired deadline",
+    "noDeadline": "No particular deadline — take your time",
+    "addDeadline": "+ Add a desired deadline",
+    "deadlines": {
+      "threeDays": "3 days",
+      "oneWeek": "1 week",
+      "twoWeeks": "2 weeks",
+      "oneMonth": "1 month",
+      "noRush": "No rush"
+    },
+    "location": "Location",
+    "city": "City",
+    "reassurance": "After publication, findr members receive your request and usually send proposals within 48 hours.",
+    "publishing": "Publishing…",
+    "publish": "Post my search",
+    "legal": "By publishing, you accept our Terms and Privacy Policy."
   }
 }

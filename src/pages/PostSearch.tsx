@@ -18,7 +18,12 @@ import { useTranslation } from "react-i18next";
 
 const categories = [...CATEGORIES, { name: OTHER_CATEGORY, slug: OTHER_CATEGORY, status: "active" as const, subcategories: [] }];
 
-const conditionOptions = ["new", "veryGood", "good", "wearAccepted"] as const;
+const conditionOptions = [
+  { value: "Neuf / Jamais utilisé", key: "new" },
+  { value: "Très bon état", key: "veryGood" },
+  { value: "Bon état", key: "good" },
+  { value: "Usures acceptées", key: "wearAccepted" },
+] as const;
 const stepLabels = ["essentials", "details", "conditions"] as const;
 
 const PostSearch = () => {
@@ -295,12 +300,12 @@ const PostSearch = () => {
                      <Label>{t("postSearch.condition")} <span className="required-mark">*</span></Label>
                     <div className="grid grid-cols-2 gap-3">
                       {conditionOptions.map((opt) => {
-                        const selected = formData.condition === opt;
+                        const selected = formData.condition === opt.value;
                         return (
                           <button
-                            key={opt}
+                            key={opt.value}
                             type="button"
-                            onClick={() => setFormData({ ...formData, condition: opt })}
+                            onClick={() => setFormData({ ...formData, condition: opt.value })}
                             className="text-left transition-all"
                             style={{
                               backgroundColor: selected ? "#1B2A4A" : "#FFFFFF",
@@ -313,7 +318,7 @@ const PostSearch = () => {
                               cursor: "pointer",
                             }}
                           >
-                             {t(`postSearch.conditions.${opt}`)}
+                             {t(`postSearch.conditions.${opt.key}`)}
                           </button>
                         );
                       })}

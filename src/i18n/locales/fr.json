@@ -699,7 +699,10 @@
   },
   "common": {
     "back": "Retour",
-    "notDefined": "Non défini"
+    "notDefined": "Non défini",
+    "continue": "Continuer",
+    "select": "Sélectionner",
+    "collapse": "Replier"
   },
   "publicProfile": {
     "notFound": "Profil introuvable",
@@ -721,5 +724,49 @@
     "duration": "Durée de réservation souhaitée",
     "selectDuration": "Sélectionner une durée",
     "why": "Pourquoi veux-tu réserver cette annonce ?"
+  },
+  "postSearch": {
+    "title": "Poste ta recherche",
+    "subtitle": "Décris l’objet de tes rêves et laisse la communauté le trouver pour toi",
+    "steps": {
+      "essentials": "L’essentiel",
+      "details": "Les détails",
+      "conditions": "Les conditions"
+    },
+    "objectLabel": "Qu’est-ce que tu cherches ?",
+    "objectPlaceholder": "Ex : Veste en cuir oversize années 80",
+    "objectHint": "Sois précis : marque, modèle, époque, taille si pertinent.",
+    "category": "Catégorie",
+    "selectCategory": "Sélectionne une catégorie",
+    "condition": "État souhaité",
+    "conditions": {
+      "new": "Neuf / Jamais utilisé",
+      "veryGood": "Très bon état",
+      "good": "Bon état",
+      "wearAccepted": "Usures acceptées"
+    },
+    "description": "Description détaillée",
+    "descriptionPlaceholder": "Décris l’état souhaité, les détails importants, les inspirations…",
+    "photos": "Photos d’inspiration",
+    "addPhotos": "Ajoute des photos d’inspiration",
+    "photosHint": "Une image du produit que tu veux, une référence trouvée en ligne…",
+    "budget": "Budget",
+    "budgetError": "Le budget minimum doit être inférieur au maximum.",
+    "deadline": "Délai souhaité",
+    "noDeadline": "Pas de délai particulier — à ton rythme",
+    "addDeadline": "+ Ajouter une échéance souhaitée",
+    "deadlines": {
+      "threeDays": "3 jours",
+      "oneWeek": "1 semaine",
+      "twoWeeks": "2 semaines",
+      "oneMonth": "1 mois",
+      "noRush": "Pas pressé"
+    },
+    "location": "Localisation",
+    "city": "Ville",
+    "reassurance": "Après publication, les membres findr reçoivent ta demande et te font des propositions sous 48h en moyenne.",
+    "publishing": "Publication…",
+    "publish": "Publier ma recherche",
+    "legal": "En publiant, tu acceptes nos CGU et notre politique de confidentialité."
   }
 }
