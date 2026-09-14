@@ -745,7 +745,24 @@
     "justifyTitle": "Explain your booking request",
     "duration": "Requested booking period",
     "selectDuration": "Select a period",
-    "why": "Why do you want to book this search?"
+    "why": "Why do you want to book this search?",
+    "searchNotFound": "Search not found.",
+    "actionImpossible": "Action unavailable",
+    "ownSearch": "You cannot reserve your own search.",
+    "impossible": "Reservation unavailable",
+    "alreadyExists": "Reservation already exists",
+    "alreadyPending": "You already have a pending reservation request for this search.",
+    "backToSearch": "Back to the search",
+    "sevenDaysRenewable": "7 days (renewable once)",
+    "justificationPlaceholder": "Explain to the buyr why you want to reserve this search and how much time you need.",
+    "characters": "{{count}}/500 characters",
+    "howItWorks": "How does it work?",
+    "step1": "The buyr will receive your reservation request",
+    "step2": "They can accept, decline or adjust the duration",
+    "step3": "If accepted, the search will be hidden from other findrs",
+    "step4": "You will be the only one able to interact with the buyr",
+    "sending": "Sending…",
+    "send": "Send request"
   },
   "postSearch": {
     "title": "Post your search",
@@ -851,5 +868,12 @@
     "save": "Save changes",
     "deleteTitle": "Delete this search?",
     "deleteDescription": "This action cannot be undone. Your search and all associated proposals will be deleted."
+  },
+  "headerActions": {
+    "messages": "Messages",
+    "noConversation": "No conversations",
+    "notifications": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotification": "No notifications"
   }
 }
