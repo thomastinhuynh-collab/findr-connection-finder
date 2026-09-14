@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -60,7 +60,10 @@ const Messaging = () => {
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Position de défilement à restaurer après l'ajout de messages plus anciens en tête de liste.
+  const prependScrollRef = useRef<{ height: number; top: number } | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -113,10 +116,17 @@ const Messaging = () => {
     };
   }, [id, user]);
 
-  useEffect(() => {
-    if (loadingOlder) return;
+  useLayoutEffect(() => {
+    const container = messagesContainerRef.current;
+    const pending = prependScrollRef.current;
+    if (pending && container) {
+      // Messages anciens ajoutés en haut : on garde le même point de lecture.
+      container.scrollTop = container.scrollHeight - pending.height + pending.top;
+      prependScrollRef.current = null;
+      return;
+    }
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loadingOlder]);
+  }, [messages]);
 
   // Lightbox keyboard navigation
   useEffect(() => {
@@ -214,13 +224,19 @@ const Messaging = () => {
 
   const loadOlderMessages = async () => {
     if (loadingOlder) return;
+    const oldest = messages[0];
+    if (!oldest) return;
     setLoadingOlder(true);
+
+    // Pagination par curseur (date du plus ancien message affiché) : insensible aux
+    // nouveaux messages reçus en temps réel, contrairement à un offset.
     const { data, error } = await supabase
       .from("messages")
       .select("*")
       .eq("search_id", id)
+      .lt("created_at", oldest.created_at)
       .order("created_at", { ascending: false })
-      .range(messages.length, messages.length + PAGE_SIZE - 1);
+      .limit(PAGE_SIZE);
 
     if (error) {
       console.error("Error fetching older messages:", error);
@@ -229,6 +245,10 @@ const Messaging = () => {
     }
 
     const older = (data || []).slice().reverse();
+    const container = messagesContainerRef.current;
+    if (container) {
+      prependScrollRef.current = { height: container.scrollHeight, top: container.scrollTop };
+    }
     setMessages((prev) => {
       const existing = new Set(prev.map((m) => m.id));
       return [...older.filter((m) => !existing.has(m.id)), ...prev];
@@ -533,6 +553,7 @@ const Messaging = () => {
 
             {/* Messages Area */}
             <div
+              ref={messagesContainerRef}
               className="flex-1 px-5 py-6 overflow-y-auto min-h-[420px] max-h-[520px]"
               style={{ backgroundColor: "#F5F0E8" }}
             >
