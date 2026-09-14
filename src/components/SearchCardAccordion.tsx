@@ -202,8 +202,6 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     margin: 0,
-                  }}
-                >
                   }}>{title}</h3>}
                 </TranslatedContent>
               </Link>
