@@ -3,8 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { useGoBack } from "@/hooks/useGoBack";
 import { CATEGORIES } from "@/lib/categories";
+import { useTranslation } from "react-i18next";
 
 const CategoryNav = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
@@ -32,7 +34,7 @@ const CategoryNav = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center gap-0">
-          {CATEGORIES.map((category) => (
+          {CATEGORIES.map((category, categoryIndex) => (
             <div
               key={category.slug}
               className="relative"
@@ -44,7 +46,7 @@ const CategoryNav = () => {
                 className="flex items-center gap-1 px-4 py-2 font-medium text-white/80 hover:text-white transition-colors whitespace-nowrap"
                 style={{ fontSize: '13px' }}
               >
-                {category.name}
+                {t(`categoryNav.categories.c${categoryIndex + 1}.name`)}
                 <ChevronDown className="w-3 h-3" />
               </button>
 
@@ -56,16 +58,16 @@ const CategoryNav = () => {
                     onClick={() => handleCategoryClick(category.slug)}
                     className="w-full text-left px-4 py-2 text-sm font-semibold text-primary hover:bg-muted transition-colors"
                   >
-                    Tout voir
+                    {t("categoryNav.viewAll")}
                   </button>
                   <div className="border-t border-border my-1" />
-                  {category.subcategories.map((sub) => (
+                  {category.subcategories.map((sub, subIndex) => (
                     <button
                       key={sub.name}
                       onClick={() => handleSubCategoryClick(category.slug, sub.name)}
                       className="w-full text-left px-4 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
                     >
-                      {sub.name}
+                      {t(`categoryNav.categories.c${categoryIndex + 1}.subcategories.s${subIndex + 1}`)}
                     </button>
                   ))}
                 </div>

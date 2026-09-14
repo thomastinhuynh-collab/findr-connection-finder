@@ -105,6 +105,165 @@
       "cta": "JOIN THE FINDRS →"
     }
   },
+  "footer": {
+    "platform": "Platform",
+    "links": {
+      "howItWorks": "How it works",
+      "becomeBuyr": "Become a buyr",
+      "becomeFindr": "Become a findr",
+      "categories": "Categories"
+    },
+    "legal": {
+      "title": "Legal",
+      "notice": "Legal notice",
+      "terms": "Terms of service",
+      "privacy": "Privacy policy",
+      "contact": "Contact"
+    },
+    "copyright": "© 2025 findr — All rights reserved"
+  },
+  "categoryNav": {
+    "viewAll": "View all",
+    "categories": {
+      "c1": {
+        "name": "Fashion & Leather Goods",
+        "subcategories": {
+          "s1": "Jackets & Coats", "s2": "T-shirts & Sweatshirts", "s3": "Trousers & Jeans",
+          "s4": "Dresses & Skirts", "s5": "Shoes", "s6": "Sportswear"
+        }
+      },
+      "c2": {
+        "name": "Pop Culture & TCG",
+        "subcategories": {
+          "s1": "Pokémon Cards", "s2": "Yu-Gi-Oh! Cards", "s3": "Magic Cards",
+          "s4": "Collectibles & Toys", "s5": "Manga & Comics", "s6": "Retro Video Games"
+        }
+      },
+      "c3": {
+        "name": "Vinyl & Music",
+        "subcategories": {
+          "s1": "LP Records", "s2": "Singles", "s3": "Cassettes",
+          "s4": "Collector CDs", "s5": "Turntables & Hi-Fi"
+        }
+      },
+      "c4": {
+        "name": "Cameras & Electronics",
+        "subcategories": {
+          "s1": "Film Cameras", "s2": "Vintage Lenses", "s3": "Camera Accessories",
+          "s4": "Retro Consoles", "s5": "Vintage Audio"
+        }
+      },
+      "c5": {
+        "name": "Jewellery & Accessories",
+        "subcategories": {
+          "s1": "Rings & Bracelets", "s2": "Necklaces & Pendants", "s3": "Vintage Watches",
+          "s4": "Bags & Clutches", "s5": "Eyewear"
+        }
+      },
+      "c6": {
+        "name": "Home & Furniture",
+        "subcategories": {
+          "s1": "Vintage Furniture", "s2": "Lighting", "s3": "Home Décor",
+          "s4": "Tableware & Ceramics", "s5": "Home Textiles"
+        }
+      }
+    }
+  },
+  "comingSoon": {
+    "title": "Coming soon",
+    "subtitle": "{{categoryName}} is coming soon to findr",
+    "back": "Back to active searches"
+  },
+  "categories": {
+    "eyebrow": "Categories",
+    "title": "What can you find on Findr?",
+    "viewSearches": "View searches →",
+    "items": {
+      "fashion": {
+        "name": "Fashion & Leather Goods",
+        "description": "Leather jackets, denim, 70s–90s vintage, bags",
+        "subcategories": "Fashion & Leather Goods · Vinyl & Music · Jewellery & Accessories"
+      },
+      "popCulture": {
+        "name": "Pop Culture",
+        "description": "Collectibles, comics, cards and vinyl",
+        "subcategories": "Comics · Collectibles · Trading Cards · Video Games"
+      },
+      "misc": {
+        "name": "Unique Finds",
+        "description": "Watches, cameras and curious objects",
+        "subcategories": "Cameras & Electronics · Watches · Books · Curiosities"
+      }
+    }
+  },
+  "callToAction": {
+    "imageAlt": "Vintage flea market",
+    "waitlistCount_one": "{{count}} person already on the waitlist",
+    "waitlistCount_other": "{{count}} people already on the waitlist",
+    "title": "Ready to find something special?",
+    "subtitle": "Join the waitlist and be among the first to explore our community-powered treasure hunting platform.",
+    "success": "🎉 You're on the list! We'll let you know as soon as we launch.",
+    "emailPlaceholder": "you@email.com",
+    "submit": "Join the waitlist"
+  },
+  "testimonials": {
+    "guarantees": {
+      "payment": "Secure payment",
+      "protection": "Buyr protection",
+      "community": "Verified community"
+    },
+    "eyebrow": "Testimonials",
+    "title": "What people say about findr",
+    "items": {
+      "camille": { "quote": "A findr in Lille tracked down my 70s Levi's jacket in just three days. It was exactly what I'd been searching for all those months!" },
+      "antoine": { "quote": "I've always loved hunting through flea markets. Now I get paid to do it. It's such a brilliant idea!" },
+      "julien": { "quote": "A mint first-edition Pokémon card. The findr spotted it at a garage sale for €30. I couldn't believe it." }
+    },
+    "disclaimer": "Illustrative example · beta in progress",
+    "waitlist": {
+      "label": "Waitlist",
+      "count": "{{count}} curious minds already signed up",
+      "goal": "Goal: {{count}} signups"
+    }
+  },
+  "waitlistSignup": {
+    "waitlistCount_one": "{{count}} person already on the waitlist",
+    "waitlistCount_other": "{{count}} people already on the waitlist",
+    "title": "Be among the first to join Findr",
+    "subtitle": "Get early access and help us shape the platform.",
+    "success": "You're on the list! We'll let you know as soon as we launch 🎉",
+    "rolePrompt": "I'm more of a...",
+    "roles": { "buyr": "Buyr", "findr": "Findr" },
+    "emailPlaceholder": "you@email.com",
+    "submit": "Join the waitlist",
+    "privacy": "No spam. Just genuine updates from Findr."
+  },
+  "becomeFindr": {
+    "eyebrow": "Two roles, one community",
+    "title": "Which one are you?",
+    "buyr": {
+      "title": "You're a buyr",
+      "subtitle": "Post what you're looking for and let findrs track it down.",
+      "benefits": {
+        "rare": "Find the pieces no one else can",
+        "free": "Post your search for free",
+        "fast": "Start receiving proposals quickly",
+        "support": "Every transaction is supported by findr"
+      },
+      "cta": "Become a buyr"
+    },
+    "findr": {
+      "title": "You're a findr",
+      "subtitle": "Turn your eye for hidden gems into income.",
+      "benefits": {
+        "expertise": "Earn from your expertise",
+        "choose": "Pick the searches that inspire you",
+        "earn": "Choose your hunts and earn with every find",
+        "reputation": "Build your reputation"
+      },
+      "cta": "Become a findr"
+    }
+  },
   "howItWorks": {
     "eyebrow": "GUIDE",
     "title": "How it works",

@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
+import { useTranslation } from "react-i18next";
+import { CATEGORIES } from "@/lib/categories";
 
 interface ComingSoonCategoryProps {
   categoryName: string;
@@ -11,6 +13,13 @@ interface ComingSoonCategoryProps {
  */
 const ComingSoonCategory = ({ categoryName }: ComingSoonCategoryProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const categoryIndex = CATEGORIES.findIndex(
+    (category) => category.name === categoryName || category.slug === categoryName,
+  );
+  const translatedCategoryName = categoryIndex >= 0
+    ? t(`categoryNav.categories.c${categoryIndex + 1}.name`)
+    : categoryName;
 
   return (
     <div
@@ -30,7 +39,7 @@ const ComingSoonCategory = ({ categoryName }: ComingSoonCategoryProps) => {
           lineHeight: 1.05,
         }}
       >
-        Bientôt disponible
+        {t("comingSoon.title")}
       </h1>
 
       <p
@@ -43,7 +52,7 @@ const ComingSoonCategory = ({ categoryName }: ComingSoonCategoryProps) => {
           letterSpacing: "0.01em",
         }}
       >
-        {categoryName} arrive bientôt sur findr
+        {t("comingSoon.subtitle", { categoryName: translatedCategoryName })}
       </p>
 
       <button
@@ -62,7 +71,7 @@ const ComingSoonCategory = ({ categoryName }: ComingSoonCategoryProps) => {
           cursor: "pointer",
         }}
       >
-        Retour aux recherches actives
+        {t("comingSoon.back")}
       </button>
     </div>
   );
