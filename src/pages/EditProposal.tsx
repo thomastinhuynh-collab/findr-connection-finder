@@ -57,7 +57,7 @@ const EditProposal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { i18n } = useTranslation();
+  const { t } = useTranslation();
   
   const [newImages, setNewImages] = useState<File[]>([]);
   const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
@@ -176,7 +176,7 @@ const EditProposal = () => {
     if (min && max) return `${min}-${max}€`;
     if (max) return `< ${max}€`;
     if (min) return `> ${min}€`;
-    return "Non défini";
+    return t("common.notDefined");
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -282,7 +282,6 @@ const EditProposal = () => {
           proposed_price: parseFloat(price),
           image_urls: allImageUrls,
           product_link: productLink || null,
-          source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr",
         })
         .eq("id", id);
       
@@ -436,7 +435,7 @@ const EditProposal = () => {
                 {totalImages < 4 && (
                   <label className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-accent transition-colors cursor-pointer flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-accent">
                     <Upload className="w-8 h-8" />
-                    <span className="text-xs text-center px-2">Ajouter une photo</span>
+                    <span className="text-xs text-center px-2">{t("proposalForm.addPhoto")}</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -485,7 +484,7 @@ const EditProposal = () => {
               <Input
                 id="brand"
                 type="text"
-                placeholder="Ex: Levi's, Schott, Sans marque..."
+                placeholder={t("proposalForm.brandPlaceholder")}
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
               />
@@ -499,7 +498,7 @@ const EditProposal = () => {
               </Label>
               <Select value={condition} onValueChange={setCondition}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Sélectionnez l'état" />
+                  <SelectValue placeholder={t("proposalForm.selectCondition")} />
                 </SelectTrigger>
                 <SelectContent>
                   {conditions.map((c) => (
@@ -536,7 +535,7 @@ const EditProposal = () => {
               </Label>
               <Textarea
                 id="description"
-                placeholder="Décrivez votre trouvaille, son histoire, ses particularités..."
+                placeholder={t("proposalForm.descriptionPlaceholder")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
@@ -561,18 +560,18 @@ const EditProposal = () => {
               <div className="bg-card rounded-xl p-4 space-y-3">
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Prix proposé</span>
+                    <span className="text-muted-foreground">{t("proposalForm.price")}</span>
                     <span className="font-medium">{priceNum.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Commission findr (4%)</span>
+                    <span className="text-muted-foreground">{t("proposalForm.commission")}</span>
                     <span className="font-medium text-destructive">-{findrFee.toFixed(2)} €</span>
                   </div>
                 </div>
 
                 <div className="border-t border-border pt-3">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-primary">Vous recevrez</span>
+                    <span className="font-semibold text-primary">{t("proposalForm.youReceive")}</span>
                     <span className="text-2xl font-bold text-success">{finalAmount.toFixed(2)} €</span>
                   </div>
                 </div>
