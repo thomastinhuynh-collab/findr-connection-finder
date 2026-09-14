@@ -42,15 +42,18 @@ interface DebitRow {
 const AdminNegativeBalances = () => {
   const [findrs, setFindrs] = useState<FindrRow[]>([]);
   const [debits, setDebits] = useState<DebitRow[]>([]);
+  const [heldCounts, setHeldCounts] = useState<Record<string, number>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [processing, setProcessing] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
+    // Un findr reste listé tant qu'il a un solde négatif OU une retenue de versements
+    // active, sinon impossible de lever la retenue une fois le solde revenu à zéro.
     const { data: profiles, error } = await supabase
       .from("profiles")
       .select("user_id, full_name, negative_balance, payout_hold")
-      .gt("negative_balance", 0)
+      .or("negative_balance.gt.0,payout_hold.eq.true")
       .order("negative_balance", { ascending: false });
 
     if (error) {
@@ -62,17 +65,28 @@ const AdminNegativeBalances = () => {
     setFindrs(rows);
 
     if (rows.length) {
-      const { data: debitRows } = await supabase
-        .from("findr_debits")
-        .select("id, findr_id, amount, reason, status, created_at, admin_notes")
-        .in(
-          "findr_id",
-          rows.map((r) => r.user_id),
-        )
-        .order("created_at", { ascending: false });
+      const ids = rows.map((r) => r.user_id);
+      const [{ data: debitRows }, { data: heldRows }] = await Promise.all([
+        supabase
+          .from("findr_debits")
+          .select("id, findr_id, amount, reason, status, created_at, admin_notes")
+          .in("findr_id", ids)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("reservations")
+          .select("findr_id")
+          .in("findr_id", ids)
+          .eq("payment_status", "versement_en_revue"),
+      ]);
       setDebits((debitRows ?? []) as DebitRow[]);
+      const counts: Record<string, number> = {};
+      for (const r of heldRows ?? []) {
+        counts[r.findr_id] = (counts[r.findr_id] ?? 0) + 1;
+      }
+      setHeldCounts(counts);
     } else {
       setDebits([]);
+      setHeldCounts({});
     }
     setLoading(false);
   }, []);
@@ -129,8 +143,8 @@ const AdminNegativeBalances = () => {
           Soldes à recouvrer
         </h2>
         <p className="text-sm text-muted-foreground mt-1">
-          {findrs.length} findr{findrs.length > 1 ? "s" : ""} avec un solde négatif — montants les
-          plus élevés en premier.
+          {findrs.length} findr{findrs.length > 1 ? "s" : ""} avec un solde négatif ou des
+          versements en attente — montants les plus élevés en premier.
         </p>
       </header>
 
@@ -151,11 +165,22 @@ const AdminNegativeBalances = () => {
                     <CardTitle className="text-lg text-primary break-words">
                       {f.full_name ?? "Utilisateur"}
                     </CardTitle>
-                    <div className="flex items-center gap-2">
-                      {f.payout_hold && <Badge variant="destructive">Versements en attente</Badge>}
-                      <Badge variant="secondary">
-                        {Number(f.negative_balance).toFixed(2)} € à recouvrer
-                      </Badge>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {f.payout_hold && (
+                        <Badge variant="destructive">
+                          Versements en attente
+                          {heldCounts[f.user_id]
+                            ? ` — ${heldCounts[f.user_id]} versement${heldCounts[f.user_id] > 1 ? "s" : ""} bloqué${heldCounts[f.user_id] > 1 ? "s" : ""}`
+                            : ""}
+                        </Badge>
+                      )}
+                      {Number(f.negative_balance) > 0 ? (
+                        <Badge variant="secondary">
+                          {Number(f.negative_balance).toFixed(2)} € à recouvrer
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline">Solde à jour</Badge>
+                      )}
                     </div>
                   </div>
                 </CardHeader>
@@ -198,7 +223,7 @@ const AdminNegativeBalances = () => {
                   <div className="flex flex-wrap gap-2">
                     <Button
                       size="sm"
-                      disabled={processing === f.user_id}
+                      disabled={processing === f.user_id || Number(f.negative_balance) <= 0}
                       onClick={() => callAdmin(f.user_id, { action: "mark_settled" })}
                     >
                       {processing === f.user_id && (

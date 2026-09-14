@@ -75,7 +75,7 @@ const PAGE_SIZE = 24;
 
 const Searches = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Toutes");
   const [searches, setSearches] = useState<SearchItem[]>([]);
@@ -364,20 +364,35 @@ const Searches = () => {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent align="start" className="w-56 p-1">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setSelectedCategory(cat)}
-                      className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted"
-                      style={{
-                        background: selectedCategory === cat ? "#F5F1E8" : "transparent",
-                        color: "#1B2A4A",
-                        fontWeight: selectedCategory === cat ? 600 : 400,
-                      }}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+                  {categories.map((cat) => {
+                    const comingSoon = isComingSoonCategory(cat);
+                    return (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          if (comingSoon) {
+                            // Même comportement que le menu de navigation : page "Bientôt disponible".
+                            setSearchParams({ category: cat });
+                            return;
+                          }
+                          setSelectedCategory(cat);
+                        }}
+                        className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted"
+                        style={{
+                          background: selectedCategory === cat ? "#F5F1E8" : "transparent",
+                          color: comingSoon ? "#8A8275" : "#1B2A4A",
+                          fontWeight: selectedCategory === cat ? 600 : 400,
+                        }}
+                      >
+                        {cat}
+                        {comingSoon && (
+                          <span className="ml-1.5 text-[11px] italic" style={{ color: "#8A8275" }}>
+                            (bientôt)
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </PopoverContent>
               </Popover>
 

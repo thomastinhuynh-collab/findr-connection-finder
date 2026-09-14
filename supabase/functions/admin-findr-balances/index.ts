@@ -3,6 +3,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
+import Stripe from "npm:stripe@18";
+import { releaseFundsForReservation } from "../_shared/payout.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -107,7 +109,41 @@ Deno.serve(async (req) => {
     console.log(
       `admin ${user.id} a mis payout_hold=${body.hold} pour findr ${body.findrId}`,
     );
-    return json({ success: true, payoutHold: body.hold });
+
+    // Levée de la retenue : on libère immédiatement les versements restés en revue
+    // (sinon ils attendraient le prochain passage de la tâche planifiée).
+    const released: string[] = [];
+    const releaseFailed: string[] = [];
+    if (!body.hold) {
+      const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+      const { data: inReview } = await admin
+        .from("reservations")
+        .select(
+          "id, buyr_id, findr_id, proposal_id, findr_payout_amount, stripe_payment_intent_id",
+        )
+        .eq("findr_id", body.findrId)
+        .eq("payment_status", "versement_en_revue")
+        .eq("dispute_open", false);
+
+      if (stripeKey && (inReview ?? []).length > 0) {
+        const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+        for (const reservation of inReview ?? []) {
+          try {
+            const result = await releaseFundsForReservation(admin, stripe, reservation, true);
+            if (result.ok) released.push(reservation.id);
+            else releaseFailed.push(reservation.id);
+          } catch (e) {
+            console.error("release after hold lift failed for", reservation.id, e);
+            releaseFailed.push(reservation.id);
+          }
+        }
+      } else if (!stripeKey && (inReview ?? []).length > 0) {
+        console.error("STRIPE_SECRET_KEY manquant — versements en revue non libérés");
+        releaseFailed.push(...(inReview ?? []).map((r) => r.id));
+      }
+    }
+
+    return json({ success: true, payoutHold: body.hold, released, releaseFailed });
   } catch (err) {
     console.error("admin-findr-balances error:", err);
     return json({ error: (err as Error).message ?? "Erreur serveur" }, 500);
