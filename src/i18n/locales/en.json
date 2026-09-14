@@ -6,10 +6,10 @@
     "blog": "Blog",
     "postSearch": "Post a search",
     "postSearchShort": "Post",
-      "mySpace": "My space",
-      "logout": "Log out",
-      "menu": "Menu",
-      "language": "Language"
+    "mySpace": "My space",
+    "logout": "Log out",
+    "menu": "Menu",
+    "language": "Language"
   },
   "hero": {
     "searchPlaceholder": "Search for an item, a brand, a rare piece…",
@@ -128,43 +128,63 @@
       "c1": {
         "name": "Fashion & Leather Goods",
         "subcategories": {
-          "s1": "Jackets & Coats", "s2": "T-shirts & Sweatshirts", "s3": "Trousers & Jeans",
-          "s4": "Dresses & Skirts", "s5": "Shoes", "s6": "Sportswear"
+          "s1": "Jackets & Coats",
+          "s2": "T-shirts & Sweatshirts",
+          "s3": "Trousers & Jeans",
+          "s4": "Dresses & Skirts",
+          "s5": "Shoes",
+          "s6": "Sportswear"
         }
       },
       "c2": {
         "name": "Pop Culture & TCG",
         "subcategories": {
-          "s1": "Pokémon Cards", "s2": "Yu-Gi-Oh! Cards", "s3": "Magic Cards",
-          "s4": "Collectibles & Toys", "s5": "Manga & Comics", "s6": "Retro Video Games"
+          "s1": "Pokémon Cards",
+          "s2": "Yu-Gi-Oh! Cards",
+          "s3": "Magic Cards",
+          "s4": "Collectibles & Toys",
+          "s5": "Manga & Comics",
+          "s6": "Retro Video Games"
         }
       },
       "c3": {
         "name": "Vinyl & Music",
         "subcategories": {
-          "s1": "LP Records", "s2": "Singles", "s3": "Cassettes",
-          "s4": "Collector CDs", "s5": "Turntables & Hi-Fi"
+          "s1": "LP Records",
+          "s2": "Singles",
+          "s3": "Cassettes",
+          "s4": "Collector CDs",
+          "s5": "Turntables & Hi-Fi"
         }
       },
       "c4": {
         "name": "Cameras & Electronics",
         "subcategories": {
-          "s1": "Film Cameras", "s2": "Vintage Lenses", "s3": "Camera Accessories",
-          "s4": "Retro Consoles", "s5": "Vintage Audio"
+          "s1": "Film Cameras",
+          "s2": "Vintage Lenses",
+          "s3": "Camera Accessories",
+          "s4": "Retro Consoles",
+          "s5": "Vintage Audio"
         }
       },
       "c5": {
         "name": "Jewellery & Accessories",
         "subcategories": {
-          "s1": "Rings & Bracelets", "s2": "Necklaces & Pendants", "s3": "Vintage Watches",
-          "s4": "Bags & Clutches", "s5": "Eyewear"
+          "s1": "Rings & Bracelets",
+          "s2": "Necklaces & Pendants",
+          "s3": "Vintage Watches",
+          "s4": "Bags & Clutches",
+          "s5": "Eyewear"
         }
       },
       "c6": {
         "name": "Home & Furniture",
         "subcategories": {
-          "s1": "Vintage Furniture", "s2": "Lighting", "s3": "Home Décor",
-          "s4": "Tableware & Ceramics", "s5": "Home Textiles"
+          "s1": "Vintage Furniture",
+          "s2": "Lighting",
+          "s3": "Home Décor",
+          "s4": "Tableware & Ceramics",
+          "s5": "Home Textiles"
         }
       }
     }
@@ -215,9 +235,15 @@
     "eyebrow": "Testimonials",
     "title": "What people say about findr",
     "items": {
-      "camille": { "quote": "A findr in Lille tracked down my 70s Levi's jacket in just three days. It was exactly what I'd been searching for all those months!" },
-      "antoine": { "quote": "I've always loved hunting through flea markets. Now I get paid to do it. It's such a brilliant idea!" },
-      "julien": { "quote": "A mint first-edition Pokémon card. The findr spotted it at a garage sale for €30. I couldn't believe it." }
+      "camille": {
+        "quote": "A findr in Lille tracked down my 70s Levi's jacket in just three days. It was exactly what I'd been searching for all those months!"
+      },
+      "antoine": {
+        "quote": "I've always loved hunting through flea markets. Now I get paid to do it. It's such a brilliant idea!"
+      },
+      "julien": {
+        "quote": "A mint first-edition Pokémon card. The findr spotted it at a garage sale for €30. I couldn't believe it."
+      }
     },
     "disclaimer": "Illustrative example · beta in progress",
     "waitlist": {
@@ -233,7 +259,10 @@
     "subtitle": "Get early access and help us shape the platform.",
     "success": "You're on the list! We'll let you know as soon as we launch 🎉",
     "rolePrompt": "I'm more of a...",
-    "roles": { "buyr": "Buyr", "findr": "Findr" },
+    "roles": {
+      "buyr": "Buyr",
+      "findr": "Findr"
+    },
     "emailPlaceholder": "you@email.com",
     "submit": "Join the waitlist",
     "privacy": "No spam. Just genuine updates from Findr."
@@ -347,19 +376,177 @@
       "premiumText": "for Premium members, with exclusive perks.",
       "examplePrefix": "A real example: a findr tracks down a rare vinyl at €50; the buyr pays €50 + 5% =",
       "exampleMiddle": ". With Premium, €50 + 3% =",
-      "premiumLink": "Discover Premium"
+      "premiumLink": "Discover Premium",
+      "comingSoon": "coming soon"
     },
     "etiquette": {
       "title": "findr good manners",
       "summary": "6 RULES OF CONDUCT",
       "intro": "A few simple rules to keep the experience great for everyone.",
-      "r1": { "title": "Respect and kindness", "description": "Every member deserves respect. Keep exchanges courteous, even when you disagree." },
-      "r2": { "title": "Clear communication", "description": "Reply to messages within a reasonable window (24-48h). Be precise in your descriptions." },
-      "r3": { "title": "Honesty", "description": "Describe item condition faithfully. Bad surprises damage everyone's trust." },
-      "r4": { "title": "Reliability", "description": "Honour your commitments: booking, shipping and reply times. Speak up if something comes up." },
-      "r5": { "title": "Fair ratings", "description": "Rate constructively. A negative review should be justified and factual." },
-      "r6": { "title": "No off-platform deals", "description": "Every transaction must go through findr so everyone stays protected." }
+      "r1": {
+        "title": "Respect and kindness",
+        "description": "Every member deserves respect. Keep exchanges courteous, even when you disagree."
+      },
+      "r2": {
+        "title": "Clear communication",
+        "description": "Reply to messages within a reasonable window (24-48h). Be precise in your descriptions."
+      },
+      "r3": {
+        "title": "Honesty",
+        "description": "Describe item condition faithfully. Bad surprises damage everyone's trust."
+      },
+      "r4": {
+        "title": "Reliability",
+        "description": "Honour your commitments: booking, shipping and reply times. Speak up if something comes up."
+      },
+      "r5": {
+        "title": "Fair ratings",
+        "description": "Rate constructively. A negative review should be justified and factual."
+      },
+      "r6": {
+        "title": "No off-platform deals",
+        "description": "Every transaction must go through findr so everyone stays protected."
+      }
     },
     "cta": "POST A SEARCH →"
+  },
+  "legalLayout": {
+    "lastUpdated": "Last updated: {{date}}",
+    "updatedDate": "May 7, 2026"
+  },
+  "contact": {
+    "title": "Contact",
+    "intro": "Have a question, feedback or something to report? The findr team is here to help. Choose the contact that best fits your request:",
+    "general": "General enquiries",
+    "support": "Support",
+    "privacy": "Privacy / GDPR",
+    "responseTitle": "Response time",
+    "responseText": "We aim to reply to every request within two business days. For questions about an ongoing transaction, please include the relevant search ID so we can help you faster.",
+    "reportTitle": "Report content",
+    "reportText": "If you spot illegal, fraudulent or otherwise prohibited content, email us at <email>support@findrapp.fr</email> with the relevant URL and a description of the issue."
+  },
+  "legalNotice": {
+    "title": "Legal notice",
+    "publisher": {
+      "title": "Website publisher",
+      "text": "The <strong>findr</strong> website (the “Platform”) is published by findr SAS, a simplified joint-stock company currently being registered with the French Trade and Companies Register.",
+      "companyLabel": "Company name:",
+      "officeLabel": "Registered office:",
+      "emailLabel": "Contact email:",
+      "directorLabel": "Publication director:",
+      "director": "The legal representative of findr SAS"
+    },
+    "hosting": {
+      "title": "Hosting",
+      "text": "The website is hosted by <strong>Lovable Labs Incorporated</strong> and uses its associated cloud infrastructure services (Supabase for the database and authentication).",
+      "companyLabel": "Company name:",
+      "addressLabel": "Postal address:",
+      "address": "One Lincoln Street, Suite 2500, Boston, MA 02111, United States",
+      "phoneLabel": "Phone:",
+      "emailLabel": "Email:"
+    },
+    "intellectualProperty": {
+      "title": "Intellectual property",
+      "text": "All elements of the website—including text, graphics, the logo, icons, images and their presentation—are the exclusive property of findr SAS, except for content published by users. Any reproduction, representation, modification or use, in whole or in part, without prior written permission is strictly prohibited."
+    },
+    "liability": {
+      "title": "Liability",
+      "text": "findr makes every effort to ensure that information published on the Platform is accurate and up to date. However, findr cannot be held liable for errors or omissions, or for any use third parties make of this information."
+    },
+    "contact": {
+      "title": "Contact",
+      "text": "For any question about this legal notice, email us at <email>contact@findrapp.fr</email>."
+    }
+  },
+  "privacy": {
+    "title": "Privacy policy",
+    "intro": "This policy explains how findr collects, uses and protects your personal data in accordance with the General Data Protection Regulation (GDPR) and French data protection law.",
+    "controller": {
+      "title": "1. Data controller",
+      "text": "The data controller is findr SAS. If you have any questions, contact us at <email>privacy@findrapp.fr</email>."
+    },
+    "data": {
+      "title": "2. Data we collect",
+      "identity": "<strong>Identification data:</strong> first name, last name, email address and encrypted password.",
+      "profile": "<strong>Profile data:</strong> photo, bio and city (optional).",
+      "usage": "<strong>Usage data:</strong> published searches, proposals, messages and ratings.",
+      "technical": "<strong>Technical data:</strong> IP address, browser type and connection logs."
+    },
+    "purposes": {
+      "title": "3. How we use your data",
+      "matching": "Connect buyrs with findrs.",
+      "account": "Manage your account and transactions.",
+      "security": "Keep the Platform secure and prevent fraud.",
+      "communications": "Send you service-related communications."
+    },
+    "legalBasis": {
+      "title": "4. Legal basis",
+      "text": "We process data to perform our contract with you (the Terms), based on your consent for marketing communications, and for findr's legitimate interests in security and improving the service."
+    },
+    "retention": {
+      "title": "5. Data retention",
+      "text": "We keep your data for as long as needed to provide the service, and for no more than three years after your last activity unless a longer legal retention period applies, particularly for accounting records."
+    },
+    "recipients": {
+      "title": "6. Who receives your data",
+      "text": "Your data may be accessed by authorised findr team members and by our technical service providers, including hosting and payment providers, under strict contractual obligations. We never sell your data to third parties."
+    },
+    "rights": {
+      "title": "7. Your rights",
+      "text": "You have the right to access, correct, erase and transfer your data, restrict its processing, and object to its use. You can exercise these rights at <email>privacy@findrapp.fr</email>. You may also lodge a complaint with the CNIL, the French data protection authority (<cnil>www.cnil.fr</cnil>)."
+    },
+    "cookies": {
+      "title": "8. Cookies",
+      "text": "findr only uses cookies that are strictly necessary for the Platform to work, including session and authentication cookies. No advertising or third-party tracking cookies are placed without your consent."
+    },
+    "security": {
+      "title": "9. Security",
+      "text": "We use appropriate technical and organisational safeguards, including encryption, access controls and backups, to protect your data from unauthorised access, loss or alteration."
+    }
+  },
+  "terms": {
+    "title": "Terms of Use",
+    "intro": "These Terms of Use govern the findr platform, which connects people looking for an item or service (“buyrs”) with people who can source it for them (“findrs”).",
+    "purpose": {
+      "title": "1. Purpose",
+      "text": "findr is a platform that connects users. findr is not a seller, buyer or commercial intermediary. Transactions are entered into directly between buyrs and findrs within the framework provided by the Platform."
+    },
+    "registration": {
+      "title": "2. Registration",
+      "text": "Registration is free and limited to adults who have the legal capacity to enter into a contract. Users agree to provide accurate information and keep it up to date."
+    },
+    "matching": {
+      "title": "3. How matching works",
+      "search": "Buyrs publish a search describing the item or service they want.",
+      "proposal": "Findrs submit priced proposals.",
+      "payment": "The buyr may accept a proposal, at which point the funds are held securely by the Platform (escrow).",
+      "release": "Funds are released to the findr once the buyr confirms receipt."
+    },
+    "fees": {
+      "title": "4. Service fees",
+      "text": "findr charges a <strong>5%</strong> fee on each successful transaction (reduced to <strong>3%</strong> for Premium members), plus a <strong>3% authentication fee</strong>. All fees are clearly shown before a transaction is confirmed."
+    },
+    "obligations": {
+      "title": "5. User responsibilities",
+      "content": "Do not publish illegal, counterfeit or misleading content.",
+      "commitments": "Honour all commitments made as part of a transaction.",
+      "messaging": "Communicate exclusively through the built-in messaging service until the transaction is complete."
+    },
+    "suspension": {
+      "title": "6. Suspension and termination",
+      "text": "findr reserves the right to suspend or delete any account that breaches these Terms, without notice or compensation."
+    },
+    "liability": {
+      "title": "7. Liability",
+      "text": "findr acts as a technical intermediary. The findr alone is responsible for the conformity, authenticity and delivery of the items or services offered. The buyr is responsible for payment."
+    },
+    "personalData": {
+      "title": "8. Personal data",
+      "text": "Our handling of personal data is explained in our <privacy>Privacy policy</privacy>."
+    },
+    "law": {
+      "title": "9. Governing law",
+      "text": "These Terms are governed by French law. Any dispute will fall within the jurisdiction of the competent courts for findr’s registered office, subject to any mandatory consumer protection rules."
+    }
   }
 }
