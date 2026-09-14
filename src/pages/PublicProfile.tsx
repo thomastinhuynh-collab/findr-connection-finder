@@ -76,7 +76,7 @@ const PublicProfile = () => {
     // Fetch profile
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
-      .select("id, title, description, source_lang, category, budget_min, budget_max, status, image_url, created_at")
+      .select("*")
       .eq("user_id", userId)
       .single();
 
@@ -91,7 +91,7 @@ const PublicProfile = () => {
     // Fetch user's searches
     const { data: searchesData } = await supabase
       .from("searches")
-      .select("*")
+      .select("id, title, description, source_lang, category, budget_min, budget_max, status, image_url, created_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
