@@ -21,6 +21,7 @@ import PremiumWallet from "@/components/PremiumWallet";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
+import TranslatedContent from "@/components/TranslatedContent";
 
 
 interface Profile {
@@ -203,7 +204,7 @@ const MySpace = () => {
     setLoadingProposals(true);
     const { data } = await supabase
       .from("proposals")
-      .select("id, title, description, proposed_price, image_urls, status, created_at, search_id")
+      .select("id, title, description, proposed_price, image_urls, status, created_at, search_id, source_lang")
       .eq("findr_id", user.id)
       .order("created_at", { ascending: false });
 
@@ -212,7 +213,7 @@ const MySpace = () => {
       rows.map(async (p) => {
         const { data: s } = await supabase
           .from("searches")
-          .select("id, title")
+          .select("id, title, description, source_lang")
           .eq("id", p.search_id)
           .maybeSingle();
         return { ...p, search: s };
@@ -401,7 +402,7 @@ const MySpace = () => {
       const searchIds = favData.map(f => f.search_id);
       const { data: searchesData } = await supabase
         .from("searches")
-        .select("id, title, description, category, budget_min, budget_max, urgency, image_url, user_id")
+        .select("id, title, description, category, budget_min, budget_max, urgency, image_url, user_id, source_lang")
         .in("id", searchIds);
 
       if (searchesData) {
@@ -1170,9 +1171,9 @@ const MySpace = () => {
                                       {p.proposed_price}
                                     </span>
                                   </div>
-                                  <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>
-                                    {p.title}
-                                  </h3>
+                                   <TranslatedContent type="proposal" id={p.id} title={p.title} description={p.description} sourceLang={p.source_lang}>
+                                     {({ title }) => <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>{title}</h3>}
+                                   </TranslatedContent>
                                   {p.search && (
                                     <p className="text-xs mt-0.5 line-clamp-1" style={{ color: '#6B7280' }}>
                                       Pour : {p.search.title}
@@ -1221,14 +1222,12 @@ const MySpace = () => {
                                 <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: '#F0EBE3', color: '#8B7355' }}>
                                   {search.category}
                                 </span>
-                                <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>
-                                  {search.title}
-                                </h3>
-                                {search.description && (
-                                  <p className="text-xs line-clamp-1 mt-0.5" style={{ color: '#6B7280' }}>
-                                    {search.description}
-                                  </p>
-                                )}
+                                 <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>
+                                   {({ title, description }) => <>
+                                     <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>{title}</h3>
+                                     {description && <p className="text-xs line-clamp-1 mt-0.5" style={{ color: '#6B7280' }}>{description}</p>}
+                                   </>}
+                                 </TranslatedContent>
                                 <div className="flex items-center gap-3 text-xs mt-2" style={{ color: '#9CA3AF' }}>
                                   <span className="flex items-center gap-1">
                                     <Euro className="w-3 h-3" />
