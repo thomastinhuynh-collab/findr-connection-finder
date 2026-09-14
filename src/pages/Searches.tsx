@@ -605,7 +605,7 @@ const Searches = () => {
 
                     {/* Deadline badge — bottom left */}
                     {(() => {
-                      const d = getDeadlineBadge(search.deadline);
+                      const d = getDeadlineBadge(search.deadline, t);
                       if (!d) return null;
                       return (
                         <span
