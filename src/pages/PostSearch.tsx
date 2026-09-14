@@ -18,20 +18,14 @@ import { useTranslation } from "react-i18next";
 
 const categories = [...CATEGORIES, { name: OTHER_CATEGORY, slug: OTHER_CATEGORY, status: "active" as const, subcategories: [] }];
 
-const conditionOptions = [
-  "Neuf / Jamais utilisé",
-  "Très bon état",
-  "Bon état",
-  "Usures acceptées",
-];
-
-const stepLabels = ["L'essentiel", "Les détails", "Les conditions"];
+const conditionOptions = ["new", "veryGood", "good", "wearAccepted"] as const;
+const stepLabels = ["essentials", "details", "conditions"] as const;
 
 const PostSearch = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -187,10 +181,10 @@ const PostSearch = () => {
             className="text-center mb-8"
           >
             <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
-              Poste ta recherche
+               {t("postSearch.title")}
             </h1>
             <p className="text-muted-foreground">
-              Décris l'objet de tes rêves et laisse la communauté le trouver pour toi
+               {t("postSearch.subtitle")}
             </p>
           </motion.div>
 
@@ -222,7 +216,7 @@ const PostSearch = () => {
                         className="mt-2 text-center"
                         style={{ fontSize: "11px", color: "#6B6259", whiteSpace: "nowrap" }}
                       >
-                        {label}
+                         {t(`postSearch.steps.${label}`)}
                       </span>
                     </div>
                     {idx < stepLabels.length - 1 && (
@@ -259,28 +253,28 @@ const PostSearch = () => {
                   className="space-y-6"
                 >
                   <div className="space-y-2">
-                    <Label htmlFor="title">Qu'est-ce que tu cherches ? <span className="required-mark">*</span></Label>
+                     <Label htmlFor="title">{t("postSearch.objectLabel")} <span className="required-mark">*</span></Label>
                     <Input
                       id="title"
-                      placeholder="Ex: Veste en cuir oversize années 80"
+                       placeholder={t("postSearch.objectPlaceholder")}
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       className="h-12"
                       required
                     />
                     <p style={{ fontSize: "11px", color: "#9A8F84", marginTop: "4px" }}>
-                      Sois précis : marque, modèle, époque, taille si pertinent.
+                       {t("postSearch.objectHint")}
                     </p>
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Catégorie <span className="required-mark">*</span></Label>
+                     <Label>{t("postSearch.category")} <span className="required-mark">*</span></Label>
                     <Select
                       value={formData.category}
                       onValueChange={(value) => setFormData({ ...formData, category: value })}
                     >
                       <SelectTrigger className="h-12">
-                        <SelectValue placeholder="Sélectionne une catégorie" />
+                         <SelectValue placeholder={t("postSearch.selectCategory")} />
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
                         {categories.map((cat) => (
@@ -290,7 +284,7 @@ const PostSearch = () => {
                             disabled={cat.status === "coming_soon"}
                             className={cat.status === "coming_soon" ? "opacity-50" : ""}
                           >
-                            {cat.name}{cat.status === "coming_soon" ? " (bientôt disponible)" : ""}
+                             {cat.name}{cat.status === "coming_soon" ? ` (${t("searchesPage.comingSoon")})` : ""}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -298,7 +292,7 @@ const PostSearch = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>État souhaité <span className="required-mark">*</span></Label>
+                     <Label>{t("postSearch.condition")} <span className="required-mark">*</span></Label>
                     <div className="grid grid-cols-2 gap-3">
                       {conditionOptions.map((opt) => {
                         const selected = formData.condition === opt;
@@ -319,7 +313,7 @@ const PostSearch = () => {
                               cursor: "pointer",
                             }}
                           >
-                            {opt}
+                             {t(`postSearch.conditions.${opt}`)}
                           </button>
                         );
                       })}
@@ -338,7 +332,7 @@ const PostSearch = () => {
                       opacity: isStep1Valid ? 1 : 0.4,
                     }}
                   >
-                    Continuer
+                     {t("common.continue")}
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </motion.div>
@@ -355,11 +349,11 @@ const PostSearch = () => {
                   className="space-y-6"
                 >
                   <div className="space-y-2">
-                    <Label htmlFor="description">Description détaillée</Label>
+                     <Label htmlFor="description">{t("postSearch.description")}</Label>
                     <div className="relative">
                       <Textarea
                         id="description"
-                        placeholder="Décris l'état souhaité, les détails importants, les inspirations..."
+                         placeholder={t("postSearch.descriptionPlaceholder")}
                         value={formData.description}
                         onChange={(e) => {
                           if (e.target.value.length <= 500) {
@@ -379,7 +373,7 @@ const PostSearch = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Photos d'inspiration</Label>
+                     <Label>{t("postSearch.photos")}</Label>
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -436,10 +430,10 @@ const PostSearch = () => {
                           <ImageIcon className="w-7 h-7" style={{ color: "#C9A84C" }} />
                         </div>
                         <p style={{ fontSize: "14px", fontWeight: 500, color: "#1B2A4A", marginBottom: "4px" }}>
-                          Ajoute des photos d'inspiration
+                           {t("postSearch.addPhotos")}
                         </p>
                         <p style={{ fontSize: "12px", color: "#9A8F84", marginBottom: "8px" }}>
-                          Une image du produit que tu veux, une référence trouvée en ligne...
+                           {t("postSearch.photosHint")}
                         </p>
                         <p style={{ fontSize: "11px", color: "#B0A898" }}>
                           PNG, JPG jusqu'à 5MB · Max 5 images
@@ -461,7 +455,7 @@ const PostSearch = () => {
                       }}
                     >
                       <ArrowLeft className="w-4 h-4 mr-2" />
-                      Retour
+                       {t("common.back")}
                     </Button>
                     <Button
                       type="button"
@@ -473,7 +467,7 @@ const PostSearch = () => {
                         borderRadius: "10px",
                       }}
                     >
-                      Continuer
+                       {t("common.continue")}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </div>
@@ -491,7 +485,7 @@ const PostSearch = () => {
                   className="space-y-6"
                 >
                   <div className="space-y-2">
-                    <Label>Budget</Label>
+                     <Label>{t("postSearch.budget")}</Label>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="relative input-with-icon">
                         <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
@@ -514,13 +508,13 @@ const PostSearch = () => {
                     </div>
                     {budgetError && (
                       <p style={{ color: "#DC2626", fontSize: "12px" }}>
-                        Le budget minimum doit être inférieur au maximum.
+                         {t("postSearch.budgetError")}
                       </p>
                     )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Délai souhaité</Label>
+                     <Label>{t("postSearch.deadline")}</Label>
                     {!deadlineOpen ? (
                       <div className="space-y-2">
                         <div
@@ -534,7 +528,7 @@ const PostSearch = () => {
                         >
                           <Clock className="w-4 h-4" style={{ color: "#C9A84C" }} />
                           <span style={{ fontSize: "14px", color: "#1B2A4A" }}>
-                            Pas de délai particulier — à ton rythme
+                             {t("postSearch.noDeadline")}
                           </span>
                         </div>
                         <button
@@ -551,7 +545,7 @@ const PostSearch = () => {
                             cursor: "pointer",
                           }}
                         >
-                          + Ajouter une échéance souhaitée
+                           {t("postSearch.addDeadline")}
                         </button>
                       </div>
                     ) : (
@@ -568,14 +562,14 @@ const PostSearch = () => {
                             }}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder="Sélectionner" />
+                               <SelectValue placeholder={t("common.select")} />
                             </SelectTrigger>
                             <SelectContent className="bg-card border-border">
-                              <SelectItem value="3-days">3 jours</SelectItem>
-                              <SelectItem value="1-week">1 semaine</SelectItem>
-                              <SelectItem value="2-weeks">2 semaines</SelectItem>
-                              <SelectItem value="1-month">1 mois</SelectItem>
-                              <SelectItem value="no-rush">Pas pressé</SelectItem>
+                               <SelectItem value="3-days">{t("postSearch.deadlines.threeDays")}</SelectItem>
+                               <SelectItem value="1-week">{t("postSearch.deadlines.oneWeek")}</SelectItem>
+                               <SelectItem value="2-weeks">{t("postSearch.deadlines.twoWeeks")}</SelectItem>
+                               <SelectItem value="1-month">{t("postSearch.deadlines.oneMonth")}</SelectItem>
+                               <SelectItem value="no-rush">{t("postSearch.deadlines.noRush")}</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -594,18 +588,18 @@ const PostSearch = () => {
                             cursor: "pointer",
                           }}
                         >
-                          Replier
+                           {t("common.collapse")}
                         </button>
                       </div>
                     )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Localisation</Label>
+                     <Label>{t("postSearch.location")}</Label>
                     <div className="relative input-with-icon">
                       <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
                       <Input
-                        placeholder="Ville"
+                         placeholder={t("postSearch.city")}
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                       />
@@ -624,7 +618,7 @@ const PostSearch = () => {
                   >
                     <Mail className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#1B2A4A" }} />
                     <p style={{ fontSize: "13px", color: "#1B2A4A", lineHeight: 1.6 }}>
-                      Après publication, les membres findr reçoivent ta demande et te font des propositions sous 48h en moyenne.
+                       {t("postSearch.reassurance")}
                     </p>
                   </div>
 
@@ -642,7 +636,7 @@ const PostSearch = () => {
                       }}
                     >
                       <ArrowLeft className="w-4 h-4 mr-2" />
-                      Retour
+                       {t("common.back")}
                     </Button>
                     <Button
                       type="submit"
@@ -659,11 +653,11 @@ const PostSearch = () => {
                       {isSubmitting ? (
                         <>
                           <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                          Publication...
+                           {t("postSearch.publishing")}
                         </>
                       ) : (
                         <>
-                          Publier ma recherche
+                           {t("postSearch.publish")}
                           <ArrowRight className="w-5 h-5 ml-2" />
                         </>
                       )}
@@ -671,7 +665,7 @@ const PostSearch = () => {
                   </div>
 
                   <p className="text-xs text-center text-muted-foreground">
-                    En publiant, tu acceptes nos CGU et notre politique de confidentialité.
+                     {t("postSearch.legal")}
                   </p>
                 </motion.div>
               )}
