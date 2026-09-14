@@ -768,5 +768,42 @@
     "publishing": "Publication…",
     "publish": "Publier ma recherche",
     "legal": "En publiant, tu acceptes nos CGU et notre politique de confidentialité."
+  },
+  "proposalForm": {
+    "searchNotFound": "Recherche non trouvée",
+    "backToSearches": "Retour aux recherches",
+    "makeTitle": "Faire une proposition",
+    "for": "Pour :",
+    "buyrBudget": "Budget du buyr :",
+    "photos": "Photos de l’objet",
+    "addPhoto": "Ajouter une photo",
+    "photosHint": "Ajoutez jusqu’à 4 photos de votre trouvaille. Des photos claires augmentent vos chances d’être sélectionné.",
+    "price": "Prix proposé",
+    "budgetIs": "Le budget du buyr est de {{budget}}",
+    "brand": "Marque",
+    "brandPlaceholder": "Ex : Levi’s, Schott, Sans marque…",
+    "condition": "État de l’objet",
+    "selectCondition": "Sélectionnez l’état",
+    "conditions": {
+      "newWithTags": "Neuf avec étiquette",
+      "likeNew": "Comme neuf",
+      "veryGood": "Très bon état",
+      "good": "Bon état",
+      "fair": "État correct"
+    },
+    "description": "Description complémentaire",
+    "descriptionPlaceholder": "Décrivez votre trouvaille, son histoire, ses particularités…",
+    "earnings": "Récapitulatif des gains",
+    "commission": "Commission findr (4 %)",
+    "youReceive": "Vous recevrez",
+    "securePayment": "Paiement sécurisé",
+    "stripePayment": "Le buyr paiera via Stripe si accepté",
+    "fundsSecured": "Fonds sécurisés jusqu’à livraison",
+    "authenticationIncluded": "Authentification incluse",
+    "protection": "Protection buyr & findr",
+    "sending": "Envoi en cours…",
+    "send": "Envoyer ma proposition",
+    "terms": "En envoyant cette proposition, vous acceptez les conditions générales de findr.",
+    "paymentPromise": "Le paiement sera sécurisé et vous serez payé une fois l’objet livré et validé."
   }
 }

@@ -768,5 +768,42 @@
     "publishing": "Publishing…",
     "publish": "Post my search",
     "legal": "By publishing, you accept our Terms and Privacy Policy."
+  },
+  "proposalForm": {
+    "searchNotFound": "Search not found",
+    "backToSearches": "Back to searches",
+    "makeTitle": "Make a proposal",
+    "for": "For:",
+    "buyrBudget": "Buyr budget:",
+    "photos": "Item photos",
+    "addPhoto": "Add a photo",
+    "photosHint": "Add up to 4 photos of your find. Clear photos increase your chances of being selected.",
+    "price": "Proposed price",
+    "budgetIs": "The buyr’s budget is {{budget}}",
+    "brand": "Brand",
+    "brandPlaceholder": "E.g. Levi’s, Schott, Unbranded…",
+    "condition": "Item condition",
+    "selectCondition": "Select the condition",
+    "conditions": {
+      "newWithTags": "New with tags",
+      "likeNew": "Like new",
+      "veryGood": "Very good condition",
+      "good": "Good condition",
+      "fair": "Fair condition"
+    },
+    "description": "Additional description",
+    "descriptionPlaceholder": "Describe your find, its history and special features…",
+    "earnings": "Earnings summary",
+    "commission": "findr fee (4%)",
+    "youReceive": "You will receive",
+    "securePayment": "Secure payment",
+    "stripePayment": "The buyr will pay via Stripe if accepted",
+    "fundsSecured": "Funds secured until delivery",
+    "authenticationIncluded": "Authentication included",
+    "protection": "Buyr & findr protection",
+    "sending": "Sending…",
+    "send": "Send my proposal",
+    "terms": "By sending this proposal, you accept the findr Terms.",
+    "paymentPromise": "Payment will be secured and released once the item is delivered and approved."
   }
 }
