@@ -18,6 +18,8 @@ import SearchImageCarousel from "@/components/SearchImageCarousel";
 import FavoriteButton from "@/components/FavoriteButton";
 import ComingSoonCategory from "@/components/ComingSoonCategory";
 import { CATEGORIES, isComingSoonCategory } from "@/lib/categories";
+import { useTranslation } from "react-i18next";
+import TranslatedContent from "@/components/TranslatedContent";
 
 interface SearchItem {
   id: string;
@@ -35,6 +37,7 @@ interface SearchItem {
     full_name: string | null;
     avatar_url: string | null;
   } | null;
+  source_lang?: string | null;
 }
 
 const getDeadlineBadge = (deadline: string | null) => {
@@ -75,6 +78,7 @@ const PAGE_SIZE = 24;
 
 const Searches = () => {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Toutes");
@@ -139,7 +143,7 @@ const Searches = () => {
 
     let query = supabase
       .from("searches")
-      .select("id, title, category, budget_min, budget_max, urgency, deadline, image_url, image_urls, created_at, user_id")
+      .select("id, title, category, budget_min, budget_max, urgency, deadline, image_url, image_urls, created_at, user_id, source_lang")
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .range(from, from + PAGE_SIZE - 1);
@@ -195,7 +199,7 @@ const Searches = () => {
     if (min && max) return `${min}-${max}€`;
     if (max) return `< ${max}€`;
     if (min) return `> ${min}€`;
-    return "Non défini";
+    return t("card.budgetUndefined");
   };
 
   const formatDate = (dateString: string) => {
@@ -205,11 +209,10 @@ const Searches = () => {
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffHours < 1) return "Il y a moins d'1h";
-    if (diffHours < 24) return `Il y a ${diffHours}h`;
-    if (diffDays === 1) return "Hier";
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
-    return date.toLocaleDateString("fr-FR");
+    return new Intl.RelativeTimeFormat(i18n.language, { numeric: "auto" }).format(
+      diffHours < 24 ? -Math.max(diffHours, 1) : -diffDays,
+      diffHours < 24 ? "hour" : "day",
+    );
   };
 
   const relevanceScore = (s: SearchItem, q: string) => {
@@ -315,10 +318,10 @@ const Searches = () => {
             className="text-center mb-10"
           >
             <h1 className="text-3xl md:text-5xl font-serif font-bold text-primary mb-4">
-              Recherches actives
+              {t("searchesPage.title")}
             </h1>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Parcours les demandes des buyrs et propose tes trouvailles pour gagner des commissions
+              {t("searchesPage.subtitle")}
             </p>
           </motion.div>
 
@@ -326,7 +329,7 @@ const Searches = () => {
           <div className="relative mb-4 max-w-xl mx-auto">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
-              placeholder="Rechercher un objet, une marque…"
+               placeholder={t("searchesPage.placeholder")}
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -338,7 +341,7 @@ const Searches = () => {
 
           {/* Results count */}
           <p className="text-sm text-muted-foreground mb-3">
-            {filteredAndSortedSearches.length} recherche{filteredAndSortedSearches.length > 1 ? "s" : ""} trouvée{filteredAndSortedSearches.length > 1 ? "s" : ""}
+            {t("searchesPage.results", { count: filteredAndSortedSearches.length })}
           </p>
 
           {/* Toolbar */}
@@ -359,7 +362,7 @@ const Searches = () => {
                 <PopoverTrigger asChild>
                   <button style={selectedCategory !== "Toutes" ? pillActive : pillBase}>
                     <Tag className="w-3.5 h-3.5" />
-                    {selectedCategory === "Toutes" ? "Catégorie" : selectedCategory}
+                    {selectedCategory === "Toutes" ? t("searchesPage.category") : selectedCategory}
                     <ChevronDown className="w-3.5 h-3.5 opacity-70" />
                   </button>
                 </PopoverTrigger>
@@ -387,7 +390,7 @@ const Searches = () => {
                         {cat}
                         {comingSoon && (
                           <span className="ml-1.5 text-[11px] italic" style={{ color: "#8A8275" }}>
-                            (bientôt)
+                             ({t("searchesPage.comingSoon")})
                           </span>
                         )}
                       </button>
@@ -401,19 +404,19 @@ const Searches = () => {
                 <PopoverTrigger asChild>
                   <button style={budgetTouched ? pillActive : pillBase}>
                     <Wallet className="w-3.5 h-3.5" />
-                    {budgetTouched ? `${budgetRange[0]}€ – ${budgetRange[1]}€` : "Budget"}
+                     {budgetTouched ? `${budgetRange[0]}€ – ${budgetRange[1]}€` : t("card.budget")}
                     <ChevronDown className="w-3.5 h-3.5 opacity-70" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent align="start" className="w-72 p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-medium text-muted-foreground">Fourchette de budget</span>
+                    <span className="text-xs font-medium text-muted-foreground">{t("searchesPage.budgetRange")}</span>
                     {budgetTouched && (
                       <button
                         onClick={() => { setBudgetTouched(false); setBudgetRange([0, 5000]); }}
                         className="text-xs text-muted-foreground hover:text-foreground"
                       >
-                        Réinitialiser
+                         {t("searchesPage.reset")}
                       </button>
                     )}
                   </div>
@@ -436,19 +439,19 @@ const Searches = () => {
                 <PopoverTrigger asChild>
                   <button style={deadlineFilter !== "all" ? pillActive : pillBase}>
                     <Clock className="w-3.5 h-3.5" />
-                    {deadlineFilter === "all" && "Délai"}
-                    {deadlineFilter === "urgent" && "Urgent <3j"}
-                    {deadlineFilter === "week" && "Cette semaine"}
-                    {deadlineFilter === "none" && "Sans échéance"}
+                     {deadlineFilter === "all" && t("searchesPage.deadline")}
+                     {deadlineFilter === "urgent" && t("searchesPage.urgent")}
+                     {deadlineFilter === "week" && t("searchesPage.thisWeek")}
+                     {deadlineFilter === "none" && t("searchesPage.noDeadline")}
                     <ChevronDown className="w-3.5 h-3.5 opacity-70" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent align="start" className="w-56 p-1">
                   {([
-                    { v: "all", label: "Toutes" },
-                    { v: "urgent", label: "Urgent < 3 jours" },
-                    { v: "week", label: "Cette semaine" },
-                    { v: "none", label: "Sans échéance" },
+                     { v: "all", label: t("searchesPage.all") },
+                     { v: "urgent", label: t("searchesPage.urgent") },
+                     { v: "week", label: t("searchesPage.thisWeek") },
+                     { v: "none", label: t("searchesPage.noDeadline") },
                   ] as { v: DeadlineFilter; label: string }[]).map((o) => (
                     <button
                       key={o.v}
@@ -477,23 +480,23 @@ const Searches = () => {
                   }}
                   style={{ ...pillBase, border: "none", background: "transparent", color: "#8A7A4C" }}
                 >
-                  <X className="w-3.5 h-3.5" /> Réinitialiser
+                   <X className="w-3.5 h-3.5" /> {t("searchesPage.reset")}
                 </button>
               )}
             </div>
 
             {/* Right: sort */}
             <div className="flex items-center gap-2">
-              <span style={{ fontSize: 12, color: "#6B6355", fontWeight: 500 }}>Trier par</span>
+              <span style={{ fontSize: 12, color: "#6B6355", fontWeight: 500 }}>{t("searchesPage.sort")}</span>
               <Popover>
                 <PopoverTrigger asChild>
                   <button style={pillActive}>
                     <ArrowUpDown className="w-3.5 h-3.5" />
-                    {sortBy === "relevance" && "Pertinence"}
-                    {sortBy === "recent" && "Plus récent"}
-                    {sortBy === "price-asc" && "Prix croissant"}
-                    {sortBy === "price-desc" && "Prix décroissant"}
-                    {sortBy === "deadline-asc" && "Échéance proche"}
+                    {sortBy === "relevance" && t("searchesPage.relevance")}
+                    {sortBy === "recent" && t("searchesPage.recent")}
+                    {sortBy === "price-asc" && t("searchesPage.priceAsc")}
+                    {sortBy === "price-desc" && t("searchesPage.priceDesc")}
+                    {sortBy === "deadline-asc" && t("searchesPage.deadlineNear")}
                     {sortBy === "urgency-asc" && "Délai le plus court"}
                     {sortBy === "urgency-desc" && "Délai le plus long"}
                     <ChevronDown className="w-3.5 h-3.5 opacity-70" />
@@ -501,11 +504,11 @@ const Searches = () => {
                 </PopoverTrigger>
                 <PopoverContent align="end" className="w-56 p-1">
                   {([
-                    { v: "relevance", label: "Pertinence", show: !!searchQuery },
-                    { v: "recent", label: "Plus récent", show: true },
-                    { v: "price-asc", label: "Prix croissant", show: true },
-                    { v: "price-desc", label: "Prix décroissant", show: true },
-                    { v: "deadline-asc", label: "Échéance proche", show: true },
+                     { v: "relevance", label: t("searchesPage.relevance"), show: !!searchQuery },
+                     { v: "recent", label: t("searchesPage.recent"), show: true },
+                     { v: "price-asc", label: t("searchesPage.priceAsc"), show: true },
+                     { v: "price-desc", label: t("searchesPage.priceDesc"), show: true },
+                     { v: "deadline-asc", label: t("searchesPage.deadlineNear"), show: true },
                   ] as { v: SortOption; label: string; show: boolean }[])
                     .filter((o) => o.show)
                     .map((o) => (
@@ -539,8 +542,8 @@ const Searches = () => {
           {/* Empty state */}
           {!loading && filteredAndSortedSearches.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">Aucune recherche trouvée</p>
-              <Button onClick={() => navigate("/poster")}>Poster ma recherche</Button>
+              <p className="text-muted-foreground mb-4">{t("searchesPage.empty")}</p>
+              <Button onClick={() => navigate("/poster")}>{t("searchesPage.post")}</Button>
             </div>
           )}
 
@@ -633,21 +636,13 @@ const Searches = () => {
 
                   {/* Content */}
                   <div style={{ padding: "14px 16px 12px" }}>
-                    <h3
-                      className="truncate"
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: 700,
-                        color: "#1B2A4A",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      {search.title}
-                    </h3>
+                     <TranslatedContent type="search" id={search.id} title={search.title} sourceLang={search.source_lang}>
+                       {({ title }) => <h3 className="truncate" style={{ fontSize: "15px", fontWeight: 700, color: "#1B2A4A", marginBottom: "8px" }}>{title}</h3>}
+                     </TranslatedContent>
 
                     {/* Budget */}
                     <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", color: "#8A7A4C", textTransform: "uppercase" }}>
-                      Budget
+                       {t("card.budget")}
                     </span>
                     <div className="flex items-center" style={{ gap: "4px", marginTop: "2px" }}>
                       <Euro style={{ width: "13px", height: "13px", color: "#C9A84C" }} />
@@ -707,7 +702,7 @@ const Searches = () => {
                           {initials}
                         </span>
                         <span style={{ fontSize: "12px", fontWeight: 500, color: "#1B2A4A" }}>
-                          {search.profiles?.full_name || "Utilisateur"}
+                           {search.profiles?.full_name || t("card.user")}
                         </span>
                       </button>
                     </div>
@@ -716,11 +711,11 @@ const Searches = () => {
                     <div style={{ marginTop: "8px", fontSize: "12px" }}>
                       {(proposalCounts[search.id] || 0) > 0 ? (
                         <span style={{ color: "#1B2A4A" }}>
-                          {proposalCounts[search.id]} proposition{proposalCounts[search.id] > 1 ? "s" : ""} déjà reçue{proposalCounts[search.id] > 1 ? "s" : ""}
+                           {t("card.proposalsReceived", { count: proposalCounts[search.id] })}
                         </span>
                       ) : (
                         <span style={{ color: "#C9A84C", fontStyle: "italic" }}>
-                          Sois le premier findr à proposer →
+                           {t("card.firstFindr")}
                         </span>
                       )}
                     </div>
@@ -742,10 +737,10 @@ const Searches = () => {
                 {loadingMore ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Chargement...
+                     {t("searchesPage.loading")}
                   </>
                 ) : (
-                  "Charger plus"
+                   t("searchesPage.loadMore")
                 )}
               </Button>
             </div>

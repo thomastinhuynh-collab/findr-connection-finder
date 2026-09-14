@@ -31,6 +31,9 @@ import ReservationBadge from "@/components/ReservationBadge";
 import FavoriteButton from "@/components/FavoriteButton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
+import { useTranslation } from "react-i18next";
+import { useTranslatedContent } from "@/hooks/useTranslatedContent";
+import TranslationNotice from "@/components/TranslationNotice";
 
 interface SearchWithProfile {
   id: string;
@@ -46,6 +49,7 @@ interface SearchWithProfile {
   status: string | null;
   created_at: string;
   user_id: string;
+  source_lang?: string | null;
   profiles: {
     full_name: string | null;
     avatar_url: string | null;
@@ -264,6 +268,7 @@ const SearchDetail = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { startOnboarding, loading: stripeLoading } = useStripeConnect();
+  const { t, i18n } = useTranslation();
   const [search, setSearch] = useState<SearchWithProfile | null>(null);
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -274,12 +279,19 @@ const SearchDetail = () => {
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [stripeGateOpen, setStripeGateOpen] = useState(false);
   const stripeReady = !!userProfile?.stripe_onboarding_complete;
+  const translatedSearch = useTranslatedContent({
+    type: "search",
+    id: search?.id,
+    title: search?.title ?? "",
+    description: search?.description,
+    sourceLang: search?.source_lang,
+  });
 
   usePageMeta({
-    title: search ? `${search.title} — recherché sur findr` : undefined,
+    title: search ? `${translatedSearch.title} — findr` : undefined,
     description: search
-      ? (search.description?.trim()
-          ? `${search.description.trim().slice(0, 155)}${search.description.trim().length > 155 ? "…" : ""}`
+      ? (translatedSearch.description?.trim()
+          ? `${translatedSearch.description.trim().slice(0, 155)}${translatedSearch.description.trim().length > 155 ? "…" : ""}`
           : `Recherche ${search.category} publiée sur findr. Propose cet objet et gagne de l'argent en chinant.`)
       : undefined,
   });
@@ -453,7 +465,7 @@ const SearchDetail = () => {
     if (min && max) return `${min} - ${max}€`;
     if (max) return `Jusqu'à ${max}€`;
     if (min) return `À partir de ${min}€`;
-    return "Non défini";
+    return t("card.budgetUndefined");
   };
 
   const formatDate = (dateString: string) => {
@@ -463,11 +475,7 @@ const SearchDetail = () => {
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffHours < 1) return "Il y a moins d'1h";
-    if (diffHours < 24) return `Il y a ${diffHours}h`;
-    if (diffDays === 1) return "Hier";
-    if (diffDays < 7) return `Il y a ${diffDays} jours`;
-    return date.toLocaleDateString("fr-FR");
+    return new Intl.RelativeTimeFormat(i18n.language, { numeric: "auto" }).format(diffHours < 24 ? -Math.max(diffHours, 1) : -diffDays, diffHours < 24 ? "hour" : "day");
   };
 
   const handleContact = () => {
@@ -538,10 +546,10 @@ const SearchDetail = () => {
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-2xl font-serif font-bold text-primary mb-4">
-              Annonce non trouvée
+               {t("searchDetail.notFound")}
             </h1>
             <Button onClick={() => navigate("/recherches")}>
-              Retour aux recherches
+               {t("searchDetail.back")}
             </Button>
           </div>
         </main>
@@ -557,7 +565,7 @@ const SearchDetail = () => {
   const titleBlock = (
     <div className="flex items-start justify-between gap-4 mb-4">
       <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary">
-        {search.title}
+         {translatedSearch.title}
       </h1>
       {!isOwner && (
         <FavoriteButton searchId={search.id} className="flex-shrink-0 border border-[#E8E0D4]" />
@@ -588,17 +596,18 @@ const SearchDetail = () => {
         style={{ backgroundColor: '#F0F0F0', color: '#555555', fontSize: '13px', fontWeight: 500, border: '1.5px solid #E0E0E0' }}
       >
         <Calendar className="w-4 h-4" style={{ color: '#777777' }} />
-        Publié le {formatDate(search.created_at)}
+         {t("searchDetail.published", { date: formatDate(search.created_at) })}
       </span>
     </div>
   );
 
   const descriptionBlock = (
     <div className="bg-card border border-border rounded-2xl p-6 mb-6">
-      <h2 className="text-lg font-semibold text-primary mb-4">Description</h2>
+       <h2 className="text-lg font-semibold text-primary mb-4">{t("searchDetail.description")}</h2>
       <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-        {search.description?.trim() || "Aucune description fournie."}
+         {translatedSearch.description?.trim() || t("searchDetail.noDescription")}
       </p>
+       <div className="mt-3"><TranslationNotice translated={translatedSearch.isTranslated} showingOriginal={translatedSearch.showOriginal} loading={translatedSearch.loading} error={translatedSearch.error} onToggle={translatedSearch.canToggle ? translatedSearch.toggle : undefined} /></div>
     </div>
   );
 
@@ -654,7 +663,7 @@ const SearchDetail = () => {
         className="mb-4 font-medium"
         style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8A8070' }}
       >
-        Publié par
+         {t("searchDetail.publishedBy")}
       </h3>
       <div className="flex items-center gap-4">
         <button
@@ -676,11 +685,11 @@ const SearchDetail = () => {
         <div>
           <div className="flex items-center gap-2">
             <p style={{ fontSize: '16px', fontWeight: 600, color: '#1B2A4A' }}>
-              {search.profiles?.full_name || "Utilisateur"}
+               {search.profiles?.full_name || t("searchDetail.user")}
             </p>
             {search.profiles?.is_premium && (
               <span style={{ fontSize: '10px', color: '#C9A84C', backgroundColor: '#FDF6E8', borderRadius: '4px', padding: '2px 6px', fontWeight: 600 }}>
-                Top vendeur
+                 {t("searchDetail.topSeller")}
               </span>
             )}
           </div>
@@ -707,15 +716,15 @@ const SearchDetail = () => {
                 ))}
               </span>
               <span style={{ fontWeight: 600, color: '#1B2A4A' }}>{ownerRating.avg.toFixed(1)}</span>
-              <span style={{ color: '#8A8070' }}>({ownerRating.count} avis)</span>
+               <span style={{ color: '#8A8070' }}>({t("searchDetail.reviews", { count: ownerRating.count })})</span>
             </div>
           ) : (
-            <span style={{ fontSize: '13px', color: '#8A8070' }}>Pas encore d'avis</span>
+             <span style={{ fontSize: '13px', color: '#8A8070' }}>{t("searchDetail.noReviews")}</span>
           )}
 
           {responseHours !== null && (
             <p style={{ fontSize: '12px', color: '#6B6355', marginTop: '2px' }}>
-              Répond généralement en moins de {responseHours}h
+               {t("searchDetail.respondsWithin", { hours: responseHours })}
             </p>
           )}
 
@@ -724,7 +733,7 @@ const SearchDetail = () => {
             className="mt-1 hover:underline block"
             style={{ fontSize: '12px', color: '#C9A84C' }}
           >
-            Voir le profil complet →
+             {t("searchDetail.fullProfile")}
           </button>
         </div>
       </div>
@@ -753,10 +762,10 @@ const SearchDetail = () => {
         onClick={handleProposal}
       >
         <Tag className="w-5 h-5" />
-        Faire une proposition
+         {t("searchDetail.makeProposal")}
       </Button>
       <p style={{ fontSize: '11px', color: '#8A8070', textAlign: 'center', marginTop: '4px' }}>
-        Proposez votre trouvaille avec photo et prix
+         {t("searchDetail.proposalHint")}
       </p>
 
       <Button
@@ -766,7 +775,7 @@ const SearchDetail = () => {
         onClick={handleContact}
       >
         <MessageCircle className="w-5 h-5" />
-        Envoyer un message
+         {t("searchDetail.sendMessage")}
       </Button>
 
       {!hasExistingReservation && !isReserved && (
@@ -776,7 +785,7 @@ const SearchDetail = () => {
             className="hover:underline"
             style={{ fontSize: '13px', color: '#C9A84C' }}
           >
-            Demander une réservation
+             {t("searchDetail.requestReservation")}
           </button>
           <span title="La réservation bloque l'objet le temps de finaliser l'échange">
             <HelpCircle className="w-3.5 h-3.5" style={{ color: '#C9A84C' }} />
@@ -878,10 +887,10 @@ const SearchDetail = () => {
       <Shield className="w-[18px] h-[18px] shrink-0 mt-0.5" style={{ color: '#C9A84C' }} />
       <div>
         <span style={{ fontSize: '13px', fontWeight: 500, color: '#1B2A4A' }}>
-          Paiement sécurisé via findr
+           {t("searchDetail.securePayment")}
         </span>
         <p style={{ fontSize: '11px', color: '#8A8070', fontStyle: 'italic', marginTop: '2px' }}>
-          Fonds bloqués jusqu'à confirmation de réception
+           {t("searchDetail.fundsHeld")}
         </p>
       </div>
     </div>
@@ -964,7 +973,7 @@ const SearchDetail = () => {
             style={{ height: '48px', fontSize: '15px', fontWeight: 600, backgroundColor: '#D9BB87', color: '#070E42' }}
           >
             <Tag className="w-5 h-5" />
-            Faire une proposition
+             {t("searchDetail.makeProposal")}
           </Button>
         </div>
       )}
