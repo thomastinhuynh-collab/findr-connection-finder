@@ -159,7 +159,7 @@ const Navbar = () => {
                   className={`bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
                   onClick={() => setAuthModalOpen(true)}
                 >
-                  {isDetailPage ? "Créer mon compte gratuit" : "Rejoindre la liste d'attente"}
+                   {isDetailPage ? t("nav.createFreeAccount") : t("nav.joinWaitlist")}
                 </Button>
               )}
               <LanguageSwitcher variant={isLightMode ? "navy" : "gold"} />
@@ -249,7 +249,7 @@ const Navbar = () => {
                       setAuthModalOpen(true);
                     }}
                   >
-                    Rejoindre la liste d'attente
+                     {t("nav.joinWaitlist")}
                   </Button>
                 )}
               </div>

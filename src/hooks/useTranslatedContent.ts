@@ -4,6 +4,28 @@ import { supabase } from "@/integrations/supabase/client";
 
 type ContentType = "search" | "proposal";
 
+type Translation = { title: string; description: string | null };
+const translationCache = new Map<string, Translation>();
+const pendingTranslations = new Map<string, Promise<Translation>>();
+
+const requestTranslation = (type: ContentType, id: string, targetLang: string) => {
+  const key = `${type}:${id}:${targetLang}`;
+  const cached = translationCache.get(key);
+  if (cached) return Promise.resolve(cached);
+  const pending = pendingTranslations.get(key);
+  if (pending) return pending;
+  const request = supabase.functions.invoke("translate-content", { body: { type, id, targetLang } })
+    .then(({ data, error }) => {
+      if (error || data?.error) throw new Error(data?.error ?? error?.message);
+      const result = { title: data.title, description: data.description ?? null };
+      translationCache.set(key, result);
+      return result;
+    })
+    .finally(() => pendingTranslations.delete(key));
+  pendingTranslations.set(key, request);
+  return request;
+};
+
 export const useTranslatedContent = ({
   type,
   id,
@@ -20,7 +42,8 @@ export const useTranslatedContent = ({
   const { i18n, t } = useTranslation();
   const targetLang = i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr";
   const needsTranslation = !!id && sourceLang !== targetLang;
-  const [translated, setTranslated] = useState<{ title: string; description: string | null } | null>(null);
+  const cacheKey = id ? `${type}:${id}:${targetLang}` : null;
+  const [translated, setTranslated] = useState<Translation | null>(() => cacheKey ? translationCache.get(cacheKey) ?? null : null);
   const [showOriginal, setShowOriginal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,20 +51,20 @@ export const useTranslatedContent = ({
   useEffect(() => {
     let active = true;
     setShowOriginal(false);
-    setTranslated(null);
+    setTranslated(cacheKey ? translationCache.get(cacheKey) ?? null : null);
     setError(null);
     if (!needsTranslation || !id) return () => { active = false; };
+    if (cacheKey && translationCache.has(cacheKey)) return () => { active = false; };
     setLoading(true);
-    supabase.functions.invoke("translate-content", { body: { type, id, targetLang } })
-      .then(({ data, error: invokeError }) => {
+    requestTranslation(type, id, targetLang)
+      .then((data) => {
         if (!active) return;
-        if (invokeError || data?.error) setError(data?.error ?? invokeError?.message ?? t("translation.unavailable"));
-        else setTranslated({ title: data.title, description: data.description ?? null });
+        setTranslated(data);
       })
       .catch(() => active && setError(t("translation.unavailable")))
       .finally(() => active && setLoading(false));
     return () => { active = false; };
-  }, [id, needsTranslation, targetLang, title, description, type, t]);
+  }, [id, needsTranslation, targetLang, title, description, type, t, cacheKey]);
 
   return useMemo(() => ({
     title: translated && !showOriginal ? translated.title : title,

@@ -34,7 +34,7 @@ const EditSearch = () => {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -43,6 +43,7 @@ const EditSearch = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [deadlineOpen, setDeadlineOpen] = useState(false);
+  const [sourceLang, setSourceLang] = useState("fr");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -95,6 +96,7 @@ const EditSearch = () => {
     });
     setDeadlineOpen(urgency !== "no-rush");
     setExistingImageUrl(data.image_url);
+    setSourceLang(data.source_lang || "fr");
     setLoading(false);
   };
 
@@ -200,7 +202,7 @@ const EditSearch = () => {
           urgency: formData.deadline || "normal",
           image_url: imageUrl,
           status: formData.status,
-          source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr",
+          source_lang: sourceLang,
         })
         .eq("id", id)
         .eq("user_id", user.id);
@@ -278,10 +280,10 @@ const EditSearch = () => {
             className="text-center mb-10"
           >
             <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
-              Modifier ma recherche
+               {t("editSearch.title")}
             </h1>
             <p className="text-muted-foreground">
-              Mets à jour les détails de ta recherche
+               {t("editSearch.subtitle")}
             </p>
           </motion.div>
 
@@ -294,10 +296,10 @@ const EditSearch = () => {
           >
             {/* Title */}
             <div className="space-y-2">
-              <Label htmlFor="title">Qu'est-ce que tu cherches ? *</Label>
+               <Label htmlFor="title">{t("postSearch.objectLabel")} *</Label>
               <Input
                 id="title"
-                placeholder="Ex: Veste en cuir oversize années 80"
+                 placeholder={t("postSearch.objectPlaceholder")}
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className="h-12"
@@ -307,10 +309,10 @@ const EditSearch = () => {
 
             {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="description">Description détaillée</Label>
+               <Label htmlFor="description">{t("postSearch.description")}</Label>
               <Textarea
                 id="description"
-                placeholder="Décris l'état souhaité, les détails importants, les inspirations..."
+                 placeholder={t("postSearch.descriptionPlaceholder")}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="min-h-[120px] resize-none"
@@ -319,13 +321,13 @@ const EditSearch = () => {
 
             {/* Category */}
             <div className="space-y-2">
-              <Label>Catégorie *</Label>
+               <Label>{t("postSearch.category")} *</Label>
               <Select 
                 value={formData.category}
                 onValueChange={(value) => setFormData({ ...formData, category: value })}
               >
                 <SelectTrigger className="h-12">
-                  <SelectValue placeholder="Sélectionne une catégorie" />
+                   <SelectValue placeholder={t("postSearch.selectCategory")} />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border">
                   {categories.map((cat) => (
@@ -335,7 +337,7 @@ const EditSearch = () => {
                       disabled={cat.status === "coming_soon"}
                       className={cat.status === "coming_soon" ? "opacity-50" : ""}
                     >
-                      {cat.name}{cat.status === "coming_soon" ? " (bientôt disponible)" : ""}
+                       {cat.name}{cat.status === "coming_soon" ? ` (${t("searchesPage.comingSoon")})` : ""}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -344,25 +346,25 @@ const EditSearch = () => {
 
             {/* Status */}
             <div className="space-y-2">
-              <Label>Statut</Label>
+               <Label>{t("editSearch.status")}</Label>
               <Select 
                 value={formData.status}
                 onValueChange={(value) => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger className="h-12">
-                  <SelectValue placeholder="Sélectionne un statut" />
+                   <SelectValue placeholder={t("editSearch.selectStatus")} />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-border">
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="paused">En pause</SelectItem>
-                  <SelectItem value="completed">Terminée</SelectItem>
+                   <SelectItem value="active">{t("editSearch.statuses.active")}</SelectItem>
+                   <SelectItem value="paused">{t("editSearch.statuses.paused")}</SelectItem>
+                   <SelectItem value="completed">{t("editSearch.statuses.completed")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Image Upload */}
             <div className="space-y-2">
-              <Label>Photos d'inspiration</Label>
+               <Label>{t("postSearch.photos")}</Label>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -431,7 +433,7 @@ const EditSearch = () => {
                     <ImageIcon className="w-7 h-7 text-muted-foreground" />
                   </div>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Clique pour télécharger tes images
+                     {t("editSearch.uploadImages")}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     PNG, JPG jusqu'à 5MB - Max 5 images
@@ -442,7 +444,7 @@ const EditSearch = () => {
 
             {/* Budget */}
             <div className="space-y-2">
-              <Label>Budget</Label>
+               <Label>{t("postSearch.budget")}</Label>
               <div className="grid grid-cols-2 gap-4">
                 <div className="relative">
                   <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -469,19 +471,19 @@ const EditSearch = () => {
 
             {/* Deadline */}
             <div className="space-y-2">
-              <Label>Délai souhaité</Label>
+               <Label>{t("postSearch.deadline")}</Label>
               {!deadlineOpen ? (
                 <div className="space-y-2">
                   <div className="flex items-center gap-3 p-3 rounded-lg border border-border bg-secondary/30">
                     <Clock className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-foreground">Pas de délai particulier — à ton rythme</span>
+                     <span className="text-sm text-foreground">{t("postSearch.noDeadline")}</span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setDeadlineOpen(true)}
                     className="text-sm text-primary hover:underline underline-offset-2 bg-transparent border-0 p-0 cursor-pointer"
                   >
-                    + Ajouter une échéance souhaitée
+                     {t("postSearch.addDeadline")}
                   </button>
                 </div>
               ) : (
@@ -498,14 +500,14 @@ const EditSearch = () => {
                       }}
                     >
                       <SelectTrigger className="h-12 pl-10">
-                        <SelectValue placeholder="Sélectionner" />
+                         <SelectValue placeholder={t("common.select")} />
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
-                        <SelectItem value="3-days">3 jours</SelectItem>
-                        <SelectItem value="1-week">1 semaine</SelectItem>
-                        <SelectItem value="2-weeks">2 semaines</SelectItem>
-                        <SelectItem value="1-month">1 mois</SelectItem>
-                        <SelectItem value="no-rush">Pas pressé</SelectItem>
+                         <SelectItem value="3-days">{t("postSearch.deadlines.threeDays")}</SelectItem>
+                         <SelectItem value="1-week">{t("postSearch.deadlines.oneWeek")}</SelectItem>
+                         <SelectItem value="2-weeks">{t("postSearch.deadlines.twoWeeks")}</SelectItem>
+                         <SelectItem value="1-month">{t("postSearch.deadlines.oneMonth")}</SelectItem>
+                         <SelectItem value="no-rush">{t("postSearch.deadlines.noRush")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -517,7 +519,7 @@ const EditSearch = () => {
                     }}
                     className="text-sm text-muted-foreground hover:text-foreground bg-transparent border-0 p-0 cursor-pointer"
                   >
-                    Replier
+                     {t("common.collapse")}
                   </button>
                 </div>
               )}
@@ -534,11 +536,11 @@ const EditSearch = () => {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Enregistrement...
+                     {t("editSearch.saving")}
                   </>
                 ) : (
                   <>
-                    Enregistrer les modifications
+                     {t("editSearch.save")}
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </>
                 )}
@@ -558,18 +560,18 @@ const EditSearch = () => {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Supprimer cette recherche ?</AlertDialogTitle>
+                     <AlertDialogTitle>{t("editSearch.deleteTitle")}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Cette action est irréversible. Ta recherche et toutes les propositions associées seront supprimées.
+                       {t("editSearch.deleteDescription")}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                     <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
                     <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                       {isDeleting ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
-                        "Supprimer"
+                         t("common.delete")
                       )}
                     </AlertDialogAction>
                   </AlertDialogFooter>

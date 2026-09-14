@@ -9,7 +9,9 @@
     "mySpace": "My space",
     "logout": "Log out",
     "menu": "Menu",
-    "language": "Language"
+    "language": "Language",
+    "createFreeAccount": "Create my free account",
+    "joinWaitlist": "Join the waitlist"
   },
   "hero": {
     "searchPlaceholder": "Search for an item, a brand, a rare piece…",
@@ -694,5 +696,122 @@
     "forgotPassword": "Forgot your password?",
     "noAccount": "No account yet?",
     "hasAccount": "Already have an account?"
+  },
+  "common": {
+    "back": "Back",
+    "notDefined": "Not specified",
+    "continue": "Continue",
+    "select": "Select",
+    "collapse": "Collapse"
+  },
+  "publicProfile": {
+    "notFound": "Profile not found",
+    "searches": "Searches",
+    "rating": "Rating ({{count}})",
+    "about": "About",
+    "memberSince": "Member since {{date}}",
+    "searchesBy": "Searches by {{name}}",
+    "thisUser": "this user",
+    "noSearches": "No searches published",
+    "active": "Active",
+    "completed": "Completed"
+  },
+  "reservation": {
+    "requestTitle": "Request a booking",
+    "requestSubtitle": "Book this search exclusively for a limited time",
+    "searchToBook": "Search to book",
+    "justifyTitle": "Explain your booking request",
+    "duration": "Requested booking period",
+    "selectDuration": "Select a period",
+    "why": "Why do you want to book this search?"
+  },
+  "postSearch": {
+    "title": "Post your search",
+    "subtitle": "Describe your dream item and let the community find it for you",
+    "steps": {
+      "essentials": "Essentials",
+      "details": "Details",
+      "conditions": "Preferences"
+    },
+    "objectLabel": "What are you looking for?",
+    "objectPlaceholder": "E.g. 1980s oversized leather jacket",
+    "objectHint": "Be specific: brand, model, period and size where relevant.",
+    "category": "Category",
+    "selectCategory": "Select a category",
+    "condition": "Desired condition",
+    "conditions": {
+      "new": "New / Never used",
+      "veryGood": "Very good condition",
+      "good": "Good condition",
+      "wearAccepted": "Signs of wear accepted"
+    },
+    "description": "Detailed description",
+    "descriptionPlaceholder": "Describe the desired condition, important details and inspiration…",
+    "photos": "Inspiration photos",
+    "addPhotos": "Add inspiration photos",
+    "photosHint": "A picture of the product you want or a reference found online…",
+    "budget": "Budget",
+    "budgetError": "The minimum budget must be lower than the maximum.",
+    "deadline": "Desired deadline",
+    "noDeadline": "No particular deadline — take your time",
+    "addDeadline": "+ Add a desired deadline",
+    "deadlines": {
+      "threeDays": "3 days",
+      "oneWeek": "1 week",
+      "twoWeeks": "2 weeks",
+      "oneMonth": "1 month",
+      "noRush": "No rush"
+    },
+    "location": "Location",
+    "city": "City",
+    "reassurance": "After publication, findr members receive your request and usually send proposals within 48 hours.",
+    "publishing": "Publishing…",
+    "publish": "Post my search",
+    "legal": "By publishing, you accept our Terms and Privacy Policy."
+  },
+  "proposalForm": {
+    "searchNotFound": "Search not found",
+    "backToSearches": "Back to searches",
+    "makeTitle": "Make a proposal",
+    "for": "For:",
+    "buyrBudget": "Buyr budget:",
+    "photos": "Item photos",
+    "addPhoto": "Add a photo",
+    "photosHint": "Add up to 4 photos of your find. Clear photos increase your chances of being selected.",
+    "price": "Proposed price",
+    "budgetIs": "The buyr’s budget is {{budget}}",
+    "brand": "Brand",
+    "brandPlaceholder": "E.g. Levi’s, Schott, Unbranded…",
+    "condition": "Item condition",
+    "selectCondition": "Select the condition",
+    "conditions": {
+      "newWithTags": "New with tags",
+      "likeNew": "Like new",
+      "veryGood": "Very good condition",
+      "good": "Good condition",
+      "fair": "Fair condition"
+    },
+    "description": "Additional description",
+    "descriptionPlaceholder": "Describe your find, its history and special features…",
+    "earnings": "Earnings summary",
+    "commission": "findr fee (4%)",
+    "youReceive": "You will receive",
+    "securePayment": "Secure payment",
+    "stripePayment": "The buyr will pay via Stripe if accepted",
+    "fundsSecured": "Funds secured until delivery",
+    "authenticationIncluded": "Authentication included",
+    "protection": "Buyr & findr protection",
+    "sending": "Sending…",
+    "send": "Send my proposal",
+    "terms": "By sending this proposal, you accept the findr Terms.",
+    "paymentPromise": "Payment will be secured and released once the item is delivered and approved.",
+    "proposalNotFound": "Proposal not found",
+    "backToMyProposals": "Back to my proposals",
+    "editTitle": "Edit my proposal",
+    "new": "New",
+    "productLink": "Product link (optional)",
+    "productLinkHint": "Add a link to the original listing (Vinted, Leboncoin, etc.)",
+    "updating": "Updating…",
+    "update": "Update my proposal"
   }
 }

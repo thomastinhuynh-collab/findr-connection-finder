@@ -9,7 +9,9 @@
     "mySpace": "Mon espace",
     "logout": "Se déconnecter",
     "menu": "Menu",
-    "language": "Langue"
+    "language": "Langue",
+    "createFreeAccount": "Créer mon compte gratuit",
+    "joinWaitlist": "Rejoindre la liste d’attente"
   },
   "hero": {
     "searchPlaceholder": "Cherche un objet, une marque, une pièce rare…",
@@ -694,5 +696,122 @@
     "forgotPassword": "Mot de passe oublié ?",
     "noAccount": "Pas encore de compte ?",
     "hasAccount": "Déjà un compte ?"
+  },
+  "common": {
+    "back": "Retour",
+    "notDefined": "Non défini",
+    "continue": "Continuer",
+    "select": "Sélectionner",
+    "collapse": "Replier"
+  },
+  "publicProfile": {
+    "notFound": "Profil introuvable",
+    "searches": "Recherches",
+    "rating": "Note ({{count}})",
+    "about": "À propos",
+    "memberSince": "Membre depuis {{date}}",
+    "searchesBy": "Recherches de {{name}}",
+    "thisUser": "cet utilisateur",
+    "noSearches": "Aucune recherche publiée",
+    "active": "Active",
+    "completed": "Terminée"
+  },
+  "reservation": {
+    "requestTitle": "Demander une réservation",
+    "requestSubtitle": "Réserve cette annonce pour toi seul pendant une durée limitée",
+    "searchToBook": "Annonce à réserver",
+    "justifyTitle": "Justifie ta demande de réservation",
+    "duration": "Durée de réservation souhaitée",
+    "selectDuration": "Sélectionner une durée",
+    "why": "Pourquoi veux-tu réserver cette annonce ?"
+  },
+  "postSearch": {
+    "title": "Poste ta recherche",
+    "subtitle": "Décris l’objet de tes rêves et laisse la communauté le trouver pour toi",
+    "steps": {
+      "essentials": "L’essentiel",
+      "details": "Les détails",
+      "conditions": "Les conditions"
+    },
+    "objectLabel": "Qu’est-ce que tu cherches ?",
+    "objectPlaceholder": "Ex : Veste en cuir oversize années 80",
+    "objectHint": "Sois précis : marque, modèle, époque, taille si pertinent.",
+    "category": "Catégorie",
+    "selectCategory": "Sélectionne une catégorie",
+    "condition": "État souhaité",
+    "conditions": {
+      "new": "Neuf / Jamais utilisé",
+      "veryGood": "Très bon état",
+      "good": "Bon état",
+      "wearAccepted": "Usures acceptées"
+    },
+    "description": "Description détaillée",
+    "descriptionPlaceholder": "Décris l’état souhaité, les détails importants, les inspirations…",
+    "photos": "Photos d’inspiration",
+    "addPhotos": "Ajoute des photos d’inspiration",
+    "photosHint": "Une image du produit que tu veux, une référence trouvée en ligne…",
+    "budget": "Budget",
+    "budgetError": "Le budget minimum doit être inférieur au maximum.",
+    "deadline": "Délai souhaité",
+    "noDeadline": "Pas de délai particulier — à ton rythme",
+    "addDeadline": "+ Ajouter une échéance souhaitée",
+    "deadlines": {
+      "threeDays": "3 jours",
+      "oneWeek": "1 semaine",
+      "twoWeeks": "2 semaines",
+      "oneMonth": "1 mois",
+      "noRush": "Pas pressé"
+    },
+    "location": "Localisation",
+    "city": "Ville",
+    "reassurance": "Après publication, les membres findr reçoivent ta demande et te font des propositions sous 48h en moyenne.",
+    "publishing": "Publication…",
+    "publish": "Publier ma recherche",
+    "legal": "En publiant, tu acceptes nos CGU et notre politique de confidentialité."
+  },
+  "proposalForm": {
+    "searchNotFound": "Recherche non trouvée",
+    "backToSearches": "Retour aux recherches",
+    "makeTitle": "Faire une proposition",
+    "for": "Pour :",
+    "buyrBudget": "Budget du buyr :",
+    "photos": "Photos de l’objet",
+    "addPhoto": "Ajouter une photo",
+    "photosHint": "Ajoutez jusqu’à 4 photos de votre trouvaille. Des photos claires augmentent vos chances d’être sélectionné.",
+    "price": "Prix proposé",
+    "budgetIs": "Le budget du buyr est de {{budget}}",
+    "brand": "Marque",
+    "brandPlaceholder": "Ex : Levi’s, Schott, Sans marque…",
+    "condition": "État de l’objet",
+    "selectCondition": "Sélectionnez l’état",
+    "conditions": {
+      "newWithTags": "Neuf avec étiquette",
+      "likeNew": "Comme neuf",
+      "veryGood": "Très bon état",
+      "good": "Bon état",
+      "fair": "État correct"
+    },
+    "description": "Description complémentaire",
+    "descriptionPlaceholder": "Décrivez votre trouvaille, son histoire, ses particularités…",
+    "earnings": "Récapitulatif des gains",
+    "commission": "Commission findr (4 %)",
+    "youReceive": "Vous recevrez",
+    "securePayment": "Paiement sécurisé",
+    "stripePayment": "Le buyr paiera via Stripe si accepté",
+    "fundsSecured": "Fonds sécurisés jusqu’à livraison",
+    "authenticationIncluded": "Authentification incluse",
+    "protection": "Protection buyr & findr",
+    "sending": "Envoi en cours…",
+    "send": "Envoyer ma proposition",
+    "terms": "En envoyant cette proposition, vous acceptez les conditions générales de findr.",
+    "paymentPromise": "Le paiement sera sécurisé et vous serez payé une fois l’objet livré et validé.",
+    "proposalNotFound": "Proposition non trouvée",
+    "backToMyProposals": "Retour à mes propositions",
+    "editTitle": "Modifier ma proposition",
+    "new": "Nouveau",
+    "productLink": "Lien du produit (optionnel)",
+    "productLinkHint": "Ajoutez un lien vers l’annonce originale (Vinted, Leboncoin, etc.)",
+    "updating": "Mise à jour en cours…",
+    "update": "Mettre à jour ma proposition"
   }
 }

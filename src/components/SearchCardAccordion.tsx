@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Edit } from "lucide-react";
+import TranslatedContent from "./TranslatedContent";
 
 interface SearchItem {
   id: string;
@@ -24,6 +25,7 @@ interface SearchItem {
   finalized_at?: string | null;
   cancel_reason?: string | null;
   has_invoice?: boolean;
+  source_lang?: string;
 }
 
 interface SearchCardAccordionProps {
@@ -191,8 +193,8 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 min-w-0" style={{ paddingRight: unreadCount > 0 && !isUrgent && !isTerminee ? 26 : 0 }}>
               <Link to={`/recherche/${search.id}`} className="min-w-0 flex-1">
-                <h3
-                  style={{
+                <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>
+                  {({ title }) => <h3 style={{
                     fontSize: 14,
                     fontWeight: 600,
                     color: "#070E42",
@@ -200,10 +202,8 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     margin: 0,
-                  }}
-                >
-                  {search.title}
-                </h3>
+                  }}>{title}</h3>}
+                </TranslatedContent>
               </Link>
               <span
                 style={{

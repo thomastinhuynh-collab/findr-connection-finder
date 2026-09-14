@@ -8,6 +8,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import TranslatedContent from "@/components/TranslatedContent";
+import { useTranslation } from "react-i18next";
 
 interface Profile {
   id: string;
@@ -25,6 +27,8 @@ interface Profile {
 interface SearchItem {
   id: string;
   title: string;
+  description: string | null;
+  source_lang: string;
   category: string;
   budget_min: number | null;
   budget_max: number | null;
@@ -47,6 +51,7 @@ interface Evaluation {
 const PublicProfile = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
@@ -86,7 +91,7 @@ const PublicProfile = () => {
     // Fetch user's searches
     const { data: searchesData } = await supabase
       .from("searches")
-      .select("*")
+      .select("id, title, description, source_lang, category, budget_min, budget_max, status, image_url, created_at")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
@@ -130,12 +135,12 @@ const PublicProfile = () => {
     if (min && max) return `${min}-${max}€`;
     if (max) return `< ${max}€`;
     if (min) return `> ${min}€`;
-    return "Non défini";
+    return t("common.notDefined");
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+    return date.toLocaleDateString(i18n.language.startsWith("en") ? "en-GB" : "fr-FR", { month: "long", year: "numeric" });
   };
 
   const getLevelBadge = (level: number | null) => {
@@ -167,12 +172,12 @@ const PublicProfile = () => {
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-32 text-center">
-          <h1 className="text-2xl font-bold text-primary mb-4">Profil introuvable</h1>
+          <h1 className="text-2xl font-bold text-primary mb-4">{t("publicProfile.notFound")}</h1>
           <Button onClick={() => {
             const idx = (window.history.state as any)?.idx;
             if (typeof idx === "number" && idx > 0) navigate(-1);
             else navigate("/");
-          }}>Retour</Button>
+          }}>{t("common.back")}</Button>
         </div>
         <Footer />
       </div>
@@ -197,7 +202,7 @@ const PublicProfile = () => {
           className="mb-6 -ml-2"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour
+           {t("common.back")}
         </Button>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -241,7 +246,7 @@ const PublicProfile = () => {
               <div className={`grid ${gamificationEnabled ? 'grid-cols-3' : 'grid-cols-2'} gap-4 py-4 border-y border-border mb-4`}>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">{searches.length}</p>
-                  <p className="text-xs text-muted-foreground">Recherches</p>
+                   <p className="text-xs text-muted-foreground">{t("publicProfile.searches")}</p>
                 </div>
                 <button
                   onClick={() => navigate(`/profil/${userId}/evaluations`)}
@@ -251,7 +256,7 @@ const PublicProfile = () => {
                     {averageRating.toFixed(1)}
                     <Star className="w-4 h-4 text-accent fill-accent" />
                   </p>
-                  <p className="text-xs text-muted-foreground">Note ({evaluations.length})</p>
+                   <p className="text-xs text-muted-foreground">{t("publicProfile.rating", { count: evaluations.length })}</p>
                 </button>
                 {gamificationEnabled && (
                   <div className="text-center">
@@ -264,7 +269,7 @@ const PublicProfile = () => {
               {/* Bio */}
               {profile.bio && (
                 <div className="mb-4">
-                  <h3 className="font-medium text-primary mb-2">À propos</h3>
+                   <h3 className="font-medium text-primary mb-2">{t("publicProfile.about")}</h3>
                   <p className="text-sm text-muted-foreground">{profile.bio}</p>
                 </div>
               )}
@@ -272,7 +277,7 @@ const PublicProfile = () => {
               {/* Member since */}
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Calendar className="w-4 h-4" />
-                Membre depuis {formatDate(profile.created_at)}
+                 {t("publicProfile.memberSince", { date: formatDate(profile.created_at) })}
               </div>
             </div>
           </motion.div>
@@ -287,12 +292,12 @@ const PublicProfile = () => {
             >
               <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
-                Recherches de {profile.full_name?.split(" ")[0] || "cet utilisateur"}
+                 {t("publicProfile.searchesBy", { name: profile.full_name?.split(" ")[0] || t("publicProfile.thisUser") })}
               </h2>
               
               {searches.length === 0 ? (
                 <div className="bg-card rounded-xl border border-border p-8 text-center">
-                  <p className="text-muted-foreground">Aucune recherche publiée</p>
+                   <p className="text-muted-foreground">{t("publicProfile.noSearches")}</p>
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -318,13 +323,13 @@ const PublicProfile = () => {
                       <div className="p-4">
                         <div className="flex items-center gap-2 mb-2">
                           <Badge variant={search.status === "active" ? "default" : "secondary"}>
-                            {search.status === "active" ? "Active" : "Terminée"}
+                             {search.status === "active" ? t("publicProfile.active") : t("publicProfile.completed")}
                           </Badge>
                           <Badge variant="outline">{search.category}</Badge>
                         </div>
-                        <h3 className="font-medium text-primary group-hover:text-accent transition-colors line-clamp-2">
-                          {search.title}
-                        </h3>
+                         <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>
+                           {({ title }) => <h3 className="font-medium text-primary group-hover:text-accent transition-colors line-clamp-2">{title}</h3>}
+                         </TranslatedContent>
                         <p className="text-sm text-muted-foreground mt-1">
                           {formatBudget(search.budget_min, search.budget_max)}
                         </p>

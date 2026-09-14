@@ -46,18 +46,18 @@ interface UserProfile {
 }
 
 const conditions = [
-  { value: "neuf", label: "Neuf avec étiquette" },
-  { value: "comme-neuf", label: "Comme neuf" },
-  { value: "tres-bon", label: "Très bon état" },
-  { value: "bon", label: "Bon état" },
-  { value: "correct", label: "État correct" },
+  { value: "neuf", label: "Neuf avec étiquette", key: "newWithTags" },
+  { value: "comme-neuf", label: "Comme neuf", key: "likeNew" },
+  { value: "tres-bon", label: "Très bon état", key: "veryGood" },
+  { value: "bon", label: "Bon état", key: "good" },
+  { value: "correct", label: "État correct", key: "fair" },
 ];
 
 const EditProposal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { i18n } = useTranslation();
+  const { t } = useTranslation();
   
   const [newImages, setNewImages] = useState<File[]>([]);
   const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
@@ -176,7 +176,7 @@ const EditProposal = () => {
     if (min && max) return `${min}-${max}€`;
     if (max) return `< ${max}€`;
     if (min) return `> ${min}€`;
-    return "Non défini";
+    return t("common.notDefined");
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -282,7 +282,6 @@ const EditProposal = () => {
           proposed_price: parseFloat(price),
           image_urls: allImageUrls,
           product_link: productLink || null,
-          source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr",
         })
         .eq("id", id);
       
@@ -336,10 +335,10 @@ const EditProposal = () => {
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-2xl font-serif font-bold text-primary mb-4">
-              Proposition non trouvée
+               {t("proposalForm.proposalNotFound")}
             </h1>
             <Button onClick={() => navigate("/mes-propositions")}>
-              Retour à mes propositions
+               {t("proposalForm.backToMyProposals")}
             </Button>
           </div>
         </main>
@@ -372,17 +371,17 @@ const EditProposal = () => {
               className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
             >
               <ArrowLeft className="w-5 h-5" />
-              Retour
+               {t("common.back")}
             </button>
 
             <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary mb-2">
-              Modifier ma proposition
+               {t("proposalForm.editTitle")}
             </h1>
             <p className="text-muted-foreground">
-              Pour : <span className="text-foreground font-medium">{search.title}</span>
+               {t("proposalForm.for")} <span className="text-foreground font-medium">{search.title}</span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Budget du buyr : <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
+               {t("proposalForm.buyrBudget")} <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
             </p>
           </motion.div>
 
@@ -398,7 +397,7 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <ImagePlus className="w-5 h-5 text-accent" />
-                Photos de l'objet *
+                 {t("proposalForm.photos")} *
               </Label>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -421,7 +420,7 @@ const EditProposal = () => {
                   <div key={`new-${index}`} className="relative aspect-square rounded-xl overflow-hidden border border-accent">
                     <img src={img} alt={`Nouvelle photo ${index + 1}`} className="w-full h-full object-cover" />
                     <div className="absolute top-2 left-2 text-xs bg-accent text-accent-foreground px-1.5 py-0.5 rounded">
-                      Nouveau
+                       {t("proposalForm.new")}
                     </div>
                     <button
                       type="button"
@@ -436,7 +435,7 @@ const EditProposal = () => {
                 {totalImages < 4 && (
                   <label className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-accent transition-colors cursor-pointer flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-accent">
                     <Upload className="w-8 h-8" />
-                    <span className="text-xs text-center px-2">Ajouter une photo</span>
+                    <span className="text-xs text-center px-2">{t("proposalForm.addPhoto")}</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -449,7 +448,7 @@ const EditProposal = () => {
               </div>
               
               <p className="text-xs text-muted-foreground">
-                Vous pouvez avoir jusqu'à 4 photos. Des photos claires augmentent vos chances d'être sélectionné.
+                 {t("proposalForm.photosHint")}
               </p>
             </div>
 
@@ -457,7 +456,7 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="price" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <Euro className="w-5 h-5 text-accent" />
-                Prix proposé *
+                 {t("proposalForm.price")} *
               </Label>
               <div className="relative">
                 <Input
@@ -472,7 +471,7 @@ const EditProposal = () => {
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Le budget du buyr est de {formatBudget(search.budget_min, search.budget_max)}
+                 {t("proposalForm.budgetIs", { budget: formatBudget(search.budget_min, search.budget_max) })}
               </p>
             </div>
 
@@ -480,12 +479,12 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="brand" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <Tag className="w-5 h-5 text-accent" />
-                Marque *
+                 {t("proposalForm.brand")} *
               </Label>
               <Input
                 id="brand"
                 type="text"
-                placeholder="Ex: Levi's, Schott, Sans marque..."
+                placeholder={t("proposalForm.brandPlaceholder")}
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
               />
@@ -495,16 +494,16 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 text-accent" />
-                État de l'objet *
+                 {t("proposalForm.condition")} *
               </Label>
               <Select value={condition} onValueChange={setCondition}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Sélectionnez l'état" />
+                  <SelectValue placeholder={t("proposalForm.selectCondition")} />
                 </SelectTrigger>
                 <SelectContent>
                   {conditions.map((c) => (
                     <SelectItem key={c.value} value={c.value}>
-                      {c.label}
+                       {t(`proposalForm.conditions.${c.key}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -515,7 +514,7 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="productLink" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <LinkIcon className="w-5 h-5 text-accent" />
-                Lien du produit (optionnel)
+                 {t("proposalForm.productLink")}
               </Label>
               <Input
                 id="productLink"
@@ -525,18 +524,18 @@ const EditProposal = () => {
                 onChange={(e) => setProductLink(e.target.value)}
               />
               <p className="text-xs text-muted-foreground mt-2">
-                Ajoutez un lien vers l'annonce originale (Vinted, Leboncoin, etc.)
+                 {t("proposalForm.productLinkHint")}
               </p>
             </div>
 
             {/* Description (optional) */}
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="description" className="text-lg font-semibold text-primary mb-4 block">
-                Description complémentaire
+                 {t("proposalForm.description")}
               </Label>
               <Textarea
                 id="description"
-                placeholder="Décrivez votre trouvaille, son histoire, ses particularités..."
+                placeholder={t("proposalForm.descriptionPlaceholder")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
@@ -548,7 +547,7 @@ const EditProposal = () => {
             <div className="bg-gradient-to-br from-primary/5 to-accent/5 border border-border rounded-2xl p-6 space-y-4">
               <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
                 <Euro className="w-5 h-5 text-accent" />
-                Récapitulatif des gains
+                 {t("proposalForm.earnings")}
                 {isPremium && (
                   <span className="ml-auto text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full flex items-center gap-1">
                     <Crown className="w-3 h-3" />
@@ -561,18 +560,18 @@ const EditProposal = () => {
               <div className="bg-card rounded-xl p-4 space-y-3">
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Prix proposé</span>
+                    <span className="text-muted-foreground">{t("proposalForm.price")}</span>
                     <span className="font-medium">{priceNum.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Commission findr (4%)</span>
+                    <span className="text-muted-foreground">{t("proposalForm.commission")}</span>
                     <span className="font-medium text-destructive">-{findrFee.toFixed(2)} €</span>
                   </div>
                 </div>
 
                 <div className="border-t border-border pt-3">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-primary">Vous recevrez</span>
+                    <span className="font-semibold text-primary">{t("proposalForm.youReceive")}</span>
                     <span className="text-2xl font-bold text-success">{finalAmount.toFixed(2)} €</span>
                   </div>
                 </div>
@@ -589,12 +588,12 @@ const EditProposal = () => {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Mise à jour en cours...
+                   {t("proposalForm.updating")}
                 </>
               ) : (
                 <>
                   <Save className="w-5 h-5" />
-                  Mettre à jour ma proposition
+                   {t("proposalForm.update")}
                 </>
               )}
             </Button>
