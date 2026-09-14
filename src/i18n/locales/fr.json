@@ -539,7 +539,10 @@
     "empty": "Aucune recherche trouvée",
     "post": "Poster ma recherche",
     "loadMore": "Charger plus",
-    "loading": "Chargement…"
+    "loading": "Chargement…",
+    "deadlinePassed": "Délai dépassé",
+    "daysLeft_one": "Il reste {{count}} jour",
+    "daysLeft_other": "Il reste {{count}} jours"
   },
   "searchDetail": {
     "notFound": "Annonce non trouvée",
@@ -573,7 +576,11 @@
     "paymentsSetup": "Configure tes paiements",
     "paymentsSetupText": "Configure tes paiements avant de pouvoir proposer un objet — ça prend 2 minutes.",
     "later": "Plus tard",
-    "configurePayments": "Configurer mes paiements"
+    "configurePayments": "Configurer mes paiements",
+    "urgent": "Urgent",
+    "loginToContact": "Tu dois être connecté pour contacter l’annonceur.",
+    "loginToPropose": "Tu dois être connecté pour faire une proposition.",
+    "loginToReserve": "Tu dois être connecté pour demander une réservation."
   },
   "proposal": {
     "pending": "En attente",
@@ -604,7 +611,19 @@
     "confirmShipment": "Confirmer l'expédition",
     "cancelRefund": "Annuler et rembourser",
     "back": "Retour",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "empty": "Aucune proposition pour le moment.",
+    "beFirst": "Sois le premier à proposer une trouvaille !",
+    "confirmPayment": "Confirmer le paiement",
+    "itemPrice": "Prix de l’article",
+    "serviceFee": "Frais de service (4%)",
+    "total": "Total",
+    "paymentHeld": "Le paiement sera bloqué jusqu’à confirmation de réception de l’article.",
+    "priceSummary": "Récapitulatif du prix",
+    "totalToPay": "Total à payer",
+    "matchesDescription": "L’article correspond à la description",
+    "goodCondition": "L’article est en bon état",
+    "authenticityChecked": "L’authenticité a été vérifiée"
   },
   "terms": {
     "title": "Conditions Générales d'Utilisation",
@@ -702,7 +721,10 @@
     "notDefined": "Non défini",
     "continue": "Continuer",
     "select": "Sélectionner",
-    "collapse": "Replier"
+    "collapse": "Replier",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "redirecting": "Redirection…"
   },
   "publicProfile": {
     "notFound": "Profil introuvable",
@@ -723,7 +745,24 @@
     "justifyTitle": "Justifie ta demande de réservation",
     "duration": "Durée de réservation souhaitée",
     "selectDuration": "Sélectionner une durée",
-    "why": "Pourquoi veux-tu réserver cette annonce ?"
+    "why": "Pourquoi veux-tu réserver cette annonce ?",
+    "searchNotFound": "Annonce non trouvée.",
+    "actionImpossible": "Action impossible",
+    "ownSearch": "Tu ne peux pas réserver ta propre annonce.",
+    "impossible": "Réservation impossible",
+    "alreadyExists": "Réservation déjà existante",
+    "alreadyPending": "Tu as déjà une demande de réservation en cours pour cette annonce.",
+    "backToSearch": "Retour à l’annonce",
+    "sevenDaysRenewable": "7 jours (renouvelable une fois)",
+    "justificationPlaceholder": "Explique au buyr pourquoi tu souhaites réserver cette annonce et le temps nécessaire.",
+    "characters": "{{count}}/500 caractères",
+    "howItWorks": "Comment ça marche ?",
+    "step1": "Le buyr recevra ta demande de réservation",
+    "step2": "Il peut accepter, refuser ou ajuster la durée",
+    "step3": "Si elle est acceptée, l’annonce sera masquée aux autres findrs",
+    "step4": "Tu seras le seul à pouvoir interagir avec le buyr",
+    "sending": "Envoi…",
+    "send": "Envoyer la demande"
   },
   "postSearch": {
     "title": "Poste ta recherche",
@@ -813,5 +852,28 @@
     "productLinkHint": "Ajoutez un lien vers l’annonce originale (Vinted, Leboncoin, etc.)",
     "updating": "Mise à jour en cours…",
     "update": "Mettre à jour ma proposition"
+  },
+  "editSearch": {
+    "title": "Modifier ma recherche",
+    "subtitle": "Mets à jour les détails de ta recherche",
+    "status": "Statut",
+    "selectStatus": "Sélectionne un statut",
+    "statuses": {
+      "active": "Active",
+      "paused": "En pause",
+      "completed": "Terminée"
+    },
+    "uploadImages": "Clique pour télécharger tes images",
+    "saving": "Enregistrement…",
+    "save": "Enregistrer les modifications",
+    "deleteTitle": "Supprimer cette recherche ?",
+    "deleteDescription": "Cette action est irréversible. Ta recherche et toutes les propositions associées seront supprimées."
+  },
+  "headerActions": {
+    "messages": "Messages",
+    "noConversation": "Aucune conversation",
+    "notifications": "Notifications",
+    "markAllRead": "Tout marquer comme lu",
+    "noNotification": "Aucune notification"
   }
 }

@@ -539,7 +539,10 @@
     "empty": "No searches found",
     "post": "Post a search",
     "loadMore": "Load more",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "deadlinePassed": "Deadline passed",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left"
   },
   "searchDetail": {
     "notFound": "Search not found",
@@ -561,7 +564,7 @@
     "requestReservation": "Request a booking",
     "securePayment": "Secure payment through findr",
     "fundsHeld": "Funds held until delivery is confirmed",
-    "loginRequired": "Sign in required",
+    "loginRequired": "Login required",
     "proposals": "Proposals",
     "noProposals": "No proposals yet — be the first findr to make one",
     "reserved": "Reserved search",
@@ -573,7 +576,11 @@
     "paymentsSetup": "Set up your payouts",
     "paymentsSetupText": "Set up your payouts before proposing an item — it only takes two minutes.",
     "later": "Later",
-    "configurePayments": "Set up payouts"
+    "configurePayments": "Set up payouts",
+    "urgent": "Urgent",
+    "loginToContact": "You must be logged in to contact the poster.",
+    "loginToPropose": "You must be logged in to make a proposal.",
+    "loginToReserve": "You must be logged in to request a reservation."
   },
   "proposal": {
     "pending": "Pending",
@@ -585,7 +592,7 @@
     "edit": "Edit",
     "details": "Proposal details",
     "findrMessage": "Message from the findr",
-    "noPhoto": "No photos provided",
+    "noPhoto": "No photo provided",
     "receivedOn": "Proposal received on {{date}}",
     "selected": "Selected",
     "dealDone": "✓ Deal completed",
@@ -604,7 +611,19 @@
     "confirmShipment": "Confirm shipment",
     "cancelRefund": "Cancel and refund",
     "back": "Back",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "empty": "No proposals yet.",
+    "beFirst": "Be the first to suggest a find!",
+    "confirmPayment": "Confirm payment",
+    "itemPrice": "Item price",
+    "serviceFee": "Service fee (4%)",
+    "total": "Total",
+    "paymentHeld": "Payment will be held until receipt of the item is confirmed.",
+    "priceSummary": "Price summary",
+    "totalToPay": "Total to pay",
+    "matchesDescription": "The item matches the description",
+    "goodCondition": "The item is in good condition",
+    "authenticityChecked": "Authenticity has been verified"
   },
   "terms": {
     "title": "Terms of Use",
@@ -702,7 +721,10 @@
     "notDefined": "Not specified",
     "continue": "Continue",
     "select": "Select",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "redirecting": "Redirecting…"
   },
   "publicProfile": {
     "notFound": "Profile not found",
@@ -723,7 +745,24 @@
     "justifyTitle": "Explain your booking request",
     "duration": "Requested booking period",
     "selectDuration": "Select a period",
-    "why": "Why do you want to book this search?"
+    "why": "Why do you want to book this search?",
+    "searchNotFound": "Search not found.",
+    "actionImpossible": "Action unavailable",
+    "ownSearch": "You cannot reserve your own search.",
+    "impossible": "Reservation unavailable",
+    "alreadyExists": "Reservation already exists",
+    "alreadyPending": "You already have a pending reservation request for this search.",
+    "backToSearch": "Back to the search",
+    "sevenDaysRenewable": "7 days (renewable once)",
+    "justificationPlaceholder": "Explain to the buyr why you want to reserve this search and how much time you need.",
+    "characters": "{{count}}/500 characters",
+    "howItWorks": "How does it work?",
+    "step1": "The buyr will receive your reservation request",
+    "step2": "They can accept, decline or adjust the duration",
+    "step3": "If accepted, the search will be hidden from other findrs",
+    "step4": "You will be the only one able to interact with the buyr",
+    "sending": "Sending…",
+    "send": "Send request"
   },
   "postSearch": {
     "title": "Post your search",
@@ -813,5 +852,28 @@
     "productLinkHint": "Add a link to the original listing (Vinted, Leboncoin, etc.)",
     "updating": "Updating…",
     "update": "Update my proposal"
+  },
+  "editSearch": {
+    "title": "Edit my search",
+    "subtitle": "Update the details of your search",
+    "status": "Status",
+    "selectStatus": "Select a status",
+    "statuses": {
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed"
+    },
+    "uploadImages": "Click to upload your images",
+    "saving": "Saving…",
+    "save": "Save changes",
+    "deleteTitle": "Delete this search?",
+    "deleteDescription": "This action cannot be undone. Your search and all associated proposals will be deleted."
+  },
+  "headerActions": {
+    "messages": "Messages",
+    "noConversation": "No conversations",
+    "notifications": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotification": "No notifications"
   }
 }

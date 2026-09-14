@@ -130,6 +130,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
   activeReservation: Reservation | undefined;
   isReserved: boolean;
 }) => {
+  const { t } = useTranslation();
   const allImages = useMemo(() => {
     const imgs: string[] = [];
     if (search.image_urls?.length) imgs.push(...search.image_urls);
@@ -207,7 +208,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
 
         {/* Badges overlay */}
         {search.urgency === "3-days" && (
-          <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground text-sm px-3 py-1">Urgent</Badge>
+          <Badge className="absolute top-4 left-4 bg-destructive text-destructive-foreground text-sm px-3 py-1">{t("searchDetail.urgent")}</Badge>
         )}
         <div className="absolute top-3 right-3 flex gap-2">
           {isReserved && <ReservationBadge expiresAt={activeReservation?.expires_at || null} />}
@@ -481,8 +482,8 @@ const SearchDetail = () => {
   const handleContact = () => {
     if (!user) {
       toast({
-        title: "Connexion requise",
-        description: "Tu dois être connecté pour contacter l'annonceur.",
+        title: t("searchDetail.loginRequired"),
+        description: t("searchDetail.loginToContact"),
         variant: "destructive",
       });
       return;
@@ -493,8 +494,8 @@ const SearchDetail = () => {
   const handleProposal = () => {
     if (!user) {
       toast({
-        title: "Connexion requise",
-        description: "Tu dois être connecté pour faire une proposition.",
+        title: t("searchDetail.loginRequired"),
+        description: t("searchDetail.loginToPropose"),
         variant: "destructive",
       });
       return;
@@ -510,8 +511,8 @@ const SearchDetail = () => {
   const handleReservation = () => {
     if (!user) {
       toast({
-        title: "Connexion requise",
-        description: "Tu dois être connecté pour demander une réservation.",
+        title: t("searchDetail.loginRequired"),
+        description: t("searchDetail.loginToReserve"),
         variant: "destructive",
       });
       return;
@@ -997,7 +998,7 @@ const SearchDetail = () => {
               style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
             >
               {stripeLoading ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("common.redirecting")}</>
               ) : (
                  t("searchDetail.configurePayments")
               )}

@@ -9,6 +9,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 const GOLD = "rgb(217, 187, 135)";
 const NAVY = "#070E42";
@@ -61,6 +62,7 @@ interface HeaderActionsProps {
 }
 
 const HeaderActions = ({ variant = "navy" }: HeaderActionsProps) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
@@ -241,12 +243,12 @@ const HeaderActions = ({ variant = "navy" }: HeaderActionsProps) => {
         </PopoverTrigger>
         <PopoverContent className="w-80 p-0 bg-background" align="end">
           <div className="p-3 border-b border-border">
-            <h3 className="font-semibold text-sm text-primary">Messages</h3>
+             <h3 className="font-semibold text-sm text-primary">{t("headerActions.messages")}</h3>
           </div>
           <ScrollArea className="h-[300px]">
             {conversations.length === 0 ? (
               <div className="p-4 text-center text-sm text-muted-foreground">
-                Aucune conversation
+                 {t("headerActions.noConversation")}
               </div>
             ) : (
               <div className="divide-y divide-border">
@@ -295,20 +297,20 @@ const HeaderActions = ({ variant = "navy" }: HeaderActionsProps) => {
         </PopoverTrigger>
         <PopoverContent className="w-80 p-0 bg-background" align="end">
           <div className="flex items-center justify-between p-3 border-b border-border">
-            <h3 className="font-semibold text-sm text-primary">Notifications</h3>
+             <h3 className="font-semibold text-sm text-primary">{t("headerActions.notifications")}</h3>
             {unreadNotifs > 0 && (
               <button
                 onClick={markAllRead}
                 className="text-xs text-muted-foreground hover:text-primary"
               >
-                Tout marquer lu
+                 {t("headerActions.markAllRead")}
               </button>
             )}
           </div>
           <ScrollArea className="h-[300px]">
             {notifications.length === 0 ? (
               <div className="p-4 text-center text-sm text-muted-foreground">
-                Aucune notification
+                 {t("headerActions.noNotification")}
               </div>
             ) : (
               <div className="divide-y divide-border">
