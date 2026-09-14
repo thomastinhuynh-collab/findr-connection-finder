@@ -9,7 +9,7 @@ interface LegalLayoutProps {
 }
 
 const LegalLayout = ({ title, updatedAt = "7 mai 2026", children }: LegalLayoutProps) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const displayedDate = updatedAt === "7 mai 2026" ? t("legalLayout.updatedDate") : updatedAt;
 
   return (
