@@ -361,10 +361,7 @@ const HowItWorksPage = () => {
                   {t("howItWorks.fees.premiumText")}
                 </Dash>
                 <Dash>
-                  {t("howItWorks.fees.examplePrefix")}{" "}
-                  <span style={{ color: NAVY }}>52,50 €</span>
-                  {t("howItWorks.fees.exampleMiddle")}{" "}
-                  <span style={{ color: NAVY }}>51,50 €</span>.
+                  {t("howItWorks.fees.example")}
                 </Dash>
               </ul>
               <span

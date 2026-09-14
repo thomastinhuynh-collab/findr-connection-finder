@@ -11,10 +11,9 @@ const LegalNotice = () => {
       <Trans i18nKey="legalNotice.publisher.text" components={{ strong: <strong /> }} />
     </p>
     <ul>
-      <li><strong>{t("legalNotice.publisher.companyLabel")}</strong> findr SAS</li>
-      <li><strong>{t("legalNotice.publisher.officeLabel")}</strong> France</li>
-      <li><strong>{t("legalNotice.publisher.emailLabel")}</strong> contact@findrapp.fr</li>
-      <li><strong>{t("legalNotice.publisher.directorLabel")}</strong> {t("legalNotice.publisher.director")}</li>
+      {["company", "capital", "office", "rcs", "president", "email", "vat"].map((key) => (
+        <li key={key}><strong>{t(`legalNotice.publisher.${key}Label`)}</strong> {t(`legalNotice.publisher.${key}`)}</li>
+      ))}
     </ul>
 
     <h2>{t("legalNotice.hosting.title")}</h2>
@@ -22,10 +21,9 @@ const LegalNotice = () => {
       <Trans i18nKey="legalNotice.hosting.text" components={{ strong: <strong /> }} />
     </p>
     <ul>
-      <li><strong>{t("legalNotice.hosting.companyLabel")}</strong> Lovable Labs Incorporated</li>
-      <li><strong>{t("legalNotice.hosting.addressLabel")}</strong> {t("legalNotice.hosting.address")}</li>
-      <li><strong>{t("legalNotice.hosting.phoneLabel")}</strong> +1 (323) 719-0419</li>
-      <li><strong>{t("legalNotice.hosting.emailLabel")}</strong> <a href="mailto:support@lovable.dev">support@lovable.dev</a></li>
+      {["company", "address", "phone", "email"].map((key) => (
+        <li key={key}><strong>{t(`legalNotice.hosting.${key}Label`)}</strong> {t(`legalNotice.hosting.${key}`)}</li>
+      ))}
     </ul>
 
     <h2>{t("legalNotice.intellectualProperty.title")}</h2>
@@ -38,6 +36,9 @@ const LegalNotice = () => {
     <p>
       <Trans i18nKey="legalNotice.contact.text" components={{ email: <a href="mailto:contact@findrapp.fr" /> }} />
     </p>
+
+    <h2>{t("legalNotice.mediation.title")}</h2>
+    <p>{t("legalNotice.mediation.text")}</p>
   </LegalLayout>
   );
 };

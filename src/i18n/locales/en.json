@@ -370,14 +370,13 @@
     },
     "fees": {
       "title": "Platform fees",
-      "summary": "5% STANDARD · 3% PREMIUM",
-      "intro": "findr takes a single commission on each transaction to run the platform, secure payments and support the community.",
-      "standardLabel": "Standard fee — 5%",
-      "standardText": "charged on every transaction, for all members.",
-      "premiumLabel": "Premium fee — 3%",
-      "premiumText": "for Premium members, with exclusive perks.",
-      "examplePrefix": "A real example: a findr tracks down a rare vinyl at €50; the buyr pays €50 + 5% =",
-      "exampleMiddle": ". With Premium, €50 + 3% =",
+      "summary": "4% BUYR · 4% FINDR · 8% TOTAL",
+      "intro": "findr charges a commission shared between both parties to maintain the platform, secure payments and support the community.",
+      "standardLabel": "Buyr fee — 4%",
+      "standardText": "added to the item price at checkout.",
+      "premiumLabel": "Findr fee — 4%",
+      "premiumText": "deducted from the amount paid to the findr, for a total commission of 8%.",
+      "example": "Example: for a €50 item, the buyr pays €52 and the findr receives €48.",
       "premiumLink": "Discover Premium",
       "comingSoon": "coming soon"
     },
@@ -431,79 +430,83 @@
     "title": "Legal notice",
     "publisher": {
       "title": "Website publisher",
-      "text": "The <strong>findr</strong> website (the “Platform”) is published by findr SAS, a simplified joint-stock company currently being registered with the French Trade and Companies Register.",
+      "text": "The <strong>Findr</strong> platform is published by FINDR APP SAS.",
       "companyLabel": "Company name:",
+      "company": "FINDR APP SAS",
+      "capitalLabel": "Legal form and share capital:",
+      "capital": "Simplified joint-stock company with share capital of €2,000",
       "officeLabel": "Registered office:",
-      "emailLabel": "Contact email:",
-      "directorLabel": "Publication director:",
-      "director": "The legal representative of findr SAS"
+      "office": "4 rue du Perche, 75003 Paris, France",
+      "rcsLabel": "Paris Trade and Companies Register:",
+      "rcs": "107 376 618",
+      "presidentLabel": "President:",
+      "president": "Thomas Huynh",
+      "emailLabel": "Email:",
+      "email": "contact@findrapp.fr",
+      "vatLabel": "Intra-Community VAT number:",
+      "vat": "[to be completed once assigned]"
     },
     "hosting": {
       "title": "Hosting",
-      "text": "The website is hosted by <strong>Lovable Labs Incorporated</strong> and uses its associated cloud infrastructure services (Supabase for the database and authentication).",
+      "text": "The platform is hosted by <strong>Lovable Labs Incorporated</strong>.",
       "companyLabel": "Company name:",
+      "company": "Lovable Labs Incorporated",
       "addressLabel": "Postal address:",
       "address": "One Lincoln Street, Suite 2500, Boston, MA 02111, United States",
       "phoneLabel": "Phone:",
-      "emailLabel": "Email:"
+      "phone": "+1 (323) 719-0419",
+      "emailLabel": "Email:",
+      "email": "support@lovable.dev"
     },
     "intellectualProperty": {
       "title": "Intellectual property",
-      "text": "All elements of the website—including text, graphics, the logo, icons, images and their presentation—are the exclusive property of findr SAS, except for content published by users. Any reproduction, representation, modification or use, in whole or in part, without prior written permission is strictly prohibited."
+      "text": "The Platform's structure, texts, logos and databases are protected. Content published by users remains their property, subject to the licence set out in the Terms of Use."
     },
     "liability": {
       "title": "Liability",
-      "text": "findr makes every effort to ensure that information published on the Platform is accurate and up to date. However, findr cannot be held liable for errors or omissions, or for any use third parties make of this information."
+      "text": "FINDR makes every effort to ensure the accuracy and currency of information published on the Platform. However, FINDR cannot be held liable for errors or omissions, or for third-party use of this information."
     },
     "contact": {
       "title": "Contact",
-      "text": "For any question about this legal notice, email us at <email>contact@findrapp.fr</email>."
+      "text": "For any questions regarding this legal notice, please email us at <email>contact@findrapp.fr</email>."
+    },
+    "mediation": {
+      "title": "Consumer mediation",
+      "text": "[details to be inserted before launch if applicable]"
     }
   },
   "privacy": {
-    "title": "Privacy policy",
-    "intro": "This policy explains how findr collects, uses and protects your personal data in accordance with the General Data Protection Regulation (GDPR) and French data protection law.",
+    "title": "Privacy Policy",
+    "intro": "This policy describes the processing of personal data carried out in connection with the use of the Findr platform.",
     "controller": {
       "title": "1. Data controller",
-      "text": "The data controller is findr SAS. If you have any questions, contact us at <email>privacy@findrapp.fr</email>."
+      "text": "The data controller is FINDR APP SAS, 4 rue du Perche, 75003 Paris. For any questions, please contact us at <email>contact@findrapp.fr</email>."
     },
     "data": {
-      "title": "2. Data we collect",
-      "identity": "<strong>Identification data:</strong> first name, last name, email address and encrypted password.",
-      "profile": "<strong>Profile data:</strong> photo, bio and city (optional).",
-      "usage": "<strong>Usage data:</strong> published searches, proposals, messages and ratings.",
-      "technical": "<strong>Technical data:</strong> IP address, browser type and connection logs."
-    },
-    "purposes": {
-      "title": "3. How we use your data",
-      "matching": "Connect buyrs with findrs.",
-      "account": "Manage your account and transactions.",
-      "security": "Keep the Platform secure and prevent fraud.",
-      "communications": "Send you service-related communications."
-    },
-    "legalBasis": {
-      "title": "4. Legal basis",
-      "text": "We process data to perform our contract with you (the Terms), based on your consent for marketing communications, and for findr's legitimate interests in security and improving the service."
-    },
-    "retention": {
-      "title": "5. Data retention",
-      "text": "We keep your data for as long as needed to provide the service, and for no more than three years after your last activity unless a longer legal retention period applies, particularly for accounting records."
+      "title": "2. Data processed",
+      "account": "<strong>Account data:</strong> surname, first name, email address, city and profile.",
+      "transaction": "<strong>Transaction data:</strong> searches, proposals, messages and delivery status.",
+      "payment": "<strong>Payment data:</strong> this data is transmitted to Stripe; FINDR does not retain full card details."
     },
     "recipients": {
-      "title": "6. Who receives your data",
-      "text": "Your data may be accessed by authorised findr team members and by our technical service providers, including hosting and payment providers, under strict contractual obligations. We never sell your data to third parties."
+      "title": "3. Stripe and recipients",
+      "text": "<strong>Stripe Payments Europe, Limited</strong> is the primary contracting entity for payments. <strong>Stripe Technology Europe, Limited</strong> is the regulated entity (Central Bank of Ireland authorisation no. C187865) for the underlying financial services, including the temporary holding of funds."
+    },
+    "transfers": {
+      "title": "4. Transfers outside the European Union",
+      "text": "<strong>Lovable Labs Incorporated</strong>, a US company incorporated in Delaware, governs data transfers through its Data Processing Agreement, which provides for the European Commission's Standard Contractual Clauses (SCCs), rather than the Data Privacy Framework."
+    },
+    "retention": {
+      "title": "5. Retention periods",
+      "text": "Retention periods vary according to the purpose of the processing and are not uniformly set at ten years. Accounting data is retained for the applicable statutory period."
     },
     "rights": {
-      "title": "7. Your rights",
-      "text": "You have the right to access, correct, erase and transfer your data, restrict its processing, and object to its use. You can exercise these rights at <email>privacy@findrapp.fr</email>. You may also lodge a complaint with the CNIL, the French data protection authority (<cnil>www.cnil.fr</cnil>)."
+      "title": "6. Your rights",
+      "text": "You have rights of access, rectification, erasure, restriction, objection and portability. You may exercise them by emailing <email>contact@findrapp.fr</email>. You may also lodge a complaint with the CNIL (<cnil>www.cnil.fr</cnil>)."
     },
     "cookies": {
-      "title": "8. Cookies",
-      "text": "findr only uses cookies that are strictly necessary for the Platform to work, including session and authentication cookies. No advertising or third-party tracking cookies are placed without your consent."
-    },
-    "security": {
-      "title": "9. Security",
-      "text": "We use appropriate technical and organisational safeguards, including encryption, access controls and backups, to protect your data from unauthorised access, loss or alteration."
+      "title": "7. Cookies",
+      "text": "Strictly necessary cookies may be used without consent. Other cookies require your prior consent."
     }
   },
   "translation": {
@@ -627,47 +630,54 @@
   },
   "terms": {
     "title": "Terms of Use",
-    "intro": "These Terms of Use govern the findr platform, which connects people looking for an item or service (“buyrs”) with people who can source it for them (“findrs”).",
+    "intro": "These Terms of Use govern access to and use of the Findr platform. They must be read together with the Terms and Conditions of Sale and the Privacy Policy.",
     "purpose": {
-      "title": "1. Purpose",
-      "text": "findr is a platform that connects users. findr is not a seller, buyer or commercial intermediary. Transactions are entered into directly between buyrs and findrs within the framework provided by the Platform."
+      "title": "Article 1 — Publisher and purpose",
+      "text": "FINDR APP SAS operates a digital platform that allows one user (the “Buyr”) to publish a search for an item and another user (the “Findr”) to propose a matching item. Findr provides features for connecting users, transactions, tracking and claims management."
+    },
+    "definitions": {
+      "title": "Article 2 — Definitions",
+      "text": "Platform (the Findr website, application and services); Buyr (a user who publishes a Search or purchases an item); Findr (a user who proposes an item in response to a Search); Search (a request published by a Buyr); Proposal (an offer from a Findr including a description, price and delivery terms)."
     },
     "registration": {
-      "title": "2. Registration",
-      "text": "Registration is free and limited to adults who have the legal capacity to enter into a contract. Users agree to provide accurate information and keep it up to date."
+      "title": "Article 3 — Registration",
+      "text": "Registration is restricted to adults with legal capacity. Accurate and up-to-date information is required."
     },
     "matching": {
-      "title": "3. How matching works",
-      "search": "Buyrs publish a search describing the item or service they want.",
-      "proposal": "Findrs submit priced proposals.",
-      "payment": "The buyr may accept a proposal, at which point the funds are held securely by the Platform (escrow).",
-      "release": "Funds are released to the findr once the buyr confirms receipt."
+      "title": "Article 4 — How it works",
+      "text": "The Buyr publishes a Search, one or more Findrs may submit a Proposal, and acceptance initiates the transaction process in accordance with the Terms and Conditions of Sale."
     },
-    "fees": {
-      "title": "4. Service fees",
-      "text": "findr charges a <strong>5%</strong> fee on each successful transaction (reduced to <strong>3%</strong> for Premium members), plus a <strong>3% authentication fee</strong>. All fees are clearly shown before a transaction is confirmed."
+    "role": {
+      "title": "Article 5 — FINDR's role",
+      "text": "FINDR operates the marketplace and plays an active role in the transaction journey (presentation of offers, arrangement of payment through its provider, tracking, management of the conditions for releasing funds, and handling of claims). FINDR's designation as <strong>“merchant of record”</strong> within its Stripe environment does not, in itself, mean that FINDR is the legal seller of each item—the seller's identity and capacity are displayed to the Buyr before the sale."
     },
     "obligations": {
-      "title": "5. User responsibilities",
-      "content": "Do not publish illegal, counterfeit or misleading content.",
-      "commitments": "Honour all commitments made as part of a transaction.",
-      "messaging": "Communicate exclusively through the built-in messaging service until the transaction is complete."
+      "title": "Article 6 — User obligations",
+      "text": "Users undertake not to provide misleading information, not to offer unlawful, counterfeit or dangerous goods, to describe the item accurately, to respect third-party intellectual property rights, and not to circumvent the Platform."
+    },
+    "content": {
+      "title": "Article 7 — Content",
+      "text": "Users grant FINDR a non-exclusive, royalty-free, worldwide licence to the content they publish."
+    },
+    "reviews": {
+      "title": "Article 8 — Reviews",
+      "text": "A review may be published after a transaction. FINDR may remove content that is manifestly unlawful."
     },
     "suspension": {
-      "title": "6. Suspension and termination",
-      "text": "findr reserves the right to suspend or delete any account that breaches these Terms, without notice or compensation."
-    },
-    "liability": {
-      "title": "7. Liability",
-      "text": "findr acts as a technical intermediary. The findr alone is responsible for the conformity, authenticity and delivery of the items or services offered. The buyr is responsible for payment."
+      "title": "Article 9 — Suspension",
+      "text": "An account may be suspended in the event of a breach of the Terms of Use or Terms and Conditions of Sale, fraud, or a security risk. Any measures taken will be proportionate."
     },
     "personalData": {
-      "title": "8. Personal data",
-      "text": "Our handling of personal data is explained in our <privacy>Privacy policy</privacy>."
+      "title": "Article 10 — Personal data",
+      "text": "The processing of personal data is described in our <privacy>Privacy Policy</privacy>."
+    },
+    "changes": {
+      "title": "Article 11 — Changes to the Terms of Use",
+      "text": "FINDR may amend these Terms of Use for a legitimate reason."
     },
     "law": {
-      "title": "9. Governing law",
-      "text": "These Terms are governed by French law. Any dispute will fall within the jurisdiction of the competent courts for findr’s registered office, subject to any mandatory consumer protection rules."
+      "title": "Article 12 — Governing law",
+      "text": "These Terms of Use are governed by French law, subject to mandatory consumer protection provisions."
     }
   },
   "favorites": {
