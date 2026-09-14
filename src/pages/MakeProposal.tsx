@@ -39,18 +39,18 @@ interface UserProfile {
 }
 
 const conditions = [
-  { value: "neuf", label: "Neuf avec étiquette" },
-  { value: "comme-neuf", label: "Comme neuf" },
-  { value: "tres-bon", label: "Très bon état" },
-  { value: "bon", label: "Bon état" },
-  { value: "correct", label: "État correct" },
+  { value: "neuf", label: "Neuf avec étiquette", key: "newWithTags" },
+  { value: "comme-neuf", label: "Comme neuf", key: "likeNew" },
+  { value: "tres-bon", label: "Très bon état", key: "veryGood" },
+  { value: "bon", label: "Bon état", key: "good" },
+  { value: "correct", label: "État correct", key: "fair" },
 ];
 
 const MakeProposal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -130,7 +130,7 @@ const MakeProposal = () => {
     if (min && max) return `${min}-${max}€`;
     if (max) return `< ${max}€`;
     if (min) return `> ${min}€`;
-    return "Non défini";
+    return t("common.notDefined");
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -312,10 +312,10 @@ const MakeProposal = () => {
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-2xl font-serif font-bold text-primary mb-4">
-              Recherche non trouvée
+               {t("proposalForm.searchNotFound")}
             </h1>
             <Button onClick={() => navigate("/recherches")}>
-              Retour aux recherches
+               {t("proposalForm.backToSearches")}
             </Button>
           </div>
         </main>
@@ -346,17 +346,17 @@ const MakeProposal = () => {
               className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
             >
               <ArrowLeft className="w-5 h-5" />
-              Retour
+               {t("common.back")}
             </button>
 
             <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary mb-2">
-              Faire une proposition
+               {t("proposalForm.makeTitle")}
             </h1>
             <p className="text-muted-foreground">
-              Pour : <span className="text-foreground font-medium">{search.title}</span>
+               {t("proposalForm.for")} <span className="text-foreground font-medium">{search.title}</span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Budget du buyr : <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
+               {t("proposalForm.buyrBudget")} <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
             </p>
           </motion.div>
 
@@ -372,7 +372,7 @@ const MakeProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <ImagePlus className="w-5 h-5 text-accent" />
-                Photos de l'objet *
+                 {t("proposalForm.photos")} *
               </Label>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -392,7 +392,7 @@ const MakeProposal = () => {
                 {images.length < 4 && (
                   <label className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-accent transition-colors cursor-pointer flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-accent">
                     <Upload className="w-8 h-8" />
-                    <span className="text-xs text-center px-2">Ajouter une photo</span>
+                     <span className="text-xs text-center px-2">{t("proposalForm.addPhoto")}</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -405,7 +405,7 @@ const MakeProposal = () => {
               </div>
               
               <p className="text-xs text-muted-foreground">
-                Ajoutez jusqu'à 4 photos de votre trouvaille. Des photos claires augmentent vos chances d'être sélectionné.
+                 {t("proposalForm.photosHint")}
               </p>
             </div>
 
@@ -413,7 +413,7 @@ const MakeProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="price" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <Euro className="w-5 h-5 text-accent" />
-                Prix proposé *
+                 {t("proposalForm.price")} *
               </Label>
               <div className="relative">
                 <Input
@@ -428,7 +428,7 @@ const MakeProposal = () => {
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Le budget du buyr est de {formatBudget(search.budget_min, search.budget_max)}
+                 {t("proposalForm.budgetIs", { budget: formatBudget(search.budget_min, search.budget_max) })}
               </p>
             </div>
 
@@ -436,12 +436,12 @@ const MakeProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="brand" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <Tag className="w-5 h-5 text-accent" />
-                Marque *
+                 {t("proposalForm.brand")} *
               </Label>
               <Input
                 id="brand"
                 type="text"
-                placeholder="Ex: Levi's, Schott, Sans marque..."
+                 placeholder={t("proposalForm.brandPlaceholder")}
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
               />
@@ -451,16 +451,16 @@ const MakeProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 text-accent" />
-                État de l'objet *
+                 {t("proposalForm.condition")} *
               </Label>
               <Select value={condition} onValueChange={setCondition}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Sélectionnez l'état" />
+                   <SelectValue placeholder={t("proposalForm.selectCondition")} />
                 </SelectTrigger>
                 <SelectContent>
                   {conditions.map((c) => (
                     <SelectItem key={c.value} value={c.value}>
-                      {c.label}
+                       {t(`proposalForm.conditions.${c.key}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -471,11 +471,11 @@ const MakeProposal = () => {
             {/* Description (optional) */}
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="description" className="text-lg font-semibold text-primary mb-4 block">
-                Description complémentaire
+                 {t("proposalForm.description")}
               </Label>
               <Textarea
                 id="description"
-                placeholder="Décrivez votre trouvaille, son histoire, ses particularités..."
+                 placeholder={t("proposalForm.descriptionPlaceholder")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
@@ -487,7 +487,7 @@ const MakeProposal = () => {
             <div className="bg-gradient-to-br from-primary/5 to-accent/5 border border-border rounded-2xl p-6 space-y-4">
               <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
                 <Euro className="w-5 h-5 text-accent" />
-                Récapitulatif des gains
+                 {t("proposalForm.earnings")}
                 {isPremium && (
                   <span className="ml-auto text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full flex items-center gap-1">
                     <Crown className="w-3 h-3" />
@@ -500,15 +500,15 @@ const MakeProposal = () => {
               <div className="bg-card rounded-xl p-4 space-y-3">
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Prix proposé</span>
+                     <span className="text-muted-foreground">{t("proposalForm.price")}</span>
                     <span className="font-medium">{priceNum.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Commission findr (4%)</span>
+                     <span className="text-muted-foreground">{t("proposalForm.commission")}</span>
                     <span className="font-medium text-destructive">-{findrFee.toFixed(2)} €</span>
                   </div>
                   <div className="border-t border-border pt-2 flex justify-between">
-                    <span className="font-semibold text-primary">Vous recevrez</span>
+                     <span className="font-semibold text-primary">{t("proposalForm.youReceive")}</span>
                     <span className="font-bold text-lg text-accent">{finalAmount.toFixed(2)} €</span>
                   </div>
                 </div>
@@ -521,23 +521,23 @@ const MakeProposal = () => {
                     <CreditCard className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="font-medium text-sm">Paiement sécurisé</p>
-                    <p className="text-xs text-muted-foreground">Le Buyr paiera via Stripe si accepté</p>
+                     <p className="font-medium text-sm">{t("proposalForm.securePayment")}</p>
+                     <p className="text-xs text-muted-foreground">{t("proposalForm.stripePayment")}</p>
                   </div>
                 </div>
                 
                 <div className="bg-secondary/50 rounded-lg p-3 space-y-2">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-success" />
-                    <span className="text-xs">Fonds sécurisés jusqu'à livraison</span>
+                     <span className="text-xs">{t("proposalForm.fundsSecured")}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-success" />
-                    <span className="text-xs">Authentification incluse</span>
+                     <span className="text-xs">{t("proposalForm.authenticationIncluded")}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-success" />
-                    <span className="text-xs">Protection buyr & findr</span>
+                     <span className="text-xs">{t("proposalForm.protection")}</span>
                   </div>
                 </div>
               </div>
@@ -558,12 +558,12 @@ const MakeProposal = () => {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Envoi en cours...
+                     {t("proposalForm.sending")}
                   </>
                 ) : (
                   <>
                     <Send className="w-5 h-5" />
-                    Envoyer ma proposition
+                     {t("proposalForm.send")}
                   </>
                 )}
               </Button>
@@ -571,9 +571,9 @@ const MakeProposal = () => {
 
             {/* Trust message */}
             <p className="text-center text-xs text-muted-foreground">
-              En envoyant cette proposition, vous acceptez les conditions générales de findr.
+               {t("proposalForm.terms")}
               <br />
-              Le paiement sera sécurisé et vous serez payé une fois l'objet livré et validé.
+               {t("proposalForm.paymentPromise")}
             </p>
           </motion.form>
         </div>
