@@ -80,6 +80,30 @@ Deno.serve(async (req) => {
       }
     }
 
+    // 1 ter. Versements mis en revue (payout_hold — Art. 12 CGV) : on retente à chaque
+    // passage. Tant que la retenue est active, le helper renvoie { held: true } sans rien
+    // changer ; dès que l'admin lève la retenue, le versement part automatiquement.
+    const stillHeld: string[] = [];
+    const { data: inReview } = await admin
+      .from("reservations")
+      .select(
+        "id, buyr_id, findr_id, proposal_id, findr_payout_amount, stripe_payment_intent_id",
+      )
+      .eq("payment_status", "versement_en_revue")
+      .eq("dispute_open", false);
+
+    for (const reservation of inReview ?? []) {
+      try {
+        const result = await releaseFundsForReservation(admin, stripe, reservation, true);
+        if (result.ok) released.push(reservation.id);
+        else if (result.held) stillHeld.push(reservation.id);
+        else failed.push(reservation.id);
+      } catch (e) {
+        console.error("auto-release (in review) failed for", reservation.id, e);
+        failed.push(reservation.id);
+      }
+    }
+
     // 2. Filet de sécurité : colis expédié depuis 10 jours et jamais livré
     const { data: lost } = await admin
       .from("reservations")
@@ -146,6 +170,7 @@ Deno.serve(async (req) => {
     return json({
       released,
       failed,
+      stillHeld,
       lostNotified: (lost ?? []).length,
       expired: (expired ?? []).length,
     });

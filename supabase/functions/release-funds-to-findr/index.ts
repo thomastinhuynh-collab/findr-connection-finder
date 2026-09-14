@@ -47,15 +47,14 @@ Deno.serve(async (req) => {
     // automatique 17TRACK (faux numéro, transporteur non couvert, etc.).
     const CONFIRMABLE = ["paye_en_attente_reception", "expedie", "livre"];
     if (!CONFIRMABLE.includes(reservation.payment_status ?? "")) {
-      const already = ["termine", "versement_en_revue"].includes(reservation.payment_status ?? "");
-      return json(
-        {
-          error: already
-            ? "Les fonds de cette réservation ont déjà été libérés."
-            : `Cette réservation n'est pas en cours (statut : ${reservation.payment_status ?? "aucun"}).`,
-        },
-        400,
-      );
+      const status = reservation.payment_status ?? "";
+      const error =
+        status === "termine"
+          ? "Les fonds de cette réservation ont déjà été libérés."
+          : status === "versement_en_revue"
+            ? "Ta réception est bien enregistrée. Le versement au findr est en cours de revue par l'équipe findr : il partira automatiquement dès validation."
+            : `Cette réservation n'est pas en cours (statut : ${status || "aucun"}).`;
+      return json({ error }, 400);
     }
     if (reservation.dispute_open) {
       return json({ error: "Une réclamation est en cours sur cette transaction." }, 400);
