@@ -702,7 +702,9 @@
     "notDefined": "Non défini",
     "continue": "Continuer",
     "select": "Sélectionner",
-    "collapse": "Replier"
+    "collapse": "Replier",
+    "cancel": "Annuler",
+    "delete": "Supprimer"
   },
   "publicProfile": {
     "notFound": "Profil introuvable",
@@ -813,5 +815,21 @@
     "productLinkHint": "Ajoutez un lien vers l’annonce originale (Vinted, Leboncoin, etc.)",
     "updating": "Mise à jour en cours…",
     "update": "Mettre à jour ma proposition"
+  },
+  "editSearch": {
+    "title": "Modifier ma recherche",
+    "subtitle": "Mets à jour les détails de ta recherche",
+    "status": "Statut",
+    "selectStatus": "Sélectionne un statut",
+    "statuses": {
+      "active": "Active",
+      "paused": "En pause",
+      "completed": "Terminée"
+    },
+    "uploadImages": "Clique pour télécharger tes images",
+    "saving": "Enregistrement…",
+    "save": "Enregistrer les modifications",
+    "deleteTitle": "Supprimer cette recherche ?",
+    "deleteDescription": "Cette action est irréversible. Ta recherche et toutes les propositions associées seront supprimées."
   }
 }

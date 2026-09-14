@@ -702,7 +702,9 @@
     "notDefined": "Not specified",
     "continue": "Continue",
     "select": "Select",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "cancel": "Cancel",
+    "delete": "Delete"
   },
   "publicProfile": {
     "notFound": "Profile not found",
@@ -813,5 +815,21 @@
     "productLinkHint": "Add a link to the original listing (Vinted, Leboncoin, etc.)",
     "updating": "Updating…",
     "update": "Update my proposal"
+  },
+  "editSearch": {
+    "title": "Edit my search",
+    "subtitle": "Update the details of your search",
+    "status": "Status",
+    "selectStatus": "Select a status",
+    "statuses": {
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed"
+    },
+    "uploadImages": "Click to upload your images",
+    "saving": "Saving…",
+    "save": "Save changes",
+    "deleteTitle": "Delete this search?",
+    "deleteDescription": "This action cannot be undone. Your search and all associated proposals will be deleted."
   }
 }
