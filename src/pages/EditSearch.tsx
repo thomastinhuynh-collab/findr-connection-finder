@@ -34,7 +34,7 @@ const EditSearch = () => {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -43,6 +43,7 @@ const EditSearch = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [deadlineOpen, setDeadlineOpen] = useState(false);
+  const [sourceLang, setSourceLang] = useState("fr");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -95,6 +96,7 @@ const EditSearch = () => {
     });
     setDeadlineOpen(urgency !== "no-rush");
     setExistingImageUrl(data.image_url);
+    setSourceLang(data.source_lang || "fr");
     setLoading(false);
   };
 
@@ -200,7 +202,7 @@ const EditSearch = () => {
           urgency: formData.deadline || "normal",
           image_url: imageUrl,
           status: formData.status,
-          source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr",
+          source_lang: sourceLang,
         })
         .eq("id", id)
         .eq("user_id", user.id);
