@@ -46,11 +46,11 @@ interface UserProfile {
 }
 
 const conditions = [
-  { value: "neuf", label: "Neuf avec étiquette" },
-  { value: "comme-neuf", label: "Comme neuf" },
-  { value: "tres-bon", label: "Très bon état" },
-  { value: "bon", label: "Bon état" },
-  { value: "correct", label: "État correct" },
+  { value: "neuf", label: "Neuf avec étiquette", key: "newWithTags" },
+  { value: "comme-neuf", label: "Comme neuf", key: "likeNew" },
+  { value: "tres-bon", label: "Très bon état", key: "veryGood" },
+  { value: "bon", label: "Bon état", key: "good" },
+  { value: "correct", label: "État correct", key: "fair" },
 ];
 
 const EditProposal = () => {
