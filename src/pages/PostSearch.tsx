@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
 import { CATEGORIES, OTHER_CATEGORY } from "@/lib/categories";
+import { useTranslation } from "react-i18next";
 
 const categories = [...CATEGORIES, { name: OTHER_CATEGORY, slug: OTHER_CATEGORY, status: "active" as const, subcategories: [] }];
 
@@ -30,6 +31,7 @@ const PostSearch = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -149,6 +151,7 @@ const PostSearch = () => {
         urgency: formData.deadline || "no-rush",
         image_url: imageUrl,
         status: "active",
+        source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr",
       });
 
       if (error) throw error;

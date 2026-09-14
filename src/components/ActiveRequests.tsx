@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import FavoriteButton from "@/components/FavoriteButton";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
+import TranslatedContent from "@/components/TranslatedContent";
 
 interface SearchData {
   id: string;
@@ -19,6 +20,7 @@ interface SearchData {
   image_urls: string[] | null;
   user_id: string;
   created_at: string;
+  source_lang?: string | null;
 }
 
 interface ProfileData {
@@ -96,7 +98,7 @@ const ActiveRequests = () => {
   const fetchSearches = async () => {
     const { data, error } = await supabase
       .from("searches")
-      .select("id, title, category, budget_min, budget_max, deadline, image_url, image_urls, user_id, created_at")
+      .select("id, title, category, budget_min, budget_max, deadline, image_url, image_urls, user_id, created_at, source_lang")
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(24);
@@ -249,12 +251,9 @@ const ActiveRequests = () => {
 
                 {/* Content */}
                 <div className="p-4">
-                  <h3
-                    className="line-clamp-1"
-                    style={{ fontSize: "16px", fontWeight: 600, color: "#1B2A4A", marginBottom: "8px" }}
-                  >
-                    {search.title}
-                  </h3>
+                  <TranslatedContent type="search" id={search.id} title={search.title} sourceLang={search.source_lang}>
+                    {({ title }) => <h3 className="line-clamp-1" style={{ fontSize: "16px", fontWeight: 600, color: "#1B2A4A", marginBottom: "8px" }}>{title}</h3>}
+                  </TranslatedContent>
 
                   <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.1em", color: "#8A7A4C", textTransform: "uppercase" }}>
                     {t("card.budget")}
