@@ -123,7 +123,51 @@
     "copyright": "© 2025 findr — Tous droits réservés"
   },
   "categoryNav": {
-    "viewAll": "Tout voir"
+    "viewAll": "Tout voir",
+    "categories": {
+      "c1": {
+        "name": "Mode & Maroquinerie",
+        "subcategories": {
+          "s1": "Vestes & Manteaux", "s2": "T-shirts & Sweats", "s3": "Pantalons & Jeans",
+          "s4": "Robes & Jupes", "s5": "Chaussures", "s6": "Sportswear"
+        }
+      },
+      "c2": {
+        "name": "Pop Culture & TCG",
+        "subcategories": {
+          "s1": "Cartes Pokémon", "s2": "Cartes Yu-Gi-Oh!", "s3": "Cartes Magic",
+          "s4": "Figurines & Jouets", "s5": "Mangas & Comics", "s6": "Jeux vidéo rétro"
+        }
+      },
+      "c3": {
+        "name": "Vinyles & Musique",
+        "subcategories": {
+          "s1": "Vinyles 33 tours", "s2": "Vinyles 45 tours", "s3": "Cassettes",
+          "s4": "CD collectors", "s5": "Platines & Hi-Fi"
+        }
+      },
+      "c4": {
+        "name": "Photo & Électronique",
+        "subcategories": {
+          "s1": "Appareils argentiques", "s2": "Objectifs vintage", "s3": "Accessoires photo",
+          "s4": "Consoles rétro", "s5": "Audio vintage"
+        }
+      },
+      "c5": {
+        "name": "Bijoux & Accessoires",
+        "subcategories": {
+          "s1": "Bagues & Bracelets", "s2": "Colliers & Pendentifs", "s3": "Montres vintage",
+          "s4": "Sacs & Pochettes", "s5": "Lunettes"
+        }
+      },
+      "c6": {
+        "name": "Déco & Mobilier",
+        "subcategories": {
+          "s1": "Meubles vintage", "s2": "Luminaires", "s3": "Objets déco",
+          "s4": "Vaisselle & Céramique", "s5": "Textile maison"
+        }
+      }
+    }
   },
   "comingSoon": {
     "title": "Bientôt disponible",

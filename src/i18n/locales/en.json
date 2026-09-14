@@ -123,7 +123,51 @@
     "copyright": "© 2025 findr — All rights reserved"
   },
   "categoryNav": {
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "categories": {
+      "c1": {
+        "name": "Fashion & Leather Goods",
+        "subcategories": {
+          "s1": "Jackets & Coats", "s2": "T-shirts & Sweatshirts", "s3": "Trousers & Jeans",
+          "s4": "Dresses & Skirts", "s5": "Shoes", "s6": "Sportswear"
+        }
+      },
+      "c2": {
+        "name": "Pop Culture & TCG",
+        "subcategories": {
+          "s1": "Pokémon Cards", "s2": "Yu-Gi-Oh! Cards", "s3": "Magic Cards",
+          "s4": "Collectibles & Toys", "s5": "Manga & Comics", "s6": "Retro Video Games"
+        }
+      },
+      "c3": {
+        "name": "Vinyl & Music",
+        "subcategories": {
+          "s1": "LP Records", "s2": "Singles", "s3": "Cassettes",
+          "s4": "Collector CDs", "s5": "Turntables & Hi-Fi"
+        }
+      },
+      "c4": {
+        "name": "Cameras & Electronics",
+        "subcategories": {
+          "s1": "Film Cameras", "s2": "Vintage Lenses", "s3": "Camera Accessories",
+          "s4": "Retro Consoles", "s5": "Vintage Audio"
+        }
+      },
+      "c5": {
+        "name": "Jewellery & Accessories",
+        "subcategories": {
+          "s1": "Rings & Bracelets", "s2": "Necklaces & Pendants", "s3": "Vintage Watches",
+          "s4": "Bags & Clutches", "s5": "Eyewear"
+        }
+      },
+      "c6": {
+        "name": "Home & Furniture",
+        "subcategories": {
+          "s1": "Vintage Furniture", "s2": "Lighting", "s3": "Home Décor",
+          "s4": "Tableware & Ceramics", "s5": "Home Textiles"
+        }
+      }
+    }
   },
   "comingSoon": {
     "title": "Coming soon",

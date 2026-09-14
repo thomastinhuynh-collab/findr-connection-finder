@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/Logo";
 import { useTranslation } from "react-i18next";
+import { CATEGORIES } from "@/lib/categories";
 
 interface ComingSoonCategoryProps {
   categoryName: string;
@@ -13,6 +14,12 @@ interface ComingSoonCategoryProps {
 const ComingSoonCategory = ({ categoryName }: ComingSoonCategoryProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const categoryIndex = CATEGORIES.findIndex(
+    (category) => category.name === categoryName || category.slug === categoryName,
+  );
+  const translatedCategoryName = categoryIndex >= 0
+    ? t(`categoryNav.categories.c${categoryIndex + 1}.name`)
+    : categoryName;
 
   return (
     <div
@@ -45,7 +52,7 @@ const ComingSoonCategory = ({ categoryName }: ComingSoonCategoryProps) => {
           letterSpacing: "0.01em",
         }}
       >
-        {t("comingSoon.subtitle", { categoryName })}
+        {t("comingSoon.subtitle", { categoryName: translatedCategoryName })}
       </p>
 
       <button
