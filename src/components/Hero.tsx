@@ -6,6 +6,7 @@ import HeaderActions from "@/components/HeaderActions";
 import Logo from "@/components/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
+import { CATEGORIES } from "@/lib/categories";
 
 const GOLD = "rgb(217, 187, 135)";
 const DARK = "#070E42";
@@ -17,13 +18,7 @@ const navLinks = [
   { key: "blog", to: "/blog" },
 ];
 
-const categories = [
-  { name: "Mode & Maroquinerie", slug: "Mode & Maroquinerie" },
-  { name: "Pop Culture & TCG", slug: "Pop Culture & TCG" },
-  { name: "Vinyles & Musique", slug: "Vinyles & Musique" },
-  { name: "Photo & Électronique", slug: "Photo & Électronique" },
-  { name: "Bijoux & Accessoires", slug: "Bijoux & Accessoires" },
-];
+const categories = CATEGORIES.slice(0, 5);
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -283,7 +278,7 @@ const Hero = () => {
             alignItems: "center",
           }}
         >
-          {categories.map((c) => (
+          {categories.map((c, categoryIndex) => (
             <button
               key={c.slug}
               onClick={() =>
@@ -307,7 +302,7 @@ const Hero = () => {
                 (e.currentTarget.style.color = "rgba(217, 187, 135, 0.65)")
               }
             >
-              {c.name}
+              {t(`categoryNav.categories.c${categoryIndex + 1}.name`)}
               <span style={{ fontSize: 10 }}>▾</span>
             </button>
           ))}
