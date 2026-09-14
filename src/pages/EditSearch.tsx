@@ -25,6 +25,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { CATEGORIES, OTHER_CATEGORY } from "@/lib/categories";
+import { useTranslation } from "react-i18next";
 
 const categories = [...CATEGORIES, { name: OTHER_CATEGORY, slug: OTHER_CATEGORY, status: "active" as const, subcategories: [] }];
 
@@ -33,6 +34,7 @@ const EditSearch = () => {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -198,6 +200,7 @@ const EditSearch = () => {
           urgency: formData.deadline || "normal",
           image_url: imageUrl,
           status: formData.status,
+          source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr",
         })
         .eq("id", id)
         .eq("user_id", user.id);

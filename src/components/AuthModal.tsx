@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { translateAuthError } from "@/lib/authErrors";
+import { useTranslation } from "react-i18next";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
   const [loading, setLoading] = useState(false);
   const { signUp, signIn } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,19 +33,19 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
       const { error, session } = await signUp(email, password, fullName);
       if (error) {
         toast({
-          title: "Erreur d'inscription",
+          title: t("auth.signupError"),
           description: translateAuthError(error.message),
           variant: "destructive",
         });
       } else if (!session) {
         toast({
-          title: "Inscription enregistrée",
-          description: "Vérifie ta boîte mail pour confirmer ton inscription avant de te connecter",
+          title: t("auth.signupSaved"),
+          description: t("auth.confirmEmail"),
         });
       } else {
         toast({
-          title: "Inscription réussie !",
-          description: "Bienvenue sur findr !",
+          title: t("auth.signupSuccess"),
+          description: t("auth.welcome"),
         });
         onClose();
       }
@@ -51,14 +53,14 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
       const { error } = await signIn(email, password);
       if (error) {
         toast({
-          title: "Erreur de connexion",
+          title: t("auth.loginError"),
           description: translateAuthError(error.message),
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Connexion réussie !",
-          description: "Content de vous revoir !",
+          title: t("auth.loginSuccess"),
+          description: t("auth.welcomeBack"),
         });
         onClose();
       }
@@ -72,13 +74,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
       <DialogContent className="sm:max-w-[425px] bg-background">
         <DialogHeader>
           <DialogTitle className="text-2xl font-display text-primary">
-            {mode === "login" ? "Connexion" : "Inscription"}
+            {mode === "login" ? t("auth.login") : t("auth.signup")}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           {mode === "signup" && (
             <div className="space-y-2">
-              <Label htmlFor="fullName">Nom complet</Label>
+              <Label htmlFor="fullName">{t("auth.fullName")}</Label>
               <Input
                 id="fullName"
                 type="text"
@@ -96,12 +98,12 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="jean@exemple.com"
+              placeholder={t("auth.emailPlaceholder")}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Mot de passe</Label>
+            <Label htmlFor="password">{t("auth.password")}</Label>
             <Input
               id="password"
               type="password"
@@ -113,7 +115,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
             />
           </div>
           <Button type="submit" className="w-full btn-hero" disabled={loading}>
-            {loading ? "Chargement..." : mode === "login" ? "Se connecter" : "S'inscrire"}
+            {loading ? t("auth.loading") : mode === "login" ? t("auth.signIn") : t("auth.signUp")}
           </Button>
           {mode === "login" && (
             <p className="text-center">
@@ -122,8 +124,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
                 onClick={async () => {
                   if (!email) {
                     toast({
-                      title: "Email requis",
-                      description: "Entrez votre email ci-dessus pour recevoir le lien de réinitialisation.",
+                      title: t("auth.emailRequired"),
+                      description: t("auth.resetPrompt"),
                       variant: "destructive",
                     });
                     return;
@@ -135,25 +137,25 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
                     toast({ title: "Erreur", description: translateAuthError(error.message), variant: "destructive" });
                   } else {
                     toast({
-                      title: "Email envoyé !",
-                      description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+                       title: t("auth.emailSent"),
+                       description: t("auth.resetSent"),
                     });
                   }
                 }}
                 className="text-sm text-muted-foreground hover:text-primary hover:underline"
               >
-                Mot de passe oublié ?
+                {t("auth.forgotPassword")}
               </button>
             </p>
           )}
           <p className="text-center text-sm text-muted-foreground">
-            {mode === "login" ? "Pas encore de compte ?" : "Déjà un compte ?"}{" "}
+            {mode === "login" ? t("auth.noAccount") : t("auth.hasAccount")}{" "}
             <button
               type="button"
               onClick={() => setMode(mode === "login" ? "signup" : "login")}
               className="text-primary hover:underline font-medium"
             >
-              {mode === "login" ? "S'inscrire" : "Se connecter"}
+              {mode === "login" ? t("auth.signUp") : t("auth.signIn")}
             </button>
           </p>
         </form>

@@ -19,6 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
+import { useTranslation } from "react-i18next";
 
 interface ProposalData {
   id: string;
@@ -56,6 +57,7 @@ const EditProposal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { i18n } = useTranslation();
   
   const [newImages, setNewImages] = useState<File[]>([]);
   const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
@@ -280,6 +282,7 @@ const EditProposal = () => {
           proposed_price: parseFloat(price),
           image_urls: allImageUrls,
           product_link: productLink || null,
+          source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr",
         })
         .eq("id", id);
       

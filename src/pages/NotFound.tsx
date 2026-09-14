@@ -3,9 +3,11 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const NotFound = () => {
   const location = useLocation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
@@ -88,12 +90,12 @@ const NotFound = () => {
 
         {/* Title */}
         <h1 className="text-3xl md:text-4xl font-display font-bold mb-4 text-cream">
-          Oups, cette pépite est introuvable
+          {t("notFound.title")}
         </h1>
 
         {/* Subtitle */}
         <p className="text-base md:text-lg mb-10 text-cream/70 max-w-md mx-auto">
-          La page que tu cherches n'existe pas… mais nos findr peuvent trouver n'importe quoi d'autre.
+          {t("notFound.description")}
         </p>
 
         {/* CTA */}
@@ -104,7 +106,7 @@ const NotFound = () => {
         >
           <Link to="/">
             <ArrowLeft className="w-5 h-5 mr-2" />
-            Retour à l'accueil
+            {t("notFound.backHome")}
           </Link>
         </Button>
       </div>

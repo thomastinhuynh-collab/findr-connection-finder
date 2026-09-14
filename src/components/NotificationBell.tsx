@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 interface Notification {
   id: string;
@@ -24,6 +25,7 @@ interface Notification {
 
 const NotificationBell = () => {
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
 
@@ -104,11 +106,11 @@ const NotificationBell = () => {
     const diffHours = Math.floor(diffMins / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    if (diffMins < 1) return "À l'instant";
-    if (diffMins < 60) return `Il y a ${diffMins}min`;
-    if (diffHours < 24) return `Il y a ${diffHours}h`;
-    if (diffDays === 1) return "Hier";
-    return date.toLocaleDateString("fr-FR");
+    if (diffMins < 1) return t("notifications.now");
+    if (diffMins < 60) return t("notifications.minutesAgo", { count: diffMins });
+    if (diffHours < 24) return t("notifications.hoursAgo", { count: diffHours });
+    if (diffDays === 1) return t("notifications.yesterday");
+    return date.toLocaleDateString(i18n.language.startsWith("en") ? "en-GB" : "fr-FR");
   };
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
@@ -136,7 +138,7 @@ const NotificationBell = () => {
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end">
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h3 className="font-semibold text-primary">Notifications</h3>
+          <h3 className="font-semibold text-primary">{t("notifications.title")}</h3>
           {unreadCount > 0 && (
             <Button
               variant="ghost"
@@ -144,7 +146,7 @@ const NotificationBell = () => {
               onClick={markAllAsRead}
               className="text-xs text-muted-foreground hover:text-primary"
             >
-              Tout marquer lu
+              {t("notifications.markAllRead")}
             </Button>
           )}
         </div>
@@ -152,7 +154,7 @@ const NotificationBell = () => {
         <ScrollArea className="h-[300px]">
           {notifications.length === 0 ? (
             <div className="p-4 text-center text-muted-foreground text-sm">
-              Aucune notification
+              {t("notifications.empty")}
             </div>
           ) : (
             <div className="divide-y divide-border">

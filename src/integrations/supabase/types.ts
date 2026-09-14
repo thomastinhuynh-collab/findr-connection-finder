@@ -313,6 +313,47 @@ export type Database = {
         }
         Relationships: []
       }
+      proposal_translations: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          proposal_id: string
+          source_hash: string
+          target_lang: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          proposal_id: string
+          source_hash: string
+          target_lang: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          proposal_id?: string
+          source_hash?: string
+          target_lang?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_translations_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       proposals: {
         Row: {
           created_at: string
@@ -323,6 +364,7 @@ export type Database = {
           product_link: string | null
           proposed_price: number
           search_id: string
+          source_lang: string
           status: string | null
           title: string
           updated_at: string
@@ -336,6 +378,7 @@ export type Database = {
           product_link?: string | null
           proposed_price: number
           search_id: string
+          source_lang?: string
           status?: string | null
           title: string
           updated_at?: string
@@ -349,6 +392,7 @@ export type Database = {
           product_link?: string | null
           proposed_price?: number
           search_id?: string
+          source_lang?: string
           status?: string | null
           title?: string
           updated_at?: string
@@ -504,6 +548,47 @@ export type Database = {
           },
         ]
       }
+      search_translations: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          search_id: string
+          source_hash: string
+          target_lang: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          search_id: string
+          source_hash: string
+          target_lang: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          search_id?: string
+          source_hash?: string
+          target_lang?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "search_translations_search_id_fkey"
+            columns: ["search_id"]
+            isOneToOne: false
+            referencedRelation: "searches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       searches: {
         Row: {
           budget_max: number | null
@@ -516,6 +601,7 @@ export type Database = {
           image_url: string | null
           image_urls: string[] | null
           is_featured: boolean | null
+          source_lang: string
           status: string | null
           title: string
           updated_at: string
@@ -533,6 +619,7 @@ export type Database = {
           image_url?: string | null
           image_urls?: string[] | null
           is_featured?: boolean | null
+          source_lang?: string
           status?: string | null
           title: string
           updated_at?: string
@@ -550,6 +637,7 @@ export type Database = {
           image_url?: string | null
           image_urls?: string[] | null
           is_featured?: boolean | null
+          source_lang?: string
           status?: string | null
           title?: string
           updated_at?: string

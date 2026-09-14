@@ -7,6 +7,7 @@ import SearchImageCarousel from "./SearchImageCarousel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import TranslatedContent from "./TranslatedContent";
 
 interface PremiumSearch {
   id: string;
@@ -19,6 +20,7 @@ interface PremiumSearch {
   image_url: string | null;
   image_urls: string[] | null;
   user_id: string;
+  source_lang: string;
 }
 
 const urgencyLabels: Record<string, string> = {
@@ -44,7 +46,7 @@ const PremiumSearches = () => {
   const fetchPremiumSearches = async () => {
     const { data: featuredData, error: featuredError } = await supabase
       .from("searches")
-      .select("id, title, description, category, budget_min, budget_max, urgency, image_url, image_urls, user_id")
+      .select("id, title, description, category, budget_min, budget_max, urgency, image_url, image_urls, user_id, source_lang")
       .eq("status", "active")
       .eq("is_featured", true)
       .order("created_at", { ascending: false })
@@ -55,7 +57,7 @@ const PremiumSearches = () => {
     if (featuredError || !featuredData || featuredData.length === 0) {
       const { data, error } = await supabase
         .from("searches")
-        .select("id, title, description, category, budget_min, budget_max, urgency, image_url, image_urls, user_id")
+        .select("id, title, description, category, budget_min, budget_max, urgency, image_url, image_urls, user_id, source_lang")
         .eq("status", "active")
         .order("created_at", { ascending: false })
         .limit(3);
@@ -177,14 +179,12 @@ const PremiumSearches = () => {
 
               {/* Content */}
               <div className="p-5 flex flex-col">
-                <h3 className="font-bold text-xl text-primary mb-1.5 line-clamp-1">
-                  {search.title}
-                </h3>
-                {search.description && (
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                    {search.description}
-                  </p>
-                )}
+                <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>
+                  {({ title, description }) => <>
+                    <h3 className="font-bold text-xl text-primary mb-1.5 line-clamp-1">{title}</h3>
+                    {description && <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{description}</p>}
+                  </>}
+                </TranslatedContent>
 
                 {/* Budget */}
                 <div className="mb-4">

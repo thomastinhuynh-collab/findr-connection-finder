@@ -20,6 +20,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
+import { useTranslation } from "react-i18next";
 
 interface SearchData {
   id: string;
@@ -49,6 +50,7 @@ const MakeProposal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { i18n } = useTranslation();
   
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -230,6 +232,7 @@ const MakeProposal = () => {
           image_urls: uploadedImageUrls,
           product_link: productLink || null,
           status: 'pending'
+          ,source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr"
         });
       
       if (error) throw error;

@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import TranslatedContent from "@/components/TranslatedContent";
 
 interface ProposalWithSearch {
   id: string;
@@ -19,6 +20,7 @@ interface ProposalWithSearch {
   product_link: string | null;
   status: string;
   created_at: string;
+  source_lang: string;
   search: {
     id: string;
     title: string;
@@ -262,7 +264,9 @@ const MyProposals = () => {
                                     <span className="ml-1">{statusConfig[proposal.status]?.label || proposal.status}</span>
                                   </Badge>
                                 </div>
-                                <h3 className="font-semibold text-primary truncate">{proposal.title}</h3>
+                                 <TranslatedContent type="proposal" id={proposal.id} title={proposal.title} description={proposal.description} sourceLang={proposal.source_lang}>
+                                   {({ title }) => <h3 className="font-semibold text-primary truncate">{title}</h3>}
+                                 </TranslatedContent>
                                 {proposal.search && (
                                   <p className="text-sm text-muted-foreground">
                                     Pour : <Link to={`/recherche/${proposal.search.id}`} className="hover:text-accent">{proposal.search.title}</Link>
@@ -284,11 +288,9 @@ const MyProposals = () => {
                               </div>
                             </div>
 
-                            {proposal.description && (
-                              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                                {proposal.description}
-                              </p>
-                            )}
+                            {proposal.description && <TranslatedContent type="proposal" id={proposal.id} title={proposal.title} description={proposal.description} sourceLang={proposal.source_lang}>
+                              {({ description }) => description ? <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{description}</p> : null}
+                            </TranslatedContent>}
 
                             {/* Actions */}
                             <div className="flex gap-2 mt-3">
