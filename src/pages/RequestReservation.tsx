@@ -99,8 +99,8 @@ const RequestReservation = () => {
 
     if (error || !data) {
       toast({
-        title: "Erreur",
-        description: "Annonce non trouvée.",
+          title: t("common.error"),
+          description: t("reservation.searchNotFound"),
         variant: "destructive",
       });
       navigate("/recherches");
@@ -110,8 +110,8 @@ const RequestReservation = () => {
     // Cannot reserve own search
     if (data.user_id === user?.id) {
       toast({
-        title: "Action impossible",
-        description: "Tu ne peux pas réserver ta propre annonce.",
+          title: t("reservation.actionImpossible"),
+          description: t("reservation.ownSearch"),
         variant: "destructive",
       });
       navigate(`/recherche/${id}`);
@@ -242,11 +242,11 @@ const RequestReservation = () => {
                   <AlertCircle className="w-8 h-8 text-destructive" />
                   <div>
                     <h2 className="text-lg font-semibold text-primary">
-                      {blockReason ? "Réservation impossible" : "Réservation déjà existante"}
+                       {blockReason ? t("reservation.impossible") : t("reservation.alreadyExists")}
                     </h2>
                     <p className="text-muted-foreground">
                       {blockReason ??
-                        "Tu as déjà une demande de réservation en cours pour cette annonce."}
+                         t("reservation.alreadyPending")}
                     </p>
                   </div>
                 </div>
@@ -255,7 +255,7 @@ const RequestReservation = () => {
                   className="mt-6 w-full"
                   onClick={() => navigate(`/recherche/${id}`)}
                 >
-                  Retour à l'annonce
+                   {t("reservation.backToSearch")}
                 </Button>
               </CardContent>
             </Card>
@@ -347,7 +347,7 @@ const RequestReservation = () => {
                       <SelectContent>
                         {durationOptions.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
-                            {option.label}
+                           {t("reservation.sevenDaysRenewable")}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -366,7 +366,7 @@ const RequestReservation = () => {
                     </Label>
                     <Textarea
                       id="justification"
-                      placeholder="Explique au buyr pourquoi tu souhaites réserver cette annonce. Par exemple : tu as repéré l'article parfait et tu as besoin de temps pour finaliser la transaction..."
+                       placeholder={t("reservation.justificationPlaceholder")}
                       className="min-h-[150px] resize-none"
                       {...register("justification")}
                     />
@@ -376,22 +376,22 @@ const RequestReservation = () => {
                       </p>
                     )}
                     <p className="text-xs text-muted-foreground text-right">
-                      {watch("justification")?.length || 0}/500 caractères
+                       {t("reservation.characters", { count: watch("justification")?.length || 0 })}
                     </p>
                   </div>
 
                   {/* Info Box */}
                   <div className="bg-accent/10 border border-accent/30 rounded-xl p-4">
                     <h4 className="font-medium text-accent mb-2">
-                      Comment ça marche ?
+                       {t("reservation.howItWorks")}
                     </h4>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Le buyr recevra ta demande de réservation</li>
-                      <li>• Il peut accepter, refuser ou ajuster la durée</li>
+                       <li>• {t("reservation.step1")}</li>
+                       <li>• {t("reservation.step2")}</li>
                       <li>
-                        • Si acceptée, l'annonce sera masquée aux autres findrs
+                         • {t("reservation.step3")}
                       </li>
-                      <li>• Tu seras le seul à pouvoir interagir avec le buyr</li>
+                       <li>• {t("reservation.step4")}</li>
                     </ul>
                   </div>
 
@@ -403,7 +403,7 @@ const RequestReservation = () => {
                       className="flex-1"
                       onClick={() => navigate(`/recherche/${id}`)}
                     >
-                      Annuler
+                       {t("common.cancel")}
                     </Button>
                     <Button
                       type="submit"
@@ -413,12 +413,12 @@ const RequestReservation = () => {
                       {submitting ? (
                         <>
                           <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                          Envoi...
+                           {t("reservation.sending")}
                         </>
                       ) : (
                         <>
                           <CalendarClock className="w-4 h-4 mr-2" />
-                          Envoyer la demande
+                           {t("reservation.send")}
                         </>
                       )}
                     </Button>
