@@ -49,6 +49,8 @@ import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import DisputeBanner from "@/components/DisputeBanner";
 import DisputeDialog from "@/components/DisputeDialog";
+import { useTranslation } from "react-i18next";
+import TranslatedContent from "@/components/TranslatedContent";
 
 interface Proposal {
   id: string;
@@ -60,6 +62,7 @@ interface Proposal {
   status: string;
   created_at: string;
   findr_id: string;
+  source_lang?: string | null;
   findr_profile?: {
     full_name: string | null;
     avatar_url: string | null;
@@ -109,6 +112,7 @@ const ProposalList = ({
 }: ProposalListProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
   const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(null);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -361,7 +365,7 @@ const ProposalList = ({
 
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("fr-FR", {
+    return new Date(dateString).toLocaleDateString(i18n.language, {
       day: "numeric",
       month: "short",
       hour: "2-digit",
@@ -372,13 +376,13 @@ const ProposalList = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
-        return <Badge variant="secondary">En attente</Badge>;
+        return <Badge variant="secondary">{t("proposal.pending")}</Badge>;
       case "accepted_pending":
-        return <Badge className="bg-warning text-warning-foreground">Paiement en attente</Badge>;
+        return <Badge className="bg-warning text-warning-foreground">{t("proposal.paymentPending")}</Badge>;
       case "completed":
-        return <Badge className="bg-success text-success-foreground">Finalisé</Badge>;
+        return <Badge className="bg-success text-success-foreground">{t("proposal.completed")}</Badge>;
       case "rejected":
-        return <Badge variant="destructive">Refusé</Badge>;
+        return <Badge variant="destructive">{t("proposal.rejected")}</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -412,7 +416,7 @@ const ProposalList = ({
             borderRadius: 999,
           }}
         >
-          Retenue
+           {t("proposal.selected")}
         </span>
       )}
           <motion.div
@@ -456,7 +460,9 @@ const ProposalList = ({
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-1 mb-1">
-                      <h4 className="font-semibold text-primary text-sm leading-tight line-clamp-2">{proposal.title}</h4>
+                       <TranslatedContent type="proposal" id={proposal.id} title={proposal.title} description={proposal.description} sourceLang={proposal.source_lang}>
+                         {({ title }) => <h4 className="font-semibold text-primary text-sm leading-tight line-clamp-2">{title}</h4>}
+                       </TranslatedContent>
                       {getStatusBadge(proposal.status)}
                     </div>
                     <button
@@ -469,11 +475,9 @@ const ProposalList = ({
                       )}
                     </button>
 
-                    {proposal.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-2 mb-1.5">
-                        {proposal.description}
-                      </p>
-                    )}
+                     {proposal.description && <TranslatedContent type="proposal" id={proposal.id} title={proposal.title} description={proposal.description} sourceLang={proposal.source_lang}>
+                       {({ description }) => description ? <p className="text-xs text-muted-foreground line-clamp-2 mb-1.5">{description}</p> : null}
+                     </TranslatedContent>}
 
                     <div className="flex items-center gap-2">
                       <span className="text-base font-bold text-accent">
@@ -497,7 +501,7 @@ const ProposalList = ({
                         onClick={() => handleReject(proposal)}
                       >
                         <XCircle className="w-4 h-4 mr-1" />
-                        Refuser
+                         {t("proposal.reject")}
                       </Button>
                       <Button
                         size="sm"
@@ -505,7 +509,7 @@ const ProposalList = ({
                         onClick={() => handleAccept(proposal)}
                       >
                         <CheckCircle2 className="w-4 h-4 mr-1" />
-                        Accepter
+                         {t("proposal.accept")}
                       </Button>
                     </>
                   )}
@@ -653,7 +657,7 @@ const ProposalList = ({
                       variant="outline"
                       onClick={() => navigate(`/modifier-proposition/${proposal.id}`)}
                     >
-                      Modifier
+                       {t("proposal.edit")}
                     </Button>
                   )}
                 </div>
@@ -689,7 +693,7 @@ const ProposalList = ({
               fontWeight: 600,
             }}
           >
-            {dealDone ? "✓ Accord conclu" : "Paiement en cours"}
+             {dealDone ? t("proposal.dealDone") : t("proposal.paymentInProgress")}
           </div>
 
           {renderProposal(acceptedProposal, 0, true)}
@@ -824,7 +828,7 @@ const ProposalList = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 flex-wrap">
               <Package className="w-5 h-5 text-accent flex-shrink-0" />
-              <span className="break-words">Détail de la proposition</span>
+               <span className="break-words">{t("proposal.details")}</span>
             </DialogTitle>
           </DialogHeader>
 
@@ -877,7 +881,9 @@ const ProposalList = ({
               {/* Title and Price */}
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="text-xl font-semibold text-primary">{selectedProposal.title}</h3>
+                   <TranslatedContent type="proposal" id={selectedProposal.id} title={selectedProposal.title} description={selectedProposal.description} sourceLang={selectedProposal.source_lang} showNotice>
+                     {({ title }) => <h3 className="text-xl font-semibold text-primary">{title}</h3>}
+                   </TranslatedContent>
                   <button
                     onClick={() => {
                       setDetailDialogOpen(false);
@@ -904,11 +910,11 @@ const ProposalList = ({
                 <div className="bg-secondary/50 rounded-xl p-4">
                   <h4 className="font-medium mb-2 flex items-center gap-2">
                     <MessageCircle className="w-4 h-4" />
-                    Message du findr
+                     {t("proposal.findrMessage")}
                   </h4>
-                  <p className="text-muted-foreground whitespace-pre-wrap">
-                    {selectedProposal.description}
-                  </p>
+                   <TranslatedContent type="proposal" id={selectedProposal.id} title={selectedProposal.title} description={selectedProposal.description} sourceLang={selectedProposal.source_lang}>
+                     {({ description }) => <p className="text-muted-foreground whitespace-pre-wrap">{description}</p>}
+                   </TranslatedContent>
                 </div>
               )}
 
@@ -950,7 +956,7 @@ const ProposalList = ({
 
               {/* Date */}
               <div className="text-sm text-muted-foreground">
-                Proposition reçue le {formatDate(selectedProposal.created_at)}
+                 {t("proposal.receivedOn", { date: formatDate(selectedProposal.created_at) })}
               </div>
             </div>
           )}
@@ -1016,7 +1022,7 @@ const ProposalList = ({
                   }}
                 >
                   <MessageCircle className="w-4 h-4 mr-2 flex-shrink-0" />
-                  {isOwner ? "Contacter le findr" : "Contacter le buyr"}
+                   {isOwner ? t("proposal.contactFindr") : t("proposal.contactBuyr")}
                 </Button>
               )}
 
@@ -1030,7 +1036,7 @@ const ProposalList = ({
                   }}
                 >
                   <XCircle className="w-4 h-4 mr-2 flex-shrink-0" />
-                  Refuser
+                   {t("proposal.reject")}
                 </Button>
               )}
             </div>
@@ -1041,7 +1047,7 @@ const ProposalList = ({
               className="w-full text-muted-foreground"
               onClick={() => setDetailDialogOpen(false)}
             >
-              Fermer
+               {t("proposal.close")}
             </Button>
           </DialogFooter>
 
