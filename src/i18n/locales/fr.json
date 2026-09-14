@@ -539,7 +539,10 @@
     "empty": "Aucune recherche trouvée",
     "post": "Poster ma recherche",
     "loadMore": "Charger plus",
-    "loading": "Chargement…"
+    "loading": "Chargement…",
+    "deadlinePassed": "Délai dépassé",
+    "daysLeft_one": "Il reste {{count}} jour",
+    "daysLeft_other": "Il reste {{count}} jours"
   },
   "searchDetail": {
     "notFound": "Annonce non trouvée",
@@ -573,7 +576,11 @@
     "paymentsSetup": "Configure tes paiements",
     "paymentsSetupText": "Configure tes paiements avant de pouvoir proposer un objet — ça prend 2 minutes.",
     "later": "Plus tard",
-    "configurePayments": "Configurer mes paiements"
+    "configurePayments": "Configurer mes paiements",
+    "urgent": "Urgent",
+    "loginToContact": "Tu dois être connecté pour contacter l’annonceur.",
+    "loginToPropose": "Tu dois être connecté pour faire une proposition.",
+    "loginToReserve": "Tu dois être connecté pour demander une réservation."
   },
   "proposal": {
     "pending": "En attente",
@@ -704,7 +711,8 @@
     "select": "Sélectionner",
     "collapse": "Replier",
     "cancel": "Annuler",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "redirecting": "Redirection…"
   },
   "publicProfile": {
     "notFound": "Profil introuvable",

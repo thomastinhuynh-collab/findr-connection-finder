@@ -539,7 +539,10 @@
     "empty": "No searches found",
     "post": "Post a search",
     "loadMore": "Load more",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "deadlinePassed": "Deadline passed",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left"
   },
   "searchDetail": {
     "notFound": "Search not found",
@@ -561,7 +564,7 @@
     "requestReservation": "Request a booking",
     "securePayment": "Secure payment through findr",
     "fundsHeld": "Funds held until delivery is confirmed",
-    "loginRequired": "Sign in required",
+    "loginRequired": "Login required",
     "proposals": "Proposals",
     "noProposals": "No proposals yet — be the first findr to make one",
     "reserved": "Reserved search",
@@ -573,7 +576,11 @@
     "paymentsSetup": "Set up your payouts",
     "paymentsSetupText": "Set up your payouts before proposing an item — it only takes two minutes.",
     "later": "Later",
-    "configurePayments": "Set up payouts"
+    "configurePayments": "Set up payouts",
+    "urgent": "Urgent",
+    "loginToContact": "You must be logged in to contact the poster.",
+    "loginToPropose": "You must be logged in to make a proposal.",
+    "loginToReserve": "You must be logged in to request a reservation."
   },
   "proposal": {
     "pending": "Pending",
@@ -704,7 +711,8 @@
     "select": "Select",
     "collapse": "Collapse",
     "cancel": "Cancel",
-    "delete": "Delete"
+    "delete": "Delete",
+    "redirecting": "Redirecting…"
   },
   "publicProfile": {
     "notFound": "Profile not found",
