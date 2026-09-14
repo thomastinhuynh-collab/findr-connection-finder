@@ -335,10 +335,10 @@ const EditProposal = () => {
         <main className="pt-24 pb-16">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-2xl font-serif font-bold text-primary mb-4">
-              Proposition non trouvée
+               {t("proposalForm.proposalNotFound")}
             </h1>
             <Button onClick={() => navigate("/mes-propositions")}>
-              Retour à mes propositions
+               {t("proposalForm.backToMyProposals")}
             </Button>
           </div>
         </main>
@@ -371,17 +371,17 @@ const EditProposal = () => {
               className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
             >
               <ArrowLeft className="w-5 h-5" />
-              Retour
+               {t("common.back")}
             </button>
 
             <h1 className="text-2xl md:text-4xl font-serif font-bold text-primary mb-2">
-              Modifier ma proposition
+               {t("proposalForm.editTitle")}
             </h1>
             <p className="text-muted-foreground">
-              Pour : <span className="text-foreground font-medium">{search.title}</span>
+               {t("proposalForm.for")} <span className="text-foreground font-medium">{search.title}</span>
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              Budget du buyr : <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
+               {t("proposalForm.buyrBudget")} <span className="text-accent font-medium">{formatBudget(search.budget_min, search.budget_max)}</span>
             </p>
           </motion.div>
 
@@ -397,7 +397,7 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <ImagePlus className="w-5 h-5 text-accent" />
-                Photos de l'objet *
+                 {t("proposalForm.photos")} *
               </Label>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -420,7 +420,7 @@ const EditProposal = () => {
                   <div key={`new-${index}`} className="relative aspect-square rounded-xl overflow-hidden border border-accent">
                     <img src={img} alt={`Nouvelle photo ${index + 1}`} className="w-full h-full object-cover" />
                     <div className="absolute top-2 left-2 text-xs bg-accent text-accent-foreground px-1.5 py-0.5 rounded">
-                      Nouveau
+                       {t("proposalForm.new")}
                     </div>
                     <button
                       type="button"
@@ -448,7 +448,7 @@ const EditProposal = () => {
               </div>
               
               <p className="text-xs text-muted-foreground">
-                Vous pouvez avoir jusqu'à 4 photos. Des photos claires augmentent vos chances d'être sélectionné.
+                 {t("proposalForm.photosHint")}
               </p>
             </div>
 
@@ -456,7 +456,7 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="price" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <Euro className="w-5 h-5 text-accent" />
-                Prix proposé *
+                 {t("proposalForm.price")} *
               </Label>
               <div className="relative">
                 <Input
@@ -471,7 +471,7 @@ const EditProposal = () => {
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Le budget du buyr est de {formatBudget(search.budget_min, search.budget_max)}
+                 {t("proposalForm.budgetIs", { budget: formatBudget(search.budget_min, search.budget_max) })}
               </p>
             </div>
 
@@ -479,7 +479,7 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="brand" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <Tag className="w-5 h-5 text-accent" />
-                Marque *
+                 {t("proposalForm.brand")} *
               </Label>
               <Input
                 id="brand"
@@ -494,7 +494,7 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <Sparkles className="w-5 h-5 text-accent" />
-                État de l'objet *
+                 {t("proposalForm.condition")} *
               </Label>
               <Select value={condition} onValueChange={setCondition}>
                 <SelectTrigger className="w-full">
@@ -503,7 +503,7 @@ const EditProposal = () => {
                 <SelectContent>
                   {conditions.map((c) => (
                     <SelectItem key={c.value} value={c.value}>
-                      {c.label}
+                       {t(`proposalForm.conditions.${c.key}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -514,7 +514,7 @@ const EditProposal = () => {
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="productLink" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
                 <LinkIcon className="w-5 h-5 text-accent" />
-                Lien du produit (optionnel)
+                 {t("proposalForm.productLink")}
               </Label>
               <Input
                 id="productLink"
@@ -524,14 +524,14 @@ const EditProposal = () => {
                 onChange={(e) => setProductLink(e.target.value)}
               />
               <p className="text-xs text-muted-foreground mt-2">
-                Ajoutez un lien vers l'annonce originale (Vinted, Leboncoin, etc.)
+                 {t("proposalForm.productLinkHint")}
               </p>
             </div>
 
             {/* Description (optional) */}
             <div className="bg-card border border-border rounded-2xl p-6">
               <Label htmlFor="description" className="text-lg font-semibold text-primary mb-4 block">
-                Description complémentaire
+                 {t("proposalForm.description")}
               </Label>
               <Textarea
                 id="description"
@@ -547,7 +547,7 @@ const EditProposal = () => {
             <div className="bg-gradient-to-br from-primary/5 to-accent/5 border border-border rounded-2xl p-6 space-y-4">
               <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
                 <Euro className="w-5 h-5 text-accent" />
-                Récapitulatif des gains
+                 {t("proposalForm.earnings")}
                 {isPremium && (
                   <span className="ml-auto text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full flex items-center gap-1">
                     <Crown className="w-3 h-3" />
@@ -588,12 +588,12 @@ const EditProposal = () => {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Mise à jour en cours...
+                   {t("proposalForm.updating")}
                 </>
               ) : (
                 <>
                   <Save className="w-5 h-5" />
-                  Mettre à jour ma proposition
+                   {t("proposalForm.update")}
                 </>
               )}
             </Button>
