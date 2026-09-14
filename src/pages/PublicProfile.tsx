@@ -76,7 +76,7 @@ const PublicProfile = () => {
     // Fetch profile
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
-      .select("*")
+      .select("id, title, description, source_lang, category, budget_min, budget_max, status, image_url, created_at")
       .eq("user_id", userId)
       .single();
 
