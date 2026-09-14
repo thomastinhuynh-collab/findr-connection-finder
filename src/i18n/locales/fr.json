@@ -6,10 +6,10 @@
     "blog": "Blog",
     "postSearch": "Poster une recherche",
     "postSearchShort": "Poster",
-      "mySpace": "Mon espace",
-      "logout": "Se déconnecter",
-      "menu": "Menu",
-      "language": "Langue"
+    "mySpace": "Mon espace",
+    "logout": "Se déconnecter",
+    "menu": "Menu",
+    "language": "Langue"
   },
   "hero": {
     "searchPlaceholder": "Cherche un objet, une marque, une pièce rare…",
@@ -128,43 +128,63 @@
       "c1": {
         "name": "Mode & Maroquinerie",
         "subcategories": {
-          "s1": "Vestes & Manteaux", "s2": "T-shirts & Sweats", "s3": "Pantalons & Jeans",
-          "s4": "Robes & Jupes", "s5": "Chaussures", "s6": "Sportswear"
+          "s1": "Vestes & Manteaux",
+          "s2": "T-shirts & Sweats",
+          "s3": "Pantalons & Jeans",
+          "s4": "Robes & Jupes",
+          "s5": "Chaussures",
+          "s6": "Sportswear"
         }
       },
       "c2": {
         "name": "Pop Culture & TCG",
         "subcategories": {
-          "s1": "Cartes Pokémon", "s2": "Cartes Yu-Gi-Oh!", "s3": "Cartes Magic",
-          "s4": "Figurines & Jouets", "s5": "Mangas & Comics", "s6": "Jeux vidéo rétro"
+          "s1": "Cartes Pokémon",
+          "s2": "Cartes Yu-Gi-Oh!",
+          "s3": "Cartes Magic",
+          "s4": "Figurines & Jouets",
+          "s5": "Mangas & Comics",
+          "s6": "Jeux vidéo rétro"
         }
       },
       "c3": {
         "name": "Vinyles & Musique",
         "subcategories": {
-          "s1": "Vinyles 33 tours", "s2": "Vinyles 45 tours", "s3": "Cassettes",
-          "s4": "CD collectors", "s5": "Platines & Hi-Fi"
+          "s1": "Vinyles 33 tours",
+          "s2": "Vinyles 45 tours",
+          "s3": "Cassettes",
+          "s4": "CD collectors",
+          "s5": "Platines & Hi-Fi"
         }
       },
       "c4": {
         "name": "Photo & Électronique",
         "subcategories": {
-          "s1": "Appareils argentiques", "s2": "Objectifs vintage", "s3": "Accessoires photo",
-          "s4": "Consoles rétro", "s5": "Audio vintage"
+          "s1": "Appareils argentiques",
+          "s2": "Objectifs vintage",
+          "s3": "Accessoires photo",
+          "s4": "Consoles rétro",
+          "s5": "Audio vintage"
         }
       },
       "c5": {
         "name": "Bijoux & Accessoires",
         "subcategories": {
-          "s1": "Bagues & Bracelets", "s2": "Colliers & Pendentifs", "s3": "Montres vintage",
-          "s4": "Sacs & Pochettes", "s5": "Lunettes"
+          "s1": "Bagues & Bracelets",
+          "s2": "Colliers & Pendentifs",
+          "s3": "Montres vintage",
+          "s4": "Sacs & Pochettes",
+          "s5": "Lunettes"
         }
       },
       "c6": {
         "name": "Déco & Mobilier",
         "subcategories": {
-          "s1": "Meubles vintage", "s2": "Luminaires", "s3": "Objets déco",
-          "s4": "Vaisselle & Céramique", "s5": "Textile maison"
+          "s1": "Meubles vintage",
+          "s2": "Luminaires",
+          "s3": "Objets déco",
+          "s4": "Vaisselle & Céramique",
+          "s5": "Textile maison"
         }
       }
     }
@@ -215,9 +235,15 @@
     "eyebrow": "Témoignages",
     "title": "Ce qu'ils disent de findr",
     "items": {
-      "camille": { "quote": "J'ai trouvé ma veste Levi's 70s en 3 jours grâce à un findr de Lille. Exactement ce que je cherchais depuis des mois !" },
-      "antoine": { "quote": "Je déniche depuis toujours dans les brocantes. Maintenant je suis payé pour le faire. Le concept est génial !" },
-      "julien": { "quote": "Carte Pokémon 1ère édition, état mint. Le findr l'a dénichée à un vide-grenier pour 30€. Je n'y croyais pas." }
+      "camille": {
+        "quote": "J'ai trouvé ma veste Levi's 70s en 3 jours grâce à un findr de Lille. Exactement ce que je cherchais depuis des mois !"
+      },
+      "antoine": {
+        "quote": "Je déniche depuis toujours dans les brocantes. Maintenant je suis payé pour le faire. Le concept est génial !"
+      },
+      "julien": {
+        "quote": "Carte Pokémon 1ère édition, état mint. Le findr l'a dénichée à un vide-grenier pour 30€. Je n'y croyais pas."
+      }
     },
     "disclaimer": "Exemple illustratif · bêta en cours",
     "waitlist": {
@@ -233,7 +259,10 @@
     "subtitle": "Lance-toi en avant-première et façonne la plateforme avec nous.",
     "success": "C'est noté ! On te prévient dès l'ouverture 🎉",
     "rolePrompt": "Je suis plutôt...",
-    "roles": { "buyr": "Un buyr", "findr": "Un findr" },
+    "roles": {
+      "buyr": "Un buyr",
+      "findr": "Un findr"
+    },
     "emailPlaceholder": "ton@email.com",
     "submit": "Rejoindre la liste d'attente",
     "privacy": "Pas de spam. Juste les vraies nouvelles de Findr."
@@ -347,19 +376,177 @@
       "premiumText": "pour les membres Premium, avec des avantages exclusifs.",
       "examplePrefix": "Exemple concret : un findr trouve un vinyle rare à 50 € ; le buyr paie 50 € + 5 % =",
       "exampleMiddle": ". Avec Premium, 50 € + 3 % =",
-      "premiumLink": "Découvrir Premium"
+      "premiumLink": "Découvrir Premium",
+      "comingSoon": "bientôt disponible"
     },
     "etiquette": {
       "title": "Le savoir-vivre findr",
       "summary": "6 RÈGLES DE BONNE CONDUITE",
       "intro": "Pour que l'expérience soit agréable pour tous, quelques règles de bonne conduite.",
-      "r1": { "title": "Respect et bienveillance", "description": "Chaque membre mérite respect. Les échanges doivent rester courtois, même en cas de désaccord." },
-      "r2": { "title": "Communication claire", "description": "Répondez aux messages dans un délai raisonnable (24-48h). Soyez précis dans vos descriptions." },
-      "r3": { "title": "Honnêteté", "description": "Décrivez fidèlement l'état des objets. Les mauvaises surprises nuisent à la confiance de tous." },
-      "r4": { "title": "Ponctualité", "description": "Respectez vos engagements : délais de réservation, d'envoi, de réponse. Prévenez en cas d'imprévu." },
-      "r5": { "title": "Évaluations justes", "description": "Évaluez de manière constructive. Un avis négatif doit être justifié et factuel." },
-      "r6": { "title": "Pas de transactions externes", "description": "Toutes les transactions doivent passer par findr pour garantir la protection de chacun." }
+      "r1": {
+        "title": "Respect et bienveillance",
+        "description": "Chaque membre mérite respect. Les échanges doivent rester courtois, même en cas de désaccord."
+      },
+      "r2": {
+        "title": "Communication claire",
+        "description": "Répondez aux messages dans un délai raisonnable (24-48h). Soyez précis dans vos descriptions."
+      },
+      "r3": {
+        "title": "Honnêteté",
+        "description": "Décrivez fidèlement l'état des objets. Les mauvaises surprises nuisent à la confiance de tous."
+      },
+      "r4": {
+        "title": "Ponctualité",
+        "description": "Respectez vos engagements : délais de réservation, d'envoi, de réponse. Prévenez en cas d'imprévu."
+      },
+      "r5": {
+        "title": "Évaluations justes",
+        "description": "Évaluez de manière constructive. Un avis négatif doit être justifié et factuel."
+      },
+      "r6": {
+        "title": "Pas de transactions externes",
+        "description": "Toutes les transactions doivent passer par findr pour garantir la protection de chacun."
+      }
     },
     "cta": "POSTER UNE RECHERCHE →"
+  },
+  "legalLayout": {
+    "lastUpdated": "Dernière mise à jour : {{date}}",
+    "updatedDate": "7 mai 2026"
+  },
+  "contact": {
+    "title": "Contact",
+    "intro": "Une question, un retour, un signalement ? L'équipe findr est à votre écoute. Choisissez le canal le plus adapté à votre demande :",
+    "general": "Général",
+    "support": "Support",
+    "privacy": "Données / RGPD",
+    "responseTitle": "Délai de réponse",
+    "responseText": "Nous nous efforçons de répondre à toute demande sous 48 heures ouvrées. Pour les demandes liées à une transaction en cours, merci de préciser l'identifiant de la recherche concernée afin d'accélérer le traitement.",
+    "reportTitle": "Signaler un contenu",
+    "reportText": "Si vous repérez un contenu illicite, frauduleux ou contraire à nos CGU, écrivez-nous à <email>support@findrapp.fr</email> en indiquant l’URL concernée et la nature du problème."
+  },
+  "legalNotice": {
+    "title": "Mentions légales",
+    "publisher": {
+      "title": "Éditeur du site",
+      "text": "Le site <strong>findr</strong> (ci-après « la Plateforme ») est édité par findr SAS, société par actions simplifiée en cours d'immatriculation au Registre du Commerce et des Sociétés.",
+      "companyLabel": "Dénomination sociale :",
+      "officeLabel": "Siège social :",
+      "emailLabel": "Email de contact :",
+      "directorLabel": "Directeur de la publication :",
+      "director": "Le représentant légal de findr SAS"
+    },
+    "hosting": {
+      "title": "Hébergement",
+      "text": "Le site est hébergé par <strong>Lovable Labs Incorporated</strong> et utilise les services d'infrastructure cloud associés (Supabase pour la base de données et l'authentification).",
+      "companyLabel": "Raison sociale :",
+      "addressLabel": "Adresse postale :",
+      "address": "One Lincoln Street, Suite 2500, Boston, MA 02111, États-Unis",
+      "phoneLabel": "Téléphone :",
+      "emailLabel": "Email :"
+    },
+    "intellectualProperty": {
+      "title": "Propriété intellectuelle",
+      "text": "L'ensemble des éléments du site (textes, graphismes, logo, icônes, images, ainsi que leur mise en forme) sont la propriété exclusive de findr SAS, à l'exception des contenus publiés par les utilisateurs. Toute reproduction, représentation, modification ou exploitation, totale ou partielle, sans autorisation écrite préalable est strictement interdite."
+    },
+    "liability": {
+      "title": "Responsabilité",
+      "text": "findr met tout en œuvre pour assurer l'exactitude et la mise à jour des informations diffusées sur la Plateforme. Toutefois, findr ne saurait être tenue responsable des erreurs ou omissions, ni de l'utilisation faite de ces informations par des tiers."
+    },
+    "contact": {
+      "title": "Contact",
+      "text": "Pour toute question relative aux présentes mentions légales, vous pouvez nous écrire à <email>contact@findrapp.fr</email>."
+    }
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "intro": "La présente politique décrit comment findr collecte, utilise et protège vos données personnelles, conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés.",
+    "controller": {
+      "title": "1. Responsable de traitement",
+      "text": "Le responsable de traitement est findr SAS. Pour toute question, vous pouvez nous contacter à <email>privacy@findrapp.fr</email>."
+    },
+    "data": {
+      "title": "2. Données collectées",
+      "identity": "<strong>Données d'identification :</strong> nom, prénom, email, mot de passe (chiffré).",
+      "profile": "<strong>Données de profil :</strong> photo, biographie, ville (optionnel).",
+      "usage": "<strong>Données d'utilisation :</strong> recherches publiées, propositions, messages, évaluations.",
+      "technical": "<strong>Données techniques :</strong> adresse IP, type de navigateur, logs de connexion."
+    },
+    "purposes": {
+      "title": "3. Finalités",
+      "matching": "Permettre la mise en relation entre buyrs et findrs.",
+      "account": "Gérer votre compte et les transactions.",
+      "security": "Assurer la sécurité de la Plateforme et prévenir la fraude.",
+      "communications": "Vous adresser des communications relatives au service."
+    },
+    "legalBasis": {
+      "title": "4. Bases légales",
+      "text": "Les traitements reposent sur l'exécution du contrat (CGU), votre consentement (communications marketing), et l'intérêt légitime de findr (sécurité, amélioration du service)."
+    },
+    "retention": {
+      "title": "5. Durée de conservation",
+      "text": "Les données sont conservées le temps nécessaire à la fourniture du service, et au maximum 3 ans après la dernière activité, sauf obligations légales de conservation plus longues (notamment comptables)."
+    },
+    "recipients": {
+      "title": "6. Destinataires",
+      "text": "Vos données sont accessibles aux équipes findr habilitées et à nos sous-traitants techniques (hébergement, paiement) soumis à des obligations contractuelles strictes. Aucune donnée n'est revendue à des tiers."
+    },
+    "rights": {
+      "title": "7. Vos droits",
+      "text": "Vous disposez d'un droit d'accès, de rectification, d'effacement, de portabilité, de limitation et d'opposition. Vous pouvez les exercer à <email>privacy@findrapp.fr</email>. Vous pouvez également introduire une réclamation auprès de la CNIL (<cnil>www.cnil.fr</cnil>)."
+    },
+    "cookies": {
+      "title": "8. Cookies",
+      "text": "findr utilise uniquement des cookies strictement nécessaires au fonctionnement de la Plateforme (session, authentification). Aucun cookie publicitaire ou de traçage tiers n'est déposé sans votre consentement."
+    },
+    "security": {
+      "title": "9. Sécurité",
+      "text": "Nous mettons en œuvre des mesures techniques et organisationnelles appropriées (chiffrement, contrôle d'accès, sauvegardes) pour protéger vos données contre tout accès non autorisé, perte ou altération."
+    }
+  },
+  "terms": {
+    "title": "Conditions Générales d'Utilisation",
+    "intro": "Les présentes Conditions Générales d'Utilisation (« CGU ») régissent l'utilisation de la plateforme findr, qui met en relation des utilisateurs souhaitant trouver un objet ou service (« buyrs ») avec des utilisateurs capables de les leur procurer (« findrs »).",
+    "purpose": {
+      "title": "1. Objet",
+      "text": "findr est une plateforme de mise en relation. findr n'est ni vendeur, ni acheteur, ni intermédiaire commercial. Les transactions sont conclues directement entre buyrs et findrs, dans le cadre encadré par la Plateforme."
+    },
+    "registration": {
+      "title": "2. Inscription",
+      "text": "L'inscription est gratuite et réservée aux personnes majeures disposant de la capacité juridique de contracter. L'utilisateur s'engage à fournir des informations exactes et à les maintenir à jour."
+    },
+    "matching": {
+      "title": "3. Fonctionnement de la mise en relation",
+      "search": "Les buyrs publient une recherche décrivant l'objet/service souhaité.",
+      "proposal": "Les findrs envoient des propositions chiffrées.",
+      "payment": "Le buyr peut accepter une proposition ; les fonds sont alors bloqués sur la Plateforme (escrow).",
+      "release": "Les fonds sont libérés au findr après confirmation de réception par le buyr."
+    },
+    "fees": {
+      "title": "4. Frais de service",
+      "text": "findr applique une commission de <strong>5%</strong> sur chaque transaction réussie (réduite à <strong>3%</strong> pour les membres Premium), ainsi que des <strong>frais d'authentification de 3%</strong>. Les tarifs sont affichés clairement avant la validation de toute transaction."
+    },
+    "obligations": {
+      "title": "5. Obligations des utilisateurs",
+      "content": "Ne pas publier de contenu illicite, contrefaisant ou trompeur.",
+      "commitments": "Respecter les engagements pris dans le cadre d'une transaction.",
+      "messaging": "Communiquer exclusivement via la messagerie intégrée jusqu'à la conclusion de la transaction."
+    },
+    "suspension": {
+      "title": "6. Suspension et résiliation",
+      "text": "findr se réserve le droit de suspendre ou supprimer tout compte ne respectant pas les présentes CGU, sans préavis ni indemnité."
+    },
+    "liability": {
+      "title": "7. Responsabilité",
+      "text": "findr agit en tant qu'intermédiaire technique. La responsabilité quant à la conformité, l'authenticité et la livraison des objets/services proposés incombe exclusivement au findr. Le buyr est responsable du paiement."
+    },
+    "personalData": {
+      "title": "8. Données personnelles",
+      "text": "Le traitement des données personnelles est décrit dans notre <privacy>Politique de confidentialité</privacy>."
+    },
+    "law": {
+      "title": "9. Droit applicable",
+      "text": "Les présentes CGU sont soumises au droit français. Tout litige relèvera des tribunaux compétents du ressort du siège social de findr, sous réserve des dispositions impératives applicables aux consommateurs."
+    }
   }
 }
