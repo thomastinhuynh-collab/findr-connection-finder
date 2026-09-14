@@ -375,7 +375,7 @@ const HowItWorksPage = () => {
                   color: GOLD_GREY,
                 }}
               >
-                {t("howItWorks.fees.premiumLink")} — bientôt disponible
+                {t("howItWorks.fees.premiumLink")} — {t("howItWorks.fees.comingSoon")}
               </span>
             </>
           )}
