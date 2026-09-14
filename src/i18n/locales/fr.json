@@ -9,7 +9,9 @@
     "mySpace": "Mon espace",
     "logout": "Se déconnecter",
     "menu": "Menu",
-    "language": "Langue"
+    "language": "Langue",
+    "createFreeAccount": "Créer mon compte gratuit",
+    "joinWaitlist": "Rejoindre la liste d’attente"
   },
   "hero": {
     "searchPlaceholder": "Cherche un objet, une marque, une pièce rare…",
@@ -694,5 +696,30 @@
     "forgotPassword": "Mot de passe oublié ?",
     "noAccount": "Pas encore de compte ?",
     "hasAccount": "Déjà un compte ?"
+  },
+  "common": {
+    "back": "Retour",
+    "notDefined": "Non défini"
+  },
+  "publicProfile": {
+    "notFound": "Profil introuvable",
+    "searches": "Recherches",
+    "rating": "Note ({{count}})",
+    "about": "À propos",
+    "memberSince": "Membre depuis {{date}}",
+    "searchesBy": "Recherches de {{name}}",
+    "thisUser": "cet utilisateur",
+    "noSearches": "Aucune recherche publiée",
+    "active": "Active",
+    "completed": "Terminée"
+  },
+  "reservation": {
+    "requestTitle": "Demander une réservation",
+    "requestSubtitle": "Réserve cette annonce pour toi seul pendant une durée limitée",
+    "searchToBook": "Annonce à réserver",
+    "justifyTitle": "Justifie ta demande de réservation",
+    "duration": "Durée de réservation souhaitée",
+    "selectDuration": "Sélectionner une durée",
+    "why": "Pourquoi veux-tu réserver cette annonce ?"
   }
 }

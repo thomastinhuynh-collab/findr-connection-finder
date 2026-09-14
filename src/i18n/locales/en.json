@@ -9,7 +9,9 @@
     "mySpace": "My space",
     "logout": "Log out",
     "menu": "Menu",
-    "language": "Language"
+    "language": "Language",
+    "createFreeAccount": "Create my free account",
+    "joinWaitlist": "Join the waitlist"
   },
   "hero": {
     "searchPlaceholder": "Search for an item, a brand, a rare piece…",
@@ -694,5 +696,30 @@
     "forgotPassword": "Forgot your password?",
     "noAccount": "No account yet?",
     "hasAccount": "Already have an account?"
+  },
+  "common": {
+    "back": "Back",
+    "notDefined": "Not specified"
+  },
+  "publicProfile": {
+    "notFound": "Profile not found",
+    "searches": "Searches",
+    "rating": "Rating ({{count}})",
+    "about": "About",
+    "memberSince": "Member since {{date}}",
+    "searchesBy": "Searches by {{name}}",
+    "thisUser": "this user",
+    "noSearches": "No searches published",
+    "active": "Active",
+    "completed": "Completed"
+  },
+  "reservation": {
+    "requestTitle": "Request a booking",
+    "requestSubtitle": "Book this search exclusively for a limited time",
+    "searchToBook": "Search to book",
+    "justifyTitle": "Explain your booking request",
+    "duration": "Requested booking period",
+    "selectDuration": "Select a period",
+    "why": "Why do you want to book this search?"
   }
 }

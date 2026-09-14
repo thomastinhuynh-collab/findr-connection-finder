@@ -21,6 +21,8 @@ import { Clock, CalendarClock, Loader2, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import TranslatedContent from "@/components/TranslatedContent";
+import { useTranslation } from "react-i18next";
 
 const reservationSchema = z.object({
   justification: z
@@ -37,6 +39,8 @@ interface SearchInfo {
   title: string;
   user_id: string;
   image_url: string | null;
+  description: string | null;
+  source_lang: string;
 }
 
 // Durée unique : 7 jours, renouvelable une fois (14 jours maximum au total)
@@ -51,6 +55,7 @@ const RequestReservation = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [search, setSearch] = useState<SearchInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -88,7 +93,7 @@ const RequestReservation = () => {
   const fetchSearch = async () => {
     const { data, error } = await supabase
       .from("searches")
-      .select("id, title, user_id, image_url")
+      .select("id, title, user_id, image_url, description, source_lang")
       .eq("id", id)
       .single();
 
@@ -278,10 +283,10 @@ const RequestReservation = () => {
                 <CalendarClock className="w-8 h-8 text-accent" />
               </div>
               <h1 className="text-2xl md:text-3xl font-serif font-bold text-primary">
-                Demander une réservation
+                 {t("reservation.requestTitle")}
               </h1>
               <p className="text-muted-foreground mt-2">
-                Réserve cette annonce pour toi seul pendant une durée limitée
+                 {t("reservation.requestSubtitle")}
               </p>
             </div>
 
@@ -302,11 +307,11 @@ const RequestReservation = () => {
                       </div>
                     )}
                     <div>
-                      <h3 className="font-semibold text-primary line-clamp-1">
-                        {search.title}
-                      </h3>
+                       <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>
+                         {({ title }) => <h3 className="font-semibold text-primary line-clamp-1">{title}</h3>}
+                       </TranslatedContent>
                       <p className="text-sm text-muted-foreground">
-                        Annonce à réserver
+                         {t("reservation.searchToBook")}
                       </p>
                     </div>
                   </div>
@@ -318,7 +323,7 @@ const RequestReservation = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">
-                  Justifie ta demande de réservation
+                   {t("reservation.justifyTitle")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -330,14 +335,14 @@ const RequestReservation = () => {
                       className="flex items-center gap-2"
                     >
                       <Clock className="w-4 h-4 text-accent" />
-                      Durée de réservation souhaitée
+                       {t("reservation.duration")}
                     </Label>
                     <Select
                       value={selectedDuration}
                       onValueChange={(value) => setValue("duration", value)}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Sélectionner une durée" />
+                         <SelectValue placeholder={t("reservation.selectDuration")} />
                       </SelectTrigger>
                       <SelectContent>
                         {durationOptions.map((option) => (
@@ -357,7 +362,7 @@ const RequestReservation = () => {
                   {/* Justification */}
                   <div className="space-y-2">
                     <Label htmlFor="justification">
-                      Pourquoi veux-tu réserver cette annonce ?
+                       {t("reservation.why")}
                     </Label>
                     <Textarea
                       id="justification"
