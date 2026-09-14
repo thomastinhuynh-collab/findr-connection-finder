@@ -611,7 +611,19 @@
     "confirmShipment": "Confirmer l'expédition",
     "cancelRefund": "Annuler et rembourser",
     "back": "Retour",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "empty": "Aucune proposition pour le moment.",
+    "beFirst": "Sois le premier à proposer une trouvaille !",
+    "confirmPayment": "Confirmer le paiement",
+    "itemPrice": "Prix de l’article",
+    "serviceFee": "Frais de service (4%)",
+    "total": "Total",
+    "paymentHeld": "Le paiement sera bloqué jusqu’à confirmation de réception de l’article.",
+    "priceSummary": "Récapitulatif du prix",
+    "totalToPay": "Total à payer",
+    "matchesDescription": "L’article correspond à la description",
+    "goodCondition": "L’article est en bon état",
+    "authenticityChecked": "L’authenticité a été vérifiée"
   },
   "terms": {
     "title": "Conditions Générales d'Utilisation",
