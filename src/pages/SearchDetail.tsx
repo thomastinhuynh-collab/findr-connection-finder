@@ -130,6 +130,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
   activeReservation: Reservation | undefined;
   isReserved: boolean;
 }) => {
+  const { t } = useTranslation();
   const allImages = useMemo(() => {
     const imgs: string[] = [];
     if (search.image_urls?.length) imgs.push(...search.image_urls);
