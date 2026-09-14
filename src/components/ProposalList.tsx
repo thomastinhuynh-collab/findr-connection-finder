@@ -392,8 +392,8 @@ const ProposalList = ({
     return (
       <div className="text-center py-8 text-muted-foreground">
         <MessageCircle className="w-12 h-12 mx-auto mb-3 opacity-30" />
-        <p>Aucune proposition pour le moment.</p>
-        {!isOwner && <p className="text-sm mt-1">Soyez le premier à proposer une trouvaille !</p>}
+        <p>{t("proposal.empty")}</p>
+        {!isOwner && <p className="text-sm mt-1">{t("proposal.beFirst")}</p>}
       </div>
     );
   }
@@ -745,7 +745,7 @@ const ProposalList = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 flex-wrap">
               <Shield className="w-5 h-5 text-accent flex-shrink-0" />
-              <span className="break-words">Confirmer le paiement</span>
+              <span className="break-words">{t("proposal.confirmPayment")}</span>
             </DialogTitle>
             <DialogDescription>
               Le paiement sera bloqué jusqu'à confirmation de réception de l'article.
@@ -778,22 +778,22 @@ const ProposalList = ({
                 {/* Price Breakdown */}
                 <div className="bg-card border border-border rounded-lg p-4 space-y-2">
                   <div className="flex justify-between text-sm gap-4">
-                    <span className="text-muted-foreground break-words">Prix de l'article</span>
+                    <span className="text-muted-foreground break-words">{t("proposal.itemPrice")}</span>
                     <span className="text-right flex-shrink-0">{fees.objectPrice.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between text-sm gap-4">
-                    <span className="text-muted-foreground break-words">Frais de service (4%)</span>
+                    <span className="text-muted-foreground break-words">{t("proposal.serviceFee")}</span>
                     <span className="text-right flex-shrink-0">+{fees.buyrFee.toFixed(2)} €</span>
                   </div>
                   <div className="border-t border-border pt-2 flex justify-between font-semibold gap-4">
-                    <span className="break-words">Total</span>
+                    <span className="break-words">{t("proposal.total")}</span>
                     <span className="text-accent text-right flex-shrink-0">{fees.total.toFixed(2)} €</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Shield className="w-4 h-4 text-success" />
-                  <span>Le paiement sera bloqué jusqu'à confirmation de réception de l'article.</span>
+                  <span>{t("proposal.paymentHeld")}</span>
                 </div>
               </div>
             );
@@ -873,7 +873,7 @@ const ProposalList = ({
                 <div className="aspect-video rounded-xl bg-secondary flex items-center justify-center">
                   <div className="text-center text-muted-foreground">
                     <Package className="w-12 h-12 mx-auto mb-2" />
-                    <p>Aucune photo fournie</p>
+                    <p>{t("proposal.noPhoto")}</p>
                   </div>
                 </div>
               )}
@@ -936,17 +936,17 @@ const ProposalList = ({
                 const fees = getFees(selectedProposal.proposed_price);
                 return (
                   <div className="bg-card border border-border rounded-lg p-4 space-y-2">
-                    <h4 className="font-medium mb-2">Récapitulatif du prix</h4>
+                    <h4 className="font-medium mb-2">{t("proposal.priceSummary")}</h4>
                     <div className="flex justify-between text-sm gap-4">
-                      <span className="text-muted-foreground break-words">Prix de l'article</span>
+                      <span className="text-muted-foreground break-words">{t("proposal.itemPrice")}</span>
                       <span className="text-right flex-shrink-0">{fees.objectPrice.toFixed(2)} €</span>
                     </div>
                     <div className="flex justify-between text-sm gap-4">
-                      <span className="text-muted-foreground break-words">Frais de service (4%)</span>
+                      <span className="text-muted-foreground break-words">{t("proposal.serviceFee")}</span>
                       <span className="text-right flex-shrink-0">+{fees.buyrFee.toFixed(2)} €</span>
                     </div>
                     <div className="border-t border-border pt-2 flex justify-between font-semibold gap-4">
-                      <span className="break-words">Total à payer</span>
+                      <span className="break-words">{t("proposal.totalToPay")}</span>
                       <span className="text-accent text-right flex-shrink-0">{fees.total.toFixed(2)} €</span>
                     </div>
                   </div>
@@ -1060,7 +1060,7 @@ const ProposalList = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 flex-wrap">
               <Package className="w-5 h-5 text-success flex-shrink-0" />
-              <span className="break-words">Confirmer la réception</span>
+              <span className="break-words">{t("proposal.confirmReceipt")}</span>
             </DialogTitle>
             <DialogDescription>
               Confirmez que vous avez bien reçu l'article et qu'il correspond à la description.
@@ -1084,15 +1084,15 @@ const ProposalList = ({
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="w-4 h-4 text-success" />
-              <span>L'article correspond à la description</span>
+              <span>{t("proposal.matchesDescription")}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="w-4 h-4 text-success" />
-              <span>L'article est en bon état</span>
+              <span>{t("proposal.goodCondition")}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Shield className="w-4 h-4 text-success" />
-              <span>L'authenticité a été vérifiée</span>
+              <span>{t("proposal.authenticityChecked")}</span>
             </div>
           </div>
 
