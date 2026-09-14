@@ -3,6 +3,7 @@ import { Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface FavoriteButtonProps {
   searchId: string;
@@ -11,6 +12,7 @@ interface FavoriteButtonProps {
 
 const FavoriteButton = ({ searchId, className = "" }: FavoriteButtonProps) => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [isFavorited, setIsFavorited] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +36,7 @@ const FavoriteButton = ({ searchId, className = "" }: FavoriteButtonProps) => {
     e.preventDefault();
 
     if (!user) {
-      toast.error("Connecte-toi pour ajouter des favoris");
+      toast.error(t("favorites.loginRequired"));
       return;
     }
 
@@ -49,7 +51,7 @@ const FavoriteButton = ({ searchId, className = "" }: FavoriteButtonProps) => {
 
       if (!error) {
         setIsFavorited(false);
-        toast.success("Retiré des favoris");
+        toast.success(t("favorites.removed"));
       }
     } else {
       const { error } = await supabase
@@ -58,7 +60,7 @@ const FavoriteButton = ({ searchId, className = "" }: FavoriteButtonProps) => {
 
       if (!error) {
         setIsFavorited(true);
-        toast.success("Ajouté aux favoris");
+        toast.success(t("favorites.added"));
       }
     }
 
@@ -70,7 +72,7 @@ const FavoriteButton = ({ searchId, className = "" }: FavoriteButtonProps) => {
       className={`w-10 h-10 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-card transition-colors ${className}`}
       onClick={toggleFavorite}
       disabled={loading}
-      aria-label={isFavorited ? "Retirer des favoris" : "Ajouter aux favoris"}
+      aria-label={isFavorited ? t("favorites.remove") : t("favorites.add")}
     >
       <Heart
         className={`w-5 h-5 transition-colors ${

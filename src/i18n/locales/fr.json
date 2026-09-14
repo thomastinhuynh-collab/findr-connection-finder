@@ -559,8 +559,8 @@
     "requestReservation": "Demander une réservation",
     "securePayment": "Paiement sécurisé via findr",
     "fundsHeld": "Fonds bloqués jusqu'à confirmation de réception",
-    "loginRequired": "Connexion requise"
-    ,"proposals": "Propositions",
+    "loginRequired": "Connexion requise",
+    "proposals": "Propositions",
     "noProposals": "Aucune proposition pour l'instant — sois le premier findr à en faire une",
     "reserved": "Annonce réservée",
     "reservedByYou": "Tu as réservé cette annonce. Tu es le seul à pouvoir interagir avec le buyr.",
@@ -590,8 +590,8 @@
     "paymentInProgress": "Paiement en cours",
     "contactFindr": "Contacter le findr",
     "contactBuyr": "Contacter le buyr",
-    "close": "Fermer"
-    ,"secureAwaiting": "Paiement sécurisé — en attente de confirmation de réception.",
+    "close": "Fermer",
+    "secureAwaiting": "Paiement sécurisé — en attente de confirmation de réception.",
     "markShipped": "Marquer comme expédié",
     "confirmReceipt": "Confirmer la réception de l'objet",
     "reportProblem": "Signaler un problème",
@@ -648,5 +648,51 @@
       "title": "9. Droit applicable",
       "text": "Les présentes CGU sont soumises au droit français. Tout litige relèvera des tribunaux compétents du ressort du siège social de findr, sous réserve des dispositions impératives applicables aux consommateurs."
     }
+  },
+  "favorites": {
+    "loginRequired": "Connecte-toi pour ajouter des favoris",
+    "removed": "Retiré des favoris",
+    "added": "Ajouté aux favoris",
+    "remove": "Retirer des favoris",
+    "add": "Ajouter aux favoris"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Tout marquer lu",
+    "empty": "Aucune notification",
+    "now": "À l’instant",
+    "minutesAgo": "Il y a {{count}} min",
+    "hoursAgo": "Il y a {{count}} h",
+    "yesterday": "Hier"
+  },
+  "notFound": {
+    "title": "Oups, cette pépite est introuvable",
+    "description": "La page que tu cherches n’existe pas… mais nos findr peuvent trouver n’importe quoi d’autre.",
+    "backHome": "Retour à l’accueil"
+  },
+  "auth": {
+    "signupError": "Erreur d’inscription",
+    "signupSaved": "Inscription enregistrée",
+    "confirmEmail": "Vérifie ta boîte mail pour confirmer ton inscription avant de te connecter",
+    "signupSuccess": "Inscription réussie !",
+    "welcome": "Bienvenue sur findr !",
+    "loginError": "Erreur de connexion",
+    "loginSuccess": "Connexion réussie !",
+    "welcomeBack": "Content de vous revoir !",
+    "login": "Connexion",
+    "signup": "Inscription",
+    "fullName": "Nom complet",
+    "emailPlaceholder": "jean@exemple.com",
+    "password": "Mot de passe",
+    "loading": "Chargement…",
+    "signIn": "Se connecter",
+    "signUp": "S’inscrire",
+    "emailRequired": "Email requis",
+    "resetPrompt": "Entrez votre email ci-dessus pour recevoir le lien de réinitialisation.",
+    "emailSent": "Email envoyé !",
+    "resetSent": "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Pas encore de compte ?",
+    "hasAccount": "Déjà un compte ?"
   }
 }

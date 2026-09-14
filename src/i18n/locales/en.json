@@ -559,8 +559,8 @@
     "requestReservation": "Request a booking",
     "securePayment": "Secure payment through findr",
     "fundsHeld": "Funds held until delivery is confirmed",
-    "loginRequired": "Sign in required"
-    ,"proposals": "Proposals",
+    "loginRequired": "Sign in required",
+    "proposals": "Proposals",
     "noProposals": "No proposals yet — be the first findr to make one",
     "reserved": "Reserved search",
     "reservedByYou": "You booked this search. You are the only findr who can interact with the buyr.",
@@ -590,8 +590,8 @@
     "paymentInProgress": "Payment in progress",
     "contactFindr": "Contact the findr",
     "contactBuyr": "Contact the buyr",
-    "close": "Close"
-    ,"secureAwaiting": "Secure payment — awaiting delivery confirmation.",
+    "close": "Close",
+    "secureAwaiting": "Secure payment — awaiting delivery confirmation.",
     "markShipped": "Mark as shipped",
     "confirmReceipt": "Confirm item received",
     "reportProblem": "Report a problem",
@@ -648,5 +648,51 @@
       "title": "9. Governing law",
       "text": "These Terms are governed by French law. Any dispute will fall within the jurisdiction of the competent courts for findr’s registered office, subject to any mandatory consumer protection rules."
     }
+  },
+  "favorites": {
+    "loginRequired": "Sign in to add favorites",
+    "removed": "Removed from favorites",
+    "added": "Added to favorites",
+    "remove": "Remove from favorites",
+    "add": "Add to favorites"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications",
+    "now": "Just now",
+    "minutesAgo": "{{count}} min ago",
+    "hoursAgo": "{{count}} hr ago",
+    "yesterday": "Yesterday"
+  },
+  "notFound": {
+    "title": "Oops, this gem cannot be found",
+    "description": "The page you are looking for does not exist… but our findrs can find almost anything else.",
+    "backHome": "Back to home"
+  },
+  "auth": {
+    "signupError": "Sign-up error",
+    "signupSaved": "Sign-up received",
+    "confirmEmail": "Check your inbox and confirm your email before signing in",
+    "signupSuccess": "Account created!",
+    "welcome": "Welcome to findr!",
+    "loginError": "Sign-in error",
+    "loginSuccess": "Signed in!",
+    "welcomeBack": "Welcome back!",
+    "login": "Sign in",
+    "signup": "Sign up",
+    "fullName": "Full name",
+    "emailPlaceholder": "name@example.com",
+    "password": "Password",
+    "loading": "Loading…",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "emailRequired": "Email required",
+    "resetPrompt": "Enter your email above to receive a password reset link.",
+    "emailSent": "Email sent!",
+    "resetSent": "Check your inbox to reset your password.",
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "No account yet?",
+    "hasAccount": "Already have an account?"
   }
 }
