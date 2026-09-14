@@ -223,7 +223,7 @@ const AdminNegativeBalances = () => {
                   <div className="flex flex-wrap gap-2">
                     <Button
                       size="sm"
-                      disabled={processing === f.user_id}
+                      disabled={processing === f.user_id || Number(f.negative_balance) <= 0}
                       onClick={() => callAdmin(f.user_id, { action: "mark_settled" })}
                     >
                       {processing === f.user_id && (
