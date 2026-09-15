@@ -486,7 +486,9 @@
       "title": "2. Data processed",
       "account": "<strong>Account data:</strong> surname, first name, email address, city and profile.",
       "transaction": "<strong>Transaction data:</strong> searches, proposals, messages and delivery status.",
-      "payment": "<strong>Payment data:</strong> this data is transmitted to Stripe; FINDR does not retain full card details."
+      "payment": "<strong>Payment data:</strong> this data is transmitted to Stripe; FINDR does not retain full card details.",
+      "tax": "<strong>Tax compliance data:</strong> data required to comply with DAC7 obligations.",
+      "technical": "<strong>Technical data:</strong> IP address, logs and cookies."
     },
     "recipients": {
       "title": "3. Stripe and recipients",

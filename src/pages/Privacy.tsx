@@ -15,7 +15,7 @@ const Privacy = () => {
 
     <h2>{t("privacy.data.title")}</h2>
     <ul>
-      {["account", "transaction", "payment"].map((key) => <li key={key}><Trans i18nKey={`privacy.data.${key}`} components={{ strong: <strong /> }} /></li>)}
+      {["account", "transaction", "payment", "tax", "technical"].map((key) => <li key={key}><Trans i18nKey={`privacy.data.${key}`} components={{ strong: <strong /> }} /></li>)}
     </ul>
 
     <h2>{t("privacy.recipients.title")}</h2>

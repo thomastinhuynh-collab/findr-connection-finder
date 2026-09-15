@@ -486,7 +486,9 @@
       "title": "2. Données traitées",
       "account": "<strong>Données de compte :</strong> nom, prénom, email, ville et profil.",
       "transaction": "<strong>Données de transaction :</strong> recherches, propositions, messages et statut de livraison.",
-      "payment": "<strong>Données de paiement :</strong> elles sont transmises à Stripe ; FINDR ne conserve pas les données de carte complètes."
+      "payment": "<strong>Données de paiement :</strong> elles sont transmises à Stripe ; FINDR ne conserve pas les données de carte complètes.",
+      "tax": "<strong>Données de conformité fiscale :</strong> données nécessaires au respect des obligations DAC7.",
+      "technical": "<strong>Données techniques :</strong> adresse IP, logs et cookies."
     },
     "recipients": {
       "title": "3. Stripe et destinataires",
