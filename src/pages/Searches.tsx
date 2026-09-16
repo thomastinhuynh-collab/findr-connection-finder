@@ -77,6 +77,7 @@ const Searches = () => {
   const { t, i18n } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Toutes");
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -125,10 +126,25 @@ const Searches = () => {
   }, [searchParams]);
 
 
+  // Debounce du champ texte pour éviter une requête à chaque frappe
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 400);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   useEffect(() => {
     pageRef.current = 0;
     fetchSearches(true);
-  }, [selectedCategory]);
+  }, [
+    selectedCategory,
+    debouncedQuery,
+    selectedUrgency,
+    deadlineFilter,
+    budgetTouched,
+    budgetRange[0],
+    budgetRange[1],
+  ]);
+
 
   const fetchSearches = async (reset = false) => {
     if (reset) setLoading(true);
@@ -147,6 +163,36 @@ const Searches = () => {
     if (selectedCategory !== "Toutes") {
       query = query.eq("category", selectedCategory);
     }
+
+    // Mot-clé : titre ou description
+    if (debouncedQuery) {
+      const pattern = `%${debouncedQuery.replace(/[%,()]/g, " ")}%`;
+      query = query.or(`title.ilike.${pattern},description.ilike.${pattern}`);
+    }
+
+    // Urgence
+    if (selectedUrgency !== "Toutes") {
+      query = query.eq("urgency", selectedUrgency);
+    }
+
+    // Budget : chevauchement des plages
+    if (budgetTouched) {
+      const [lo, hi] = budgetRange;
+      query = query
+        .or(`budget_max.gte.${lo},budget_max.is.null`)
+        .or(`budget_min.lte.${hi},budget_min.is.null`);
+    }
+
+    // Délai souhaité
+    if (deadlineFilter === "none") {
+      query = query.is("deadline", null);
+    } else if (deadlineFilter === "urgent" || deadlineFilter === "week") {
+      const days = deadlineFilter === "urgent" ? 3 : 7;
+      query = query
+        .not("deadline", "is", null)
+        .lt("deadline", new Date(Date.now() + days * 86400000).toISOString());
+    }
+
 
     const { data, error } = await query;
 
@@ -227,26 +273,9 @@ const Searches = () => {
     return score;
   };
 
-  const filteredAndSortedSearches = searches
-    .filter((search) => {
-      const q = searchQuery.toLowerCase();
-      const matchesQuery = !q || search.title.toLowerCase().includes(q);
-      const matchesUrgency = selectedUrgency === "Toutes" || search.urgency === selectedUrgency;
-      // Budget filter
-      const bMin = search.budget_min ?? search.budget_max ?? 0;
-      const bMax = search.budget_max ?? search.budget_min ?? 0;
-      const matchesBudget = !budgetTouched || (bMax >= budgetRange[0] && bMin <= budgetRange[1]);
-      // Deadline filter
-      let matchesDeadline = true;
-      if (deadlineFilter === "none") matchesDeadline = !search.deadline;
-      else if (deadlineFilter === "urgent") {
-        matchesDeadline = !!search.deadline && (new Date(search.deadline).getTime() - Date.now()) / 86400000 < 3;
-      } else if (deadlineFilter === "week") {
-        const d = search.deadline ? (new Date(search.deadline).getTime() - Date.now()) / 86400000 : Infinity;
-        matchesDeadline = !!search.deadline && d < 7;
-      }
-      return matchesQuery && matchesUrgency && matchesBudget && matchesDeadline;
-    })
+  // Les filtres (mot-clé, budget, délai, urgence, catégorie) sont appliqués côté serveur.
+  // Seul le tri reste calculé ici, sur les résultats déjà renvoyés.
+  const filteredAndSortedSearches = [...searches]
     .sort((a, b) => {
       switch (sortBy) {
         case "relevance":
