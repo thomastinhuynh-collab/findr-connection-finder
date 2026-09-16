@@ -125,10 +125,25 @@ const Searches = () => {
   }, [searchParams]);
 
 
+  // Debounce du champ texte pour éviter une requête à chaque frappe
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 400);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   useEffect(() => {
     pageRef.current = 0;
     fetchSearches(true);
-  }, [selectedCategory]);
+  }, [
+    selectedCategory,
+    debouncedQuery,
+    selectedUrgency,
+    deadlineFilter,
+    budgetTouched,
+    budgetRange[0],
+    budgetRange[1],
+  ]);
+
 
   const fetchSearches = async (reset = false) => {
     if (reset) setLoading(true);
