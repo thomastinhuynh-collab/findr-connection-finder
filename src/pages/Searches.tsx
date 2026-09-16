@@ -273,26 +273,9 @@ const Searches = () => {
     return score;
   };
 
-  const filteredAndSortedSearches = searches
-    .filter((search) => {
-      const q = searchQuery.toLowerCase();
-      const matchesQuery = !q || search.title.toLowerCase().includes(q);
-      const matchesUrgency = selectedUrgency === "Toutes" || search.urgency === selectedUrgency;
-      // Budget filter
-      const bMin = search.budget_min ?? search.budget_max ?? 0;
-      const bMax = search.budget_max ?? search.budget_min ?? 0;
-      const matchesBudget = !budgetTouched || (bMax >= budgetRange[0] && bMin <= budgetRange[1]);
-      // Deadline filter
-      let matchesDeadline = true;
-      if (deadlineFilter === "none") matchesDeadline = !search.deadline;
-      else if (deadlineFilter === "urgent") {
-        matchesDeadline = !!search.deadline && (new Date(search.deadline).getTime() - Date.now()) / 86400000 < 3;
-      } else if (deadlineFilter === "week") {
-        const d = search.deadline ? (new Date(search.deadline).getTime() - Date.now()) / 86400000 : Infinity;
-        matchesDeadline = !!search.deadline && d < 7;
-      }
-      return matchesQuery && matchesUrgency && matchesBudget && matchesDeadline;
-    })
+  // Les filtres (mot-clé, budget, délai, urgence, catégorie) sont appliqués côté serveur.
+  // Seul le tri reste calculé ici, sur les résultats déjà renvoyés.
+  const filteredAndSortedSearches = [...searches]
     .sort((a, b) => {
       switch (sortBy) {
         case "relevance":
