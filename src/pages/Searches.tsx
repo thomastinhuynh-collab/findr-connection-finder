@@ -164,6 +164,36 @@ const Searches = () => {
       query = query.eq("category", selectedCategory);
     }
 
+    // Mot-clé : titre ou description
+    if (debouncedQuery) {
+      const pattern = `%${debouncedQuery.replace(/[%,()]/g, " ")}%`;
+      query = query.or(`title.ilike.${pattern},description.ilike.${pattern}`);
+    }
+
+    // Urgence
+    if (selectedUrgency !== "Toutes") {
+      query = query.eq("urgency", selectedUrgency);
+    }
+
+    // Budget : chevauchement des plages
+    if (budgetTouched) {
+      const [lo, hi] = budgetRange;
+      query = query
+        .or(`budget_max.gte.${lo},budget_max.is.null`)
+        .or(`budget_min.lte.${hi},budget_min.is.null`);
+    }
+
+    // Délai souhaité
+    if (deadlineFilter === "none") {
+      query = query.is("deadline", null);
+    } else if (deadlineFilter === "urgent" || deadlineFilter === "week") {
+      const days = deadlineFilter === "urgent" ? 3 : 7;
+      query = query
+        .not("deadline", "is", null)
+        .lt("deadline", new Date(Date.now() + days * 86400000).toISOString());
+    }
+
+
     const { data, error } = await query;
 
     if (error) {
