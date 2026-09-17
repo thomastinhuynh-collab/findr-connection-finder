@@ -21,6 +21,7 @@ import PremiumWallet from "@/components/PremiumWallet";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
+import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
 import { useTranslation } from "react-i18next";
 
