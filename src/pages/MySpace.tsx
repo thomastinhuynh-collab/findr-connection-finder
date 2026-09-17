@@ -150,10 +150,10 @@ const MySpace = () => {
         .eq("user_id", user.id);
       if (error) throw error;
       await fetchProfile();
-      toast({ title: "Profil mis à jour" });
+      toast({ title: t("mySpace.profileUpdated") });
       setEditOpen(false);
     } catch (err: any) {
-      toast({ title: "Erreur", description: err.message, variant: "destructive" });
+      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
       setSavingProfile(false);
     }
@@ -171,13 +171,13 @@ const MySpace = () => {
     if (!status) return;
     if (status === "success") {
       toast({
-        title: "Merci !",
-        description: "Stripe finalise la vérification de ton compte, ça peut prendre quelques instants.",
+        title: t("mySpace.thanks"),
+        description: t("mySpace.stripePending"),
       });
     } else if (status === "refresh") {
       toast({
-        title: "Configuration incomplète",
-        description: "Reprends la configuration de tes paiements pour la terminer.",
+        title: t("mySpace.setupIncomplete"),
+        description: t("mySpace.setupResume"),
         variant: "destructive",
       });
     }
@@ -464,7 +464,7 @@ const MySpace = () => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
     if (file.size > 5 * 1024 * 1024) {
-      toast({ title: "Fichier trop lourd", description: "Max 5 Mo", variant: "destructive" });
+      toast({ title: t("mySpace.fileTooLarge"), description: t("mySpace.max5"), variant: "destructive" });
       return;
     }
     setUploadingAvatar(true);
@@ -477,9 +477,9 @@ const MySpace = () => {
       const { error: updErr } = await supabase.from("profiles").update({ avatar_url: pub.publicUrl }).eq("user_id", user.id);
       if (updErr) throw updErr;
       await fetchProfile();
-      toast({ title: "Photo mise à jour" });
+      toast({ title: t("mySpace.photoUpdated") });
     } catch (err: any) {
-      toast({ title: "Erreur", description: err.message, variant: "destructive" });
+      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
       setUploadingAvatar(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -489,7 +489,7 @@ const MySpace = () => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
     if (file.size > 8 * 1024 * 1024) {
-      toast({ title: "Fichier trop lourd", description: "Max 8 Mo", variant: "destructive" });
+      toast({ title: t("mySpace.fileTooLarge"), description: t("mySpace.max8"), variant: "destructive" });
       return;
     }
     setUploadingBanner(true);
@@ -502,9 +502,9 @@ const MySpace = () => {
       const { error: updErr } = await (supabase.from("profiles") as any).update({ banner_url: pub.publicUrl }).eq("user_id", user.id);
       if (updErr) throw updErr;
       await fetchProfile();
-      toast({ title: "Bannière mise à jour" });
+      toast({ title: t("mySpace.bannerUpdated") });
     } catch (err: any) {
-      toast({ title: "Erreur", description: err.message, variant: "destructive" });
+      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
       setUploadingBanner(false);
       if (bannerInputRef.current) bannerInputRef.current.value = "";
@@ -515,11 +515,11 @@ const MySpace = () => {
     if (!user) return;
     const { error } = await (supabase.from("profiles") as any).update({ banner_url: null }).eq("user_id", user.id);
     if (error) {
-      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+      toast({ title: t("common.error"), description: error.message, variant: "destructive" });
       return;
     }
     await fetchProfile();
-    toast({ title: "Bannière supprimée" });
+    toast({ title: t("mySpace.bannerRemoved") });
   };
 
 
@@ -1145,8 +1145,8 @@ const MySpace = () => {
                           transactions={walletTransactions}
                           onAddFunds={() =>
                             toast({
-                              title: "Bientôt disponible",
-                              description: "Le programme Premium est temporairement indisponible.",
+                              title: t("mySpace.comingSoon"),
+                              description: t("mySpace.premiumUnavailable"),
                             })
                           }
                         />
