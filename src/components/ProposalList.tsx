@@ -219,7 +219,7 @@ const ProposalList = ({
         },
       });
       if (error || (data as any)?.error) throw new Error((data as any)?.error ?? error?.message);
-      toast({ title: "Colis expédié 📦", description: "Le buyr a été notifié, le suivi est actif." });
+      toast({ title: t("proposal.shippedTitle"), description: t("proposal.shippedDesc") });
       setShipDialogOpen(false);
       setTrackingNumber("");
       setCarrier("");
