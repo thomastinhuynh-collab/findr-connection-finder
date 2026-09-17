@@ -1198,10 +1198,10 @@ const ProposalList = ({
               {isProcessing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Traitement...
+                  {t("common.processing")}
                 </>
               ) : (
-                "Confirmer l'annulation"
+                t("proposal.confirmCancel")
               )}
             </Button>
           </DialogFooter>
