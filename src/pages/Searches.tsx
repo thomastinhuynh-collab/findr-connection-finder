@@ -205,6 +205,8 @@ const Searches = () => {
 
     const { data, error } = await query;
 
+    if (requestId !== requestRef.current) return;
+
     if (error) {
       console.error("Error fetching searches:", error);
       setLoading(false);
