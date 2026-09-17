@@ -203,8 +203,8 @@ const ProposalList = ({
     if (!reservation) return;
     if (trackingNumber.trim().length < 4 || carrier.trim().length < 2) {
       toast({
-        title: "Informations manquantes",
-        description: "Le transporteur et le numéro de suivi sont obligatoires.",
+        title: t("proposal.missingInfoTitle"),
+        description: t("proposal.missingInfoDesc"),
         variant: "destructive",
       });
       return;
