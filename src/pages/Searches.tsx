@@ -580,8 +580,34 @@ const Searches = () => {
           {/* Empty state */}
           {!loading && filteredAndSortedSearches.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">{t("searchesPage.empty")}</p>
-              <Button onClick={() => navigate("/poster")}>{t("searchesPage.post")}</Button>
+              {searchQuery.trim().length >= 2 ? (
+                <>
+                  <p className="mb-4" style={{ color: "#6B7280" }}>
+                    {t("keywordAlerts.noResultsTitle", { keyword: searchQuery.trim() })}
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    <Button
+                      disabled={creatingAlert}
+                      onClick={handleCreateAlertFromSearch}
+                      style={{ backgroundColor: "#D9BB87", color: "#070E42" }}
+                    >
+                      {creatingAlert
+                        ? t("common.saving")
+                        : user
+                          ? t("keywordAlerts.createFromSearch")
+                          : t("keywordAlerts.signInToCreate")}
+                    </Button>
+                    <Button variant="outline" onClick={() => navigate("/poster")}>
+                      {t("searchesPage.post")}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-muted-foreground mb-4">{t("searchesPage.empty")}</p>
+                  <Button onClick={() => navigate("/poster")}>{t("searchesPage.post")}</Button>
+                </>
+              )}
             </div>
           )}
 
