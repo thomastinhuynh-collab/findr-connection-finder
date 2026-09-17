@@ -266,6 +266,18 @@ const AdminNegativeBalances = () => {
               </Card>
             );
           })}
+          {hasMore && (
+            <div className="flex justify-center pt-2">
+              <Button
+                variant="outline"
+                disabled={loadingMore}
+                onClick={() => fetchData(findrs.length, true)}
+              >
+                {loadingMore && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                Charger plus
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </section>
