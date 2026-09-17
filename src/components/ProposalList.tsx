@@ -190,11 +190,11 @@ const ProposalList = ({
     const days = Math.floor(remaining / DAY);
     const hours = Math.floor((remaining % DAY) / (60 * 60 * 1000));
     const delay = days > 0
-      ? `${days} jour${days > 1 ? "s" : ""}${hours > 0 ? ` et ${hours} h` : ""}`
-      : `${Math.max(hours, 1)} h`;
+      ? `${t("proposal.delayDays", { count: days })}${hours > 0 ? t("proposal.delayAndHours", { hours }) : ""}`
+      : t("proposal.delayHours", { count: Math.max(hours, 1) });
     return p?.shipped_at
-      ? `Colis jamais livré ? Tu pourras demander l'annulation et le remboursement dans ${delay}.`
-      : `Pas de nouvelles du findr ? Tu pourras demander l'annulation et le remboursement dans ${delay}.`;
+      ? t("proposal.countdownShipped", { delay })
+      : t("proposal.countdownNotShipped", { delay });
   };
 
 
