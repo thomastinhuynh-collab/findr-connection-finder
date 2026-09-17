@@ -22,6 +22,7 @@ import SearchCardAccordion from "@/components/SearchCardAccordion";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
 import TranslatedContent from "@/components/TranslatedContent";
+import { useTranslation } from "react-i18next";
 
 
 interface Profile {
@@ -91,6 +92,7 @@ const MySpace = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { startOnboarding, loading: stripeLoading } = useStripeConnect();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
