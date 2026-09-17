@@ -415,13 +415,17 @@ const MySpace = () => {
     if (data) setEvaluations(data as any);
   };
 
-  const fetchFavorites = async () => {
+  const fetchFavorites = async (from = 0, append = false) => {
     if (!user) return;
+    if (append) setLoadingMoreFavorites(true);
     const { data: favData } = await supabase
       .from("favorites")
       .select("search_id, created_at")
       .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, from + PANEL_PAGE_SIZE - 1);
+
+    setHasMoreFavorites((favData?.length ?? 0) === PANEL_PAGE_SIZE);
 
     if (favData && favData.length > 0) {
       const searchIds = favData.map(f => f.search_id);
@@ -438,16 +442,20 @@ const MySpace = () => {
           .in("user_id", userIds);
 
         const cityMap = new Map(profiles?.map(p => [p.user_id, p.city]) || []);
-        
-        const enriched = searchesData.map(s => ({
-          ...s,
-          city: cityMap.get(s.user_id) || "France",
-        }));
-        setFavorites(enriched);
+
+        const order = new Map(searchIds.map((id, i) => [id, i]));
+        const enriched = searchesData
+          .map(s => ({
+            ...s,
+            city: cityMap.get(s.user_id) || "France",
+          }))
+          .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+        setFavorites((prev) => (append ? [...prev, ...enriched] : enriched));
       }
-    } else {
+    } else if (!append) {
       setFavorites([]);
     }
+    setLoadingMoreFavorites(false);
   };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
