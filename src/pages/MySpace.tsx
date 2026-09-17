@@ -1357,7 +1357,9 @@ const MySpace = () => {
                           ))}
                         </div>
                       )
-                    )}
+                     )}
+
+                    {activePanel === "alerts" && <KeywordAlertsPanel />}
                   </div>
                 </motion.div>
               )}
