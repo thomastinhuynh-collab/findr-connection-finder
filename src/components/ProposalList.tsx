@@ -314,8 +314,8 @@ const ProposalList = ({
     const reservation = payments[selectedProposal.id];
     if (!reservation) {
       toast({
-        title: "Erreur",
-        description: "Paiement introuvable pour cette proposition.",
+        title: t("common.error"),
+        description: t("proposal.paymentNotFound"),
         variant: "destructive",
       });
       return;
