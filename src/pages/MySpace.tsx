@@ -112,6 +112,13 @@ const MySpace = () => {
   const [savingProfile, setSavingProfile] = useState(false);
   const [myProposals, setMyProposals] = useState<any[]>([]);
   const [loadingProposals, setLoadingProposals] = useState(false);
+  const PANEL_PAGE_SIZE = 20;
+  const [hasMoreProposals, setHasMoreProposals] = useState(false);
+  const [loadingMoreProposals, setLoadingMoreProposals] = useState(false);
+  const [hasMoreWallet, setHasMoreWallet] = useState(false);
+  const [loadingMoreWallet, setLoadingMoreWallet] = useState(false);
+  const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
+  const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
   type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals";
   const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
@@ -199,16 +206,19 @@ const MySpace = () => {
     if (data) setGamificationEnabled(!!data.gamification_enabled);
   };
 
-  const fetchMyProposals = async () => {
+  const fetchMyProposals = async (from = 0, append = false) => {
     if (!user) return;
-    setLoadingProposals(true);
+    if (append) setLoadingMoreProposals(true);
+    else setLoadingProposals(true);
     const { data } = await supabase
       .from("proposals")
       .select("id, title, description, proposed_price, image_urls, status, created_at, search_id, source_lang")
       .eq("findr_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, from + PANEL_PAGE_SIZE - 1);
 
     const rows = data || [];
+    setHasMoreProposals(rows.length === PANEL_PAGE_SIZE);
     const withSearch = await Promise.all(
       rows.map(async (p) => {
         const { data: s } = await supabase
@@ -219,8 +229,9 @@ const MySpace = () => {
         return { ...p, search: s };
       })
     );
-    setMyProposals(withSearch);
+    setMyProposals((prev) => (append ? [...prev, ...withSearch] : withSearch));
     setLoadingProposals(false);
+    setLoadingMoreProposals(false);
   };
 
   const fetchActivityFlags = async () => {
@@ -239,30 +250,44 @@ const MySpace = () => {
   };
 
 
-  const fetchWallet = async () => {
+  const fetchWallet = async (from = 0, append = false) => {
     if (!user) return;
+    if (append) setLoadingMoreWallet(true);
     const { data, error } = await supabase
       .from("transactions")
       .select("id, amount, created_at, reservation_id")
       .eq("findr_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, from + PANEL_PAGE_SIZE - 1);
     if (error) {
       console.error("Error fetching transactions:", error);
-      setWalletBalance(0);
-      setWalletTransactions([]);
+      if (!append) {
+        setWalletBalance(0);
+        setWalletTransactions([]);
+      }
+      setLoadingMoreWallet(false);
       return;
     }
     const rows = data || [];
-    setWalletBalance(rows.reduce((sum, t: any) => sum + Number(t.amount || 0), 0));
-    setWalletTransactions(
-      rows.map((t: any) => ({
-        id: t.id,
-        type: "credit" as const,
-        amount: Number(t.amount || 0),
-        description: "Vente finalisée",
-        date: new Date(t.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }),
-      }))
-    );
+    setHasMoreWallet(rows.length === PANEL_PAGE_SIZE);
+    const mapped = rows.map((t: any) => ({
+      id: t.id,
+      type: "credit" as const,
+      amount: Number(t.amount || 0),
+      description: "Vente finalisée",
+      date: new Date(t.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }),
+    }));
+    setWalletTransactions((prev) => (append ? [...prev, ...mapped] : mapped));
+    setLoadingMoreWallet(false);
+
+    if (!append) {
+      // Le solde reste calculé sur l'ensemble des versements, pas seulement la page affichée.
+      const { data: allAmounts } = await supabase
+        .from("transactions")
+        .select("amount")
+        .eq("findr_id", user.id);
+      setWalletBalance((allAmounts || []).reduce((sum, t: any) => sum + Number(t.amount || 0), 0));
+    }
   };
 
   const fetchProfile = async () => {
@@ -390,13 +415,17 @@ const MySpace = () => {
     if (data) setEvaluations(data as any);
   };
 
-  const fetchFavorites = async () => {
+  const fetchFavorites = async (from = 0, append = false) => {
     if (!user) return;
+    if (append) setLoadingMoreFavorites(true);
     const { data: favData } = await supabase
       .from("favorites")
       .select("search_id, created_at")
       .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, from + PANEL_PAGE_SIZE - 1);
+
+    setHasMoreFavorites((favData?.length ?? 0) === PANEL_PAGE_SIZE);
 
     if (favData && favData.length > 0) {
       const searchIds = favData.map(f => f.search_id);
@@ -413,16 +442,20 @@ const MySpace = () => {
           .in("user_id", userIds);
 
         const cityMap = new Map(profiles?.map(p => [p.user_id, p.city]) || []);
-        
-        const enriched = searchesData.map(s => ({
-          ...s,
-          city: cityMap.get(s.user_id) || "France",
-        }));
-        setFavorites(enriched);
+
+        const order = new Map(searchIds.map((id, i) => [id, i]));
+        const enriched = searchesData
+          .map(s => ({
+            ...s,
+            city: cityMap.get(s.user_id) || "France",
+          }))
+          .sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+        setFavorites((prev) => (append ? [...prev, ...enriched] : enriched));
       }
-    } else {
+    } else if (!append) {
       setFavorites([]);
     }
+    setLoadingMoreFavorites(false);
   };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1115,6 +1148,18 @@ const MySpace = () => {
                             })
                           }
                         />
+                        {hasMoreWallet && (
+                          <div className="flex justify-center">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={loadingMoreWallet}
+                              onClick={() => fetchWallet(walletTransactions.length, true)}
+                            >
+                              {loadingMoreWallet ? "Chargement…" : "Charger plus"}
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -1186,6 +1231,18 @@ const MySpace = () => {
                               </div>
                             );
                           })}
+                          {hasMoreProposals && (
+                            <div className="flex justify-center pt-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={loadingMoreProposals}
+                                onClick={() => fetchMyProposals(myProposals.length, true)}
+                              >
+                                {loadingMoreProposals ? "Chargement…" : "Charger plus"}
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       )
                     )}
@@ -1243,6 +1300,18 @@ const MySpace = () => {
                               </div>
                             </div>
                           ))}
+                          {hasMoreFavorites && (
+                            <div className="md:col-span-2 flex justify-center pt-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={loadingMoreFavorites}
+                                onClick={() => fetchFavorites(favorites.length, true)}
+                              >
+                                {loadingMoreFavorites ? "Chargement…" : "Charger plus"}
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       )
                     )}
