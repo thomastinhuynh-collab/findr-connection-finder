@@ -1300,6 +1300,18 @@ const MySpace = () => {
                               </div>
                             </div>
                           ))}
+                          {hasMoreFavorites && (
+                            <div className="md:col-span-2 flex justify-center pt-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={loadingMoreFavorites}
+                                onClick={() => fetchFavorites(favorites.length, true)}
+                              >
+                                {loadingMoreFavorites ? "Chargement…" : "Charger plus"}
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       )
                     )}
