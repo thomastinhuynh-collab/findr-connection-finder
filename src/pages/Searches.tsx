@@ -23,6 +23,7 @@ import TranslatedContent from "@/components/TranslatedContent";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useKeywordAlerts } from "@/hooks/useKeywordAlerts";
+import AuthModal from "@/components/AuthModal";
 
 interface SearchItem {
   id: string;
@@ -101,9 +102,18 @@ const Searches = () => {
   const { toast } = useToast();
   const { addAlert } = useKeywordAlerts();
   const [creatingAlert, setCreatingAlert] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [pendingAlertKeyword, setPendingAlertKeyword] = useState<string | null>(null);
 
   const handleCreateAlertFromSearch = async () => {
     const keyword = searchQuery.trim();
+    if (!user) {
+      // Utilisateur non connecté : ouvrir la fenêtre de connexion,
+      // puis retenter automatiquement la création après connexion.
+      setPendingAlertKeyword(keyword);
+      setAuthModalOpen(true);
+      return;
+    }
     setCreatingAlert(true);
     const result = await addAlert(keyword);
     setCreatingAlert(false);
@@ -117,6 +127,27 @@ const Searches = () => {
       variant: "destructive",
     });
   };
+
+  // Une fois connecté, retente la création de l'alerte avec le mot-clé en attente.
+  useEffect(() => {
+    if (!user || !pendingAlertKeyword) return;
+    const keyword = pendingAlertKeyword;
+    setPendingAlertKeyword(null);
+    (async () => {
+      setCreatingAlert(true);
+      const result = await addAlert(keyword);
+      setCreatingAlert(false);
+      if (result === null) {
+        toast({ title: t("keywordAlerts.added"), description: keyword });
+      } else {
+        toast({
+          title: t("common.error"),
+          description: t(`keywordAlerts.errors.${result}`),
+          variant: "destructive",
+        });
+      }
+    })();
+  }, [user, pendingAlertKeyword, addAlert, toast, t]);
 
 
   const comingSoonCategory = (() => {
@@ -835,6 +866,8 @@ const Searches = () => {
           )}
         </div>
       </main>
+
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} defaultMode="login" />
 
       <Footer />
     </div>
