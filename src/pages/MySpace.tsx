@@ -1084,6 +1084,7 @@ const MySpace = () => {
                 { key: "favorites" as const, label: "Favoris" },
                 { key: "wallet" as const, label: "Portefeuille" },
                 { key: "evaluations" as const, label: "Évaluations" },
+                { key: "alerts" as const, label: t("keywordAlerts.title") },
                 ...(profile.is_findr || hasProposals
                   ? [{ key: "proposals" as const, label: "Mes propositions" }]
                   : []),
