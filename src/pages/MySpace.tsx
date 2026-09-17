@@ -1148,6 +1148,18 @@ const MySpace = () => {
                             })
                           }
                         />
+                        {hasMoreWallet && (
+                          <div className="flex justify-center">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={loadingMoreWallet}
+                              onClick={() => fetchWallet(walletTransactions.length, true)}
+                            >
+                              {loadingMoreWallet ? "Chargement…" : "Charger plus"}
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     )}
 
