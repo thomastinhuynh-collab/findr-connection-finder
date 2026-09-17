@@ -227,6 +227,8 @@ const Searches = () => {
         supabase.from("proposals").select("search_id").in("search_id", searchIds),
       ]);
 
+      if (requestId !== requestRef.current) return;
+
       const profilesMap = new Map(profilesRes.data?.map(p => [p.user_id, p]) || []);
 
       const searchesWithProfiles = filtered.map(search => ({
