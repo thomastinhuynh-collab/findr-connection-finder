@@ -240,7 +240,7 @@ const ProposalList = ({
         body: { reservationId: reservation.id },
       });
       if (error || (data as any)?.error) throw new Error((data as any)?.error ?? error?.message);
-      toast({ title: "Annulation confirmée", description: "Le remboursement intégral est en cours." });
+      toast({ title: t("proposal.cancelConfirmedTitle"), description: t("proposal.cancelConfirmedDesc") });
       setCancelDialogOpen(false);
       fetchPayments();
       onProposalUpdate();
