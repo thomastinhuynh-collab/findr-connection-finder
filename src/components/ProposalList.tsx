@@ -579,7 +579,7 @@ const ProposalList = ({
                             setCancelDialogOpen(true);
                           }}
                         >
-                          Je ne peux plus fournir l'objet
+                          {t("proposal.cannotSupply")}
                         </Button>
                       </>
                     )}
@@ -623,7 +623,7 @@ const ProposalList = ({
                         setCancelDialogOpen(true);
                       }}
                     >
-                      Le findr n'a pas donné de nouvelles ? Demander l'annulation et le remboursement
+                      {t("proposal.noNewsCancel")}
                     </Button>
                   )}
 
@@ -748,7 +748,7 @@ const ProposalList = ({
               <span className="break-words">{t("proposal.confirmPayment")}</span>
             </DialogTitle>
             <DialogDescription>
-              Le paiement sera bloqué jusqu'à confirmation de réception de l'article.
+              {t("proposal.paymentHeldNotice")}
             </DialogDescription>
           </DialogHeader>
 
@@ -1063,7 +1063,7 @@ const ProposalList = ({
               <span className="break-words">{t("proposal.confirmReceipt")}</span>
             </DialogTitle>
             <DialogDescription>
-              Confirmez que vous avez bien reçu l'article et qu'il correspond à la description.
+              {t("proposal.confirmReceiptDesc")}
             </DialogDescription>
           </DialogHeader>
 
@@ -1073,10 +1073,10 @@ const ProposalList = ({
                 <Clock className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-foreground">
-                    Attention : Action irréversible
+                    {t("proposal.irreversibleTitle")}
                   </p>
                   <p className="text-muted-foreground mt-1">
-                    Une fois confirmé, le paiement sera libéré au findr. Assurez-vous que l'article correspond bien à vos attentes.
+                    {t("proposal.irreversibleDesc")}
                   </p>
                 </div>
               </div>
@@ -1098,7 +1098,7 @@ const ProposalList = ({
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmReceiptDialog(false)}>
-              Annuler
+              {t("common.cancel")}
             </Button>
             <Button
               onClick={handleConfirmReceipt}
@@ -1108,12 +1108,12 @@ const ProposalList = ({
               {isProcessing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Traitement...
+                  {t("common.processing")}
                 </>
               ) : (
                 <>
                   <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Confirmer et libérer le paiement
+                  {t("proposal.confirmAndRelease")}
                 </>
               )}
             </Button>
@@ -1160,7 +1160,7 @@ const ProposalList = ({
               {isProcessing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Enregistrement...
+                  {t("common.saving")}
                 </>
               ) : (
                 <>
@@ -1179,8 +1179,7 @@ const ProposalList = ({
           <DialogHeader>
             <DialogTitle>{t("proposal.cancelRefund")}</DialogTitle>
             <DialogDescription>
-              La transaction sera annulée et le buyr intégralement remboursé, frais de service
-              inclus.
+              {t("proposal.cancelRefundDesc")}
             </DialogDescription>
           </DialogHeader>
 
