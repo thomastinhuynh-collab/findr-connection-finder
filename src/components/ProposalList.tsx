@@ -354,8 +354,8 @@ const ProposalList = ({
     } catch (error: any) {
       console.error("Error confirming receipt:", error);
       toast({
-        title: "Erreur",
-        description: error?.message || "Impossible de confirmer la réception.",
+        title: t("common.error"),
+        description: error?.message || t("proposal.confirmReceiptError"),
         variant: "destructive",
       });
     } finally {
