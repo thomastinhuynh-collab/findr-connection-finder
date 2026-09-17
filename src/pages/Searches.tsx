@@ -93,6 +93,7 @@ const Searches = () => {
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const pageRef = useRef(0);
+  const requestRef = useRef(0);
 
   const comingSoonCategory = (() => {
     const cat = searchParams.get("category");
