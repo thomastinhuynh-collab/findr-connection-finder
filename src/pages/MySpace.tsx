@@ -1231,6 +1231,18 @@ const MySpace = () => {
                               </div>
                             );
                           })}
+                          {hasMoreProposals && (
+                            <div className="flex justify-center pt-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={loadingMoreProposals}
+                                onClick={() => fetchMyProposals(myProposals.length, true)}
+                              >
+                                {loadingMoreProposals ? "Chargement…" : "Charger plus"}
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       )
                     )}
