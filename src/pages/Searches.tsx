@@ -134,6 +134,12 @@ const Searches = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Debounce du curseur de budget pour éviter une requête à chaque cran
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedBudget([budgetRange[0], budgetRange[1]]), 400);
+    return () => clearTimeout(timer);
+  }, [budgetRange[0], budgetRange[1]]);
+
   useEffect(() => {
     pageRef.current = 0;
     fetchSearches(true);
@@ -143,12 +149,13 @@ const Searches = () => {
     selectedUrgency,
     deadlineFilter,
     budgetTouched,
-    budgetRange[0],
-    budgetRange[1],
+    debouncedBudget[0],
+    debouncedBudget[1],
   ]);
 
 
   const fetchSearches = async (reset = false) => {
+    const requestId = ++requestRef.current;
     if (reset) setLoading(true);
     else setLoadingMore(true);
 
