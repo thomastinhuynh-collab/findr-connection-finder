@@ -112,6 +112,13 @@ const MySpace = () => {
   const [savingProfile, setSavingProfile] = useState(false);
   const [myProposals, setMyProposals] = useState<any[]>([]);
   const [loadingProposals, setLoadingProposals] = useState(false);
+  const PANEL_PAGE_SIZE = 20;
+  const [hasMoreProposals, setHasMoreProposals] = useState(false);
+  const [loadingMoreProposals, setLoadingMoreProposals] = useState(false);
+  const [hasMoreWallet, setHasMoreWallet] = useState(false);
+  const [loadingMoreWallet, setLoadingMoreWallet] = useState(false);
+  const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
+  const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
   type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals";
   const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
