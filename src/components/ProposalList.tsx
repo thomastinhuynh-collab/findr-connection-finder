@@ -301,8 +301,8 @@ const ProposalList = ({
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
       toast({
-        title: "Paiement impossible",
-        description: error?.message || "Impossible de démarrer le paiement.",
+        title: t("proposal.paymentFailedTitle"),
+        description: error?.message || t("proposal.paymentFailedDesc"),
         variant: "destructive",
       });
       setIsProcessing(false);
