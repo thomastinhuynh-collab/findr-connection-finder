@@ -272,16 +272,16 @@ const ProposalList = ({
         });
 
       toast({
-        title: "Proposition refusée",
-        description: "La proposition a été refusée.",
+        title: t("proposal.rejectedTitle"),
+        description: t("proposal.rejectedDesc"),
       });
       
       onProposalUpdate();
     } catch (error) {
       console.error("Error rejecting proposal:", error);
       toast({
-        title: "Erreur",
-        description: "Impossible de refuser la proposition.",
+        title: t("common.error"),
+        description: t("proposal.rejectError"),
         variant: "destructive",
       });
     }
