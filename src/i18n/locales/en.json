@@ -773,7 +773,30 @@
     "redirecting": "Redirecting…",
     "error": "Error",
     "processing": "Processing…",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "loading": "Loading…"
+  },
+  "keywordAlerts": {
+    "title": "My alerts",
+    "intro": "Get notified as soon as a new search matches one of your keywords.",
+    "placeholder": "e.g. vintage watch",
+    "add": "Add",
+    "added": "Alert created",
+    "removed": "Alert removed",
+    "remove": "Remove the \"{{keyword}}\" alert",
+    "counter": "{{count}}/{{limit}} alerts",
+    "limitReached": "You have reached the limit of {{limit}} keywords. Remove an alert to add a new one.",
+    "empty": "No alerts yet.",
+    "noResultsTitle": "No search matches \"{{keyword}}\" for now",
+    "createFromSearch": "Create an alert to be notified as soon as a listing matches",
+    "signInToCreate": "Sign in to create an alert",
+    "errors": {
+      "unauthenticated": "Sign in to create an alert.",
+      "tooShort": "The keyword must be at least 2 characters long.",
+      "limit": "You already have 10 keywords saved.",
+      "duplicate": "This keyword is already in your alerts.",
+      "error": "The operation failed. Please try again."
+    }
   },
   "publicProfile": {
     "notFound": "Profile not found",
