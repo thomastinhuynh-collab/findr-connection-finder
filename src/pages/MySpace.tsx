@@ -206,16 +206,19 @@ const MySpace = () => {
     if (data) setGamificationEnabled(!!data.gamification_enabled);
   };
 
-  const fetchMyProposals = async () => {
+  const fetchMyProposals = async (from = 0, append = false) => {
     if (!user) return;
-    setLoadingProposals(true);
+    if (append) setLoadingMoreProposals(true);
+    else setLoadingProposals(true);
     const { data } = await supabase
       .from("proposals")
       .select("id, title, description, proposed_price, image_urls, status, created_at, search_id, source_lang")
       .eq("findr_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, from + PANEL_PAGE_SIZE - 1);
 
     const rows = data || [];
+    setHasMoreProposals(rows.length === PANEL_PAGE_SIZE);
     const withSearch = await Promise.all(
       rows.map(async (p) => {
         const { data: s } = await supabase
@@ -226,8 +229,9 @@ const MySpace = () => {
         return { ...p, search: s };
       })
     );
-    setMyProposals(withSearch);
+    setMyProposals((prev) => (append ? [...prev, ...withSearch] : withSearch));
     setLoadingProposals(false);
+    setLoadingMoreProposals(false);
   };
 
   const fetchActivityFlags = async () => {
