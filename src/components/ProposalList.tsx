@@ -245,7 +245,7 @@ const ProposalList = ({
       fetchPayments();
       onProposalUpdate();
     } catch (e: any) {
-      toast({ title: "Erreur", description: e?.message ?? "Annulation impossible.", variant: "destructive" });
+      toast({ title: t("common.error"), description: e?.message ?? t("proposal.cancelError"), variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }
