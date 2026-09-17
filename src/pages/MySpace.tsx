@@ -21,6 +21,7 @@ import PremiumWallet from "@/components/PremiumWallet";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
+import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
 import { useTranslation } from "react-i18next";
 
@@ -121,7 +122,7 @@ const MySpace = () => {
   const [loadingMoreWallet, setLoadingMoreWallet] = useState(false);
   const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
   const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
-  type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals";
+  type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals" | "alerts";
   const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
   const togglePanel = (p: PanelKey) =>
@@ -1084,6 +1085,7 @@ const MySpace = () => {
                 { key: "favorites" as const, label: "Favoris" },
                 { key: "wallet" as const, label: "Portefeuille" },
                 { key: "evaluations" as const, label: "Évaluations" },
+                { key: "alerts" as const, label: t("keywordAlerts.title") },
                 ...(profile.is_findr || hasProposals
                   ? [{ key: "proposals" as const, label: "Mes propositions" }]
                   : []),
@@ -1356,7 +1358,9 @@ const MySpace = () => {
                           ))}
                         </div>
                       )
-                    )}
+                     )}
+
+                    {activePanel === "alerts" && <KeywordAlertsPanel />}
                   </div>
                 </motion.div>
               )}

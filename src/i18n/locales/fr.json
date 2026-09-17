@@ -773,7 +773,30 @@
     "redirecting": "Redirection…",
     "error": "Erreur",
     "processing": "Traitement…",
-    "saving": "Enregistrement…"
+    "saving": "Enregistrement…",
+    "loading": "Chargement…"
+  },
+  "keywordAlerts": {
+    "title": "Mes alertes",
+    "intro": "Reçois une notification dès qu’une nouvelle recherche contient l’un de tes mots-clés.",
+    "placeholder": "Ex. montre vintage",
+    "add": "Ajouter",
+    "added": "Alerte créée",
+    "removed": "Alerte supprimée",
+    "remove": "Supprimer l’alerte « {{keyword}} »",
+    "counter": "{{count}}/{{limit}} alertes",
+    "limitReached": "Tu as atteint la limite de {{limit}} mots-clés. Supprime une alerte pour en ajouter une nouvelle.",
+    "empty": "Aucune alerte pour le moment.",
+    "noResultsTitle": "Aucune recherche ne correspond à « {{keyword}} » pour l’instant",
+    "createFromSearch": "Créer une alerte pour être prévenu dès qu’une annonce correspond",
+    "signInToCreate": "Connecte-toi pour créer une alerte",
+    "errors": {
+      "unauthenticated": "Connecte-toi pour créer une alerte.",
+      "tooShort": "Le mot-clé doit contenir au moins 2 caractères.",
+      "limit": "Tu as déjà 10 mots-clés enregistrés.",
+      "duplicate": "Ce mot-clé est déjà dans tes alertes.",
+      "error": "L’opération a échoué. Réessaie."
+    }
   },
   "publicProfile": {
     "notFound": "Profil introuvable",
