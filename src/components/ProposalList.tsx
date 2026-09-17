@@ -296,7 +296,7 @@ const ProposalList = ({
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      if (!data?.url) throw new Error("Lien de paiement indisponible");
+      if (!data?.url) throw new Error(t("proposal.paymentLinkUnavailable"));
       window.location.href = data.url as string;
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
