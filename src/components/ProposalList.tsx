@@ -1186,8 +1186,7 @@ const ProposalList = ({
           <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm">
             <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
             <p className="text-muted-foreground">
-              Cette action est définitive. Le remboursement apparaît sur le moyen de paiement
-              d'origine sous quelques jours.
+              {t("proposal.cancelRefundWarning")}
             </p>
           </div>
 
