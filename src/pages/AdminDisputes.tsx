@@ -162,8 +162,8 @@ const AdminDisputes = () => {
             Litiges en cours
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {disputes.length} litige{disputes.length > 1 ? "s" : ""} à traiter — les plus anciens
-            en premier.
+            {disputes.length} litige{disputes.length > 1 ? "s" : ""} affiché
+            {disputes.length > 1 ? "s" : ""} — les plus récents en premier.
           </p>
         </header>
 
@@ -276,6 +276,18 @@ const AdminDisputes = () => {
                 </CardContent>
               </Card>
             ))}
+            {hasMore && (
+              <div className="flex justify-center pt-2">
+                <Button
+                  variant="outline"
+                  disabled={loadingMore}
+                  onClick={() => fetchDisputes(disputes.length, true)}
+                >
+                  {loadingMore && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                  Charger plus
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
