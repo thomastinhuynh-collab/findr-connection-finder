@@ -94,6 +94,27 @@ const Searches = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const pageRef = useRef(0);
   const requestRef = useRef(0);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { addAlert } = useKeywordAlerts();
+  const [creatingAlert, setCreatingAlert] = useState(false);
+
+  const handleCreateAlertFromSearch = async () => {
+    const keyword = searchQuery.trim();
+    setCreatingAlert(true);
+    const result = await addAlert(keyword);
+    setCreatingAlert(false);
+    if (result === null) {
+      toast({ title: t("keywordAlerts.added"), description: keyword });
+      return;
+    }
+    toast({
+      title: t("common.error"),
+      description: t(`keywordAlerts.errors.${result}`),
+      variant: "destructive",
+    });
+  };
+
 
   const comingSoonCategory = (() => {
     const cat = searchParams.get("category");
