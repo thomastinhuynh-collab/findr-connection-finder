@@ -225,7 +225,7 @@ const ProposalList = ({
       setCarrier("");
       fetchPayments();
     } catch (e: any) {
-      toast({ title: "Erreur", description: e?.message ?? "Impossible d'enregistrer l'expédition.", variant: "destructive" });
+      toast({ title: t("common.error"), description: e?.message ?? t("proposal.shipError"), variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }
