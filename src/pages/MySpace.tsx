@@ -121,7 +121,7 @@ const MySpace = () => {
   const [loadingMoreWallet, setLoadingMoreWallet] = useState(false);
   const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
   const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
-  type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals";
+  type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals" | "alerts";
   const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
   const togglePanel = (p: PanelKey) =>
