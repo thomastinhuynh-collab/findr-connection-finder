@@ -250,30 +250,44 @@ const MySpace = () => {
   };
 
 
-  const fetchWallet = async () => {
+  const fetchWallet = async (from = 0, append = false) => {
     if (!user) return;
+    if (append) setLoadingMoreWallet(true);
     const { data, error } = await supabase
       .from("transactions")
       .select("id, amount, created_at, reservation_id")
       .eq("findr_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, from + PANEL_PAGE_SIZE - 1);
     if (error) {
       console.error("Error fetching transactions:", error);
-      setWalletBalance(0);
-      setWalletTransactions([]);
+      if (!append) {
+        setWalletBalance(0);
+        setWalletTransactions([]);
+      }
+      setLoadingMoreWallet(false);
       return;
     }
     const rows = data || [];
-    setWalletBalance(rows.reduce((sum, t: any) => sum + Number(t.amount || 0), 0));
-    setWalletTransactions(
-      rows.map((t: any) => ({
-        id: t.id,
-        type: "credit" as const,
-        amount: Number(t.amount || 0),
-        description: "Vente finalisée",
-        date: new Date(t.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }),
-      }))
-    );
+    setHasMoreWallet(rows.length === PANEL_PAGE_SIZE);
+    const mapped = rows.map((t: any) => ({
+      id: t.id,
+      type: "credit" as const,
+      amount: Number(t.amount || 0),
+      description: "Vente finalisée",
+      date: new Date(t.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }),
+    }));
+    setWalletTransactions((prev) => (append ? [...prev, ...mapped] : mapped));
+    setLoadingMoreWallet(false);
+
+    if (!append) {
+      // Le solde reste calculé sur l'ensemble des versements, pas seulement la page affichée.
+      const { data: allAmounts } = await supabase
+        .from("transactions")
+        .select("amount")
+        .eq("findr_id", user.id);
+      setWalletBalance((allAmounts || []).reduce((sum, t: any) => sum + Number(t.amount || 0), 0));
+    }
   };
 
   const fetchProfile = async () => {
