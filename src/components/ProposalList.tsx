@@ -190,11 +190,11 @@ const ProposalList = ({
     const days = Math.floor(remaining / DAY);
     const hours = Math.floor((remaining % DAY) / (60 * 60 * 1000));
     const delay = days > 0
-      ? `${days} jour${days > 1 ? "s" : ""}${hours > 0 ? ` et ${hours} h` : ""}`
-      : `${Math.max(hours, 1)} h`;
+      ? `${t("proposal.delayDays", { count: days })}${hours > 0 ? t("proposal.delayAndHours", { hours }) : ""}`
+      : t("proposal.delayHours", { count: Math.max(hours, 1) });
     return p?.shipped_at
-      ? `Colis jamais livré ? Tu pourras demander l'annulation et le remboursement dans ${delay}.`
-      : `Pas de nouvelles du findr ? Tu pourras demander l'annulation et le remboursement dans ${delay}.`;
+      ? t("proposal.countdownShipped", { delay })
+      : t("proposal.countdownNotShipped", { delay });
   };
 
 
@@ -203,8 +203,8 @@ const ProposalList = ({
     if (!reservation) return;
     if (trackingNumber.trim().length < 4 || carrier.trim().length < 2) {
       toast({
-        title: "Informations manquantes",
-        description: "Le transporteur et le numéro de suivi sont obligatoires.",
+        title: t("proposal.missingInfoTitle"),
+        description: t("proposal.missingInfoDesc"),
         variant: "destructive",
       });
       return;
@@ -219,13 +219,13 @@ const ProposalList = ({
         },
       });
       if (error || (data as any)?.error) throw new Error((data as any)?.error ?? error?.message);
-      toast({ title: "Colis expédié 📦", description: "Le buyr a été notifié, le suivi est actif." });
+      toast({ title: t("proposal.shippedTitle"), description: t("proposal.shippedDesc") });
       setShipDialogOpen(false);
       setTrackingNumber("");
       setCarrier("");
       fetchPayments();
     } catch (e: any) {
-      toast({ title: "Erreur", description: e?.message ?? "Impossible d'enregistrer l'expédition.", variant: "destructive" });
+      toast({ title: t("common.error"), description: e?.message ?? t("proposal.shipError"), variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }
@@ -240,12 +240,12 @@ const ProposalList = ({
         body: { reservationId: reservation.id },
       });
       if (error || (data as any)?.error) throw new Error((data as any)?.error ?? error?.message);
-      toast({ title: "Annulation confirmée", description: "Le remboursement intégral est en cours." });
+      toast({ title: t("proposal.cancelConfirmedTitle"), description: t("proposal.cancelConfirmedDesc") });
       setCancelDialogOpen(false);
       fetchPayments();
       onProposalUpdate();
     } catch (e: any) {
-      toast({ title: "Erreur", description: e?.message ?? "Annulation impossible.", variant: "destructive" });
+      toast({ title: t("common.error"), description: e?.message ?? t("proposal.cancelError"), variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }
@@ -272,16 +272,16 @@ const ProposalList = ({
         });
 
       toast({
-        title: "Proposition refusée",
-        description: "La proposition a été refusée.",
+        title: t("proposal.rejectedTitle"),
+        description: t("proposal.rejectedDesc"),
       });
       
       onProposalUpdate();
     } catch (error) {
       console.error("Error rejecting proposal:", error);
       toast({
-        title: "Erreur",
-        description: "Impossible de refuser la proposition.",
+        title: t("common.error"),
+        description: t("proposal.rejectError"),
         variant: "destructive",
       });
     }
@@ -296,13 +296,13 @@ const ProposalList = ({
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      if (!data?.url) throw new Error("Lien de paiement indisponible");
+      if (!data?.url) throw new Error(t("proposal.paymentLinkUnavailable"));
       window.location.href = data.url as string;
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
       toast({
-        title: "Paiement impossible",
-        description: error?.message || "Impossible de démarrer le paiement.",
+        title: t("proposal.paymentFailedTitle"),
+        description: error?.message || t("proposal.paymentFailedDesc"),
         variant: "destructive",
       });
       setIsProcessing(false);
@@ -314,8 +314,8 @@ const ProposalList = ({
     const reservation = payments[selectedProposal.id];
     if (!reservation) {
       toast({
-        title: "Erreur",
-        description: "Paiement introuvable pour cette proposition.",
+        title: t("common.error"),
+        description: t("proposal.paymentNotFound"),
         variant: "destructive",
       });
       return;
@@ -344,8 +344,8 @@ const ProposalList = ({
 
 
       toast({
-        title: "Transaction finalisée ! 🎉",
-        description: "Le paiement a été versé au findr. Merci pour ta confiance !",
+        title: t("proposal.transactionDoneTitle"),
+        description: t("proposal.transactionDoneDesc"),
       });
 
       setConfirmReceiptDialog(false);
@@ -354,8 +354,8 @@ const ProposalList = ({
     } catch (error: any) {
       console.error("Error confirming receipt:", error);
       toast({
-        title: "Erreur",
-        description: error?.message || "Impossible de confirmer la réception.",
+        title: t("common.error"),
+        description: error?.message || t("proposal.confirmReceiptError"),
         variant: "destructive",
       });
     } finally {
@@ -579,7 +579,7 @@ const ProposalList = ({
                             setCancelDialogOpen(true);
                           }}
                         >
-                          Je ne peux plus fournir l'objet
+                          {t("proposal.cannotSupply")}
                         </Button>
                       </>
                     )}
@@ -623,7 +623,7 @@ const ProposalList = ({
                         setCancelDialogOpen(true);
                       }}
                     >
-                      Le findr n'a pas donné de nouvelles ? Demander l'annulation et le remboursement
+                      {t("proposal.noNewsCancel")}
                     </Button>
                   )}
 
@@ -748,7 +748,7 @@ const ProposalList = ({
               <span className="break-words">{t("proposal.confirmPayment")}</span>
             </DialogTitle>
             <DialogDescription>
-              Le paiement sera bloqué jusqu'à confirmation de réception de l'article.
+              {t("proposal.paymentHeldNotice")}
             </DialogDescription>
           </DialogHeader>
 
@@ -1063,7 +1063,7 @@ const ProposalList = ({
               <span className="break-words">{t("proposal.confirmReceipt")}</span>
             </DialogTitle>
             <DialogDescription>
-              Confirmez que vous avez bien reçu l'article et qu'il correspond à la description.
+              {t("proposal.confirmReceiptDesc")}
             </DialogDescription>
           </DialogHeader>
 
@@ -1073,10 +1073,10 @@ const ProposalList = ({
                 <Clock className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-foreground">
-                    Attention : Action irréversible
+                    {t("proposal.irreversibleTitle")}
                   </p>
                   <p className="text-muted-foreground mt-1">
-                    Une fois confirmé, le paiement sera libéré au findr. Assurez-vous que l'article correspond bien à vos attentes.
+                    {t("proposal.irreversibleDesc")}
                   </p>
                 </div>
               </div>
@@ -1098,7 +1098,7 @@ const ProposalList = ({
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmReceiptDialog(false)}>
-              Annuler
+              {t("common.cancel")}
             </Button>
             <Button
               onClick={handleConfirmReceipt}
@@ -1108,12 +1108,12 @@ const ProposalList = ({
               {isProcessing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Traitement...
+                  {t("common.processing")}
                 </>
               ) : (
                 <>
                   <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Confirmer et libérer le paiement
+                  {t("proposal.confirmAndRelease")}
                 </>
               )}
             </Button>
@@ -1160,7 +1160,7 @@ const ProposalList = ({
               {isProcessing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Enregistrement...
+                  {t("common.saving")}
                 </>
               ) : (
                 <>
@@ -1179,16 +1179,14 @@ const ProposalList = ({
           <DialogHeader>
             <DialogTitle>{t("proposal.cancelRefund")}</DialogTitle>
             <DialogDescription>
-              La transaction sera annulée et le buyr intégralement remboursé, frais de service
-              inclus.
+              {t("proposal.cancelRefundDesc")}
             </DialogDescription>
           </DialogHeader>
 
           <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm">
             <AlertTriangle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
             <p className="text-muted-foreground">
-              Cette action est définitive. Le remboursement apparaît sur le moyen de paiement
-              d'origine sous quelques jours.
+              {t("proposal.cancelRefundWarning")}
             </p>
           </div>
 
@@ -1200,10 +1198,10 @@ const ProposalList = ({
               {isProcessing ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Traitement...
+                  {t("common.processing")}
                 </>
               ) : (
-                "Confirmer l'annulation"
+                t("proposal.confirmCancel")
               )}
             </Button>
           </DialogFooter>

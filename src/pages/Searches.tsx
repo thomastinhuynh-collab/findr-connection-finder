@@ -87,11 +87,13 @@ const Searches = () => {
   const [selectedUrgency, setSelectedUrgency] = useState("Toutes");
   const [deadlineFilter, setDeadlineFilter] = useState<DeadlineFilter>("all");
   const [budgetRange, setBudgetRange] = useState<[number, number]>([0, 5000]);
+  const [debouncedBudget, setDebouncedBudget] = useState<[number, number]>([0, 5000]);
   const [budgetTouched, setBudgetTouched] = useState(false);
   const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const pageRef = useRef(0);
+  const requestRef = useRef(0);
 
   const comingSoonCategory = (() => {
     const cat = searchParams.get("category");
@@ -132,6 +134,12 @@ const Searches = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Debounce du curseur de budget pour éviter une requête à chaque cran
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedBudget([budgetRange[0], budgetRange[1]]), 400);
+    return () => clearTimeout(timer);
+  }, [budgetRange[0], budgetRange[1]]);
+
   useEffect(() => {
     pageRef.current = 0;
     fetchSearches(true);
@@ -141,12 +149,13 @@ const Searches = () => {
     selectedUrgency,
     deadlineFilter,
     budgetTouched,
-    budgetRange[0],
-    budgetRange[1],
+    debouncedBudget[0],
+    debouncedBudget[1],
   ]);
 
 
   const fetchSearches = async (reset = false) => {
+    const requestId = ++requestRef.current;
     if (reset) setLoading(true);
     else setLoadingMore(true);
 
@@ -177,7 +186,7 @@ const Searches = () => {
 
     // Budget : chevauchement des plages
     if (budgetTouched) {
-      const [lo, hi] = budgetRange;
+      const [lo, hi] = debouncedBudget;
       query = query
         .or(`budget_max.gte.${lo},budget_max.is.null`)
         .or(`budget_min.lte.${hi},budget_min.is.null`);
@@ -195,6 +204,8 @@ const Searches = () => {
 
 
     const { data, error } = await query;
+
+    if (requestId !== requestRef.current) return;
 
     if (error) {
       console.error("Error fetching searches:", error);
@@ -215,6 +226,8 @@ const Searches = () => {
         supabase.from("profiles").select("user_id, full_name, avatar_url").in("user_id", userIds),
         supabase.from("proposals").select("search_id").in("search_id", searchIds),
       ]);
+
+      if (requestId !== requestRef.current) return;
 
       const profilesMap = new Map(profilesRes.data?.map(p => [p.user_id, p]) || []);
 
