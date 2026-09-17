@@ -179,6 +179,27 @@ export type Database = {
           },
         ]
       }
+      keyword_alerts: {
+        Row: {
+          created_at: string
+          id: string
+          keyword: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          keyword: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          keyword?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
