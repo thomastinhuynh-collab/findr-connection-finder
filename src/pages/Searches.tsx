@@ -867,6 +867,8 @@ const Searches = () => {
         </div>
       </main>
 
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} defaultMode="login" />
+
       <Footer />
     </div>
   );
