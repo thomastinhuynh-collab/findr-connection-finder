@@ -20,6 +20,9 @@ import ComingSoonCategory from "@/components/ComingSoonCategory";
 import { CATEGORIES, isComingSoonCategory } from "@/lib/categories";
 import { useTranslation } from "react-i18next";
 import TranslatedContent from "@/components/TranslatedContent";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { useKeywordAlerts } from "@/hooks/useKeywordAlerts";
 
 interface SearchItem {
   id: string;
