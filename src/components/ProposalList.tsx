@@ -344,8 +344,8 @@ const ProposalList = ({
 
 
       toast({
-        title: "Transaction finalisée ! 🎉",
-        description: "Le paiement a été versé au findr. Merci pour ta confiance !",
+        title: t("proposal.transactionDoneTitle"),
+        description: t("proposal.transactionDoneDesc"),
       });
 
       setConfirmReceiptDialog(false);
