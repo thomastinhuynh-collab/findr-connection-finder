@@ -39,6 +39,8 @@ interface DebitRow {
   admin_notes: string | null;
 }
 
+const PAGE_SIZE = 25;
+
 const AdminNegativeBalances = () => {
   const [findrs, setFindrs] = useState<FindrRow[]>([]);
   const [debits, setDebits] = useState<DebitRow[]>([]);
@@ -46,23 +48,29 @@ const AdminNegativeBalances = () => {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [processing, setProcessing] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (from = 0, append = false) => {
+    if (append) setLoadingMore(true);
     // Un findr reste listé tant qu'il a un solde négatif OU une retenue de versements
     // active, sinon impossible de lever la retenue une fois le solde revenu à zéro.
     const { data: profiles, error } = await supabase
       .from("profiles")
       .select("user_id, full_name, negative_balance, payout_hold")
       .or("negative_balance.gt.0,payout_hold.eq.true")
-      .order("negative_balance", { ascending: false });
+      .order("negative_balance", { ascending: false })
+      .range(from, from + PAGE_SIZE - 1);
 
     if (error) {
       toast({ title: "Erreur", description: error.message, variant: "destructive" });
       setLoading(false);
+      setLoadingMore(false);
       return;
     }
     const rows = (profiles ?? []) as FindrRow[];
-    setFindrs(rows);
+    setFindrs((prev) => (append ? [...prev, ...rows] : rows));
+    setHasMore(rows.length === PAGE_SIZE);
 
     if (rows.length) {
       const ids = rows.map((r) => r.user_id);
@@ -78,17 +86,19 @@ const AdminNegativeBalances = () => {
           .in("findr_id", ids)
           .eq("payment_status", "versement_en_revue"),
       ]);
-      setDebits((debitRows ?? []) as DebitRow[]);
+      const newDebits = (debitRows ?? []) as DebitRow[];
+      setDebits((prev) => (append ? [...prev, ...newDebits] : newDebits));
       const counts: Record<string, number> = {};
       for (const r of heldRows ?? []) {
         counts[r.findr_id] = (counts[r.findr_id] ?? 0) + 1;
       }
-      setHeldCounts(counts);
-    } else {
+      setHeldCounts((prev) => (append ? { ...prev, ...counts } : counts));
+    } else if (!append) {
       setDebits([]);
       setHeldCounts({});
     }
     setLoading(false);
+    setLoadingMore(false);
   }, []);
 
   useEffect(() => {
@@ -256,6 +266,18 @@ const AdminNegativeBalances = () => {
               </Card>
             );
           })}
+          {hasMore && (
+            <div className="flex justify-center pt-2">
+              <Button
+                variant="outline"
+                disabled={loadingMore}
+                onClick={() => fetchData(findrs.length, true)}
+              >
+                {loadingMore && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                Charger plus
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </section>

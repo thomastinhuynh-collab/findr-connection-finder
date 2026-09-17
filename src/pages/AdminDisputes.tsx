@@ -30,6 +30,8 @@ interface DisputeRow {
   proposals?: { title: string | null } | null;
 }
 
+const PAGE_SIZE = 25;
+
 const AdminDisputes = () => {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useIsAdmin();
@@ -39,23 +41,29 @@ const AdminDisputes = () => {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [processing, setProcessing] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
 
-  const fetchDisputes = useCallback(async () => {
+  const fetchDisputes = useCallback(async (from = 0, append = false) => {
+    if (append) setLoadingMore(true);
     const { data, error } = await supabase
       .from("reservations")
       .select(
         "id, search_id, buyr_id, findr_id, proposal_id, object_price, total_buyr_amount, findr_payout_amount, dispute_reason, dispute_description, dispute_photo_url, dispute_opened_at, proposals(title)",
       )
       .eq("dispute_status", "ouvert")
-      .order("dispute_opened_at", { ascending: true });
+      .order("dispute_opened_at", { ascending: false })
+      .range(from, from + PAGE_SIZE - 1);
 
     if (error) {
       toast({ title: "Erreur", description: error.message, variant: "destructive" });
       setLoading(false);
+      setLoadingMore(false);
       return;
     }
     const rows = (data ?? []) as unknown as DisputeRow[];
-    setDisputes(rows);
+    setDisputes((prev) => (append ? [...prev, ...rows] : rows));
+    setHasMore(rows.length === PAGE_SIZE);
 
     const ids = Array.from(new Set(rows.flatMap((r) => [r.buyr_id, r.findr_id])));
     if (ids.length) {
@@ -67,9 +75,10 @@ const AdminDisputes = () => {
       (profiles ?? []).forEach((p) => {
         map[p.user_id] = p.full_name ?? "Utilisateur";
       });
-      setNames(map);
+      setNames((prev) => (append ? { ...prev, ...map } : map));
     }
     setLoading(false);
+    setLoadingMore(false);
   }, []);
 
   useEffect(() => {
@@ -153,8 +162,8 @@ const AdminDisputes = () => {
             Litiges en cours
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {disputes.length} litige{disputes.length > 1 ? "s" : ""} à traiter — les plus anciens
-            en premier.
+            {disputes.length} litige{disputes.length > 1 ? "s" : ""} affiché
+            {disputes.length > 1 ? "s" : ""} — les plus récents en premier.
           </p>
         </header>
 
@@ -267,6 +276,18 @@ const AdminDisputes = () => {
                 </CardContent>
               </Card>
             ))}
+            {hasMore && (
+              <div className="flex justify-center pt-2">
+                <Button
+                  variant="outline"
+                  disabled={loadingMore}
+                  onClick={() => fetchDisputes(disputes.length, true)}
+                >
+                  {loadingMore && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                  Charger plus
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
