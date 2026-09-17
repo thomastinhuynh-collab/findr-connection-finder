@@ -23,6 +23,7 @@ import TranslatedContent from "@/components/TranslatedContent";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useKeywordAlerts } from "@/hooks/useKeywordAlerts";
+import AuthModal from "@/components/AuthModal";
 
 interface SearchItem {
   id: string;
