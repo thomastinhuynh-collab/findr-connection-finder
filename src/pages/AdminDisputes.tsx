@@ -30,6 +30,8 @@ interface DisputeRow {
   proposals?: { title: string | null } | null;
 }
 
+const PAGE_SIZE = 25;
+
 const AdminDisputes = () => {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useIsAdmin();
