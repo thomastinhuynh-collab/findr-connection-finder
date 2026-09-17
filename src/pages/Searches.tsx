@@ -87,6 +87,7 @@ const Searches = () => {
   const [selectedUrgency, setSelectedUrgency] = useState("Toutes");
   const [deadlineFilter, setDeadlineFilter] = useState<DeadlineFilter>("all");
   const [budgetRange, setBudgetRange] = useState<[number, number]>([0, 5000]);
+  const [debouncedBudget, setDebouncedBudget] = useState<[number, number]>([0, 5000]);
   const [budgetTouched, setBudgetTouched] = useState(false);
   const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
   const [hasMore, setHasMore] = useState(false);
