@@ -186,7 +186,7 @@ const Searches = () => {
 
     // Budget : chevauchement des plages
     if (budgetTouched) {
-      const [lo, hi] = budgetRange;
+      const [lo, hi] = debouncedBudget;
       query = query
         .or(`budget_max.gte.${lo},budget_max.is.null`)
         .or(`budget_min.lte.${hi},budget_min.is.null`);
