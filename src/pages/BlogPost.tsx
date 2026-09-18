@@ -1,0 +1,43 @@
+import { Link, useParams } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import BlogArticle from "@/components/blog/BlogArticle";
+import { Button } from "@/components/ui/button";
+import { getBlogPostBySlug } from "@/content/blog/posts";
+import { usePageMeta } from "@/hooks/usePageMeta";
+
+const BlogPost = () => {
+  const { slug } = useParams();
+  const post = getBlogPostBySlug(slug);
+
+  usePageMeta({
+    title: post ? `${post.title} — findr` : "Article introuvable — findr",
+    description: post?.excerpt ?? "Cet article du blog findr est introuvable.",
+  });
+
+  if (!post) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-32 text-center">
+          <p className="font-sans text-sm font-medium uppercase text-gold">Blog</p>
+          <h1 className="mt-4 font-display text-5xl font-semibold text-primary">Article introuvable</h1>
+          <Button asChild className="mt-8 rounded-full bg-gold text-primary hover:bg-gold/90">
+            <Link to="/blog">Retour au blog</Link>
+          </Button>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <BlogArticle post={post} />
+      <Footer />
+    </div>
+  );
+};
+
+export default BlogPost;
