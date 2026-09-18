@@ -1,9 +1,9 @@
 import levisHero from "@/assets/blog/levis-vintage-hero.jpg";
-import taillesHero from "@/assets/blog/tailles-vintage-hero.jpg";
-import entretienHero from "@/assets/blog/entretien-cuir-denim-hero.jpg";
+import taillesHeroAsset from "@/assets/blog/hero-guide-tailles-vintage.jpg.asset.json";
+import entretienHeroAsset from "@/assets/blog/hero-entretien-cuir-denim.jpg.asset.json";
 import cartesHero from "@/assets/blog/cartes-pokemon-etat-rarete-hero.jpg";
 import authentifierHero from "@/assets/blog/authentifier-carte-pokemon-hero.jpg";
-import popCultureHero from "@/assets/blog/pop-culture-valeur-hero.jpg";
+import popCultureHeroAsset from "@/assets/blog/hero-objets-valeur-pop-culture.jpg.asset.json";
 
 export type BlogContentBlock =
   | { type: "heading"; text: string }
@@ -71,8 +71,8 @@ export const blogPosts: BlogPost[] = [
     readingTime: "1 min de lecture",
     excerpt:
       "Vanity sizing, standards FR/UK/US différents et trois mesures à demander avant d'accepter.",
-    heroImage: taillesHero,
-    heroAlt: "Vêtements vintage pliés avec un mètre ruban",
+    heroImage: taillesHeroAsset.url,
+    heroAlt: "Buste de couture mesuré au mètre-ruban pour guider les tailles vintage",
     content: [
       { type: "heading", text: "Pourquoi un M vintage peut tailler différemment" },
       {
@@ -94,8 +94,8 @@ export const blogPosts: BlogPost[] = [
     readingTime: "1 min de lecture",
     excerpt:
       "Les bons gestes pour le cuir, le denim, le rangement et les réparations raisonnables.",
-    heroImage: entretienHero,
-    heroAlt: "Veste en cuir, denim et produits d'entretien sur une table en bois",
+    heroImage: entretienHeroAsset.url,
+    heroAlt: "Blouson en cuir vintage sur mannequin dans une boutique de vêtements anciens",
     content: [
       { type: "heading", text: "Cuir" },
       {
@@ -205,8 +205,8 @@ export const blogPosts: BlogPost[] = [
     readingTime: "1 min de lecture",
     excerpt:
       "Rareté réelle, état, passion durable, consoles fonctionnelles et vrais budgets des buyrs.",
-    heroImage: popCultureHero,
-    heroAlt: "Objets pop culture vintage et collectibles rangés sur une étagère",
+    heroImage: popCultureHeroAsset.url,
+    heroAlt: "Objets pop culture vintage sur étagère avec figurine musicale et voiture de collection",
     content: [
       { type: "heading", text: "Rareté réelle vs « collector » marketing" },
       {
