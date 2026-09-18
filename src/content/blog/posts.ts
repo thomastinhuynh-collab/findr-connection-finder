@@ -300,7 +300,7 @@ export const blogPosts: BlogPost[] = [
         type: "paragraph",
         text: "Les consoles fonctionnelles en sont un bon exemple. Une console vintage qui s'allume, lit correctement les jeux et conserve ses accessoires d'origine parle autant aux collectionneurs qu'aux joueurs. La nostalgie compte, mais l'usage réel compte aussi.",
       },
-      { type: "heading", text: "Le baromètre Findr" },
+      { type: "heading", text: "Le baromètre findr" },
       {
         type: "paragraph",
         text: "Sur findr, le baromètre est ce que les buyrs cherchent avec de vrais budgets. Une pièce qui attire vraiment l'attention n'est pas seulement celle qui fait du bruit sur les réseaux : c'est celle pour laquelle quelqu'un est prêt à formuler une recherche précise, à fixer un budget et à attendre le bon objet.",
