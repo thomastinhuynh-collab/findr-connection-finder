@@ -962,5 +962,182 @@
     "stripePending": "Stripe is finalising your account verification, this may take a moment.",
     "setupIncomplete": "Setup incomplete",
     "setupResume": "Resume your payment setup to complete it."
+  },
+  "blog": {
+    "label": "Blog",
+    "metaTitle": "findr Blog — vintage, collector and pop culture guides",
+    "metaDescription": "findr advice for recognising, authenticating, caring for and hunting vintage pieces, collectible cards and pop culture objects.",
+    "title": "Guides to help you hunt, verify and pass on objects that matter.",
+    "subtitle": "findr's first reference points for buying, selling or searching for a vintage piece with a sharper eye.",
+    "readArticle": "Read the article →",
+    "notFoundTitle": "Article not found",
+    "notFoundMetaTitle": "Article not found — findr",
+    "notFoundMetaDescription": "This findr blog article could not be found.",
+    "backToBlog": "Back to the blog",
+    "categories": {
+      "fashion": "Fashion & Leather Goods",
+      "popCulture": "Pop Culture & TCG"
+    },
+    "article": {
+      "breadcrumb": "Breadcrumb",
+      "ctaTitle": "Want to start your search?",
+      "postSearch": "Post a search",
+      "becomeFindr": "Become a findr",
+      "asideTitle": "Looking for this kind of object?",
+      "asideText": "Explore active searches in this category and let a findr help you track down the right piece.",
+      "viewSearches": "View searches"
+    },
+    "posts": {
+      "levis": {
+        "title": "How to recognise a genuine vintage Levi's piece",
+        "readingTime": "4 min read",
+        "excerpt": "The key reference points for checking a vintage Levi's piece: label, stitching, fabric, buttons and questionable listings.",
+        "heroAlt": "Vintage denim jacket on a hanger in warm light",
+        "content": {
+          "h1": "Start with the label",
+          "p1": "On a vintage Levi's piece, the label often gives the first clues. The famous Big E, with an uppercase E on the small red tab, points to production before the mid-1970s. Its presence is not enough on its own to authenticate a piece, but its absence or shape can already help place the likely period.",
+          "p2": "The RN number can also help read the label, as can the \"Made in USA\" wording. Long associated with certain historic productions, this wording gradually disappeared around the 1990s. If a listing presents a piece as very old while showing a label that does not fit that period, slow down the purchase and ask for more photos.",
+          "h2": "Stitching and fabric",
+          "p3": "The fabric and stitching say a lot. On some older jeans, selvedge is an important detail: it is usually recognised by the finished edge visible inside the leg. It is not an absolute certificate of authenticity, but it is a clue that is consistent with certain periods and certain ranges.",
+          "p4": "The stitching should also be examined closely. A genuine vintage piece often keeps irregularities, patina and a fabric density that do not always resemble the very clean finishes of a recent reissue. Wear areas, hems and any repairs should remain logical for the age claimed.",
+          "h3": "Buttons",
+          "p5": "Buttons are another checkpoint. Debossed markings, metal that fits the period and brass that has aged can support the overall impression. Conversely, buttons that are too new, too shiny or poorly matched with the rest of the piece can point to a recent repair or a reconstruction.",
+          "h4": "What can look wrong in a listing",
+          "p6": "The most common trap is a reissue sold as vintage. Some reissues reuse Levi's historic codes and can be beautiful pieces, but they should not be presented as period originals. The price, description and photos must be aligned with that reality.",
+          "p7": "You should also be cautious with reconstructed pieces: an old label on a more recent garment, changed buttons, a replaced patch, or an assembly of several elements. Before accepting a listing, ask for clear photos of the label, buttons, inner seams, patch and wear areas. A genuinely good vintage listing always stands up to close-ups."
+        }
+      },
+      "sizes": {
+        "title": "Vintage size guide: why an 80s \"M\" is not today's \"M\"",
+        "readingTime": "3 min read",
+        "excerpt": "Vanity sizing, different FR/UK/US standards and three measurements to ask for before accepting.",
+        "heroAlt": "Dressmaker's mannequin measured with a yellow tape measure for a vintage size guide",
+        "content": {
+          "h1": "Why a vintage M can fit differently",
+          "p1": "An 80s \"M\" is not necessarily today's \"M\". Cuts have changed, size standards have changed too, and vanity sizing has shifted the reference points: a displayed size can seem more flattering than it would have been in another era. As a result, the label alone is never enough when buying a vintage piece.",
+          "p2": "Differences between French, British and American standards add even more confusion. A jacket, shirt or blouson may have been produced for a specific market, with conversions that no longer mean much to today's buyers. Even two pieces carrying the same size can fall very differently depending on the decade, brand and cut.",
+          "h2": "The three measurements to ask for before accepting",
+          "p3": "Before accepting a vintage piece, ask for three simple measurements. The first is the chest measurement laid flat and doubled: the seller measures the width under the armpits, with the garment laid flat, then multiplies by two. It is often the most useful measurement for knowing whether a jacket, shirt or sweatshirt will close properly.",
+          "p4": "The second measurement is shoulder to shoulder. It helps you understand the real shoulder width of the piece, especially on jackets, blazers, coats and structured shirts. The third is the sleeve, measured from the shoulder to the seam. This measurement avoids bad surprises on older pieces whose sleeves may be shorter than today's standards.",
+          "p5": "With these three measurements, you no longer depend only on a letter on a label. You can compare them with a garment that already fits you well and decide more calmly. In vintage, the right size is less a displayed size than a set of verifiable measurements."
+        }
+      },
+      "care": {
+        "title": "How to care for and extend the life of a vintage leather or denim piece",
+        "readingTime": "4 min read",
+        "excerpt": "The right habits for leather, denim, storage and reasonable repairs.",
+        "heroAlt": "Vintage leather jacket on a mannequin in an old clothing shop",
+        "content": {
+          "h1": "Leather",
+          "p1": "A vintage leather piece should be treated gently. The first step is to remove dust with a slightly damp cloth, without soaking the material. Leather does not like excess water or aggressive cleaning. If the piece is old, it is better to do little, but to do it well.",
+          "p2": "A suitable balm can be applied once or twice a year, depending on the condition of the leather. It nourishes the material and limits drying. On the other hand, silicone-based products should be avoided, as they can create an artificial shine and suffocate the leather. Direct heat should also be avoided: radiators, hair dryers, strong sun or a car boot in summer.",
+          "h2": "Denim",
+          "p3": "Vintage denim should be washed rarely. Washing too often tires the fabric, fades the colour and accelerates fibre wear. When washing becomes necessary, it is better to use cold water, turn the piece inside out and choose a gentle cycle. The tumble dryer should be avoided: it can shrink the garment, break the fibres and mark already fragile areas.",
+          "p4": "Between washes, airing is often enough. A pair of jeans, a jacket or a denim shirt can regain freshness simply by being hung for a few hours in a dry, ventilated place. The aim is not to freeze the piece in time, but to preserve its patina without wearing it out unnecessarily.",
+          "h3": "Storage",
+          "p5": "Storage plays an important role in the lifespan of a vintage piece. Direct light can dull colours and dry out some materials. Humidity encourages odours, stains and sometimes mould. A vintage piece keeps better in a dry place, away from sunlight, with enough space to breathe.",
+          "h4": "Repair up to a point",
+          "p6": "Repairing is part of the life of an old piece. A replaced button, a restitched seam or a small tear reinforced can extend its use without taking away its interest. But there is a point where repair changes the nature of the piece: too many replaced parts, a transformed cut or inconsistent elements can reduce its value.",
+          "p7": "Before buying, you should therefore look at what is worn, what can be repaired and what is part of the object's charm. A beautiful vintage piece is not necessarily perfect. Above all, it should be sound, wearable and consistent with its history."
+        }
+      },
+      "pokemonCondition": {
+        "title": "Pokémon cards: how to check condition and rarity before buying",
+        "readingTime": "5 min read",
+        "excerpt": "Rarity symbols, edition, expansion, print year and condition visible in photos.",
+        "heroAlt": "Protected trading cards with a magnifying glass on a table",
+        "content": {
+          "h1": "Rarity symbols",
+          "p1": "Before buying a Pokémon card, start by looking at its rarity symbol. It is usually found at the bottom of the card. A circle indicates a common card, a diamond an uncommon card, and a star a rare card. Some rare cards also exist in holographic versions, which can strongly change the card's appeal depending on the edition, condition and demand.",
+          "h2": "Edition",
+          "p2": "The edition is another major reference point. The 1st Edition mark often draws attention, but it must be checked carefully: logo placement, consistency with the language, year, set and overall appearance. For some older cards, the concept of Shadowless can also come into play. It refers to cards without the drop shadow around the illustration, depending on the series concerned.",
+          "p3": "These details should never be read in isolation. A card advertised as 1st Edition or Shadowless must show photos clear enough to verify the typography, borders, expansion symbol and printed information at the bottom of the card.",
+          "h3": "Expansion symbol and print year",
+          "p4": "The expansion symbol identifies the series the card belongs to. It must match the visual, language and print year. The year printed at the bottom of the card is a useful reference point, but it is not enough on its own to prove rarity or value.",
+          "p5": "A serious listing should allow these details to be cross-checked. If the expansion symbol, year or claimed rarity does not match the rest of the card, it is better to ask for an extra photo or move on.",
+          "h4": "Condition in photos",
+          "p6": "Condition is judged first from the photos. Corners should be examined closely: whitening, creases, dents or excessive rounding can lower the value. Centering also matters, especially for sought-after cards. A poorly centered card can still be desirable, but it is not valued in the same way as a well-balanced copy.",
+          "p7": "On a holographic card, the shine of the hologram deserves particular attention. Scratches, micro-scratches, marks or a dull veil can be hard to see in a single photo. The edges, back of the card and surface should therefore be shown clearly. For an expensive card, a listing without detailed photos is rarely enough.",
+          "h5": "Condition glossary",
+          "p8": "Sellers often use abbreviations to describe a card's condition. They do not replace photos, but they provide a first reading grid."
+        },
+        "glossary": {
+          "mint": {
+            "term": "Mint",
+            "abbreviation": "M",
+            "description": "A card in almost perfect condition, with no significant visible defect. This is a very demanding grade, rarely guaranteed from only a few photos."
+          },
+          "nearMint": {
+            "term": "Near Mint",
+            "abbreviation": "NM",
+            "description": "A very clean card, with only very slight possible marks. Corners, edges and surface should remain excellent."
+          },
+          "excellent": {
+            "term": "Excellent",
+            "abbreviation": "EX",
+            "description": "Very good overall condition, with light wear that is visible if you look carefully at the edges, corners or surface."
+          },
+          "good": {
+            "term": "Good",
+            "abbreviation": "GD",
+            "description": "Good everyday collection condition, but with visible marks: small defects, whitening, scratches or slightly tired corners."
+          },
+          "lightlyPlayed": {
+            "term": "Lightly Played",
+            "abbreviation": "LP",
+            "description": "A lightly played card, showing clear signs of use while remaining pleasant to own and handle."
+          },
+          "played": {
+            "term": "Played",
+            "abbreviation": "PL",
+            "description": "A played card, with marked wear. It may still be interesting to complete a collection, but its condition weighs heavily on its value."
+          },
+          "poor": {
+            "term": "Poor",
+            "abbreviation": "PO",
+            "description": "A card in poor condition, with significant defects: creases, heavy wear, damaged surface or very marked edges."
+          }
+        }
+      },
+      "pokemonAuth": {
+        "title": "Where and how to authenticate a rare Pokémon card: a beginner's guide",
+        "readingTime": "4 min read",
+        "excerpt": "Light test, weight, texture, print details and the eye of an experienced hunter.",
+        "heroAlt": "Trading card being inspected with a magnifying glass under a lamp",
+        "content": {
+          "h1": "The light test",
+          "p1": "The light test is one of the first checks some collectors use to spot a suspicious card. By placing a light source behind the card, you can sometimes observe a dark halo between the two faces. This internal layer is part of the construction of many authentic cards and can help distinguish an overly simple or overly transparent print.",
+          "p2": "This test should not be used on its own. Light, angle, wear and photo quality can mislead. For a rare card, it is better to use it as one clue among others, never as definitive proof.",
+          "h2": "Weight and texture",
+          "p3": "Weight and texture also provide information. A card that is too flexible, too rigid, too shiny or too light can raise a doubt. Older cards have a particular feel, linked to the paper, printing and natural wear. A fake card can sometimes feel immediately different, even if it looks correct in a photo.",
+          "p4": "When buying remotely, you should ask for clear photos of the front, back, edges and surface. For a valuable card, a short video can also help observe the texture, shine and any defects from several angles.",
+          "h3": "Print details",
+          "p5": "Print details are essential. The sharpness of the text, colour saturation, border thickness, symbols, energy, accents and micro-details must be consistent with the edition advertised. A colour that is too vivid, slightly blurred text or an odd border can indicate a reproduction.",
+          "h4": "The eye of an experienced hunter",
+          "p6": "An experienced hunter often spots a problem in a few seconds, because they have seen many authentic cards and many questionable ones. They instinctively compare rendering, visual weight, proportions and details. For a beginner, the goal is to slow down, check every clue and not be carried away by the urgency of a good deal.",
+          "p7": "For rare or very expensive cards, authentication can also involve a specialist opinion or a recognised grading company. Before that stage, a good findr can already filter listings, spot inconsistencies and ask for the missing photos."
+        }
+      },
+      "popCultureValue": {
+        "title": "Vintage pop culture: the objects that really gain value",
+        "readingTime": "4 min read",
+        "excerpt": "Real rarity, condition, lasting passion, working consoles and real budgets from buyrs.",
+        "heroAlt": "Vintage pop culture objects on a shelf with a musical figurine and a collectible car",
+        "content": {
+          "h1": "Real rarity vs marketing \"collector\"",
+          "p1": "Not every object presented as \"collector\" gains value. Real rarity does not come only from a marketing label, an announced limited series or nostalgic packaging. It depends on the number of copies available, real demand, condition, version, completeness and the object's story.",
+          "p2": "A mass-produced object can remain highly desired if it speaks to a generation, but it does not automatically become rare. Conversely, a discreet piece that was little preserved or is hard to find in good condition can become much more interesting over time.",
+          "h2": "Condition matters more than age",
+          "p3": "Age alone is not enough. In vintage pop culture, condition often weighs more heavily than age. A working console, a complete figurine, a well-preserved card or an object with its original box can be far more interesting than an older copy that is damaged, incomplete or modified.",
+          "p4": "The original box, instructions, accessories, cables, stickers, certificates or protective elements can change how an object is perceived. The more complete the set, the easier it becomes to assess and pass on.",
+          "h3": "Passing trend vs lasting passion",
+          "p5": "Some trends rise very quickly and then fade. The objects that truly last over time are often tied to a lasting passion: gaming worlds, music, animation, cinema, sport, childhood or graphic culture. Value then comes from a community that continues to search, compare and collect.",
+          "p6": "Working consoles are a good example. A vintage console that powers on, reads games correctly and keeps its original accessories speaks to collectors as much as to players. Nostalgia matters, but real use matters too.",
+          "h4": "The findr barometer",
+          "p7": "On findr, the barometer is what buyrs search for with real budgets. A piece that truly draws attention is not only one that makes noise on social media: it is one for which someone is ready to write a precise search, set a budget and wait for the right object.",
+          "p8": "That signal is what makes the hunt interesting. findrs can spot recurring requests, understand which objects are genuinely desired and distinguish useful rarity from a simple sales argument."
+        }
+      }
+    }
   }
 }
