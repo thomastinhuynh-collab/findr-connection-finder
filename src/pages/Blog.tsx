@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { blogPosts } from "@/content/blog/posts";
@@ -21,7 +20,6 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <main className="pt-24">
         <section className="container mx-auto px-4 pb-10 pt-8 md:pb-14 md:pt-14">
           <p className="font-sans text-sm font-medium uppercase text-gold">Blog</p>

@@ -1,5 +1,4 @@
 import { Link, useParams } from "react-router-dom";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BlogArticle from "@/components/blog/BlogArticle";
 import { Button } from "@/components/ui/button";
@@ -18,8 +17,7 @@ const BlogPost = () => {
   if (!post) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
-        <main className="container mx-auto px-4 py-32 text-center">
+          <main className="container mx-auto px-4 py-32 text-center">
           <p className="font-sans text-sm font-medium uppercase text-gold">Blog</p>
           <h1 className="mt-4 font-display text-5xl font-semibold text-primary">Article introuvable</h1>
           <Button asChild className="mt-8 rounded-full bg-gold text-primary hover:bg-gold/90">
@@ -33,7 +31,6 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <BlogArticle post={post} />
       <Footer />
     </div>
