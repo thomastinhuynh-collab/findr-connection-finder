@@ -32,6 +32,8 @@ const LegalNotice = lazy(() => import("./pages/LegalNotice"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Contact = lazy(() => import("./pages/Contact"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 const AdminDisputes = lazy(() => import("./pages/AdminDisputes"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -77,6 +79,8 @@ const App = () => (
               <Route path="/cgu" element={<Terms />} />
               <Route path="/confidentialite" element={<Privacy />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/admin/litiges" element={<AdminDisputes />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

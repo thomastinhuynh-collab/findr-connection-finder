@@ -68,6 +68,7 @@ export default {
         cream: "hsl(var(--cream))",
         gold: "hsl(var(--gold))",
         "warm-neutral": "hsl(var(--warm-neutral))",
+        "blog-body-muted": "hsl(var(--blog-body-muted))",
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
