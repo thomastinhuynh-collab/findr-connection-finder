@@ -108,7 +108,7 @@ const StripeCheckoutSimulation = ({ plan, onClose, onSuccess }: StripeCheckoutSi
       <Card className="w-full max-w-lg mx-4 border-primary/20">
         <CardHeader className="border-b border-border">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={onClose}>
+            <Button variant="ghost" size="icon" onClick={onClose} aria-label="Retour">
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <div className="flex-1">
@@ -122,6 +122,7 @@ const StripeCheckoutSimulation = ({ plan, onClose, onSuccess }: StripeCheckoutSi
               src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" 
               alt="Stripe" 
               className="h-8 opacity-60"
+              loading="lazy"
             />
           </div>
         </CardHeader>
