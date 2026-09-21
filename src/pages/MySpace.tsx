@@ -107,6 +107,16 @@ const MySpace = () => {
   const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
+  // Repositionnement de la bannière
+  const bannerAreaRef = useRef<HTMLDivElement>(null);
+  const bannerFrameRef = useRef<HTMLDivElement>(null);
+  const [bannerEditorOpen, setBannerEditorOpen] = useState(false);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string | null>(null);
+  const [bannerNatural, setBannerNatural] = useState<{ w: number; h: number } | null>(null);
+  const [bannerFrame, setBannerFrame] = useState<{ w: number; h: number }>({ w: 600, h: 90 });
+  const [bannerOffset, setBannerOffset] = useState({ x: 0, y: 0 });
+  const bannerDragRef = useRef<{ px: number; py: number; ox: number; oy: number } | null>(null);
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [hasProposals, setHasProposals] = useState(false);
   const [hasCommission, setHasCommission] = useState(false);
