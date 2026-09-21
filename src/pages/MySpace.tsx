@@ -694,6 +694,7 @@ const MySpace = () => {
 
               {/* Banner area — slim, default brand gradient */}
               <div
+                ref={bannerAreaRef}
                 className="relative w-full group/banner"
                 style={{
                   height: 90,
