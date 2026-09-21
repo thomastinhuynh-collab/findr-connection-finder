@@ -23,6 +23,7 @@ import { useStripeConnect } from "@/hooks/useStripeConnect";
 import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
 import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
+import { isComingSoonCategory } from "@/lib/categories";
 import { useTranslation } from "react-i18next";
 
 
@@ -838,9 +839,10 @@ const MySpace = () => {
 
                 {/* d. Dominant category tag */}
                 {(() => {
-                  if (searches.length === 0) return null;
+                  const activeSearches = searches.filter(s => !isComingSoonCategory(s.category));
+                  if (activeSearches.length === 0) return null;
                   const counts: Record<string, number> = {};
-                  for (const s of searches) counts[s.category] = (counts[s.category] || 0) + 1;
+                  for (const s of activeSearches) counts[s.category] = (counts[s.category] || 0) + 1;
                   const dominant = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
                   if (!dominant) return null;
                   return (
