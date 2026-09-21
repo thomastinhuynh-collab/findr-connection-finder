@@ -1134,6 +1134,7 @@ const MySpace = () => {
 
               </div>
 
+              </div>
               );
             })()}
 
