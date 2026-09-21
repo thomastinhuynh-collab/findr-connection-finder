@@ -596,7 +596,7 @@ const MySpace = () => {
                   <img
                     src={profile.banner_url}
                     alt="Bannière de profil"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover" loading="lazy"
                   />
                 )}
                 <div
@@ -1200,7 +1200,7 @@ const MySpace = () => {
                               >
                                 <div className="w-24 h-24 flex-shrink-0" style={{ backgroundColor: '#F0EBE3' }}>
                                   {p.image_urls?.[0] ? (
-                                    <img src={p.image_urls[0]} alt={p.title} className="w-full h-full object-cover" />
+                                    <img src={p.image_urls[0]} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
                                   ) : (
                                     <div className="w-full h-full flex items-center justify-center">
                                       <Package className="w-6 h-6" style={{ color: '#D9BB87' }} />
@@ -1275,7 +1275,7 @@ const MySpace = () => {
                                   <img
                                     src={search.image_url}
                                     alt={search.title}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover" loading="lazy"
                                   />
                                 </div>
                               )}

@@ -138,7 +138,7 @@ const ExpiringSoon = () => {
                     <FavoriteButton searchId={search.id} />
                   </div>
                   {image ? (
-                    <img src={image} alt={search.title} className="w-full h-full object-cover object-center" />
+                    <img src={image} alt={search.title} className="w-full h-full object-cover object-center" loading="lazy" />
                   ) : (
                     <div className="w-full h-full bg-[#E8E0D4] flex items-center justify-center">
                       <span className="text-4xl">🔍</span>
@@ -180,7 +180,7 @@ const ExpiringSoon = () => {
                   <div className="flex items-center justify-between pt-3 border-t border-[#E8E0D4]">
                     <div className="flex items-center gap-2">
                       {profile?.avatar_url && (
-                        <img src={profile.avatar_url} alt={profile.full_name || ""} className="w-6 h-6 rounded-full object-cover" />
+                        <img src={profile.avatar_url} alt={profile.full_name || ""} className="w-6 h-6 rounded-full object-cover" loading="lazy" />
                       )}
                       <span style={{ fontSize: "12px", fontWeight: 500, color: "#1B2A4A" }}>
                         {profile?.full_name || t("card.user")}

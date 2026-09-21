@@ -378,11 +378,11 @@ const MakeProposal = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 {imageUrls.map((img, index) => (
                   <div key={index} className="relative aspect-square rounded-xl overflow-hidden border border-border">
-                    <img src={img} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" />
+                    <img src={img} alt={`Upload ${index + 1}`} className="w-full h-full object-cover" loading="lazy" />
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
-                      className="absolute top-2 right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:scale-110 transition-transform"
+                      className="absolute top-2 right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:scale-110 transition-transform" aria-label="Supprimer la photo"
                     >
                       <X className="w-4 h-4" />
                     </button>

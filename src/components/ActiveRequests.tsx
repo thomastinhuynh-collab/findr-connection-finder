@@ -54,18 +54,21 @@ const CardImageCarousel = ({ images, alt }: { images: string[]; alt: string }) =
         src={images[current]}
         alt={alt}
         className="w-full h-full object-cover object-center transition-opacity duration-300"
+        loading="lazy"
       />
       {images.length > 1 && (
         <>
           <button
             onClick={(e) => { e.stopPropagation(); setCurrent((current - 1 + images.length) % images.length); }}
             className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+            aria-label="Image précédente"
           >
             <ChevronLeft className="w-4 h-4 text-[#1B2A4A]" />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); setCurrent((current + 1) % images.length); }}
             className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+            aria-label="Image suivante"
           >
             <ChevronRight className="w-4 h-4 text-[#1B2A4A]" />
           </button>
@@ -266,7 +269,7 @@ const ActiveRequests = () => {
                   <div className="flex items-center justify-between pt-3 border-t border-[#E8E0D4]">
                     <div className="flex items-center gap-2">
                       {profile?.avatar_url && (
-                        <img src={profile.avatar_url} alt={profile.full_name || ""} className="w-6 h-6 rounded-full object-cover" />
+                        <img src={profile.avatar_url} alt={profile.full_name || ""} className="w-6 h-6 rounded-full object-cover" loading="lazy" />
                       )}
                       <span style={{ fontSize: "12px", fontWeight: 500, color: "#1B2A4A" }}>
                         {profile?.full_name || t("card.user")}
