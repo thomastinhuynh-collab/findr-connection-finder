@@ -512,6 +512,7 @@ const Messaging = () => {
                   src={search.profiles.avatar_url}
                   alt={search.profiles.full_name || "User"}
                   className="w-12 h-12 rounded-full object-cover border-2"
+                  loading="lazy"
                   style={{ borderColor: "#D9BB87" }}
                 />
               ) : (
@@ -659,6 +660,7 @@ const Messaging = () => {
                                       src={msgImages[0]}
                                       alt="photo"
                                       className="w-full object-contain max-h-[260px]"
+                                      loading="lazy"
                                     />
                                   </button>
                                 </div>
@@ -676,7 +678,7 @@ const Messaging = () => {
                                       onClick={() => openLightbox(i)}
                                       className="rounded-[12px] overflow-hidden"
                                     >
-                                      <img src={src} alt={`photo-${i}`} className="w-full h-40 object-cover" />
+                                      <img src={src} alt={`photo-${i}`} className="w-full h-40 object-cover" loading="lazy" />
                                     </button>
                                   ))}
                                 </div>
@@ -692,13 +694,13 @@ const Messaging = () => {
                                     onClick={() => openLightbox(0)}
                                     className="row-span-2 rounded-[12px] overflow-hidden"
                                   >
-                                    <img src={msgImages[0]} alt="photo-0" className="w-full h-full object-cover" style={{ minHeight: 200 }} />
+                                    <img src={msgImages[0]} alt="photo-0" className="w-full h-full object-cover" style={{ minHeight: 200 }} loading="lazy" />
                                   </button>
                                   <button type="button" onClick={() => openLightbox(1)} className="rounded-[12px] overflow-hidden">
-                                    <img src={msgImages[1]} alt="photo-1" className="w-full h-[98px] object-cover" />
+                                    <img src={msgImages[1]} alt="photo-1" className="w-full h-[98px] object-cover" loading="lazy" />
                                   </button>
                                   <button type="button" onClick={() => openLightbox(2)} className="rounded-[12px] overflow-hidden">
-                                    <img src={msgImages[2]} alt="photo-2" className="w-full h-[98px] object-cover" />
+                                    <img src={msgImages[2]} alt="photo-2" className="w-full h-[98px] object-cover" loading="lazy" />
                                   </button>
                                 </div>
                               );
@@ -715,7 +717,7 @@ const Messaging = () => {
                                       onClick={() => openLightbox(i)}
                                       className="rounded-[12px] overflow-hidden"
                                     >
-                                      <img src={src} alt={`photo-${i}`} className="w-full h-32 object-cover" />
+                                      <img src={src} alt={`photo-${i}`} className="w-full h-32 object-cover" loading="lazy" />
                                     </button>
                                   ))}
                                 </div>
@@ -736,7 +738,7 @@ const Messaging = () => {
                                       onClick={() => openLightbox(i)}
                                       className="relative rounded-[12px] overflow-hidden"
                                     >
-                                      <img src={src} alt={`photo-${i}`} className="w-full h-24 object-cover" />
+                                      <img src={src} alt={`photo-${i}`} className="w-full h-24 object-cover" loading="lazy" />
                                       {isLast && (
                                         <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
                                           <span className="text-white font-semibold text-lg">+{remaining}</span>
@@ -830,6 +832,7 @@ const Messaging = () => {
                         src={src}
                         alt={`preview-${i}`}
                         className="w-16 h-16 object-cover rounded-lg border"
+                        loading="lazy"
                         style={{ borderColor: "#D9D2C2" }}
                       />
                       <button
@@ -903,7 +906,7 @@ const Messaging = () => {
                   onClick={handleSend}
                   disabled={(!message.trim() && photos.length === 0) || sending}
                   size="icon"
-                  className="h-11 w-11 rounded-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md flex-shrink-0"
+                  className="h-11 w-11 rounded-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md flex-shrink-0" aria-label="Envoyer le message"
                   style={{ backgroundColor: "#C9A96E" }}
                 >
                   {sending ? (
@@ -966,6 +969,7 @@ const Messaging = () => {
             src={lightbox.images[lightbox.index]}
             alt={`photo-${lightbox.index}`}
             className="max-w-[92vw] max-h-[88vh] object-contain rounded-lg shadow-2xl"
+            loading="lazy"
             onClick={(e) => e.stopPropagation()}
           />
 

@@ -161,7 +161,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
         <img
           src={allImages[current]}
           alt={search.title}
-          className="w-full h-[260px] md:h-[420px] object-cover transition-opacity duration-200"
+          className="w-full h-[260px] md:h-[420px] object-cover transition-opacity duration-200" loading="lazy"
           key={current}
         />
 
@@ -178,7 +178,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
             <button
               onClick={() => setCurrent(current - 1)}
               disabled={current === 0}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center border-none transition-colors"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center border-none transition-colors" aria-label="Image précédente"
               style={{
                 background: current === 0 ? "rgba(27,42,74,0.3)" : "rgba(27,42,74,0.7)",
                 cursor: current === 0 ? "default" : "pointer",
@@ -192,7 +192,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
             <button
               onClick={() => setCurrent(current + 1)}
               disabled={current === allImages.length - 1}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center border-none transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center border-none transition-colors" aria-label="Image suivante"
               style={{
                 background: current === allImages.length - 1 ? "rgba(27,42,74,0.3)" : "rgba(27,42,74,0.7)",
                 cursor: current === allImages.length - 1 ? "default" : "pointer",
@@ -223,7 +223,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className="border-none p-0 transition-all"
+              className="border-none p-0 transition-all" aria-label={`Aller à l'image ${i + 1}`}
               style={{
                 width: i === current ? "24px" : "8px",
                 height: "8px",
@@ -254,7 +254,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
               onMouseEnter={(e) => { if (i !== current) e.currentTarget.style.opacity = "1"; }}
               onMouseLeave={(e) => { if (i !== current) e.currentTarget.style.opacity = "0.6"; }}
             >
-              <img src={img} alt={`${search.title} ${i + 1}`} className="w-full h-full object-cover" />
+              <img src={img} alt={`${search.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
             </button>
           ))}
         </div>
@@ -675,7 +675,7 @@ const SearchDetail = () => {
             <img
               src={search.profiles.avatar_url}
               alt={search.profiles.full_name || "User"}
-              className="w-14 h-14 rounded-full border-2 border-accent object-cover"
+              className="w-14 h-14 rounded-full border-2 border-accent object-cover" loading="lazy"
             />
           ) : (
             <div className="w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold">

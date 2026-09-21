@@ -404,11 +404,11 @@ const EditProposal = () => {
                 {/* Existing images */}
                 {existingImageUrls.map((img, index) => (
                   <div key={`existing-${index}`} className="relative aspect-square rounded-xl overflow-hidden border border-border">
-                    <img src={img} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" />
+                    <img src={img} alt={`Photo ${index + 1}`} className="w-full h-full object-cover" loading="lazy" />
                     <button
                       type="button"
                       onClick={() => removeExistingImage(index)}
-                      className="absolute top-2 right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:scale-110 transition-transform"
+                      className="absolute top-2 right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:scale-110 transition-transform" aria-label="Supprimer la photo"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -418,14 +418,14 @@ const EditProposal = () => {
                 {/* New images */}
                 {newImagePreviews.map((img, index) => (
                   <div key={`new-${index}`} className="relative aspect-square rounded-xl overflow-hidden border border-accent">
-                    <img src={img} alt={`Nouvelle photo ${index + 1}`} className="w-full h-full object-cover" />
+                    <img src={img} alt={`Nouvelle photo ${index + 1}`} className="w-full h-full object-cover" loading="lazy" />
                     <div className="absolute top-2 left-2 text-xs bg-accent text-accent-foreground px-1.5 py-0.5 rounded">
                        {t("proposalForm.new")}
                     </div>
                     <button
                       type="button"
                       onClick={() => removeNewImage(index)}
-                      className="absolute top-2 right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:scale-110 transition-transform"
+                      className="absolute top-2 right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:scale-110 transition-transform" aria-label="Supprimer la photo"
                     >
                       <X className="w-4 h-4" />
                     </button>
