@@ -692,6 +692,70 @@ const MySpace = () => {
                 onChange={handleBannerChange}
               />
 
+              {/* Repositionnement de la bannière avant validation */}
+              <Dialog open={bannerEditorOpen} onOpenChange={(o) => { if (!o) closeBannerEditor(); }}>
+                <DialogContent className="sm:max-w-[680px]">
+                  <DialogHeader>
+                    <DialogTitle style={{ color: "#070E42" }}>Positionner la bannière</DialogTitle>
+                  </DialogHeader>
+                  <p style={{ fontSize: 13, color: "#666666" }}>
+                    Fais glisser l'image dans le cadre pour choisir la partie visible.
+                  </p>
+                  <div className="flex justify-center">
+                    <div
+                      ref={bannerFrameRef}
+                      onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); startBannerDrag(e.clientX, e.clientY); }}
+                      onPointerMove={(e) => moveBannerDrag(e.clientX, e.clientY)}
+                      onPointerUp={endBannerDrag}
+                      onPointerCancel={endBannerDrag}
+                      style={{
+                        position: "relative",
+                        width: bannerFrame.w,
+                        height: bannerFrame.h,
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        borderRadius: 8,
+                        border: "1px solid rgba(10,22,40,0.12)",
+                        backgroundColor: "#F5F1E8",
+                        cursor: "grab",
+                        touchAction: "none",
+                      }}
+                    >
+                      {bannerPreviewUrl && (
+                        <img
+                          src={bannerPreviewUrl}
+                          alt="Aperçu de la bannière"
+                          draggable={false}
+                          onLoad={handleBannerImageLoaded}
+                          style={{
+                            position: "absolute",
+                            left: bannerOffset.x,
+                            top: bannerOffset.y,
+                            width: bannerNatural ? bannerNatural.w * bannerCoverScale() : "100%",
+                            height: bannerNatural ? bannerNatural.h * bannerCoverScale() : "auto",
+                            userSelect: "none",
+                            pointerEvents: "none",
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={closeBannerEditor} disabled={uploadingBanner}>
+                      Annuler
+                    </Button>
+                    <Button
+                      onClick={handleBannerConfirm}
+                      disabled={uploadingBanner || !bannerNatural}
+                      style={{ backgroundColor: "#D9BB87", color: "#070E42" }}
+                    >
+                      {uploadingBanner ? "Envoi…" : "Valider la bannière"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+
               {/* Banner area — slim, default brand gradient */}
               <div
                 ref={bannerAreaRef}
