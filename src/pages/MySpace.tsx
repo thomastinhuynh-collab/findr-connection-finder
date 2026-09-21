@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Star, Search, Plus, Settings, LogOut, Crown, Wallet, Package, Heart, Clock, Euro, MapPin, Pencil, MoreHorizontal, CreditCard, CheckCircle2, Loader2 } from "lucide-react";
+import { User, Star, Search, Plus, Settings, Crown, Wallet, Package, Heart, Clock, Euro, MapPin, Pencil, MoreHorizontal, CreditCard, CheckCircle2, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -92,7 +92,7 @@ interface WalletTransaction {
 
 const MySpace = () => {
   const navigate = useNavigate();
-  const { user, loading, signOut } = useAuth();
+  const { user, loading } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation();
   const { startOnboarding, loading: stripeLoading } = useStripeConnect();
@@ -633,12 +633,6 @@ const MySpace = () => {
     toast({ title: t("mySpace.bannerRemoved") });
   };
 
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/");
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
@@ -1158,11 +1152,7 @@ const MySpace = () => {
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={openEditProfile}>
                       <Settings className="w-4 h-4 mr-2" />
-                      Paramètres du compte
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleSignOut} style={{ color: '#DC2626' }}>
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Se déconnecter
+                      Modifier mon profil
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
