@@ -1158,11 +1158,7 @@ const MySpace = () => {
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={openEditProfile}>
                       <Settings className="w-4 h-4 mr-2" />
-                      Paramètres du compte
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleSignOut} style={{ color: '#DC2626' }}>
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Se déconnecter
+                      Modifier mon profil
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
