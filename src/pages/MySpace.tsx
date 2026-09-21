@@ -107,6 +107,16 @@ const MySpace = () => {
   const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
+  // Repositionnement de la bannière
+  const bannerAreaRef = useRef<HTMLDivElement>(null);
+  const bannerFrameRef = useRef<HTMLDivElement>(null);
+  const [bannerEditorOpen, setBannerEditorOpen] = useState(false);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string | null>(null);
+  const [bannerNatural, setBannerNatural] = useState<{ w: number; h: number } | null>(null);
+  const [bannerFrame, setBannerFrame] = useState<{ w: number; h: number }>({ w: 600, h: 90 });
+  const [bannerOffset, setBannerOffset] = useState({ x: 0, y: 0 });
+  const bannerDragRef = useRef<{ px: number; py: number; ox: number; oy: number } | null>(null);
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [hasProposals, setHasProposals] = useState(false);
   const [hasCommission, setHasCommission] = useState(false);
@@ -487,29 +497,128 @@ const MySpace = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
-  const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const bannerCoverScale = () => {
+    if (!bannerNatural) return 1;
+    return Math.max(bannerFrame.w / bannerNatural.w, bannerFrame.h / bannerNatural.h);
+  };
+
+  const clampBannerOffset = (x: number, y: number) => {
+    const scale = bannerCoverScale();
+    if (!bannerNatural) return { x: 0, y: 0 };
+    const dispW = bannerNatural.w * scale;
+    const dispH = bannerNatural.h * scale;
+    const minX = Math.min(0, bannerFrame.w - dispW);
+    const minY = Math.min(0, bannerFrame.h - dispH);
+    return {
+      x: Math.max(minX, Math.min(0, x)),
+      y: Math.max(minY, Math.min(0, y)),
+    };
+  };
+
+  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
     if (file.size > 8 * 1024 * 1024) {
       toast({ title: t("mySpace.fileTooLarge"), description: t("mySpace.max8"), variant: "destructive" });
+      if (bannerInputRef.current) bannerInputRef.current.value = "";
       return;
     }
+    // Conserve le format exact du cadre bannière affiché
+    const areaW = bannerAreaRef.current?.offsetWidth || 900;
+    const areaH = bannerAreaRef.current?.offsetHeight || 90;
+    const previewW = Math.min(620, areaW);
+    setBannerFrame({ w: previewW, h: Math.round((previewW * areaH) / areaW) });
+    setBannerNatural(null);
+    setBannerOffset({ x: 0, y: 0 });
+    setBannerFile(file);
+    if (bannerPreviewUrl) URL.revokeObjectURL(bannerPreviewUrl);
+    setBannerPreviewUrl(URL.createObjectURL(file));
+    setBannerEditorOpen(true);
+    if (bannerInputRef.current) bannerInputRef.current.value = "";
+  };
+
+  const handleBannerImageLoaded = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    const nat = { w: img.naturalWidth, h: img.naturalHeight };
+    setBannerNatural(nat);
+    const scale = Math.max(bannerFrame.w / nat.w, bannerFrame.h / nat.h);
+    setBannerOffset({
+      x: (bannerFrame.w - nat.w * scale) / 2,
+      y: (bannerFrame.h - nat.h * scale) / 2,
+    });
+  };
+
+  const startBannerDrag = (clientX: number, clientY: number) => {
+    bannerDragRef.current = { px: clientX, py: clientY, ox: bannerOffset.x, oy: bannerOffset.y };
+  };
+
+  const moveBannerDrag = (clientX: number, clientY: number) => {
+    const d = bannerDragRef.current;
+    if (!d) return;
+    setBannerOffset(clampBannerOffset(d.ox + (clientX - d.px), d.oy + (clientY - d.py)));
+  };
+
+  const endBannerDrag = () => {
+    bannerDragRef.current = null;
+  };
+
+  const closeBannerEditor = () => {
+    setBannerEditorOpen(false);
+    setBannerFile(null);
+    setBannerNatural(null);
+    if (bannerPreviewUrl) URL.revokeObjectURL(bannerPreviewUrl);
+    setBannerPreviewUrl(null);
+  };
+
+  const handleBannerConfirm = async () => {
+    if (!bannerFile || !bannerPreviewUrl || !bannerNatural || !user) return;
     setUploadingBanner(true);
     try {
-      const ext = file.name.split(".").pop();
-      const path = `${user.id}/banner-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("search-images").upload(path, file, { upsert: true });
+      const scale = bannerCoverScale();
+      const sx = Math.max(0, -bannerOffset.x / scale);
+      const sy = Math.max(0, -bannerOffset.y / scale);
+      const sw = Math.min(bannerNatural.w - sx, bannerFrame.w / scale);
+      const sh = Math.min(bannerNatural.h - sy, bannerFrame.h / scale);
+
+      const outW = 1600;
+      const outH = Math.max(1, Math.round((outW * bannerFrame.h) / bannerFrame.w));
+      const canvas = document.createElement("canvas");
+      canvas.width = outW;
+      canvas.height = outH;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas indisponible");
+
+      const image = new Image();
+      image.src = bannerPreviewUrl;
+      await new Promise<void>((resolve, reject) => {
+        if (image.complete) return resolve();
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error("Image illisible"));
+      });
+      ctx.drawImage(image, sx, sy, sw, sh, 0, 0, outW, outH);
+
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob((b) => resolve(b), "image/jpeg", 0.85)
+      );
+      if (!blob) throw new Error("Export impossible");
+
+      const path = `${user.id}/banner-${Date.now()}.jpg`;
+      const { error: upErr } = await supabase.storage
+        .from("search-images")
+        .upload(path, blob, { upsert: true, contentType: "image/jpeg" });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("search-images").getPublicUrl(path);
-      const { error: updErr } = await (supabase.from("profiles") as any).update({ banner_url: pub.publicUrl }).eq("user_id", user.id);
+      const { error: updErr } = await (supabase.from("profiles") as any)
+        .update({ banner_url: pub.publicUrl })
+        .eq("user_id", user.id);
       if (updErr) throw updErr;
       await fetchProfile();
       toast({ title: t("mySpace.bannerUpdated") });
+      closeBannerEditor();
     } catch (err: any) {
       toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
       setUploadingBanner(false);
-      if (bannerInputRef.current) bannerInputRef.current.value = "";
     }
   };
 
@@ -583,8 +692,73 @@ const MySpace = () => {
                 onChange={handleBannerChange}
               />
 
+              {/* Repositionnement de la bannière avant validation */}
+              <Dialog open={bannerEditorOpen} onOpenChange={(o) => { if (!o) closeBannerEditor(); }}>
+                <DialogContent className="sm:max-w-[680px]">
+                  <DialogHeader>
+                    <DialogTitle style={{ color: "#070E42" }}>Positionner la bannière</DialogTitle>
+                  </DialogHeader>
+                  <p style={{ fontSize: 13, color: "#666666" }}>
+                    Fais glisser l'image dans le cadre pour choisir la partie visible.
+                  </p>
+                  <div className="flex justify-center">
+                    <div
+                      ref={bannerFrameRef}
+                      onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); startBannerDrag(e.clientX, e.clientY); }}
+                      onPointerMove={(e) => moveBannerDrag(e.clientX, e.clientY)}
+                      onPointerUp={endBannerDrag}
+                      onPointerCancel={endBannerDrag}
+                      style={{
+                        position: "relative",
+                        width: bannerFrame.w,
+                        height: bannerFrame.h,
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        borderRadius: 8,
+                        border: "1px solid rgba(10,22,40,0.12)",
+                        backgroundColor: "#F5F1E8",
+                        cursor: "grab",
+                        touchAction: "none",
+                      }}
+                    >
+                      {bannerPreviewUrl && (
+                        <img
+                          src={bannerPreviewUrl}
+                          alt="Aperçu de la bannière"
+                          draggable={false}
+                          onLoad={handleBannerImageLoaded}
+                          style={{
+                            position: "absolute",
+                            left: bannerOffset.x,
+                            top: bannerOffset.y,
+                            width: bannerNatural ? bannerNatural.w * bannerCoverScale() : "100%",
+                            height: bannerNatural ? bannerNatural.h * bannerCoverScale() : "auto",
+                            userSelect: "none",
+                            pointerEvents: "none",
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={closeBannerEditor} disabled={uploadingBanner}>
+                      Annuler
+                    </Button>
+                    <Button
+                      onClick={handleBannerConfirm}
+                      disabled={uploadingBanner || !bannerNatural}
+                      style={{ backgroundColor: "#D9BB87", color: "#070E42" }}
+                    >
+                      {uploadingBanner ? "Envoi…" : "Valider la bannière"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+
               {/* Banner area — slim, default brand gradient */}
               <div
+                ref={bannerAreaRef}
                 className="relative w-full group/banner"
                 style={{
                   height: 90,
