@@ -1135,29 +1135,6 @@ const MySpace = () => {
               </div>
 
 
-              {/* Top-right discreet menu */}
-              <div className="absolute" style={{ top: 196, right: 12, zIndex: 4 }}>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      className="p-2 rounded-md hover:bg-muted transition-colors"
-                      style={{ color: '#6B6259' }}
-                      aria-label="Plus d'options"
-                    >
-                      <MoreHorizontal className="w-5 h-5" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={openEditProfile}>
-                      <Settings className="w-4 h-4 mr-2" />
-                      Modifier mon profil
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
               );
             })()}
 
