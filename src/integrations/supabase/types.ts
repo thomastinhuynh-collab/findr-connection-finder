@@ -443,6 +443,9 @@ export type Database = {
           carrier: string | null
           created_at: string
           delivered_at: string | null
+          delivery_address: Json | null
+          delivery_relay_point: Json | null
+          delivery_type: string | null
           dispute_description: string | null
           dispute_open: boolean
           dispute_opened_at: string | null
@@ -484,6 +487,9 @@ export type Database = {
           carrier?: string | null
           created_at?: string
           delivered_at?: string | null
+          delivery_address?: Json | null
+          delivery_relay_point?: Json | null
+          delivery_type?: string | null
           dispute_description?: string | null
           dispute_open?: boolean
           dispute_opened_at?: string | null
@@ -525,6 +531,9 @@ export type Database = {
           carrier?: string | null
           created_at?: string
           delivered_at?: string | null
+          delivery_address?: Json | null
+          delivery_relay_point?: Json | null
+          delivery_type?: string | null
           dispute_description?: string | null
           dispute_open?: boolean
           dispute_opened_at?: string | null
