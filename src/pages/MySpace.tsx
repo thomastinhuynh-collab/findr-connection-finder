@@ -157,7 +157,6 @@ const MySpace = () => {
           full_name: editForm.full_name.trim() || null,
           bio: editForm.bio.trim() || null,
           city: editForm.city.trim() || null,
-          preferred_relay_point: editRelayPoint as any,
         } as any)
         .eq("user_id", user.id);
       if (error) throw error;
