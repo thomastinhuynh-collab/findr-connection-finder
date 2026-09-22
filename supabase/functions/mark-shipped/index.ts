@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
     const admin = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const { data: reservation } = await admin
       .from("reservations")
-      .select("id, buyr_id, findr_id, payment_status, shipped_at")
+      .select("id, buyr_id, findr_id, payment_status, shipped_at, delivery_type")
       .eq("id", reservationId)
       .maybeSingle();
 
