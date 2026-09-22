@@ -1673,6 +1673,13 @@ const MySpace = () => {
                 {editForm.bio.length}/500
               </p>
             </div>
+            <div className="space-y-1.5 pt-2" style={{ borderTop: "1px solid #EEEEEE" }}>
+              <Label>Point relais préféré</Label>
+              <p className="text-xs" style={{ color: "#9A8F84" }}>
+                Le point où tu déposes habituellement tes colis.
+              </p>
+              <RelayPointPicker value={editRelayPoint} onChange={setEditRelayPoint} />
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditOpen(false)} disabled={savingProfile}>
