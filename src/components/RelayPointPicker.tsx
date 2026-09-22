@@ -13,17 +13,17 @@ export type RelayPoint = {
 
 const LOCATORS: Record<
   RelayPoint["carrier"],
-  { label: string; mapUrl: (cp: string) => string }
+  { label: string; mapUrl: () => string }
 > = {
   mondial_relay: {
     label: "Mondial Relay",
-    mapUrl: (cp) =>
-      `https://www.mondialrelay.fr/trouver-le-point-relais-le-plus-proche/?codePostal=${encodeURIComponent(cp)}&pays=FR`,
+    mapUrl: () =>
+      `https://www.mondialrelay.fr/trouver-le-point-relais-le-plus-proche-de-chez-moi/`,
   },
   chronopost: {
     label: "Chronopost Point Retrait",
-    mapUrl: (cp) =>
-      `https://www.chronopost.fr/fr/relais-colis?cp=${encodeURIComponent(cp)}`,
+    mapUrl: () =>
+      `https://www.chronopost.fr/fr/relais-pickup`,
   },
 };
 
