@@ -15,11 +15,12 @@ const LOCATORS: Record<RelayPoint["carrier"], { label: string; url: (cp: string)
   mondial_relay: {
     label: "Mondial Relay",
     url: (cp) =>
-      `https://www.mondialrelay.fr/trouver-le-point-relais-le-plus-proche/?codePostal=${encodeURIComponent(cp)}&pays=FR`,
+      `https://www.google.com/maps/search/${encodeURIComponent(`Point Relais Mondial Relay ${cp}`)}`,
   },
   chronopost: {
     label: "Chronopost Point Retrait",
-    url: (cp) => `https://www.chronopost.fr/fr/relais-colis?cp=${encodeURIComponent(cp)}`,
+    url: (cp) =>
+      `https://www.google.com/maps/search/${encodeURIComponent(`Point Relais Chronopost ${cp}`)}`,
   },
 };
 
@@ -112,7 +113,8 @@ const RelayPointPicker = ({ value, onChange }: Props) => {
           </Button>
         </div>
         <p style={{ color: "#777777", fontSize: 12 }}>
-          La recherche s'ouvre sur le site du transporteur. Recopie ensuite le point choisi ci-dessous.
+          La recherche ouvre la carte des points {LOCATORS[carrier].label} autour de ce code postal.
+          Recopie ensuite le point choisi ci-dessous.
         </p>
       </div>
 
