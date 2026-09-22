@@ -13,17 +13,15 @@ export type RelayPoint = {
 
 const LOCATORS: Record<
   RelayPoint["carrier"],
-  { label: string; url: (cp: string) => string; mapUrl: (cp: string) => string }
+  { label: string; mapUrl: (cp: string) => string }
 > = {
   mondial_relay: {
     label: "Mondial Relay",
-    url: () => "https://www.mondialrelay.fr/trouver-le-point-relais/",
     mapUrl: (cp) =>
       `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Mondial Relay ${cp} France`)}`,
   },
   chronopost: {
     label: "Chronopost Point Retrait",
-    url: () => "https://www.chronopost.fr/fr/relais-pickup",
     mapUrl: (cp) =>
       `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Point Relais Chronopost ${cp} France`)}`,
   },
@@ -112,23 +110,19 @@ const RelayPointPicker = ({ value, onChange }: Props) => {
           choisi.
         </p>
         <div className="flex flex-wrap gap-3 pt-1">
-          <a
-            href={LOCATORS[carrier].url(postalCode)}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#070E42", fontSize: 13, textDecoration: "underline" }}
-          >
-            Site {LOCATORS[carrier].label} →
-          </a>
-          {postalCode.trim().length >= 4 && (
+          {postalCode.trim().length >= 4 ? (
             <a
               href={LOCATORS[carrier].mapUrl(postalCode)}
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "#070E42", fontSize: 13, textDecoration: "underline" }}
             >
-              Voir sur une carte ({postalCode.trim()}) →
+              Chercher les points {LOCATORS[carrier].label} autour de {postalCode.trim()} →
             </a>
+          ) : (
+            <span style={{ color: "#777777", fontSize: 12 }}>
+              Saisis un code postal pour lancer la recherche.
+            </span>
           )}
         </div>
       </div>
