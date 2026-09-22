@@ -288,6 +288,7 @@ export type Database = {
           level: number | null
           negative_balance: number
           payout_hold: boolean
+          preferred_relay_point: Json | null
           stripe_account_id: string | null
           stripe_onboarding_complete: boolean
           updated_at: string
@@ -307,6 +308,7 @@ export type Database = {
           level?: number | null
           negative_balance?: number
           payout_hold?: boolean
+          preferred_relay_point?: Json | null
           stripe_account_id?: string | null
           stripe_onboarding_complete?: boolean
           updated_at?: string
@@ -326,6 +328,7 @@ export type Database = {
           level?: number | null
           negative_balance?: number
           payout_hold?: boolean
+          preferred_relay_point?: Json | null
           stripe_account_id?: string | null
           stripe_onboarding_complete?: boolean
           updated_at?: string
@@ -382,6 +385,7 @@ export type Database = {
           findr_id: string
           id: string
           image_urls: string[] | null
+          object_size: string | null
           product_link: string | null
           proposed_price: number
           search_id: string
@@ -396,6 +400,7 @@ export type Database = {
           findr_id: string
           id?: string
           image_urls?: string[] | null
+          object_size?: string | null
           product_link?: string | null
           proposed_price: number
           search_id: string
@@ -410,6 +415,7 @@ export type Database = {
           findr_id?: string
           id?: string
           image_urls?: string[] | null
+          object_size?: string | null
           product_link?: string | null
           proposed_price?: number
           search_id?: string
