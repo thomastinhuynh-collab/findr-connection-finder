@@ -13,7 +13,21 @@ export function useWaitlist() {
     });
   }, []);
 
-  const submit = async (email: string, role: "buyr" | "findr" | "unknown" = "unknown") => {
+  const submit = async (
+    email: string,
+    role: "buyr" | "findr" | "unknown" = "unknown",
+    honeypot = "",
+  ) => {
+    // Anti-robots : le honeypot doit rester vide, et on filtre les adresses
+    // au motif « dots Gmail » générés par des bots (lettres aléatoires, points partout).
+    const localPart = email.trim().toLowerCase().split("@")[0] ?? "";
+    const dotCount = (localPart.match(/\./g) ?? []).length;
+    const looksRandom = /^[a-z.0-9]{14,}$/.test(localPart) && !/[aeiouy]{2}/.test(localPart.replace(/\./g, ""));
+    if (honeypot || dotCount >= 5 || looksRandom) {
+      toast.error("Merci d'entrer une adresse email valide.");
+      return false;
+    }
+
     const trimmed = email.trim().toLowerCase();
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       toast.error("Merci d'entrer une adresse email valide.");
