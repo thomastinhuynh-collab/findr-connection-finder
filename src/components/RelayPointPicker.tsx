@@ -11,16 +11,21 @@ export type RelayPoint = {
   postal_code?: string | null;
 };
 
-const LOCATORS: Record<RelayPoint["carrier"], { label: string; url: (cp: string) => string }> = {
+const LOCATORS: Record<
+  RelayPoint["carrier"],
+  { label: string; url: (cp: string) => string; mapUrl: (cp: string) => string }
+> = {
   mondial_relay: {
     label: "Mondial Relay",
-    url: (cp) =>
-      `https://www.google.com/maps/search/${encodeURIComponent(`Point Relais Mondial Relay ${cp}`)}`,
+    url: () => "https://www.mondialrelay.fr/trouver-le-point-relais/",
+    mapUrl: (cp) =>
+      `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Mondial Relay ${cp} France`)}`,
   },
   chronopost: {
     label: "Chronopost Point Retrait",
-    url: (cp) =>
-      `https://www.google.com/maps/search/${encodeURIComponent(`Point Relais Chronopost ${cp}`)}`,
+    url: () => "https://www.chronopost.fr/fr/relais-pickup",
+    mapUrl: (cp) =>
+      `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Point Relais Chronopost ${cp} France`)}`,
   },
 };
 
