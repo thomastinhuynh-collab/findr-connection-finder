@@ -51,6 +51,10 @@ import DisputeBanner from "@/components/DisputeBanner";
 import DisputeDialog from "@/components/DisputeDialog";
 import { useTranslation } from "react-i18next";
 import TranslatedContent from "@/components/TranslatedContent";
+import DeliveryChoicePicker, {
+  DeliveryAddress,
+  DeliveryRelayPoint,
+} from "@/components/DeliveryChoicePicker";
 
 interface Proposal {
   id: string;
