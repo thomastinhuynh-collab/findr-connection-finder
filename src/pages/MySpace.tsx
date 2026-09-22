@@ -1640,7 +1640,7 @@ const MySpace = () => {
           <DialogHeader>
             <DialogTitle style={{ color: '#070E42' }}>Modifier mon profil</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-2">
+          <div className="space-y-4 py-2 max-h-[70vh] overflow-y-auto pr-1">
             <div className="space-y-1.5">
               <Label htmlFor="edit-name">Nom complet</Label>
               <Input
