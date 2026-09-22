@@ -563,21 +563,48 @@ const ProposalList = ({
 
                     )}
 
+                  {/* Buyr : choix du mode de livraison, obligatoire avant expédition */}
+                  {isOwner &&
+                    payments[proposal.id]?.payment_status === "paye_en_attente_reception" &&
+                    !payments[proposal.id]?.shipped_at && (
+                      <DeliveryChoicePicker
+                        reservationId={payments[proposal.id]!.id}
+                        value={{
+                          delivery_type:
+                            (payments[proposal.id]?.delivery_type as
+                              | "domicile"
+                              | "point_relais"
+                              | null) ?? null,
+                          delivery_address: payments[proposal.id]?.delivery_address ?? null,
+                          delivery_relay_point:
+                            payments[proposal.id]?.delivery_relay_point ?? null,
+                        }}
+                        onSaved={fetchPayments}
+                      />
+                    )}
+
                   {/* Findr : marquer comme expédié */}
                   {user?.id === proposal.findr_id &&
                     payments[proposal.id]?.payment_status === "paye_en_attente_reception" &&
                     !payments[proposal.id]?.shipped_at && (
                       <>
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            setSelectedProposal(proposal);
-                            setShipDialogOpen(true);
-                          }}
-                        >
-                          <Truck className="w-4 h-4 mr-1" />
-                          {t("proposal.markShipped")}
-                        </Button>
+                        {payments[proposal.id]?.delivery_type ? (
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setSelectedProposal(proposal);
+                              setShipDialogOpen(true);
+                            }}
+                          >
+                            <Truck className="w-4 h-4 mr-1" />
+                            {t("proposal.markShipped")}
+                          </Button>
+                        ) : (
+                          <p className="w-full text-xs text-muted-foreground">
+                            {t("delivery.waitingBuyr")}
+                          </p>
+                        )}
+
                         <Button
                           size="sm"
                           variant="outline"
