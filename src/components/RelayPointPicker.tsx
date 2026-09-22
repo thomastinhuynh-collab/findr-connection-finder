@@ -110,20 +110,14 @@ const RelayPointPicker = ({ value, onChange }: Props) => {
           choisi.
         </p>
         <div className="flex flex-wrap gap-3 pt-1">
-          {postalCode.trim().length >= 4 ? (
-            <a
-              href={LOCATORS[carrier].mapUrl(postalCode)}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#070E42", fontSize: 13, textDecoration: "underline" }}
-            >
-              Chercher les points {LOCATORS[carrier].label} autour de {postalCode.trim()} →
-            </a>
-          ) : (
-            <span style={{ color: "#777777", fontSize: 12 }}>
-              Saisis un code postal pour lancer la recherche.
-            </span>
-          )}
+          <a
+            href={LOCATORS[carrier].mapUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#070E42", fontSize: 13, textDecoration: "underline" }}
+          >
+            Chercher les points {LOCATORS[carrier].label} →
+          </a>
         </div>
       </div>
 
