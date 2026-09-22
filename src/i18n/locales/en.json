@@ -1139,5 +1139,23 @@
         }
       }
     }
+  },
+  "delivery": {
+    "question": "How would you like to receive your parcel?",
+    "hint": "The findr needs this information to ship your item.",
+    "home": "Home delivery",
+    "relay": "Pickup point",
+    "street": "Street",
+    "postalCode": "Postcode",
+    "city": "City",
+    "relayHint": "Open the carrier's finder, then copy the chosen point below.",
+    "relaySearch": "Find {{carrier}} points",
+    "relayName": "Pickup point name",
+    "relayAddress": "Pickup point address",
+    "relayId": "Point ID",
+    "confirm": "Confirm my delivery option",
+    "saving": "Saving…",
+    "saved": "Delivery option saved",
+    "waitingBuyr": "The buyr hasn't chosen a delivery option yet — you'll be able to ship as soon as they do."
   }
 }
