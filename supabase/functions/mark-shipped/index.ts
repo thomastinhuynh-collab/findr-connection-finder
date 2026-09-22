@@ -54,6 +54,12 @@ Deno.serve(async (req) => {
       return json({ error: "Cette réservation n'est pas au stade de l'expédition." }, 400);
     }
     if (reservation.shipped_at) return json({ error: "Colis déjà marqué comme expédié." }, 400);
+    if (!reservation.delivery_type) {
+      return json(
+        { error: "Le buyr n'a pas encore indiqué son mode de livraison." },
+        400,
+      );
+    }
 
     // Enregistrement du colis auprès de 17TRACK (mode sandbox tant que la clé est en test)
     const trackKey = Deno.env.get("TRACK17_API_KEY");
