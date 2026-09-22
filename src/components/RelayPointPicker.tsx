@@ -11,16 +11,21 @@ export type RelayPoint = {
   postal_code?: string | null;
 };
 
-const LOCATORS: Record<RelayPoint["carrier"], { label: string; url: (cp: string) => string }> = {
+const LOCATORS: Record<
+  RelayPoint["carrier"],
+  { label: string; url: (cp: string) => string; mapUrl: (cp: string) => string }
+> = {
   mondial_relay: {
     label: "Mondial Relay",
-    url: (cp) =>
-      `https://www.google.com/maps/search/${encodeURIComponent(`Point Relais Mondial Relay ${cp}`)}`,
+    url: () => "https://www.mondialrelay.fr/trouver-le-point-relais/",
+    mapUrl: (cp) =>
+      `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Mondial Relay ${cp} France`)}`,
   },
   chronopost: {
     label: "Chronopost Point Retrait",
-    url: (cp) =>
-      `https://www.google.com/maps/search/${encodeURIComponent(`Point Relais Chronopost ${cp}`)}`,
+    url: () => "https://www.chronopost.fr/fr/relais-pickup",
+    mapUrl: (cp) =>
+      `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Point Relais Chronopost ${cp} France`)}`,
   },
 };
 
@@ -94,28 +99,38 @@ const RelayPointPicker = ({ value, onChange }: Props) => {
 
       <div className="space-y-1.5">
         <Label htmlFor="relay-cp">Code postal</Label>
-        <div className="flex gap-2">
-          <Input
-            id="relay-cp"
-            value={postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
-            placeholder="75003"
-            inputMode="numeric"
-            maxLength={5}
-          />
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => window.open(LOCATORS[carrier].url(postalCode), "_blank", "noopener")}
-            disabled={postalCode.trim().length < 4}
-          >
-            Chercher →
-          </Button>
-        </div>
+        <Input
+          id="relay-cp"
+          value={postalCode}
+          onChange={(e) => setPostalCode(e.target.value)}
+          placeholder="75003"
+          inputMode="numeric"
+          maxLength={5}
+        />
         <p style={{ color: "#777777", fontSize: 12 }}>
-          La recherche ouvre la carte des points {LOCATORS[carrier].label} autour de ce code postal.
-          Recopie ensuite le point choisi ci-dessous.
+          Ouvre la recherche de points {LOCATORS[carrier].label}, puis recopie ci-dessous le point
+          choisi.
         </p>
+        <div className="flex flex-wrap gap-3 pt-1">
+          <a
+            href={LOCATORS[carrier].url(postalCode)}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#070E42", fontSize: 13, textDecoration: "underline" }}
+          >
+            Site {LOCATORS[carrier].label} →
+          </a>
+          {postalCode.trim().length >= 4 && (
+            <a
+              href={LOCATORS[carrier].mapUrl(postalCode)}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#070E42", fontSize: 13, textDecoration: "underline" }}
+            >
+              Voir sur une carte ({postalCode.trim()}) →
+            </a>
+          )}
+        </div>
       </div>
 
       <div className="space-y-1.5">
