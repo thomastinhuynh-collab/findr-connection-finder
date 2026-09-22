@@ -122,7 +122,6 @@ const MySpace = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [stripeModalOpen, setStripeModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
-  const [editRelayPoint, setEditRelayPoint] = useState<RelayPoint | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [myProposals, setMyProposals] = useState<any[]>([]);
   const [loadingProposals, setLoadingProposals] = useState(false);
