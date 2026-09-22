@@ -9,12 +9,13 @@ import { useTranslation } from "react-i18next";
 const WaitlistSignup = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot anti-robots
   const [role, setRole] = useState<"buyr" | "findr">("buyr");
   const { count, loading, submitted, submit } = useWaitlist();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await submit(email, role);
+    const ok = await submit(email, role, website);
     if (ok) setEmail("");
   };
 
@@ -104,6 +105,17 @@ const WaitlistSignup = () => {
 
                 {/* Email form */}
                 <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+                  {/* Honeypot anti-robots : invisible pour les humains */}
+                  <input
+                    type="text"
+                    name="website"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="absolute opacity-0 pointer-events-none h-0 w-0"
+                  />
                   <div className="relative flex-1">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cream/50" />
                     <Input
