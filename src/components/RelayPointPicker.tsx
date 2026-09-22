@@ -15,11 +15,12 @@ const LOCATORS: Record<RelayPoint["carrier"], { label: string; url: (cp: string)
   mondial_relay: {
     label: "Mondial Relay",
     url: (cp) =>
-      `https://www.mondialrelay.fr/trouver-le-point-relais-le-plus-proche/?codePostal=${encodeURIComponent(cp)}&pays=FR`,
+      `https://www.google.com/maps/search/${encodeURIComponent(`Point Relais Mondial Relay ${cp}`)}`,
   },
   chronopost: {
     label: "Chronopost Point Retrait",
-    url: (cp) => `https://www.chronopost.fr/fr/relais-colis?cp=${encodeURIComponent(cp)}`,
+    url: (cp) =>
+      `https://www.google.com/maps/search/${encodeURIComponent(`Point Relais Chronopost ${cp}`)}`,
   },
 };
 
