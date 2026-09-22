@@ -18,12 +18,12 @@ const LOCATORS: Record<
   mondial_relay: {
     label: "Mondial Relay",
     mapUrl: (cp) =>
-      `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Mondial Relay ${cp} France`)}`,
+      `https://www.mondialrelay.fr/trouver-le-point-relais-le-plus-proche/?codePostal=${encodeURIComponent(cp)}&pays=FR`,
   },
   chronopost: {
     label: "Chronopost Point Retrait",
     mapUrl: (cp) =>
-      `https://www.openstreetmap.org/search?query=${encodeURIComponent(`Point Relais Chronopost ${cp} France`)}`,
+      `https://www.chronopost.fr/fr/relais-colis?cp=${encodeURIComponent(cp)}`,
   },
 };
 
