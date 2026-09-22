@@ -41,7 +41,6 @@ interface Profile {
   stripe_onboarding_complete?: boolean | null;
   negative_balance?: number | null;
   payout_hold?: boolean | null;
-  preferred_relay_point?: RelayPoint | null;
 
 }
 
