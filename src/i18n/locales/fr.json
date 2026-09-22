@@ -1139,5 +1139,23 @@
         }
       }
     }
+  },
+  "delivery": {
+    "question": "Comment veux-tu recevoir ton colis ?",
+    "hint": "Le findr a besoin de cette information pour expédier ton objet.",
+    "home": "Livraison à domicile",
+    "relay": "Retrait en point relais",
+    "street": "Rue",
+    "postalCode": "Code postal",
+    "city": "Ville",
+    "relayHint": "Ouvre la recherche du transporteur, puis recopie ci-dessous le point choisi.",
+    "relaySearch": "Chercher les points {{carrier}}",
+    "relayName": "Nom du point relais",
+    "relayAddress": "Adresse du point relais",
+    "relayId": "Identifiant du point",
+    "confirm": "Valider mon mode de livraison",
+    "saving": "Enregistrement…",
+    "saved": "Mode de livraison enregistré",
+    "waitingBuyr": "Le buyr n'a pas encore indiqué son mode de livraison — tu pourras expédier dès qu'il l'aura fait."
   }
 }

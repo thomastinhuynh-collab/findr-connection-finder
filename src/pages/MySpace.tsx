@@ -24,7 +24,6 @@ import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
 import { isComingSoonCategory } from "@/lib/categories";
 import { useTranslation } from "react-i18next";
-import RelayPointPicker, { RelayPoint } from "@/components/RelayPointPicker";
 
 
 interface Profile {
@@ -42,7 +41,6 @@ interface Profile {
   stripe_onboarding_complete?: boolean | null;
   negative_balance?: number | null;
   payout_hold?: boolean | null;
-  preferred_relay_point?: RelayPoint | null;
 
 }
 
@@ -124,7 +122,6 @@ const MySpace = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [stripeModalOpen, setStripeModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
-  const [editRelayPoint, setEditRelayPoint] = useState<RelayPoint | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [myProposals, setMyProposals] = useState<any[]>([]);
   const [loadingProposals, setLoadingProposals] = useState(false);
@@ -147,7 +144,6 @@ const MySpace = () => {
       bio: profile?.bio || "",
       city: profile?.city || "",
     });
-    setEditRelayPoint((profile?.preferred_relay_point as RelayPoint | null) || null);
     setEditOpen(true);
   };
 
@@ -161,7 +157,6 @@ const MySpace = () => {
           full_name: editForm.full_name.trim() || null,
           bio: editForm.bio.trim() || null,
           city: editForm.city.trim() || null,
-          preferred_relay_point: editRelayPoint as any,
         } as any)
         .eq("user_id", user.id);
       if (error) throw error;
@@ -1672,13 +1667,6 @@ const MySpace = () => {
               <p className="text-xs" style={{ color: '#9A8F84' }}>
                 {editForm.bio.length}/500
               </p>
-            </div>
-            <div className="space-y-1.5 pt-2" style={{ borderTop: "1px solid #EEEEEE" }}>
-              <Label>Point relais préféré</Label>
-              <p className="text-xs" style={{ color: "#9A8F84" }}>
-                Le point où tu déposes habituellement tes colis.
-              </p>
-              <RelayPointPicker value={editRelayPoint} onChange={setEditRelayPoint} />
             </div>
           </div>
           <DialogFooter>

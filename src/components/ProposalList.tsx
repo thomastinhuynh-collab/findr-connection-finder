@@ -51,6 +51,10 @@ import DisputeBanner from "@/components/DisputeBanner";
 import DisputeDialog from "@/components/DisputeDialog";
 import { useTranslation } from "react-i18next";
 import TranslatedContent from "@/components/TranslatedContent";
+import DeliveryChoicePicker, {
+  DeliveryAddress,
+  DeliveryRelayPoint,
+} from "@/components/DeliveryChoicePicker";
 
 interface Proposal {
   id: string;
@@ -88,7 +92,11 @@ interface ReservationPayment {
   dispute_status?: string | null;
   dispute_reason?: string | null;
   dispute_description?: string | null;
+  delivery_type?: string | null;
+  delivery_address?: DeliveryAddress | null;
+  delivery_relay_point?: DeliveryRelayPoint | null;
 }
+
 
 interface ProposalListProps {
   proposals: Proposal[];
@@ -146,7 +154,7 @@ const ProposalList = ({
     if (!user) return;
     const { data } = await supabase
       .from("reservations")
-      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description")
+      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description, delivery_type, delivery_address, delivery_relay_point")
       .eq("search_id", searchId);
     const map: Record<string, ReservationPayment> = {};
     (data || []).forEach((r: any) => {
@@ -555,21 +563,48 @@ const ProposalList = ({
 
                     )}
 
+                  {/* Buyr : choix du mode de livraison, obligatoire avant expédition */}
+                  {isOwner &&
+                    payments[proposal.id]?.payment_status === "paye_en_attente_reception" &&
+                    !payments[proposal.id]?.shipped_at && (
+                      <DeliveryChoicePicker
+                        reservationId={payments[proposal.id]!.id}
+                        value={{
+                          delivery_type:
+                            (payments[proposal.id]?.delivery_type as
+                              | "domicile"
+                              | "point_relais"
+                              | null) ?? null,
+                          delivery_address: payments[proposal.id]?.delivery_address ?? null,
+                          delivery_relay_point:
+                            payments[proposal.id]?.delivery_relay_point ?? null,
+                        }}
+                        onSaved={fetchPayments}
+                      />
+                    )}
+
                   {/* Findr : marquer comme expédié */}
                   {user?.id === proposal.findr_id &&
                     payments[proposal.id]?.payment_status === "paye_en_attente_reception" &&
                     !payments[proposal.id]?.shipped_at && (
                       <>
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            setSelectedProposal(proposal);
-                            setShipDialogOpen(true);
-                          }}
-                        >
-                          <Truck className="w-4 h-4 mr-1" />
-                          {t("proposal.markShipped")}
-                        </Button>
+                        {payments[proposal.id]?.delivery_type ? (
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setSelectedProposal(proposal);
+                              setShipDialogOpen(true);
+                            }}
+                          >
+                            <Truck className="w-4 h-4 mr-1" />
+                            {t("proposal.markShipped")}
+                          </Button>
+                        ) : (
+                          <p className="w-full text-xs text-muted-foreground">
+                            {t("delivery.waitingBuyr")}
+                          </p>
+                        )}
+
                         <Button
                           size="sm"
                           variant="outline"
