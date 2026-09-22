@@ -88,7 +88,11 @@ interface ReservationPayment {
   dispute_status?: string | null;
   dispute_reason?: string | null;
   dispute_description?: string | null;
+  delivery_type?: string | null;
+  delivery_address?: DeliveryAddress | null;
+  delivery_relay_point?: DeliveryRelayPoint | null;
 }
+
 
 interface ProposalListProps {
   proposals: Proposal[];
