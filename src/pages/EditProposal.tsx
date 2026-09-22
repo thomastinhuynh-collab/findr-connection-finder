@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import ObjectSizeField from "@/components/ObjectSizeField";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -67,6 +68,7 @@ const EditProposal = () => {
   const [condition, setCondition] = useState("");
   const [description, setDescription] = useState("");
   const [productLink, setProductLink] = useState("");
+  const [objectSize, setObjectSize] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [proposal, setProposal] = useState<ProposalData | null>(null);
   const [search, setSearch] = useState<SearchData | null>(null);
@@ -137,6 +139,7 @@ const EditProposal = () => {
     setPrice(proposalData.proposed_price.toString());
     setDescription(proposalData.description || "");
     setProductLink(proposalData.product_link || "");
+    setObjectSize(((proposalData as any).object_size as string) || "");
     
     // Parse brand and condition from title if possible
     const titleParts = proposalData.title.split(" - ");
@@ -255,7 +258,7 @@ const EditProposal = () => {
       return;
     }
 
-    if (!price || !brand || !condition) {
+    if (!price || !brand || !condition || !objectSize) {
       toast({
         title: "Champs requis",
         description: "Veuillez remplir tous les champs obligatoires.",
@@ -282,7 +285,8 @@ const EditProposal = () => {
           proposed_price: parseFloat(price),
           image_urls: allImageUrls,
           product_link: productLink || null,
-        })
+          object_size: objectSize,
+        } as any)
         .eq("id", id);
       
       if (error) throw error;
@@ -509,6 +513,8 @@ const EditProposal = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            <ObjectSizeField value={objectSize} onChange={setObjectSize} />
 
             {/* Product Link (optional) */}
             <div className="bg-card border border-border rounded-2xl p-6">
