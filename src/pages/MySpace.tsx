@@ -24,7 +24,6 @@ import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
 import { isComingSoonCategory } from "@/lib/categories";
 import { useTranslation } from "react-i18next";
-import RelayPointPicker, { RelayPoint } from "@/components/RelayPointPicker";
 
 
 interface Profile {
