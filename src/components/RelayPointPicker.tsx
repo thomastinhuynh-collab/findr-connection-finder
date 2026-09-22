@@ -113,7 +113,8 @@ const RelayPointPicker = ({ value, onChange }: Props) => {
           </Button>
         </div>
         <p style={{ color: "#777777", fontSize: 12 }}>
-          La recherche s'ouvre sur le site du transporteur. Recopie ensuite le point choisi ci-dessous.
+          La recherche ouvre la carte des points {LOCATORS[carrier].label} autour de ce code postal.
+          Recopie ensuite le point choisi ci-dessous.
         </p>
       </div>
 
