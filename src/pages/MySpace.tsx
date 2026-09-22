@@ -144,7 +144,6 @@ const MySpace = () => {
       bio: profile?.bio || "",
       city: profile?.city || "",
     });
-    setEditRelayPoint((profile?.preferred_relay_point as RelayPoint | null) || null);
     setEditOpen(true);
   };
 
