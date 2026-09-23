@@ -19,14 +19,20 @@ export function useWaitlist() {
     honeypot = "",
   ) => {
     // Anti-robots : le honeypot doit rester vide, et on filtre les adresses
-    // au motif « dots Gmail » générés par des bots (suite de segments très
-    // courts séparés par des points, ex. "l.w.z.a.fe.coa.p0.28").
+    // générées aléatoirement :
+    //  - une partie locale de 14+ caractères (points retirés) sans AUCUNE
+    //    voyelle (ex. "xktrzpvqwmnbhst") — un vrai nom en contient presque
+    //    toujours au moins une ;
+    //  - une suite de segments très courts séparés par des points
+    //    (ex. "l.w.z.a.fe.coa.p0.28", l'astuce « dots Gmail » des bots).
     // Les vraies adresses (thomas.bernard, marc.dupont.pro) ne matchent pas.
     const localPart = email.trim().toLowerCase().split("@")[0] ?? "";
+    const compact = localPart.replace(/\./g, "");
+    const noVowels = compact.length >= 14 && !/[aeiouy]/.test(compact);
     const segments = localPart.split(".").filter(Boolean);
     const shortSegments = segments.filter((s) => s.length <= 2).length;
     const looksBot = segments.length >= 6 && shortSegments >= 4;
-    if (honeypot || looksBot) {
+    if (honeypot || noVowels || looksBot) {
       toast.error("Merci d'entrer une adresse email valide.");
       return false;
     }
