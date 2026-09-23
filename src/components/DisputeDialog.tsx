@@ -21,6 +21,7 @@ import {
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 export const DISPUTE_REASONS: Record<string, string> = {
   objet_non_conforme: "L'objet ne correspond pas à la description",
@@ -67,7 +68,7 @@ const DisputeDialog = ({
       let photoUrl: string | null = null;
       if (file) {
         const ext = file.name.split(".").pop() ?? "jpg";
-        const path = `disputes/${reservationId}-${Date.now()}.${ext}`;
+        const path = `${user?.id}/disputes/${reservationId}-${Date.now()}.${ext}`;
         const { error: upErr } = await supabase.storage
           .from("search-images")
           .upload(path, file, { upsert: true });

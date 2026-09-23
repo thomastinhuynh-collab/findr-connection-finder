@@ -305,11 +305,7 @@ const MySpace = () => {
 
   const fetchProfile = async () => {
     if (!user) return;
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+    const { data } = await supabase.rpc("get_my_profile");
     if (data) setProfile(data as any);
   };
 

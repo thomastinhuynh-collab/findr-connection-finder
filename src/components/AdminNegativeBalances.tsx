@@ -55,12 +55,10 @@ const AdminNegativeBalances = () => {
     if (append) setLoadingMore(true);
     // Un findr reste listé tant qu'il a un solde négatif OU une retenue de versements
     // active, sinon impossible de lever la retenue une fois le solde revenu à zéro.
-    const { data: profiles, error } = await supabase
-      .from("profiles")
-      .select("user_id, full_name, negative_balance, payout_hold")
-      .or("negative_balance.gt.0,payout_hold.eq.true")
-      .order("negative_balance", { ascending: false })
-      .range(from, from + PAGE_SIZE - 1);
+    const { data: profiles, error } = await supabase.rpc("admin_negative_balance_profiles", {
+      _limit: PAGE_SIZE,
+      _offset: from,
+    });
 
     if (error) {
       toast({ title: "Erreur", description: error.message, variant: "destructive" });
