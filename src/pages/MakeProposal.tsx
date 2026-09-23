@@ -249,13 +249,13 @@ const MakeProposal = () => {
 
       // Create notification for the search owner
       await supabase
-        .rpc("create_notification" as never, {
+        .rpc("create_notification", {
           _user_id: search.user_id,
           _type: "new_proposal",
           _title: "Nouvelle proposition reçue !",
           _message: `${findrProfile?.full_name || "Un findr"} a fait une proposition de ${price}€ pour "${search.title}"`,
           _link: `/recherche/${id}`
-        } as never);
+        });
 
       // Email au buyr — un échec d'envoi ne bloque pas la proposition.
       supabase.functions

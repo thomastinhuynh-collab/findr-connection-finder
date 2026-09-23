@@ -293,13 +293,13 @@ const EditProposal = () => {
 
       // Notify the search owner about the update
       await supabase
-        .rpc("create_notification" as never, {
+        .rpc("create_notification", {
           _user_id: search.user_id,
           _type: "proposal_updated",
           _title: "Proposition mise à jour",
           _message: `Un findr a mis à jour sa proposition pour "${search.title}"`,
           _link: `/recherche/${search.id}`
-        } as never);
+        });
       
       toast({
         title: "Proposition mise à jour ! ✨",

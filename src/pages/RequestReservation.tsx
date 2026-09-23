@@ -192,13 +192,13 @@ const RequestReservation = () => {
       }
 
       // Send notification to Buyr
-      await supabase.rpc("create_notification" as never, {
+      await supabase.rpc("create_notification", {
         _user_id: search.user_id,
         _type: "reservation_request",
         _title: "Demande de réservation",
         _message: `Un findr souhaite réserver ton annonce "${search.title}" pendant ${formData.duration} jours.`,
         _link: `/recherche/${search.id}`,
-      } as never);
+      });
 
       toast({
         title: "Demande envoyée !",
