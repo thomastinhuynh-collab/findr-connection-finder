@@ -49,6 +49,7 @@ const DisputeDialog = ({
   itemTitle,
   onSubmitted,
 }: DisputeDialogProps) => {
+  const { user } = useAuth();
   const [reason, setReason] = useState("objet_non_conforme");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
