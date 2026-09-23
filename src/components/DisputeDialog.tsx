@@ -88,13 +88,13 @@ const DisputeDialog = ({
         .eq("id", reservationId);
       if (error) throw error;
 
-      await supabase.from("notifications").insert({
-        user_id: findrId,
-        type: "dispute_opened",
-        title: "⚠️ Litige ouvert sur une transaction",
-        message: `Le buyr a signalé un problème sur « ${itemTitle} » : ${DISPUTE_REASONS[reason]}. Le paiement est bloqué le temps de l'examen par l'équipe findr.`,
-        link: `/messagerie/${searchId}`,
-      });
+      await supabase.rpc("create_notification" as never, {
+        _user_id: findrId,
+        _type: "dispute_opened",
+        _title: "⚠️ Litige ouvert sur une transaction",
+        _message: `Le buyr a signalé un problème sur « ${itemTitle} » : ${DISPUTE_REASONS[reason]}. Le paiement est bloqué le temps de l'examen par l'équipe findr.`,
+        _link: `/messagerie/${searchId}`,
+      } as never);
 
       // Email au findr — non bloquant.
       supabase.functions

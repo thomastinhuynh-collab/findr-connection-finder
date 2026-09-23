@@ -327,13 +327,13 @@ const Messaging = () => {
       });
     } else {
       // Notify the recipient of the new message
-      await supabase.from("notifications").insert({
-        user_id: actualReceiverId,
-        type: "new_message",
-        title: "Nouveau message",
-        message: contentToSend.slice(0, 120),
-        link: `/messagerie/${id}?with=${user.id}`,
-      });
+      await supabase.rpc("create_notification" as never, {
+        _user_id: actualReceiverId,
+        _type: "new_message",
+        _title: "Nouveau message",
+        _message: contentToSend.slice(0, 120),
+        _link: `/messagerie/${id}?with=${user.id}`,
+      } as never);
       setMessage("");
       photos.forEach((url) => URL.revokeObjectURL(url));
       setPhotos([]);
