@@ -270,13 +270,12 @@ const ProposalList = ({
 
       // Notify the Findr that their proposal was rejected
       await supabase
-        .from("notifications")
-        .insert({
-          user_id: proposal.findr_id,
-          type: "proposal_rejected",
-          title: "Proposition refusée",
-          message: `Votre proposition pour "${proposal.title}" a été refusée.`,
-          link: "/mes-propositions"
+        .rpc("create_notification", {
+          _user_id: proposal.findr_id,
+          _type: "proposal_rejected",
+          _title: "Proposition refusée",
+          _message: `Votre proposition pour "${proposal.title}" a été refusée.`,
+          _link: "/mes-propositions"
         });
 
       toast({

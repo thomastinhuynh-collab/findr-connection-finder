@@ -453,13 +453,9 @@ const SearchDetail = () => {
   const fetchUserProfile = async () => {
     if (!user) return;
 
-    const { data } = await supabase
-      .from("profiles")
-      .select("is_premium, xp_points, stripe_onboarding_complete")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    const { data } = await supabase.rpc("get_my_profile");
 
-    setUserProfile(data);
+    setUserProfile(data as any);
   };
 
   const formatBudget = (min: number | null, max: number | null) => {

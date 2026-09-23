@@ -148,12 +148,12 @@ const ReservationCard = ({
       if (searchError) throw searchError;
 
       // Notify Findr
-      await supabase.from("notifications").insert({
-        user_id: reservation.findr_id,
-        type: "reservation_approved",
-        title: "Réservation acceptée !",
-        message: `Ta demande de réservation pour "${searchTitle}" a été acceptée pour ${selectedDuration} jours.`,
-        link: `/recherche/${reservation.search_id}`,
+      await supabase.rpc("create_notification", {
+        _user_id: reservation.findr_id,
+        _type: "reservation_approved",
+        _title: "Réservation acceptée !",
+        _message: `Ta demande de réservation pour "${searchTitle}" a été acceptée pour ${selectedDuration} jours.`,
+        _link: `/recherche/${reservation.search_id}`,
       });
 
       toast({
@@ -186,12 +186,12 @@ const ReservationCard = ({
       if (error) throw error;
 
       // Notify Findr
-      await supabase.from("notifications").insert({
-        user_id: reservation.findr_id,
-        type: "reservation_rejected",
-        title: "Réservation refusée",
-        message: `Ta demande de réservation pour "${searchTitle}" a été refusée.`,
-        link: `/recherche/${reservation.search_id}`,
+      await supabase.rpc("create_notification", {
+        _user_id: reservation.findr_id,
+        _type: "reservation_rejected",
+        _title: "Réservation refusée",
+        _message: `Ta demande de réservation pour "${searchTitle}" a été refusée.`,
+        _link: `/recherche/${reservation.search_id}`,
       });
 
       toast({

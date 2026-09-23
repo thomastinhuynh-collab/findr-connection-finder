@@ -21,6 +21,7 @@ import {
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 export const DISPUTE_REASONS: Record<string, string> = {
   objet_non_conforme: "L'objet ne correspond pas à la description",
@@ -48,6 +49,7 @@ const DisputeDialog = ({
   itemTitle,
   onSubmitted,
 }: DisputeDialogProps) => {
+  const { user } = useAuth();
   const [reason, setReason] = useState("objet_non_conforme");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -67,7 +69,7 @@ const DisputeDialog = ({
       let photoUrl: string | null = null;
       if (file) {
         const ext = file.name.split(".").pop() ?? "jpg";
-        const path = `disputes/${reservationId}-${Date.now()}.${ext}`;
+        const path = `${user?.id}/disputes/${reservationId}-${Date.now()}.${ext}`;
         const { error: upErr } = await supabase.storage
           .from("search-images")
           .upload(path, file, { upsert: true });
@@ -88,12 +90,12 @@ const DisputeDialog = ({
         .eq("id", reservationId);
       if (error) throw error;
 
-      await supabase.from("notifications").insert({
-        user_id: findrId,
-        type: "dispute_opened",
-        title: "⚠️ Litige ouvert sur une transaction",
-        message: `Le buyr a signalé un problème sur « ${itemTitle} » : ${DISPUTE_REASONS[reason]}. Le paiement est bloqué le temps de l'examen par l'équipe findr.`,
-        link: `/messagerie/${searchId}`,
+      await supabase.rpc("create_notification", {
+        _user_id: findrId,
+        _type: "dispute_opened",
+        _title: "⚠️ Litige ouvert sur une transaction",
+        _message: `Le buyr a signalé un problème sur « ${itemTitle} » : ${DISPUTE_REASONS[reason]}. Le paiement est bloqué le temps de l'examen par l'équipe findr.`,
+        _link: `/messagerie/${searchId}`,
       });
 
       // Email au findr — non bloquant.

@@ -806,6 +806,54 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_negative_balance_profiles: {
+        Args: { _limit?: number; _offset?: number }
+        Returns: {
+          full_name: string
+          negative_balance: number
+          payout_hold: boolean
+          user_id: string
+        }[]
+      }
+      create_notification: {
+        Args: {
+          _link?: string
+          _message?: string
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: string
+      }
+      get_my_profile: {
+        Args: never
+        Returns: {
+          avatar_url: string | null
+          banner_url: string | null
+          bio: string | null
+          city: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          is_findr: boolean | null
+          is_premium: boolean | null
+          level: number | null
+          negative_balance: number
+          payout_hold: boolean
+          preferred_relay_point: Json | null
+          stripe_account_id: string | null
+          stripe_onboarding_complete: boolean
+          updated_at: string
+          user_id: string
+          xp_points: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_waitlist_count: { Args: never; Returns: number }
       has_role: {
         Args: {
