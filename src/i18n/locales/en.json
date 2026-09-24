@@ -760,7 +760,9 @@
     "resetSent": "Check your inbox to reset your password.",
     "forgotPassword": "Forgot your password?",
     "noAccount": "No account yet?",
-    "hasAccount": "Already have an account?"
+    "hasAccount": "Already have an account?",
+    "googleSignIn": "Continue with Google",
+    "orDivider": "or"
   },
   "common": {
     "back": "Back",
