@@ -760,7 +760,9 @@
     "resetSent": "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
     "forgotPassword": "Mot de passe oublié ?",
     "noAccount": "Pas encore de compte ?",
-    "hasAccount": "Déjà un compte ?"
+    "hasAccount": "Déjà un compte ?",
+    "googleSignIn": "Continuer avec Google",
+    "orDivider": "ou"
   },
   "common": {
     "back": "Retour",
