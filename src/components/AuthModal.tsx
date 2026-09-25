@@ -52,8 +52,20 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
     onClose();
   };
 
+  const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (mode === "signup" && !PASSWORD_REGEX.test(password)) {
+      toast({
+        title: t("auth.signupError"),
+        description: t("auth.passwordTooWeak"),
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     if (mode === "signup") {
@@ -138,8 +150,11 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              minLength={6}
+              minLength={mode === "signup" ? 8 : 6}
             />
+            {mode === "signup" && (
+              <p className="text-xs text-muted-foreground">{t("auth.passwordRules")}</p>
+            )}
           </div>
           <Button type="submit" className="w-full btn-hero" disabled={loading}>
             {loading ? t("auth.loading") : mode === "login" ? t("auth.signIn") : t("auth.signUp")}

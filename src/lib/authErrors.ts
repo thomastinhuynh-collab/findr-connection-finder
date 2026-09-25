@@ -10,7 +10,10 @@ export const translateAuthError = (message?: string | null): string => {
     return "Un compte existe déjà avec cet email. Connecte-toi ou réinitialise ton mot de passe.";
   }
   if (m.includes("password should be at least")) {
-    return "Le mot de passe doit contenir au moins 6 caractères.";
+    return "Le mot de passe doit contenir au moins 8 caractères.";
+  }
+  if (m.includes("weak") || m.includes("easy to guess")) {
+    return "Ce mot de passe est trop faible ou trop courant. Choisis-en un autre : au moins 8 caractères, avec 1 majuscule, 1 chiffre et 1 caractère spécial (ex. ! @ # $ % & * ? . - _).";
   }
   if (m.includes("email not confirmed")) {
     return "Ton email n'a pas encore été confirmé. Vérifie ta boîte mail.";
