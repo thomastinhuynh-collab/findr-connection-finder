@@ -124,13 +124,26 @@
     @apply border-border;
   }
 
+  html,
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
+  }
+
+  /* Hero title stays on one line only on md+ screens; wraps naturally on mobile */
+  .hero-title {
+    white-space: normal;
+  }
+
+  @media (min-width: 768px) {
+    .hero-title {
+      white-space: nowrap;
+    }
   }
 
   .font-barlow {

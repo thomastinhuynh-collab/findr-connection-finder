@@ -439,6 +439,7 @@ const Hero = () => {
 
           {/* Title */}
           <h1
+            className="hero-title"
             style={{
               ...playfair,
               fontSize: "clamp(30px, 4.8vw, 46px)",
@@ -448,7 +449,6 @@ const Hero = () => {
               color: GOLD,
               margin: "0 auto 0.75rem",
               maxWidth: 1100,
-              whiteSpace: "nowrap",
             }}
           >
             {t("hero.titleLine1")}{" "}
