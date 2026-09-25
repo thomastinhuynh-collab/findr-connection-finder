@@ -739,6 +739,8 @@
   },
   "auth": {
     "signupError": "Erreur d’inscription",
+    "passwordRules": "8 caractères minimum, avec au moins 1 majuscule, 1 chiffre et 1 caractère spécial (ex. ! @ # $ % & * ? . - _)",
+    "passwordTooWeak": "Ton mot de passe doit contenir au moins 8 caractères, dont 1 majuscule, 1 chiffre et 1 caractère spécial (ex. ! @ # $ % & * ? . - _).",
     "signupSaved": "Inscription enregistrée",
     "confirmEmail": "Vérifie ta boîte mail pour confirmer ton inscription avant de te connecter",
     "signupSuccess": "Inscription réussie !",
