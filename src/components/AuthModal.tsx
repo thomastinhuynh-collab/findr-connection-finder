@@ -116,7 +116,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
             {mode === "login" ? t("auth.login") : t("auth.signup")}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4 mt-4">
           {mode === "signup" && (
             <div className="space-y-2">
               <Label htmlFor="fullName">{t("auth.fullName")}</Label>
@@ -150,7 +150,6 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              minLength={mode === "signup" ? 8 : 6}
             />
             {mode === "signup" && (
               <p className="text-xs text-muted-foreground">{t("auth.passwordRules")}</p>
