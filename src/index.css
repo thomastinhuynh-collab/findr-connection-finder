@@ -135,6 +135,17 @@
     font-family: 'Playfair Display', serif;
   }
 
+  /* Hero title stays on one line only on md+ screens; wraps naturally on mobile */
+  .hero-title {
+    white-space: normal;
+  }
+
+  @media (min-width: 768px) {
+    .hero-title {
+      white-space: nowrap;
+    }
+  }
+
   .font-barlow {
     font-family: 'Space Grotesk', sans-serif;
   }
