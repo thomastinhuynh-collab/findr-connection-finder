@@ -1,0 +1,1 @@
+DROP POLICY "Anyone can view search images" ON storage.objects;
