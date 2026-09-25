@@ -8,6 +8,7 @@ import {
   Container,
   Head,
   Heading,
+  Html,
   Img,
   Preview,
   Section,
