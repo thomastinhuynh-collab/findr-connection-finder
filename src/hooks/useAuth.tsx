@@ -21,10 +21,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // Set up auth state listener BEFORE checking session
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        // Email de bienvenue après confirmation de l'adresse (le serveur garantit un envoi unique).
+        const u = session?.user;
+        if (event === "SIGNED_IN" && u?.email_confirmed_at) {
+          const name = (u.user_metadata?.full_name || u.user_metadata?.name || "") as string;
+          setTimeout(() => {
+            supabase.functions
+              .invoke("send-transactional-email", {
+                body: { type: "welcome", userId: u.id, data: { firstName: name.split(" ")[0] } },
+              })
+              .catch((e) => console.error("welcome email failed:", e));
+          }, 0);
+        }
       }
     );
 
@@ -50,18 +62,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       },
     });
 
-    // Email de bienvenue — un échec ne doit jamais bloquer l'inscription.
-    if (!error && data.user?.id) {
-      supabase.functions
-        .invoke("send-transactional-email", {
-          body: {
-            type: "welcome",
-            userId: data.user.id,
-            data: { firstName: fullName.split(" ")[0] },
-          },
-        })
-        .catch((e) => console.error("welcome email failed:", e));
-    }
 
     return { error, session: data?.session ?? null };
   };
