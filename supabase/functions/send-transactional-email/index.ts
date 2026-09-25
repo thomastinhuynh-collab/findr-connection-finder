@@ -57,18 +57,19 @@ Deno.serve(async (req) => {
     if (!parsed.success) return json({ error: "Paramètres invalides" }, 400);
     const { type, userId, data } = parsed.data;
 
-    if (!internal && !caller) {
-      // Seul l'email de bienvenue peut être déclenché sans session (inscription
-      // avec confirmation d'email) et uniquement pour un compte tout juste créé.
-      if (type !== "welcome") return json({ error: "Non authentifié" }, 401);
+    if (!internal && !caller) return json({ error: "Non authentifié" }, 401);
+
+    if (type === "welcome") {
+      // Bienvenue : uniquement pour soi-même, après confirmation de l'email, une seule fois.
+      if (!internal && caller!.id !== userId) return json({ error: "Interdit" }, 403);
       const { data: target } = await admin.auth.admin.getUserById(userId);
-      const createdAt = target?.user?.created_at
-        ? new Date(target.user.created_at).getTime()
-        : 0;
-      if (!createdAt || Date.now() - createdAt > 10 * 60 * 1000) {
-        return json({ error: "Non authentifié" }, 401);
-      }
+      if (!target?.user?.email_confirmed_at) return json({ sent: false });
+      const { error: claimErr } = await admin
+        .from("welcome_emails_sent")
+        .insert({ user_id: userId });
+      if (claimErr) return json({ sent: false }); // déjà envoyé
     }
+
 
 
     // L'envoi ne doit jamais faire échouer l'appelant : on répond toujours 200.
