@@ -739,6 +739,8 @@
   },
   "auth": {
     "signupError": "Sign-up error",
+    "passwordRules": "At least 8 characters, with 1 uppercase letter, 1 digit and 1 special character (e.g. ! @ # $ % & * ? . - _)",
+    "passwordTooWeak": "Your password must be at least 8 characters long, with 1 uppercase letter, 1 digit and 1 special character (e.g. ! @ # $ % & * ? . - _).",
     "signupSaved": "Sign-up received",
     "confirmEmail": "Check your inbox and confirm your email before signing in",
     "signupSuccess": "Account created!",
