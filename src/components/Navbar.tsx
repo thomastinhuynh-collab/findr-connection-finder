@@ -1,20 +1,10 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Menu, X, LogOut, User } from "lucide-react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Logo from "@/components/Logo";
 import AuthModal from "@/components/AuthModal";
-import CategoryNav from "@/components/CategoryNav";
-import { useAuth } from "@/hooks/useAuth";
 import HeaderActions from "@/components/HeaderActions";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Logo from "@/components/Logo";
+import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 
 const navLinks = [
@@ -27,241 +17,118 @@ const navLinks = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { t } = useTranslation();
-  const isHomePage = location.pathname === "/";
-  const isDetailPage = location.pathname.startsWith("/recherche/");
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 80);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  if (location.pathname === "/") return null;
 
-  if (isHomePage) return null;
-
-
-  // Homepage style: transparent/dark background with cream logo
-  // Other pages style: cream/white background with navy logo and links
-  const isLightMode = !isHomePage;
-
-  const navBackground = isHomePage
-    ? {
-        backgroundColor: scrolled ? 'hsla(224, 67%, 19%, 0.95)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(10px)' : 'none',
-        WebkitBackdropFilter: scrolled ? 'blur(10px)' : 'none',
-        boxShadow: scrolled ? '0 2px 20px rgba(7, 14, 66, 0.15)' : 'none',
-        borderBottom: scrolled ? '1px solid hsla(222, 37%, 36%, 0.3)' : '1px solid transparent',
-      }
-    : {
-        backgroundColor: '#F5F0EA',
-        backdropFilter: 'none',
-        WebkitBackdropFilter: 'none',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-        borderBottom: '1px solid rgba(7, 14, 66, 0.08)',
-      };
-
-  const logoVariant = isLightMode ? "navy" : "cream";
-  const linkColorClass = isLightMode 
-    ? "text-[#070E42]/80 hover:text-[#070E42]" 
-    : "text-cream/80 hover:text-cream";
-  const mobileMenuBg = isLightMode ? "bg-[#F5F0EA]" : "bg-transparent";
-  const mobileLinkColor = isLightMode
-    ? "text-[#070E42]/80 hover:text-[#070E42]"
-    : "text-cream/80 hover:text-cream";
-  const mobileMenuBorder = isLightMode
-    ? "border-[#070E42]/20"
-    : "border-cream/20";
+  const openMySpace = () => {
+    if (user) {
+      navigate("/mon-espace");
+      return;
+    }
+    setAuthModalOpen(true);
+  };
 
   return (
     <>
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out"
-        style={navBackground}
-      >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link to="/" className="flex items-center group ml-8">
-              <Logo variant={logoVariant} size={34} />
+      <header className="fixed inset-x-0 top-0 z-50 bg-gradient-to-b from-navy-primary to-secondary shadow-lg">
+        <div className="mx-auto max-w-[1280px]">
+          <nav className="flex items-center justify-between gap-10 border-b border-accent/10 px-4 py-5 md:px-8">
+            <Link to="/" className="shrink-0 no-underline" aria-label={t("nav.home", { defaultValue: "Accueil" })}>
+              <Logo size={34} />
             </Link>
 
-            {/* Desktop Nav Links */}
-            <div className="hidden md:flex items-center gap-6">
+            <div className="hidden flex-1 items-center justify-center gap-8 md:flex">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`text-sm font-medium transition-colors ${linkColorClass}`}
+                  className="text-[13px] font-normal text-accent/75 transition-colors hover:text-accent"
                 >
                   {t(`nav.${link.key}`)}
                 </Link>
               ))}
             </div>
 
-            {/* Desktop CTA */}
-            <div className="hidden md:flex items-center gap-2">
-              {user ? (
-                <>
-                  <HeaderActions variant={isLightMode ? "navy" : "gold"} />
-                  <Button
-                    size="sm"
-                    className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full"
-                    onClick={() => navigate("/poster")}
-                  >
-                    {t("nav.postSearch")}
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className={`font-semibold rounded-full ${
-                          isLightMode
-                            ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
-                            : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
-                        }`}
-                      >
-                        {t("nav.mySpace")}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      align="end"
-                      className="bg-[#F5F0EA] border-[#070E42]/10 text-[#070E42] min-w-[180px]"
-                    >
-                      <DropdownMenuItem
-                        className="cursor-pointer focus:bg-[#D9BB87]/20 focus:text-[#070E42]"
-                        onClick={() => navigate("/mon-espace")}
-                      >
-                        <User className="w-4 h-4 mr-2" />
-                        {t("nav.mySpace")}
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator className="bg-[#070E42]/10" />
-                      <DropdownMenuItem
-                        className="cursor-pointer focus:bg-[#D9BB87]/20 focus:text-[#070E42]"
-                        onClick={async () => {
-                          await signOut();
-                          navigate("/");
-                        }}
-                      >
-                        <LogOut className="w-4 h-4 mr-2" />
-                        {t("nav.logout")}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </>
-              ) : (
-                <Button
-                  size="sm"
-                  className={`bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full ${isDetailPage ? 'animate-[pulse-subtle_2s_ease-in-out_infinite]' : ''}`}
-                  onClick={() => setAuthModalOpen(true)}
-                >
-                   {isDetailPage ? t("nav.createFreeAccount") : t("nav.joinWaitlist")}
-                </Button>
-              )}
-              <LanguageSwitcher variant={isLightMode ? "navy" : "gold"} />
+            <div className="hidden shrink-0 items-center gap-3 md:flex">
+              {user && <HeaderActions variant="gold" />}
+              <button
+                type="button"
+                onClick={() => navigate("/poster")}
+                className="rounded-full border border-accent/40 bg-transparent px-5 py-[9px] text-[13px] font-normal text-accent transition-colors hover:border-accent hover:bg-accent/10"
+              >
+                {t("nav.postSearch")}
+              </button>
+              <button
+                type="button"
+                onClick={openMySpace}
+                className="rounded-full bg-accent px-[22px] py-[9px] text-[13px] font-medium text-accent-foreground transition-colors hover:bg-accent/90"
+              >
+                {t("nav.mySpace")}
+              </button>
+              <LanguageSwitcher variant="gold" />
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden ml-auto mr-1">
-              <LanguageSwitcher variant={isLightMode ? "navy" : "gold"} />
-            </div>
             {user && (
-              <div className="md:hidden mr-1">
-                <HeaderActions variant={isLightMode ? "navy" : "gold"} />
+              <div className="ml-auto md:hidden">
+                <HeaderActions variant="gold" />
               </div>
             )}
+            <div className={`${user ? "" : "ml-auto"} md:hidden`}>
+              <LanguageSwitcher variant="gold" />
+            </div>
             <button
-              className={`md:hidden p-2 ${isLightMode ? 'text-[#070E42]' : 'text-cream'}`}
-              onClick={() => setIsOpen(!isOpen)}
+              type="button"
+              className="p-1 text-[22px] leading-none text-accent md:hidden"
+              onClick={() => setIsOpen((open) => !open)}
+              aria-label={t("nav.menu")}
+              aria-expanded={isOpen}
             >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isOpen ? "×" : "≡"}
             </button>
-          </div>
+          </nav>
 
-          {/* Mobile Menu */}
           {isOpen && (
-            <div className={`md:hidden py-4 border-t ${mobileMenuBorder} animate-slide-up ${mobileMenuBg}`}>
-              <div className="flex flex-col gap-4">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className={`text-sm font-medium transition-colors ${mobileLinkColor}`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {t(`nav.${link.key}`)}
-                  </Link>
-                ))}
-                {user ? (
-                  <>
-                    <Button
-                      size="sm"
-                      className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full w-full mt-2"
-                      onClick={() => {
-                        setIsOpen(false);
-                        navigate("/poster");
-                      }}
-                    >
-                      {t("nav.postSearch")}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className={`font-semibold rounded-full w-full ${
-                        isLightMode
-                          ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
-                          : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
-                      }`}
-                      onClick={() => {
-                        setIsOpen(false);
-                        navigate("/mon-espace");
-                      }}
-                    >
-                      {t("nav.mySpace")}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className={`font-semibold rounded-full w-full ${
-                        isLightMode
-                          ? "border-[#070E42] text-[#070E42] bg-transparent hover:bg-[#070E42] hover:text-[#F5F0EA]"
-                          : "border-cream text-cream bg-transparent hover:bg-cream hover:text-[#070E42]"
-                      }`}
-                      onClick={async () => {
-                        setIsOpen(false);
-                        await signOut();
-                        navigate("/");
-                      }}
-                    >
-                      {t("nav.logout")}
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    size="sm"
-                    className="bg-[#D9BB87] text-[#070E42] hover:bg-[#D9BB87]/90 font-semibold rounded-full w-full mt-2"
-                    onClick={() => {
-                      setIsOpen(false);
-                      setAuthModalOpen(true);
-                    }}
-                  >
-                     {t("nav.joinWaitlist")}
-                  </Button>
-                )}
+            <div className="flex flex-col gap-[14px] border-b border-accent/10 px-8 py-4 md:hidden">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={() => setIsOpen(false)}
+                  className="text-sm text-accent/85 transition-colors hover:text-accent"
+                >
+                  {t(`nav.${link.key}`)}
+                </Link>
+              ))}
+              <div className="mt-1 flex gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    navigate("/poster");
+                  }}
+                  className="flex-1 rounded-full border border-accent/40 bg-transparent px-[18px] py-[9px] text-[13px] text-accent"
+                >
+                  {t("nav.postSearchShort")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    openMySpace();
+                  }}
+                  className="flex-1 rounded-full bg-accent px-5 py-[9px] text-[13px] font-medium text-accent-foreground"
+                >
+                  {t("nav.mySpace")}
+                </button>
               </div>
             </div>
           )}
         </div>
-      </nav>
-      {isHomePage && (
-        <div className="fixed top-16 left-0 right-0 z-40">
-          <CategoryNav />
-        </div>
-      )}
+      </header>
 
       <AuthModal
         isOpen={authModalOpen}
