@@ -225,7 +225,7 @@ const HowItWorksPage = () => {
               <button
                 key={a.key}
                 onClick={() => goTo(a.key)}
-                className="whitespace-nowrap font-barlow"
+                className="whitespace-nowrap font-sans"
                 style={{
                   fontSize: 10.5,
                   letterSpacing: "0.16em",
