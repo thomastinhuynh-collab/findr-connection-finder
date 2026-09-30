@@ -34,7 +34,7 @@ const stepKeys = ["s1", "s2", "s3", "s4", "s5", "s6", "s7"];
 const etiquetteKeys = ["r1", "r2", "r3", "r4", "r5", "r6"];
 
 const Dash = ({ children }: { children: React.ReactNode }) => (
-  <li className="flex gap-3" style={{ color: "#4B5563", fontSize: 13.5, lineHeight: 1.65 }}>
+  <li className="flex gap-3 font-sans" style={{ color: "#4B5563", fontSize: 13.5, lineHeight: 1.65 }}>
     <span style={{ color: GOLD, flexShrink: 0 }}>—</span>
     <span>{children}</span>
   </li>
@@ -113,12 +113,11 @@ const HowItWorksPage = () => {
           </span>
           <span className="flex-1 min-w-0">
             <span
-              className="block font-barlow"
+              className="block font-display"
               style={{
-                fontSize: 14,
+                fontSize: 19,
                 fontWeight: 600,
-                letterSpacing: "0.16em",
-                textTransform: "uppercase",
+                letterSpacing: 0,
                 fontStyle: "normal",
                 color: NAVY,
                 lineHeight: 1.35,
@@ -128,7 +127,7 @@ const HowItWorksPage = () => {
             </span>
             {summary && (
               <span
-                className="block"
+                className="block font-sans"
                 style={{
                   fontSize: 10.5,
                   letterSpacing: "0.12em",
@@ -174,7 +173,7 @@ const HowItWorksPage = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#FFFFFF" }}>
+    <div className="min-h-screen font-sans" style={{ backgroundColor: "#FFFFFF" }}>
       <Navbar />
 
       {/* Hero */}
@@ -182,18 +181,17 @@ const HowItWorksPage = () => {
         style={{ backgroundColor: NAVY, paddingTop: 56 + 64, paddingBottom: 48 }}
       >
         <div className="text-center" style={{ maxWidth: 900, margin: "0 auto", padding: "0 24px" }}>
-          <p style={{ color: GOLD, fontSize: 11, letterSpacing: "0.22em", marginBottom: 14 }}>
+          <p className="font-barlow" style={{ color: GOLD, fontSize: 11, letterSpacing: "0.22em", marginBottom: 14 }}>
             {t("howItWorks.eyebrow")}
           </p>
           <h1
-            className="font-barlow"
+            className="font-display"
             style={{
-              fontSize: 26,
+              fontSize: 42,
               fontWeight: 600,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
+              letterSpacing: 0,
               color: "#F5F1E8",
-              lineHeight: 1.3,
+              lineHeight: 1.15,
             }}
           >
             {t("howItWorks.title")}
@@ -206,7 +204,7 @@ const HowItWorksPage = () => {
               margin: "18px auto",
             }}
           />
-          <p style={{ color: "rgba(245,241,232,0.7)", fontSize: 14.5 }}>
+           <p className="font-sans" style={{ color: "rgba(245,241,232,0.7)", fontSize: 14.5 }}>
             {t("howItWorks.subtitle")}
           </p>
         </div>
@@ -227,7 +225,7 @@ const HowItWorksPage = () => {
               <button
                 key={a.key}
                 onClick={() => goTo(a.key)}
-                className="whitespace-nowrap"
+                className="whitespace-nowrap font-barlow"
                 style={{
                   fontSize: 10.5,
                   letterSpacing: "0.16em",
@@ -406,6 +404,7 @@ const HowItWorksPage = () => {
         <div className="text-center" style={{ marginTop: 56 }}>
           <Link
             to="/poster"
+            className="font-barlow"
             style={{
               display: "inline-block",
               border: `1px solid ${NAVY}`,
