@@ -59,6 +59,7 @@
     
     /* Enhanced Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(233 81% 14%) 0%, hsl(222 37% 36%) 100%);
+    --gradient-navigation: linear-gradient(180deg, #070E42 0%, #0F1F3D 100%);
     --gradient-card: linear-gradient(180deg, hsl(42 25% 98%) 0%, hsl(42 20% 95%) 100%);
     --gradient-gold: linear-gradient(135deg, hsl(38 52% 69%) 0%, hsl(38 60% 75%) 100%);
     --gradient-warm: linear-gradient(135deg, hsl(42 33% 94%) 0%, hsl(22 22% 88%) 100%);
@@ -152,6 +153,10 @@
 }
 
 @layer components {
+  .findr-navigation-bg {
+    background: var(--gradient-navigation);
+  }
+
   .findr-logo {
     font-family: 'Space Grotesk', sans-serif;
     @apply font-bold tracking-tight;
