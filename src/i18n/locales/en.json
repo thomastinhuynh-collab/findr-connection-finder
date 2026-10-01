@@ -33,7 +33,11 @@
         "eyebrow": "Become a buyr",
         "title": "You've been looking for it for months. We'll find it.",
         "subtitle": "That exact piece you can never track down on the usual sites — describe it, then let a community of enthusiasts do the searching for you.",
-        "cta": "Post my search"
+        "cta": "Post my search",
+        "secondaryLink": "See how it works →"
+      },
+      "image": {
+        "alt": "Photo illustrating the exact vintage item you're looking for"
       },
       "sections": {
         "s1": {
@@ -68,7 +72,11 @@
         "eyebrow": "Become a findr",
         "title": "You can spot the right piece at a glance. Turn it into a real activity.",
         "subtitle": "Buyrs are looking for exactly what you know how to find. Propose, sell and get paid — securely.",
-        "cta": "Browse active searches"
+        "cta": "Browse active searches",
+        "secondaryLink": "See how it works →"
+      },
+      "image": {
+        "alt": "Photo illustrating a hunter unearthing a sought-after vintage piece"
       },
       "sections": {
         "s1": {
