@@ -19,7 +19,7 @@ const Navbar = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { t } = useTranslation();
 
   if (location.pathname === "/") return null;
@@ -30,6 +30,11 @@ const Navbar = () => {
       return;
     }
     setAuthModalOpen(true);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
   };
 
   return (
@@ -69,6 +74,15 @@ const Navbar = () => {
               >
                 {t("nav.mySpace")}
               </button>
+              {user && (
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="text-[13px] font-normal text-accent/75 transition-colors hover:text-accent"
+                >
+                  {t("nav.logout")}
+                </button>
+              )}
               <LanguageSwitcher variant="gold" />
             </div>
 
@@ -125,6 +139,18 @@ const Navbar = () => {
                   {t("nav.mySpace")}
                 </button>
               </div>
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    handleSignOut();
+                  }}
+                  className="self-start text-[13px] font-normal text-accent/75 transition-colors hover:text-accent"
+                >
+                  {t("nav.logout")}
+                </button>
+              )}
             </div>
           )}
         </div>
