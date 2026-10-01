@@ -3,12 +3,16 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import usePageMeta from "@/hooks/usePageMeta";
+import bannerBuyr from "@/assets/banner-je-deviens-buyr.jpg.asset.json";
+import bannerFindr from "@/assets/banner-je-deviens-findr.jpg.asset.json";
 
 type Role = "buyr" | "findr";
 
-// Placeholder neutre (bandeau couleur unie) — à remplacer par la vraie photo (src uniquement).
-const PLACEHOLDER_IMAGE =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='800' preserveAspectRatio='none'%3E%3Crect width='1920' height='800' fill='%23DACAC2'/%3E%3C/svg%3E";
+// Bandeau photo par rôle (hébergé sur le CDN du projet).
+const ROLE_BANNERS: Record<Role, string> = {
+  buyr: bannerBuyr.url,
+  findr: bannerFindr.url,
+};
 
 interface RoleLandingPageProps {
   role: Role;
