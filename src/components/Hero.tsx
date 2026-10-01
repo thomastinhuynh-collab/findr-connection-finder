@@ -13,8 +13,8 @@ const DARK = "#070E42";
 
 const navLinks = [
   { key: "howItWorks", to: "/comment-ca-marche" },
-  { key: "becomeBuyr", to: "/poster" },
-  { key: "becomeFindr", to: "/recherches" },
+  { key: "becomeBuyr", to: "/je-deviens-buyr" },
+  { key: "becomeFindr", to: "/je-deviens-findr" },
   { key: "blog", to: "/blog" },
 ];
 

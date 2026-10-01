@@ -23,6 +23,82 @@
     "ctaPost": "Post a search",
     "ctaFindr": "Become a findr"
   },
+  "roleLanding": {
+    "buyr": {
+      "meta": {
+        "title": "Finally find the item you've been looking for — findr",
+        "description": "Describe the hard-to-find item you want and let a community of hunters take care of it. Secure payment, held until delivery."
+      },
+      "hero": {
+        "eyebrow": "Become a buyr",
+        "title": "You've been looking for it for months. We'll find it.",
+        "subtitle": "That exact piece you can never track down on the usual sites — describe it, then let a community of enthusiasts do the searching for you.",
+        "cta": "Post my search"
+      },
+      "sections": {
+        "s1": {
+          "title": "The problem you already know",
+          "p1": "You've spent hours refreshing Vinted or Leboncoin, hoping the right listing will appear. On those platforms, you're limited to what sellers decide to post, whenever they feel like it. If nobody lists what you want this week, you wait. Then wait again the week after that.",
+          "p2": "findr works the other way around: instead of waiting for a listing to appear, you describe exactly what you want and hunters come to you with what they find."
+        },
+        "s2": {
+          "title": "How it works in practice",
+          "p1": "Post your search with a precise description, a budget range and reference photos if you have them. findrs who know their field — flea markets, specialist sites and collector networks — send proposals with the item they found, a real photo and a price. Compare them, choose the one that suits you and proceed to payment."
+        },
+        "s3": {
+          "title": "Your money stays put until your item arrives",
+          "p1": "This is non-negotiable: your payment is held while the item makes its way to you. You have time to inspect it and confirm delivery. If anything is wrong, you can report the problem before the funds are released to the findr — not afterwards."
+        }
+      },
+      "example": {
+        "label": "Illustrative example",
+        "text": "Imagine you've been searching for a 1980s Levi's denim jacket in a specific cut and size M for six months. The usual sites show dozens of Levi's jackets, but never the right cut or size. On findr, you post exactly what you want — including every detail that matters to you — and a sharp-eyed hunter could spot it at a flea market the following week."
+      },
+      "closing": {
+        "title": "Ready to stop waiting?",
+        "cta": "Post my search →"
+      }
+    },
+    "findr": {
+      "meta": {
+        "title": "Turn your passion for hunting into income — become a findr",
+        "description": "Have an eye for rare pieces? Answer real buyer requests and earn money on every sale."
+      },
+      "hero": {
+        "eyebrow": "Become a findr",
+        "title": "You can spot the right piece at a glance. Turn it into a real activity.",
+        "subtitle": "Buyrs are looking for exactly what you know how to find. Propose, sell and get paid — securely.",
+        "cta": "Browse active searches"
+      },
+      "sections": {
+        "s1": {
+          "title": "Put the talent you already have to work",
+          "p1": "If you're the person who spots the perfect vintage piece in the middle of a flea market, or can tell a genuinely rare edition from a reprint, you already have the most important skill a findr needs. Unlike traditional resale, you no longer hunt blindly and hope someone wants your find — you know a buyer and their stated budget are waiting before you even start looking."
+        },
+        "s2": {
+          "title": "How it works, and what you earn",
+          "p1": "Browse searches posted by buyrs in the categories you know. When you find the item a buyr wants, send a proposal with a real photo and your price. If they accept, the platform takes a 4% fee from your payout — the rest is yours, paid once the buyr confirms the item arrived safely.",
+          "p2": "In practice: on an item sold for €100, you receive €96 once the transaction is confirmed."
+        },
+        "s3": {
+          "title": "What makes a strong proposal",
+          "p1": "Buyrs comparing several proposals nearly always choose one with real photos of the actual item — not an image found online — an honest condition description and a price that matches the request. Trust builds quickly on findr, and a profile with strong reviews stands out more easily on future searches."
+        },
+        "s4": {
+          "title": "Reserve a search while you confirm your find",
+          "p1": "If you have a strong lead but need a few days to confirm it — perhaps a meeting with a seller or a trip — you can reserve the search and temporarily set it aside from other findrs while you finalise your proposal."
+        }
+      },
+      "example": {
+        "label": "Illustrative example",
+        "text": "Imagine a search for a specific 1999 Pokémon card in near-mint condition, with a stated budget of €150 to €200. You happen to have one in your collection in exactly that condition. You make a proposal, the buyr accepts, and you receive payment as soon as delivery is confirmed — without ever having to look for a buyer yourself."
+      },
+      "closing": {
+        "title": "Buyrs are already waiting for you.",
+        "cta": "Browse active searches →"
+      }
+    }
+  },
   "card": {
     "budget": "Budget",
     "budgetUndefined": "Not set",
