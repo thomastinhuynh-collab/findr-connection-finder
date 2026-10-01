@@ -34,7 +34,7 @@ const Navbar = () => {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 bg-gradient-to-b from-navy-primary to-secondary shadow-lg">
+      <header className="findr-navigation-bg fixed inset-x-0 top-0 z-50 shadow-lg">
         <div className="mx-auto max-w-[1280px]">
           <nav className="flex items-center justify-between gap-10 border-b border-accent/10 px-4 py-5 md:px-8">
             <Link to="/" className="shrink-0 no-underline" aria-label={t("nav.home", { defaultValue: "Accueil" })}>
