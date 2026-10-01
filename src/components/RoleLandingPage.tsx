@@ -59,7 +59,7 @@ const RoleLandingPage = ({ role, destination, sectionCount }: RoleLandingPagePro
         </section>
 
         <img
-          src={PLACEHOLDER_IMAGE}
+          src={ROLE_BANNERS[role]}
           alt={t(`${baseKey}.image.alt`)}
           className="h-[280px] w-full object-cover md:h-[400px]"
         />
