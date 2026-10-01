@@ -139,6 +139,18 @@ const Navbar = () => {
                   {t("nav.mySpace")}
                 </button>
               </div>
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    handleSignOut();
+                  }}
+                  className="self-start text-[13px] font-normal text-accent/75 transition-colors hover:text-accent"
+                >
+                  {t("nav.logout")}
+                </button>
+              )}
             </div>
           )}
         </div>
