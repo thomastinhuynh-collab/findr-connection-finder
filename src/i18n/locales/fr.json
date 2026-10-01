@@ -33,7 +33,11 @@
         "eyebrow": "Je deviens buyr",
         "title": "Tu la cherches depuis des mois. Nous, on va la trouver.",
         "subtitle": "Cette pièce précise que tu n'arrives jamais à dénicher sur les sites habituels — décris-la, et laisse une communauté de passionnés faire le travail à ta place.",
-        "cta": "Poster ma recherche"
+        "cta": "Poster ma recherche",
+        "secondaryLink": "Voir comment ça marche →"
+      },
+      "image": {
+        "alt": "Photo illustrant l'objet vintage précis que tu cherches"
       },
       "sections": {
         "s1": {
@@ -68,7 +72,11 @@
         "eyebrow": "Je deviens findr",
         "title": "Tu sais repérer la bonne pièce au premier coup d'œil. Fais-en une vraie activité.",
         "subtitle": "Des buyrs cherchent précisément ce que tu sais trouver. Propose, vends, encaisse — en toute sécurité.",
-        "cta": "Parcourir les recherches actives"
+        "cta": "Parcourir les recherches actives",
+        "secondaryLink": "Voir comment ça marche →"
+      },
+      "image": {
+        "alt": "Photo illustrant un chineur dénichant une pièce vintage recherchée"
       },
       "sections": {
         "s1": {

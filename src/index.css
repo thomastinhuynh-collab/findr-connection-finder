@@ -10,7 +10,7 @@
     /* #070E42 - Navy Primary */
     /* #3B507D - Navy Secondary */
     /* #F5F0EA - Cream Background */
-    /* #D9BD8B - Gold Accent */
+    /* #D9BB87 - Gold Accent */
     /* #DACAC2 - Warm Neutral */
 
     --background: 42 33% 94%; /* #F5F0EA Cream */
@@ -31,7 +31,7 @@
     --muted: 22 22% 81%; /* #DACAC2 Warm Neutral */
     --muted-foreground: 224 40% 40%;
 
-    --accent: 38 52% 69%; /* #D9BD8B Gold */
+    --accent: 38 52% 69%; /* #D9BB87 Gold */
     --accent-foreground: 233 81% 14%;
 
     --destructive: 0 84% 60%;
@@ -47,7 +47,7 @@
     --navy-primary: 233 81% 14%; /* #070E42 */
     --navy-secondary: 222 37% 36%; /* #3B507D */
     --cream: 42 33% 94%; /* #F5F0EA */
-    --gold: 38 52% 69%; /* #D9BD8B */
+    --gold: 38 52% 69%; /* #D9BB87 */
     --warm-neutral: 22 22% 81%; /* #DACAC2 */
     --blog-body-muted: 0 0% 40%; /* #666666 */
     
