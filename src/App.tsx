@@ -27,6 +27,8 @@ const UserEvaluations = lazy(() => import("./pages/UserEvaluations"));
 const Premium = lazy(() => import("./pages/Premium"));
 const RequestReservation = lazy(() => import("./pages/RequestReservation"));
 const HowItWorksPage = lazy(() => import("./pages/HowItWorksPage"));
+const BecomeBuyrPage = lazy(() => import("./pages/BecomeBuyrPage"));
+const BecomeFindrPage = lazy(() => import("./pages/BecomeFindrPage"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const LegalNotice = lazy(() => import("./pages/LegalNotice"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -74,6 +76,8 @@ const App = () => (
               <Route path="/premium" element={<Premium />} />
               <Route path="/reservation/:id" element={<RequestReservation />} />
               <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
+              <Route path="/je-deviens-buyr" element={<BecomeBuyrPage />} />
+              <Route path="/je-deviens-findr" element={<BecomeFindrPage />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/mentions-legales" element={<LegalNotice />} />
               <Route path="/cgu" element={<Terms />} />

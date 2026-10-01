@@ -23,6 +23,82 @@
     "ctaPost": "Poster une recherche",
     "ctaFindr": "Devenir findr"
   },
+  "roleLanding": {
+    "buyr": {
+      "meta": {
+        "title": "Trouve enfin l'objet que tu cherches depuis des mois — findr",
+        "description": "Décris l'objet introuvable que tu cherches, une communauté de chineurs s'en occupe. Paiement sécurisé, bloqué jusqu'à réception."
+      },
+      "hero": {
+        "eyebrow": "Je deviens buyr",
+        "title": "Tu la cherches depuis des mois. Nous, on va la trouver.",
+        "subtitle": "Cette pièce précise que tu n'arrives jamais à dénicher sur les sites habituels — décris-la, et laisse une communauté de passionnés faire le travail à ta place.",
+        "cta": "Poster ma recherche"
+      },
+      "sections": {
+        "s1": {
+          "title": "Le problème que tu connais déjà",
+          "p1": "Tu as déjà passé des heures à rafraîchir Vinted ou Leboncoin, en espérant tomber sur LA bonne annonce. Le problème, c'est que sur ces plateformes, tu es à la merci de ce que les vendeurs décident de publier, quand ça leur chante. Si personne ne met en vente ce que tu cherches cette semaine, tu attends. Et la semaine d'après. Et celle d'après encore.",
+          "p2": "findr fonctionne à l'envers : au lieu d'attendre qu'une annonce apparaisse, tu décris précisément ce que tu veux, et ce sont les chineurs qui viennent à toi avec leurs trouvailles."
+        },
+        "s2": {
+          "title": "Comment ça se passe concrètement",
+          "p1": "Tu publies ta recherche avec une description précise, une fourchette de budget, et des photos de référence si tu en as. Des findrs qui connaissent leur domaine — brocantes, sites spécialisés, réseaux de collectionneurs — te font des propositions avec l'objet qu'ils ont trouvé, une photo réelle et un prix. Tu compares, tu choisis celle qui te convient, et tu passes au paiement."
+        },
+        "s3": {
+          "title": "Ton argent ne part nulle part tant que tu n'as pas ton objet",
+          "p1": "C'est le point sur lequel on ne transige pas : l'argent que tu payes reste bloqué le temps que l'objet arrive chez toi. Tu as un délai pour vérifier et confirmer la réception. Si quelque chose cloche, tu peux signaler un problème avant que les fonds ne soient versés au findr — pas après."
+        }
+      },
+      "example": {
+        "label": "Exemple illustratif",
+        "text": "Imagine : tu cherches une veste en jean Levi's des années 80, dans une coupe précise, en taille M, depuis six mois. Sur les sites classiques, tu tombes sur des dizaines de vestes Levi's, mais jamais la bonne coupe, ou jamais la bonne taille. Sur findr, tu postes exactement ce que tu veux — y compris les détails qui comptent pour toi — et un chineur qui a l'œil pour ce genre de pièce peut tomber dessus en brocante la semaine suivante."
+      },
+      "closing": {
+        "title": "Prêt à arrêter d'attendre ?",
+        "cta": "Poster ma recherche →"
+      }
+    },
+    "findr": {
+      "meta": {
+        "title": "Transforme ta passion de la chine en revenu — devenir findr",
+        "description": "Tu as l'œil pour dénicher des pièces rares ? Réponds à de vraies demandes d'acheteurs et touche une commission sur chaque vente."
+      },
+      "hero": {
+        "eyebrow": "Je deviens findr",
+        "title": "Tu sais repérer la bonne pièce au premier coup d'œil. Fais-en une vraie activité.",
+        "subtitle": "Des buyrs cherchent précisément ce que tu sais trouver. Propose, vends, encaisse — en toute sécurité.",
+        "cta": "Parcourir les recherches actives"
+      },
+      "sections": {
+        "s1": {
+          "title": "Le talent que tu as déjà, enfin rentabilisé",
+          "p1": "Si tu es du genre à repérer la bonne pièce vintage au milieu d'un vide-grenier, ou à savoir reconnaître une vraie édition rare d'une réimpression, tu as déjà la compétence la plus importante pour devenir findr. La différence avec la revente classique, c'est que tu ne pars plus à l'aveugle en espérant que quelqu'un veuille acheter ce que tu as trouvé — tu sais déjà qu'un acheteur t'attend, avec un budget annoncé, avant même de commencer à chercher."
+        },
+        "s2": {
+          "title": "Comment ça marche, et combien ça rapporte",
+          "p1": "Tu parcours les recherches publiées par les buyrs dans les catégories qui te parlent. Quand tu trouves l'objet qu'un buyr cherche, tu fais une proposition avec une photo réelle et ton prix. S'il accepte, la commission de la plateforme est de 4% prélevée sur ton versement — le reste est à toi, versé dès que le buyr confirme avoir bien reçu l'objet.",
+          "p2": "Concrètement : pour un objet vendu 100€, tu touches 96€, une fois la transaction confirmée."
+        },
+        "s3": {
+          "title": "Ce qui fait une bonne proposition",
+          "p1": "Les buyrs qui reçoivent plusieurs propositions choisissent presque toujours celle qui a de vraies photos de l'objet réel (pas une image trouvée sur internet), une description honnête de l'état, et un prix cohérent avec ce qui a été demandé. La confiance se construit vite sur findr — un profil avec de bons avis attire plus facilement l'attention sur les prochaines recherches."
+        },
+        "s4": {
+          "title": "Réserver une recherche le temps de confirmer ta trouvaille",
+          "p1": "Si tu repères une piste sérieuse mais que tu as besoin de quelques jours pour la confirmer (un rendez-vous chez un vendeur, un déplacement), tu peux réserver la recherche pour l'écarter temporairement des autres findrs, le temps de finaliser ta proposition."
+        }
+      },
+      "example": {
+        "label": "Exemple illustratif",
+        "text": "Imagine : une recherche est postée pour une carte Pokémon précise, édition 1999, état proche du neuf, avec un budget annoncé de 150 à 200€. Tu en as justement une dans ta collection, dans l'état demandé. Tu proposes, le buyr accepte, et tu touches ton paiement dès qu'il confirme la réception — sans jamais avoir eu besoin de chercher un acheteur toi-même."
+      },
+      "closing": {
+        "title": "Des buyrs t'attendent déjà.",
+        "cta": "Parcourir les recherches actives →"
+      }
+    }
+  },
   "card": {
     "budget": "Budget",
     "budgetUndefined": "Non défini",
