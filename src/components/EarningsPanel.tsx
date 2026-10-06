@@ -9,7 +9,7 @@ const PAGE_SIZE = 20;
 const PENDING_STATUSES = ["paye_en_attente_reception", "expedie", "livre", "versement_en_revue"] as const;
 
 interface PaidRow { id: string; amount: number; created_at: string; title: string | null }
-interface PendingRow { id: string; amount: number; status: string; search_id: string; title: string | null }
+interface PendingRow { id: string; amount: number; status: string; delivery_type: string | null; search_id: string; title: string | null }
 
 interface Props { userId: string; paymentsConfigured: boolean }
 
@@ -67,7 +67,7 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
         supabase.from("transactions").select("amount").eq("findr_id", userId),
         supabase
           .from("reservations")
-          .select("id, findr_payout_amount, payment_status, search_id, proposal_id")
+          .select("id, findr_payout_amount, payment_status, delivery_type, search_id, proposal_id")
           .eq("findr_id", userId)
           .in("payment_status", [...PENDING_STATUSES]),
       ]);
@@ -78,6 +78,7 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
           id: r.id,
           amount: Number(r.findr_payout_amount || 0),
           status: r.payment_status as string,
+          delivery_type: r.delivery_type,
           search_id: r.search_id,
           title: r.proposal_id ? titles[r.proposal_id] ?? null : null,
         })),
@@ -89,6 +90,7 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
 
   const openStripe = async () => {
     const win = window.open("", "_blank");
+    if (win) win.opener = null;
     setOpening(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-stripe-login-link");
@@ -138,7 +140,7 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
                   <Link to={`/recherche/${r.search_id}`} className="font-medium hover:underline underline-offset-4 truncate block" style={{ color: "#070E42" }}>
                     {r.title || t("mySpace.earnings.untitled")}
                   </Link>
-                  <span style={{ color: "#4B5563" }}>{t(`mySpace.earnings.step.${r.status}`)}</span>
+                  <span style={{ color: "#4B5563" }}>{t(`mySpace.earnings.step.${r.status === "paye_en_attente_reception" && !r.delivery_type ? "awaitingDeliveryChoice" : r.status}`)}</span>
                 </div>
                 <span className="font-medium shrink-0" style={{ color: "#070E42" }}>{fmt(r.amount)}</span>
               </li>
