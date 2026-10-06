@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Edit } from "lucide-react";
 import TranslatedContent from "./TranslatedContent";
@@ -18,7 +19,7 @@ interface SearchItem {
   accepted_count?: number;
   unread_count?: number;
   completed_at?: string | null;
-  urgent_reason?: "reservation_pending" | "payment_pending" | null;
+  urgent_reason?: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | null;
   tab_status?: "active" | "ongoing" | "done" | "cancelled";
   findr_name?: string | null;
   final_amount?: number | null;
@@ -57,6 +58,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
   const isCancelled = tabStatus === "cancelled";
   const isTerminee = isDone || search.status === "completed" || search.status === "closed";
   const isReservee = search.status === "reserved" || (acceptedCount > 0 && !isDone && !isCancelled && !isTerminee);
+  const { t } = useTranslation();
   const urgentReason = search.urgent_reason ?? null;
   const isUrgent = !!urgentReason && !isTerminee;
 
@@ -120,12 +122,7 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
 
   const badge = statusBadge();
 
-  const urgentMessage =
-    urgentReason === "reservation_pending"
-      ? "⏳ Confirme la réservation sous 48h"
-      : urgentReason === "payment_pending"
-      ? "💳 Proposition acceptée — paiement en attente"
-      : null;
+  const urgentMessage = urgentReason ? t(`searchCard.urgent.${urgentReason}`) : null;
 
   return (
     <div

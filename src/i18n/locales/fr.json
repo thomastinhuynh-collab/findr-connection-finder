@@ -1073,6 +1073,12 @@
         "propositions": "Tu n'as pas encore fait de proposition. Ton œil pour dénicher des pépites peut aider d'autres passionnés.",
         "favorites": "Aucun favori pour l'instant. Garde de côté les recherches où tu pourrais aider.",
         "gains": "Tes gains apparaîtront ici dès ta première vente en tant que findr."
+      },
+      "badgeLabel_one": "{{tab}}, {{count}} action à faire",
+      "badgeLabel_other": "{{tab}}, {{count}} actions à faire",
+      "action": {
+        "ship": "À expédier",
+        "dispute": "Litige à traiter"
       }
     }
   },
@@ -1270,5 +1276,13 @@
     "saving": "Enregistrement…",
     "saved": "Mode de livraison enregistré",
     "waitingBuyr": "Le buyr n'a pas encore indiqué son mode de livraison — tu pourras expédier dès qu'il l'aura fait."
+  },
+  "searchCard": {
+    "urgent": {
+      "reservation_pending": "Confirme la réservation sous 48h",
+      "payment_pending": "Proposition acceptée — paiement en attente",
+      "receipt_pending": "Colis en route — confirme la réception",
+      "delivery_choice": "Paiement confirmé — choisis ta livraison"
+    }
   }
 }
