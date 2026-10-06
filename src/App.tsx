@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 
@@ -21,7 +21,6 @@ const Messaging = lazy(() => import("./pages/Messaging"));
 const MakeProposal = lazy(() => import("./pages/MakeProposal"));
 const EditProposal = lazy(() => import("./pages/EditProposal"));
 const MySpace = lazy(() => import("./pages/MySpace"));
-const MyProposals = lazy(() => import("./pages/MyProposals"));
 const PublicProfile = lazy(() => import("./pages/PublicProfile"));
 const UserEvaluations = lazy(() => import("./pages/UserEvaluations"));
 const Premium = lazy(() => import("./pages/Premium"));
@@ -68,7 +67,7 @@ const App = () => (
               <Route path="/messagerie/:id" element={<Messaging />} />
               <Route path="/proposition/:id" element={<MakeProposal />} />
               <Route path="/modifier-proposition/:id" element={<EditProposal />} />
-              <Route path="/mes-propositions" element={<MyProposals />} />
+              <Route path="/mes-propositions" element={<Navigate to="/mon-espace?onglet=propositions" replace />} />
               <Route path="/poster" element={<PostSearch />} />
               <Route path="/mon-espace" element={<MySpace />} />
               <Route path="/profil/:userId" element={<PublicProfile />} />

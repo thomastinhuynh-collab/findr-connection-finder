@@ -1049,7 +1049,32 @@
     "thanks": "Thank you!",
     "stripePending": "Stripe is finalising your account verification, this may take a moment.",
     "setupIncomplete": "Setup incomplete",
-    "setupResume": "Resume your payment setup to complete it."
+    "setupResume": "Resume your payment setup to complete it.",
+    "tabs": {
+      "ariaLabel": "My space sections",
+      "groups": {
+        "seeker": "I'm looking",
+        "finder": "I'm finding"
+      },
+      "recherches": "My searches",
+      "propositions": "My proposals",
+      "favoris": "Favorites & alerts",
+      "gains": "My earnings",
+      "favoritesTitle": "Favorites",
+      "paymentsConfigured": "Payments set up",
+      "seeReviews": "See my reviews",
+      "stats": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Declined"
+      },
+      "empty": {
+        "cta": "See how to become a findr",
+        "propositions": "You haven't made a proposal yet. Your eye for hidden gems can help other enthusiasts.",
+        "favorites": "No favorites yet. Save the searches you could help with.",
+        "gains": "Your earnings will show up here after your first sale as a findr."
+      }
+    }
   },
   "blog": {
     "label": "Blog",

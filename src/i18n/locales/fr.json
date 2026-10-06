@@ -1049,7 +1049,32 @@
     "thanks": "Merci !",
     "stripePending": "Stripe finalise la vérification de ton compte, ça peut prendre quelques instants.",
     "setupIncomplete": "Configuration incomplète",
-    "setupResume": "Reprends la configuration de tes paiements pour la terminer."
+    "setupResume": "Reprends la configuration de tes paiements pour la terminer.",
+    "tabs": {
+      "ariaLabel": "Sections de mon espace",
+      "groups": {
+        "seeker": "Je cherche",
+        "finder": "Je trouve"
+      },
+      "recherches": "Mes recherches",
+      "propositions": "Mes propositions",
+      "favoris": "Favoris et alertes",
+      "gains": "Mes gains",
+      "favoritesTitle": "Favoris",
+      "paymentsConfigured": "Paiements configurés",
+      "seeReviews": "Voir mes avis",
+      "stats": {
+        "pending": "En attente",
+        "accepted": "Acceptées",
+        "rejected": "Refusées"
+      },
+      "empty": {
+        "cta": "Découvrir comment devenir findr",
+        "propositions": "Tu n'as pas encore fait de proposition. Ton œil pour dénicher des pépites peut aider d'autres passionnés.",
+        "favorites": "Aucun favori pour l'instant. Garde de côté les recherches où tu pourrais aider.",
+        "gains": "Tes gains apparaîtront ici dès ta première vente en tant que findr."
+      }
+    }
   },
   "blog": {
     "label": "Blog",
