@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { User, Star, Search, Plus, Crown, Wallet, Package, Heart, Clock, Euro, MapPin, Pencil, CreditCard, CheckCircle2, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -24,6 +24,25 @@ import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
 import { isComingSoonCategory } from "@/lib/categories";
 import { useTranslation } from "react-i18next";
+
+type TabKey = "recherches" | "propositions" | "favoris" | "gains";
+const TAB_GROUPS: { key: "seeker" | "finder"; tabs: TabKey[] }[] = [
+  { key: "seeker", tabs: ["recherches"] },
+  { key: "finder", tabs: ["propositions", "favoris", "gains"] },
+];
+const ALL_TABS: TabKey[] = TAB_GROUPS.flatMap((g) => g.tabs);
+
+const FindrEmptyState = ({ text }: { text: string }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="py-12 text-center rounded-xl" style={{ border: "1px dashed #D4CCBC", backgroundColor: "#FAF7F2" }}>
+      <p className="mb-4 text-sm max-w-md mx-auto" style={{ color: "#374151" }}>{text}</p>
+      <Link to="/je-deviens-findr" className="text-sm font-semibold underline-offset-4 hover:underline" style={{ color: "#070E42" }}>
+        {t("mySpace.tabs.empty.cta")} →
+      </Link>
+    </div>
+  );
+};
 
 
 interface Profile {
@@ -132,11 +151,40 @@ const MySpace = () => {
   const [loadingMoreWallet, setLoadingMoreWallet] = useState(false);
   const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
   const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
-  type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals" | "alerts";
-  const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const rawTab = searchParams.get("onglet") as TabKey | null;
+  const activeTab: TabKey = rawTab && ALL_TABS.includes(rawTab) ? rawTab : "recherches";
+  const tabListRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Partial<Record<TabKey, HTMLButtonElement | null>>>({});
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
-  const togglePanel = (p: PanelKey) =>
-    setActivePanel((cur) => (cur === p ? null : p));
+  const selectTab = (key: TabKey, focus = false) => {
+    const next = new URLSearchParams(searchParams);
+    next.set("onglet", key);
+    setSearchParams(next, { replace: true });
+    const el = tabRefs.current[key];
+    if (el) {
+      if (focus) el.focus();
+    }
+  };
+  const handleTabKeyDown = (e: React.KeyboardEvent) => {
+    const i = ALL_TABS.indexOf(activeTab);
+    let n = -1;
+    if (e.key === "ArrowRight") n = (i + 1) % ALL_TABS.length;
+    else if (e.key === "ArrowLeft") n = (i - 1 + ALL_TABS.length) % ALL_TABS.length;
+    else if (e.key === "Home") n = 0;
+    else if (e.key === "End") n = ALL_TABS.length - 1;
+    if (n >= 0) {
+      e.preventDefault();
+      selectTab(ALL_TABS[n], true);
+    }
+  };
+  useEffect(() => {
+    const el = tabRefs.current[activeTab];
+    const bar = tabListRef.current;
+    if (!el || !bar) return;
+    const left = el.getBoundingClientRect().left - bar.getBoundingClientRect().left + bar.scrollLeft;
+    bar.scrollTo({ left: Math.max(0, left - (bar.clientWidth - el.offsetWidth) / 2) });
+  }, [activeTab, !!profile]);
 
   const openEditProfile = () => {
     setEditForm({
@@ -947,6 +995,13 @@ const MySpace = () => {
                       </span>
                     </>
                   )}
+                  <Link
+                    to={`/profil/${user?.id}/evaluations`}
+                    className="text-xs underline-offset-4 hover:underline"
+                    style={{ color: '#070E42', fontWeight: 500 }}
+                  >
+                    {t("mySpace.tabs.seeReviews")} →
+                  </Link>
                 </div>
 
                 {/* c. À propos — bio */}
@@ -1136,8 +1191,8 @@ const MySpace = () => {
             {/* Separator */}
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
-            {/* Paiements — Stripe Connect */}
-            <div
+            {/* Paiements — Stripe Connect (uniquement si une action est requise) */}
+            {!profile.stripe_onboarding_complete && <div
               className="mb-6 rounded-xl p-5 bg-white"
               style={{ border: `1px solid ${profile.stripe_onboarding_complete ? '#BFDBC8' : '#E5E1D8'}` }}
             >
@@ -1180,7 +1235,7 @@ const MySpace = () => {
                   </Button>
                 )}
               </div>
-            </div>
+            </div>}
 
             {/* Modale d'information avant redirection Stripe */}
             <Dialog open={stripeModalOpen} onOpenChange={setStripeModalOpen}>
@@ -1216,62 +1271,66 @@ const MySpace = () => {
               </DialogContent>
             </Dialog>
 
-            {/* Volets déroulants */}
-
-            <div className="flex flex-wrap items-center gap-2 mb-3">
-              {([
-                { key: "favorites" as const, label: "Favoris" },
-                { key: "wallet" as const, label: "Portefeuille" },
-                { key: "evaluations" as const, label: "Évaluations" },
-                { key: "alerts" as const, label: t("keywordAlerts.title") },
-                ...(profile.is_findr || hasProposals
-                  ? [{ key: "proposals" as const, label: "Mes propositions" }]
-                  : []),
-              ] as const).map(({ key, label }) => {
-                const isOpen = activePanel === key;
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => togglePanel(key)}
-                    aria-expanded={isOpen}
-                    aria-controls={`panel-${key}`}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all hover:underline"
-                    style={{
-                      backgroundColor: isOpen ? "#070E42" : "transparent",
-                      color: isOpen ? "#F5F0EA" : "#6B7280",
-                      border: `1px solid ${isOpen ? "#070E42" : "#E5E1D8"}`,
-                      textDecoration: isOpen ? "none" : undefined,
-                    }}
-                  >
-                    {label}
+            {/* Navigation par onglets groupés par rôle */}
+            <div
+              ref={tabListRef}
+              role="tablist"
+              aria-label={t("mySpace.tabs.ariaLabel")}
+              onKeyDown={handleTabKeyDown}
+              className="mb-6 flex items-end gap-6 overflow-x-auto whitespace-nowrap border-b"
+              style={{ borderColor: "#E5E1D8", scrollbarWidth: "none" }}
+            >
+              {TAB_GROUPS.map((group, gi) => (
+                <div key={group.key} className="flex items-end gap-6 flex-shrink-0">
+                  {gi > 0 && <div aria-hidden="true" className="self-stretch my-1" style={{ width: 1, backgroundColor: "#E5E1D8" }} />}
+                  <div className="flex flex-col">
                     <span
-                      className="text-xs transition-transform inline-block"
-                      style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                      className="uppercase"
+                      style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#9A8F7A", fontWeight: 600, marginBottom: 4 }}
                     >
-                      ▼
+                      {t(`mySpace.tabs.groups.${group.key}`)}
                     </span>
-                  </button>
-                );
-              })}
+                    <div className="flex gap-5">
+                      {group.tabs.map((key) => {
+                        const selected = activeTab === key;
+                        return (
+                          <button
+                            key={key}
+                            id={`tab-${key}`}
+                            ref={(el) => (tabRefs.current[key] = el)}
+                            type="button"
+                            role="tab"
+                            aria-selected={selected}
+                            aria-controls={`tabpanel-${key}`}
+                            tabIndex={selected ? 0 : -1}
+                            onClick={() => selectTab(key)}
+                            className="pb-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm"
+                            style={{
+                              color: selected ? "#070E42" : "#6B7280",
+                              fontWeight: selected ? 600 : 500,
+                              borderBottom: `2px solid ${selected ? "#D9BB87" : "transparent"}`,
+                              marginBottom: -1,
+                            }}
+                          >
+                            {t(`mySpace.tabs.${key}`)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <AnimatePresence initial={false} mode="wait">
-              {activePanel && (
-                <motion.div
-                  key={activePanel}
-                  id={`panel-${activePanel}`}
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ overflow: "hidden" }}
-                >
-                  <div
-                    className="mb-6 rounded-xl p-5 bg-white"
-                    style={{ border: "1px solid #E5E1D8" }}
-                  >
-                    {activePanel === "wallet" && (
+            <div role="tabpanel" id={`tabpanel-${activeTab}`} aria-labelledby={`tab-${activeTab}`} tabIndex={0} className="focus-visible:outline-none">
+            {activeTab === "gains" && (
+              <div className="space-y-5">
+                {profile.stripe_onboarding_complete && (
+                  <p className="text-sm font-medium" style={{ color: "#1F6B47" }}>
+                    ✓ {t("mySpace.tabs.paymentsConfigured")}
+                  </p>
+                )}
+                {!hasProposals && !profile.is_findr && <FindrEmptyState text={t("mySpace.tabs.empty.gains")} />}
                       <div className="space-y-5">
                         {user && (
                           <NegativeBalanceBanner
@@ -1303,23 +1362,31 @@ const MySpace = () => {
                           </div>
                         )}
                       </div>
-                    )}
+              </div>
+            )}
 
+            {activeTab === "propositions" && (
+              <>
+                {myProposals.length > 0 && (
+                  <div className="grid grid-cols-3 gap-3 mb-5">
+                    {([
+                      ["pending", myProposals.filter((p) => p.status === "pending").length],
+                      ["accepted", myProposals.filter((p) => p.status === "accepted_pending" || p.status === "completed").length],
+                      ["rejected", myProposals.filter((p) => p.status === "rejected").length],
+                    ] as const).map(([k, n]) => (
+                      <div key={k} className="rounded-lg p-3 text-center bg-white" style={{ border: "1px solid #E5E1D8" }}>
+                        <p className="text-xl font-bold" style={{ color: "#070E42" }}>{n}</p>
+                        <p className="text-xs" style={{ color: "#6B7280" }}>{t(`mySpace.tabs.stats.${k}`)}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {loadingProposals ? (
+                  <div className="py-12 text-center" style={{ color: '#6B7280' }}>{t("common.loading")}</div>
+                ) : myProposals.length === 0 ? (
+                  <FindrEmptyState text={t("mySpace.tabs.empty.propositions")} />
+                ) : (
 
-                    {activePanel === "proposals" && (
-                      loadingProposals ? (
-                        <div className="py-12 text-center" style={{ color: '#6B7280' }}>Chargement…</div>
-                      ) : myProposals.length === 0 ? (
-                        <div className="py-12 text-center">
-                          <Package className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BB87' }} />
-                          <p className="mb-4" style={{ color: '#374151' }}>
-                            Tu n'as pas encore envoyé de proposition.
-                          </p>
-                          <Button asChild size="sm" style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>
-                            <Link to="/recherches">Voir les recherches</Link>
-                          </Button>
-                        </div>
-                      ) : (
                         <div className="space-y-3">
                           {myProposals.map((p) => {
                             const statusMap: Record<string, { label: string; bg: string; color: string }> = {
@@ -1387,19 +1454,19 @@ const MySpace = () => {
                           )}
                         </div>
                       )
-                    )}
+                }
+              </>
+            )}
 
-
-                    {activePanel === "favorites" && (
-                      favorites.length === 0 ? (
-                        <div className="py-16 text-center">
-                          <Heart className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BB87' }} />
-                          <p style={{ color: '#6B7280' }}>Aucun favori pour le moment</p>
-                          <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>
-                            <Link to="/recherches">Parcourir les annonces</Link>
-                          </Button>
-                        </div>
-                      ) : (
+            {activeTab === "favoris" && (
+              <div className="space-y-8">
+                <section aria-labelledby="fav-heading">
+                  <h3 id="fav-heading" className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>
+                    {t("mySpace.tabs.favoritesTitle")}
+                  </h3>
+                  {favorites.length === 0 ? (
+                    <FindrEmptyState text={t("mySpace.tabs.empty.favorites")} />
+                  ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {favorites.map((search) => (
                             <div
@@ -1456,59 +1523,19 @@ const MySpace = () => {
                           )}
                         </div>
                       )
-                    )}
+                  }
+                </section>
+                <section aria-labelledby="alerts-heading" className="pt-6 border-t" style={{ borderColor: "#E5E1D8" }}>
+                  <h3 id="alerts-heading" className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>
+                    {t("keywordAlerts.title")}
+                  </h3>
+                  <KeywordAlertsPanel />
+                </section>
+              </div>
+            )}
 
-                    {activePanel === "evaluations" && (
-                      evaluations.length === 0 ? (
-                        <div className="py-16 text-center">
-                          <Star className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BB87' }} />
-                          <p style={{ color: '#6B7280' }}>Aucune évaluation pour le moment</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          {evaluations.map((evaluation) => (
-                            <div
-                              key={evaluation.id}
-                              className="bg-white rounded-lg p-4 border"
-                              style={{ borderColor: '#E5E1D8' }}
-                            >
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="flex">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className={`w-4 h-4 ${
-                                        i < evaluation.rating
-                                          ? "text-yellow-500 fill-yellow-500"
-                                          : "text-gray-300"
-                                      }`}
-                                    />
-                                  ))}
-                                </div>
-                                <span className="text-sm" style={{ color: '#6B7280' }}>
-                                  par {evaluation.from_user?.full_name || "Anonyme"}
-                                </span>
-                              </div>
-                              {evaluation.comment && (
-                                <p className="text-sm" style={{ color: '#374151' }}>{evaluation.comment}</p>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )
-                     )}
-
-                    {activePanel === "alerts" && <KeywordAlertsPanel />}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Tabs */}
-            <Tabs value="searches" className="w-full">
-
-              {/* Mes recherches en cours (toujours visible) */}
-              <TabsContent value="searches" className="mt-0" forceMount>
+            {activeTab === "recherches" && (
+              <div>
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h2 style={{ fontSize: 18, fontWeight: 600, color: "#070E42" }}>
@@ -1518,14 +1545,6 @@ const MySpace = () => {
                   </div>
 
                   <div className="flex gap-2">
-                    {profile.is_findr && (
-                      <Button variant="outline" asChild size="sm" style={{ borderColor: '#D9BB87', color: '#070E42' }}>
-                        <Link to="/mes-propositions">
-                          <Package className="w-4 h-4 mr-2" />
-                          Mes propositions
-                        </Link>
-                      </Button>
-                    )}
                     <Link
                       to="/poster"
                       className="inline-flex items-center transition-colors"
@@ -1616,8 +1635,9 @@ const MySpace = () => {
                     })()}
                   </>
                 )}
-              </TabsContent>
-            </Tabs>
+              </div>
+            )}
+            </div>
 
 
           </motion.div>
