@@ -1045,7 +1045,6 @@
     "max5": "Max 5 MB",
     "max8": "Max 8 MB",
     "comingSoon": "Coming soon",
-    "premiumUnavailable": "The Premium programme is temporarily unavailable.",
     "thanks": "Thank you!",
     "stripePending": "Stripe is finalising your account verification, this may take a moment.",
     "setupIncomplete": "Setup incomplete",
@@ -1156,6 +1155,25 @@
       "canvasError": "Canvas unavailable",
       "imageError": "Unreadable image",
       "exportError": "Export failed"
+    },
+    "earnings": {
+      "paid": "Paid out",
+      "pending": "In progress",
+      "paidEmpty": "No payouts yet.",
+      "pendingEmpty": "No sales awaiting payout.",
+      "untitled": "Sale",
+      "stripeNote": "Your payouts are made by Stripe to your bank account.",
+      "viewStripe": "View my payouts on Stripe",
+      "opening": "Opening…",
+      "stripeError": "Couldn't open Stripe, please try again shortly.",
+      "empty": "You haven't made a sale yet. From your first sale, you'll track your earnings and payouts here.",
+      "emptyCta": "Learn how to become a findr",
+      "step": {
+        "paye_en_attente_reception": "To ship",
+        "expedie": "Shipped",
+        "livre": "Delivered",
+        "versement_en_revue": "Under review"
+      }
     }
   },
   "blog": {
