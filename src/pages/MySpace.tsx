@@ -1541,7 +1541,6 @@ const MySpace = () => {
 
                   <div className="flex gap-2">
                     <Link
-                    <Link
                       to="/poster"
                       className="inline-flex items-center transition-colors"
                       style={{
