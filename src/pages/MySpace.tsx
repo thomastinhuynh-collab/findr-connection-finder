@@ -99,13 +99,6 @@ interface Evaluation {
   } | null;
 }
 
-interface WalletTransaction {
-  id: string;
-  type: "credit";
-  amount: number;
-  description: string;
-  date: string;
-}
 
 
 const MySpace = () => {
@@ -149,8 +142,6 @@ const MySpace = () => {
   const PANEL_PAGE_SIZE = 20;
   const [hasMoreProposals, setHasMoreProposals] = useState(false);
   const [loadingMoreProposals, setLoadingMoreProposals] = useState(false);
-  const [hasMoreWallet, setHasMoreWallet] = useState(false);
-  const [loadingMoreWallet, setLoadingMoreWallet] = useState(false);
   const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
   const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
