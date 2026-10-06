@@ -278,7 +278,7 @@ const MakeProposal = () => {
 
       
       toast({
-        title: "Proposition envoyée ! 🎉",
+        title: t("proposalForm.sentTitle"),
         description: `Votre proposition a été envoyée à ${search.profiles?.full_name || "l'utilisateur"}. Vous serez notifié de sa réponse.`,
       });
       

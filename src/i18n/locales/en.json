@@ -1,4 +1,7 @@
 {
+  "messaging": {
+    "photos": "Photo(s)"
+  },
   "nav": {
     "howItWorks": "How it works",
     "becomeBuyr": "Become a buyr",
@@ -120,7 +123,7 @@
     "daysLeft_other": "{{count}} days left"
   },
   "expiring": {
-    "title": "⏳ Expiring soon",
+    "title": "Expiring soon",
     "subtitle": "These searches need a quick answer"
   },
   "active": {
@@ -308,7 +311,7 @@
     "waitlistCount_other": "{{count}} people already on the waitlist",
     "title": "Ready to find something special?",
     "subtitle": "Join the waitlist and be among the first to explore our community-powered treasure hunting platform.",
-    "success": "🎉 You're on the list! We'll let you know as soon as we launch.",
+    "success": "You're on the list! We'll let you know as soon as we launch.",
     "emailPlaceholder": "you@email.com",
     "submit": "Join the waitlist"
   },
@@ -343,7 +346,7 @@
     "waitlistCount_other": "{{count}} people already on the waitlist",
     "title": "Be among the first to join Findr",
     "subtitle": "Get early access and help us shape the platform.",
-    "success": "You're on the list! We'll let you know as soon as we launch 🎉",
+    "success": "You're on the list! We'll let you know as soon as we launch",
     "rolePrompt": "I'm more of a...",
     "roles": {
       "buyr": "Buyr",
@@ -725,7 +728,7 @@
     "confirmCancel": "Confirm cancellation",
     "missingInfoTitle": "Missing information",
     "missingInfoDesc": "The carrier and the tracking number are required.",
-    "shippedTitle": "Parcel shipped 📦",
+    "shippedTitle": "Parcel shipped",
     "shippedDesc": "The buyr has been notified, tracking is active.",
     "shipError": "Could not save the shipment.",
     "cancelConfirmedTitle": "Cancellation confirmed",
@@ -738,7 +741,7 @@
     "paymentFailedDesc": "Could not start the payment.",
     "paymentLinkUnavailable": "Payment link unavailable",
     "paymentNotFound": "No payment found for this proposal.",
-    "transactionDoneTitle": "Transaction complete! 🎉",
+    "transactionDoneTitle": "Transaction complete!",
     "transactionDoneDesc": "The payment has been released to the findr. Thanks for your trust!",
     "confirmReceiptError": "Could not confirm receipt.",
     "countdownShipped": "Parcel never delivered? You will be able to request cancellation and a refund in {{delay}}.",
@@ -925,6 +928,7 @@
     "send": "Send request"
   },
   "postSearch": {
+    "publishedTitle": "Search published!",
     "title": "Post your search",
     "subtitle": "Describe your dream item and let the community find it for you",
     "steps": {
@@ -969,6 +973,8 @@
     "legal": "By publishing, you accept our Terms and Privacy Policy."
   },
   "proposalForm": {
+    "sentTitle": "Proposal sent!",
+    "updatedTitle": "Proposal updated!",
     "searchNotFound": "Search not found",
     "backToSearches": "Back to searches",
     "makeTitle": "Make a proposal",
@@ -1014,6 +1020,7 @@
     "update": "Update my proposal"
   },
   "editSearch": {
+    "savedTitle": "Search updated! ✓",
     "title": "Edit my search",
     "subtitle": "Update the details of your search",
     "status": "Status",
@@ -1169,7 +1176,8 @@
       "empty": "You haven't made a sale yet. From your first sale, you'll track your earnings and payouts here.",
       "emptyCta": "Learn how to become a findr",
       "step": {
-        "paye_en_attente_reception": "To ship",
+        "awaitingDeliveryChoice": "Awaiting the buyr’s delivery choice",
+"paye_en_attente_reception": "To ship",
         "expedie": "Shipped",
         "livre": "Delivered",
         "versement_en_revue": "Under review"

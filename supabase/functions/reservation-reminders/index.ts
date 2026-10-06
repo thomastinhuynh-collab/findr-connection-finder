@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
       await admin.from("notifications").insert({
         user_id: r.findr_id,
         type: "reservation_reminder",
-        title: "Ta réservation expire dans 2 jours ⏳",
+        title: "Ta réservation expire dans 2 jours",
         message: `Fais ta proposition sur « ${searchTitle} » avant l'expiration, sinon la recherche redevient ouverte à tous.`,
         link: `/proposition/${r.search_id}`,
       });

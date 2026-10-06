@@ -466,7 +466,7 @@ export function buildEmail(
 
     case "waitlist_welcome":
       return {
-        subject: "Bienvenue chez les beta testeurs Findr 🎉",
+        subject: "Bienvenue chez les beta testeurs Findr",
         html: renderEmail({
           documentTitle: "Bienvenue chez les beta testeurs Findr",
           paragraphs: [

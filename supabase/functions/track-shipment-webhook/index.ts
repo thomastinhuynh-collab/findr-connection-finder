@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
         {
           user_id: reservation.buyr_id,
           type: "delivery",
-          title: "Colis livré 📬",
+          title: "Colis livré",
           message:
             "Confirme la réception de ton objet. Sans action de ta part, les fonds seront libérés automatiquement sous 48 h.",
           link: "/mon-espace",
@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
         {
           user_id: reservation.findr_id,
           type: "delivery",
-          title: "Colis livré 📬",
+          title: "Colis livré",
           message: "Le buyr a reçu l'objet. Les fonds seront libérés sous 48 h.",
           link: "/mon-espace",
         },

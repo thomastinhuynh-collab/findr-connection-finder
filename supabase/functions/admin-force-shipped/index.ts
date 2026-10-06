@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
     await admin.from("notifications").insert({
       user_id: reservation.buyr_id,
       type: "shipment",
-      title: "Ton objet est en route 📦",
+      title: "Ton objet est en route",
       message: `Expédié via ${carrier} — suivi n° ${trackingNumber}. Clique pour suivre ton colis.`,
       link: trackUrl ?? "/mon-espace",
     });

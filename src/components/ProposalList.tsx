@@ -535,7 +535,7 @@ const ProposalList = ({
                       payments[proposal.id]?.payment_status ?? "",
                     ) && (
                       <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
-                        🛡️ {t("proposal.secureAwaiting")}
+                        {t("proposal.secureAwaiting")}
                         {payments[proposal.id]?.tracking_status && (
                           <span className="font-medium text-primary">
                             · {payments[proposal.id]?.tracking_status}

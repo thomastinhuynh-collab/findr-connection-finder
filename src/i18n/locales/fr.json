@@ -1,4 +1,7 @@
 {
+  "messaging": {
+    "photos": "Photo(s)"
+  },
   "nav": {
     "howItWorks": "Comment ça marche",
     "becomeBuyr": "Je deviens buyr",
@@ -120,7 +123,7 @@
     "daysLeft_other": "Il reste {{count}} jours"
   },
   "expiring": {
-    "title": "⏳ Bientôt expiré",
+    "title": "Bientôt expiré",
     "subtitle": "Ces recherches ont besoin d'une réponse rapide"
   },
   "active": {
@@ -308,7 +311,7 @@
     "waitlistCount_other": "Déjà {{count}} personnes sur la liste d'attente",
     "title": "Prêt à trouver tes pépites ?",
     "subtitle": "Rejoins la liste d'attente et sois parmi les premiers à accéder à la plateforme de chinage communautaire.",
-    "success": "🎉 C'est noté ! On te prévient dès l'ouverture.",
+    "success": "C'est noté ! On te prévient dès l'ouverture.",
     "emailPlaceholder": "ton@email.com",
     "submit": "Je m'inscris"
   },
@@ -343,7 +346,7 @@
     "waitlistCount_other": "Déjà {{count}} personnes sur la liste d'attente",
     "title": "Sois parmi les premiers à rejoindre Findr",
     "subtitle": "Lance-toi en avant-première et façonne la plateforme avec nous.",
-    "success": "C'est noté ! On te prévient dès l'ouverture 🎉",
+    "success": "C'est noté ! On te prévient dès l'ouverture",
     "rolePrompt": "Je suis plutôt...",
     "roles": {
       "buyr": "Un buyr",
@@ -725,7 +728,7 @@
     "confirmCancel": "Confirmer l'annulation",
     "missingInfoTitle": "Informations manquantes",
     "missingInfoDesc": "Le transporteur et le numéro de suivi sont obligatoires.",
-    "shippedTitle": "Colis expédié 📦",
+    "shippedTitle": "Colis expédié",
     "shippedDesc": "Le buyr a été notifié, le suivi est actif.",
     "shipError": "Impossible d'enregistrer l'expédition.",
     "cancelConfirmedTitle": "Annulation confirmée",
@@ -738,7 +741,7 @@
     "paymentFailedDesc": "Impossible de démarrer le paiement.",
     "paymentLinkUnavailable": "Lien de paiement indisponible",
     "paymentNotFound": "Paiement introuvable pour cette proposition.",
-    "transactionDoneTitle": "Transaction finalisée ! 🎉",
+    "transactionDoneTitle": "Transaction finalisée !",
     "transactionDoneDesc": "Le paiement a été versé au findr. Merci pour ta confiance !",
     "confirmReceiptError": "Impossible de confirmer la réception.",
     "countdownShipped": "Colis jamais livré ? Tu pourras demander l'annulation et le remboursement dans {{delay}}.",
@@ -925,6 +928,7 @@
     "send": "Envoyer la demande"
   },
   "postSearch": {
+    "publishedTitle": "Recherche publiée !",
     "title": "Poste ta recherche",
     "subtitle": "Décris l’objet de tes rêves et laisse la communauté le trouver pour toi",
     "steps": {
@@ -969,6 +973,8 @@
     "legal": "En publiant, tu acceptes nos CGU et notre politique de confidentialité."
   },
   "proposalForm": {
+    "sentTitle": "Proposition envoyée !",
+    "updatedTitle": "Proposition mise à jour !",
     "searchNotFound": "Recherche non trouvée",
     "backToSearches": "Retour aux recherches",
     "makeTitle": "Faire une proposition",
@@ -1014,6 +1020,7 @@
     "update": "Mettre à jour ma proposition"
   },
   "editSearch": {
+    "savedTitle": "Recherche modifiée ! ✓",
     "title": "Modifier ma recherche",
     "subtitle": "Mets à jour les détails de ta recherche",
     "status": "Statut",
@@ -1169,7 +1176,8 @@
       "empty": "Tu n'as pas encore réalisé de vente. Dès ta première vente, tu suivras ici tes gains et tes versements.",
       "emptyCta": "Découvrir comment devenir findr",
       "step": {
-        "paye_en_attente_reception": "À expédier",
+        "awaitingDeliveryChoice": "En attente du choix de livraison du buyr",
+"paye_en_attente_reception": "À expédier",
         "expedie": "Expédié",
         "livre": "Livré",
         "versement_en_revue": "En revue"

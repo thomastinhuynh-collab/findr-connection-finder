@@ -25,7 +25,7 @@ const Footer = () => {
               let others search for you
             </p>
             <p className="text-cream/70 text-sm">
-              Made with ❤️ in France
+              Made in France
             </p>
           </div>
 
