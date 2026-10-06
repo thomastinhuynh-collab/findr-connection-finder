@@ -1330,16 +1330,6 @@ const MySpace = () => {
                 ) : myProposals.length === 0 ? (
                   <FindrEmptyState text={t("mySpace.tabs.empty.propositions")} />
                 ) : (
-                        <p className="text-xs" style={{ color: "#6B7280" }}>{t(`mySpace.tabs.stats.${k}`)}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {loadingProposals ? (
-                  <div className="py-12 text-center" style={{ color: '#6B7280' }}>{t("common.loading")}</div>
-                ) : myProposals.length === 0 ? (
-                  <FindrEmptyState text={t("mySpace.tabs.empty.propositions")} />
-                ) : (
 
                                     <div className="w-full h-full flex items-center justify-center">
                                       <Package className="w-6 h-6" style={{ color: '#D9BB87' }} />
@@ -1388,15 +1378,6 @@ const MySpace = () => {
                           )}
                         </div>
                       )
-                }
-              </>
-            )}
-
-            {activeTab === "favoris" && (
-              <div className="space-y-8">
-                <section aria-labelledby="fav-heading">
-                  <h3 id="fav-heading" className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>
-                    {t("mySpace.tabs.favoritesTitle")}
                 }
               </>
             )}
