@@ -1,4 +1,5 @@
 # Traduction complète FR/EN
+- [ ] Mes gains : attente du choix de livraison FR/EN, ouverture Stripe isolée et nettoyage des émojis visibles
 - [x] Mon espace : ignorer new_message, regrouper les notifications à 3 secondes, initialiser le délai de focus et rendre les pastilles accessibles avec contraste renforcé
 - [x] Créer les pages bilingues « Je deviens buyr » et « Je deviens findr » et raccorder la navigation
 - [x] Ajouter le stockage sécurisé et la fonction de traduction
