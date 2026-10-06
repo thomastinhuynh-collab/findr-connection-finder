@@ -184,7 +184,7 @@ const MySpace = () => {
     if (!el || !bar) return;
     const left = el.getBoundingClientRect().left - bar.getBoundingClientRect().left + bar.scrollLeft;
     bar.scrollTo({ left: Math.max(0, left - (bar.clientWidth - el.offsetWidth) / 2) });
-  });
+  }, [activeTab, !!profile]);
 
   const openEditProfile = () => {
     setEditForm({
