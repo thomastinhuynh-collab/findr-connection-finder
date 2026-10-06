@@ -102,7 +102,7 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
     }
   };
 
-  if (!loaded) return <p className="text-sm" style={{ color: "#4B5563" }}>{t("mySpace.loading")}</p>;
+  if (!loaded) return <p className="text-sm" style={{ color: "#4B5563" }}>{t("common.loading")}</p>;
 
   const pendingTotal = pending.reduce((s, r) => s + r.amount, 0);
   const noSales = paid.length === 0 && pending.length === 0;
@@ -170,7 +170,7 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
         {hasMore && (
           <div className="flex justify-center mt-3">
             <Button variant="outline" size="sm" disabled={loadingMore} onClick={() => fetchPaid(paid.length, true)}>
-              {loadingMore ? t("mySpace.loading") : t("mySpace.loadMore")}
+              {loadingMore ? t("common.loading") : t("mySpace.loadMore")}
             </Button>
           </div>
         )}
