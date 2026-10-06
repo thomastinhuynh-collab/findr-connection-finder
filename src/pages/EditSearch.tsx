@@ -210,7 +210,7 @@ const EditSearch = () => {
       if (error) throw error;
 
       toast({
-        title: "Recherche modifiée ! ✓",
+        title: t("editSearch.savedTitle"),
         description: "Tes modifications ont été enregistrées.",
       });
 

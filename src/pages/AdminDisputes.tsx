@@ -170,7 +170,7 @@ const AdminDisputes = () => {
         {disputes.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center text-muted-foreground">
-              Aucun litige ouvert. 🎉
+              Aucun litige ouvert.
             </CardContent>
           </Card>
         ) : (

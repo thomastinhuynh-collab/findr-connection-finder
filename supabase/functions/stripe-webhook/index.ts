@@ -170,7 +170,7 @@ Deno.serve(async (req) => {
           await admin.from("notifications").insert({
             user_id: reservation.findr_id,
             type: "proposal_accepted",
-            title: "Proposition acceptée et payée ! 🎉",
+            title: "Proposition acceptée et payée !",
             message:
               "Le paiement est sécurisé jusqu'à la confirmation de réception de l'article.",
             link: "/mon-espace?onglet=propositions",

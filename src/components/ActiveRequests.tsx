@@ -221,7 +221,6 @@ const ActiveRequests = () => {
                     <CardImageCarousel images={images} alt={search.title} />
                   ) : (
                     <div className="w-full h-full bg-[#E8E0D4] flex items-center justify-center">
-                      <span className="text-4xl">🔍</span>
                     </div>
                   )}
 

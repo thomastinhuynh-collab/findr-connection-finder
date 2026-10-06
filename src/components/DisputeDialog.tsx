@@ -93,7 +93,7 @@ const DisputeDialog = ({
       await supabase.rpc("create_notification", {
         _user_id: findrId,
         _type: "dispute_opened",
-        _title: "⚠️ Litige ouvert sur une transaction",
+        _title: "Litige ouvert sur une transaction",
         _message: `Le buyr a signalé un problème sur « ${itemTitle} » : ${DISPUTE_REASONS[reason]}. Le paiement est bloqué le temps de l'examen par l'équipe findr.`,
         _link: `/messagerie/${searchId}`,
       });

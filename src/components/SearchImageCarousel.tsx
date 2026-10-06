@@ -27,7 +27,6 @@ const SearchImageCarousel = ({ images, alt, className = "" }: SearchImageCarouse
   if (validImages.length === 0) {
     return (
       <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-secondary to-muted ${className}`}>
-        <span className="text-5xl">🔍</span>
       </div>
     );
   }

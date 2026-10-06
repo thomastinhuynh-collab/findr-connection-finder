@@ -8,6 +8,7 @@ import { ArrowLeft, Send, Loader2, CheckCheck, Check, Info, Paperclip, X, Plus, 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
 
 interface SearchData {
@@ -35,7 +36,7 @@ const MAX_PHOTOS = 5;
 const PAGE_SIZE = 50;
 
 const QUICK_SUGGESTIONS = [
-  "J'ai peut-être ce que vous cherchez 👀",
+  "J'ai peut-être ce que vous cherchez",
   "Quel est votre budget ?",
   "Pouvez-vous envoyer plus de photos ?",
 ];
@@ -49,6 +50,7 @@ const Messaging = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [search, setSearch] = useState<SearchData | null>(null);
@@ -280,7 +282,7 @@ const Messaging = () => {
 
     setSending(true);
     const filesSnapshot = [...photoFiles];
-    const contentToSend = message.trim() || (filesSnapshot.length > 0 ? "📷 Photo(s)" : "");
+    const contentToSend = message.trim() || (filesSnapshot.length > 0 ? t("messaging.photos") : "");
 
     // Upload attached photos to storage first
     const uploadedUrls: string[] = [];
@@ -588,7 +590,7 @@ const Messaging = () => {
                     Commencez la conversation
                   </p>
                   <p className="text-sm max-w-sm" style={{ color: "#6B7280" }}>
-                    Dites à {firstName} si vous avez l'article qu'il recherche 👋
+                    Dites à {firstName} si vous avez l'article qu'il recherche
                   </p>
 
                   {/* Quick suggestions */}
@@ -640,7 +642,9 @@ const Messaging = () => {
                           const isMine = msg.sender_id === user?.id;
                           const msgImages = msg.images || [];
                           const hasImages = msgImages.length > 0;
-                          const hasText = msg.content && msg.content !== "📷 Photo(s)";
+                          // Preserve image-only rendering for older photo messages and either locale.
+                          const photoLabels = ["\u{1F4F7} Photo(s)", t("messaging.photos", { lng: "fr" }), t("messaging.photos", { lng: "en" })];
+                          const hasText = Boolean(msg.content && !(hasImages && photoLabels.includes(msg.content)));
                           const count = msgImages.length;
                           const openLightbox = (idx: number) => setLightbox({ images: msgImages, index: idx });
 

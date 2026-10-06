@@ -87,7 +87,7 @@ const WaitlistSignup = () => {
                           : "text-cream/70 hover:text-cream"
                       }`}
                     >
-                      🔍 {t("waitlistSignup.roles.buyr")}
+                      {t("waitlistSignup.roles.buyr")}
                     </button>
                     <button
                       type="button"
@@ -98,7 +98,7 @@ const WaitlistSignup = () => {
                           : "text-cream/70 hover:text-cream"
                       }`}
                     >
-                      🧭 {t("waitlistSignup.roles.findr")}
+                      {t("waitlistSignup.roles.findr")}
                     </button>
                   </div>
                 </div>

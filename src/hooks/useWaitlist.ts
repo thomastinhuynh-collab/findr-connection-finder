@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export function useWaitlist() {
+  const { t } = useTranslation();
   const [count, setCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -63,7 +65,7 @@ export function useWaitlist() {
           body: { email: trimmed, role, count: count !== null ? count + 1 : undefined },
         })
         .catch(() => {});
-      toast.success("🎉 Tu es sur la liste ! On te prévient dès l'ouverture.");
+      toast.success(t("waitlistSignup.success"));
       return true;
     } catch {
       toast.error("Une erreur est survenue.");

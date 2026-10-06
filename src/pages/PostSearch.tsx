@@ -156,7 +156,7 @@ const PostSearch = () => {
       if (error) throw error;
 
       toast({
-        title: "Recherche publiée ! 🎉",
+        title: t("postSearch.publishedTitle"),
         description: "Les findrs vont se mettre en quête de ta pépite.",
       });
 

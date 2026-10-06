@@ -302,7 +302,7 @@ const EditProposal = () => {
         });
       
       toast({
-        title: "Proposition mise à jour ! ✨",
+        title: t("proposalForm.updatedTitle"),
         description: "Vos modifications ont été enregistrées.",
       });
       

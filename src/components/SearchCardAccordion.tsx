@@ -182,7 +182,6 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
                   background: categoryGradient(search.category),
                 }}
               >
-                <span style={{ fontSize: 22, opacity: 0.7 }}>🔍</span>
               </div>
             )}
           </Link>
