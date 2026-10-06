@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import PremiumWallet from "@/components/PremiumWallet";
+import EarningsPanel from "@/components/EarningsPanel";
 import SearchCardAccordion from "@/components/SearchCardAccordion";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
@@ -121,8 +121,6 @@ const MySpace = () => {
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
-  const [walletBalance, setWalletBalance] = useState(0);
-  const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   // Repositionnement de la bannière
@@ -260,7 +258,6 @@ const MySpace = () => {
       fetchGamificationFlag();
       fetchActivityFlags();
       fetchMyProposals();
-      fetchWallet();
       fetchFindrActions();
     }
   }, [user]);
@@ -395,46 +392,6 @@ const MySpace = () => {
     setHasCommission((comCount || 0) > 0);
   };
 
-
-  const fetchWallet = async (from = 0, append = false) => {
-    if (!user) return;
-    if (append) setLoadingMoreWallet(true);
-    const { data, error } = await supabase
-      .from("transactions")
-      .select("id, amount, created_at, reservation_id")
-      .eq("findr_id", user.id)
-      .order("created_at", { ascending: false })
-      .range(from, from + PANEL_PAGE_SIZE - 1);
-    if (error) {
-      console.error("Error fetching transactions:", error);
-      if (!append) {
-        setWalletBalance(0);
-        setWalletTransactions([]);
-      }
-      setLoadingMoreWallet(false);
-      return;
-    }
-    const rows = data || [];
-    setHasMoreWallet(rows.length === PANEL_PAGE_SIZE);
-    const mapped = rows.map((t: any) => ({
-      id: t.id,
-      type: "credit" as const,
-      amount: Number(t.amount || 0),
-      description: t("mySpace.ui.saleCompleted"),
-      date: new Date(t.created_at).toLocaleDateString(i18n.language, { day: "numeric", month: "short", year: "numeric" }),
-    }));
-    setWalletTransactions((prev) => (append ? [...prev, ...mapped] : mapped));
-    setLoadingMoreWallet(false);
-
-    if (!append) {
-      // Le solde reste calculé sur l'ensemble des versements, pas seulement la page affichée.
-      const { data: allAmounts } = await supabase
-        .from("transactions")
-        .select("amount")
-        .eq("findr_id", user.id);
-      setWalletBalance((allAmounts || []).reduce((sum, t: any) => sum + Number(t.amount || 0), 0));
-    }
-  };
 
   const fetchProfile = async () => {
     if (!user) return;
@@ -1430,28 +1387,8 @@ const MySpace = () => {
                             negativeBalance={Number(profile?.negative_balance ?? 0)}
                           />
                         )}
-                        <PremiumWallet
-                          balance={walletBalance}
-                          isPremium={profile?.is_premium || false}
-                          transactions={walletTransactions}
-                          onAddFunds={() =>
-                            toast({
-                              title: t("mySpace.comingSoon"),
-                              description: t("mySpace.premiumUnavailable"),
-                            })
-                          }
-                        />
-                        {hasMoreWallet && (
-                          <div className="flex justify-center">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              disabled={loadingMoreWallet}
-                              onClick={() => fetchWallet(walletTransactions.length, true)}
-                            >
-                              {loadingMoreWallet ? t("common.loading") : t("mySpace.loadMore")}
-                            </Button>
-                          </div>
+                        {user && (
+                          <EarningsPanel userId={user.id} paymentsConfigured={!!profile.stripe_onboarding_complete} />
                         )}
                       </div>
               </div>

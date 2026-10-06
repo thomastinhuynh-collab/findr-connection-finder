@@ -1045,7 +1045,6 @@
     "max5": "Max 5 Mo",
     "max8": "Max 8 Mo",
     "comingSoon": "Bientôt disponible",
-    "premiumUnavailable": "Le programme Premium est temporairement indisponible.",
     "thanks": "Merci !",
     "stripePending": "Stripe finalise la vérification de ton compte, ça peut prendre quelques instants.",
     "setupIncomplete": "Configuration incomplète",
@@ -1156,6 +1155,25 @@
       "canvasError": "Canvas indisponible",
       "imageError": "Image illisible",
       "exportError": "Export impossible"
+    },
+    "earnings": {
+      "paid": "Versé",
+      "pending": "En cours",
+      "paidEmpty": "Aucun versement pour le moment.",
+      "pendingEmpty": "Aucune vente en attente de versement.",
+      "untitled": "Vente",
+      "stripeNote": "Tes versements sont effectués par Stripe sur ton compte bancaire.",
+      "viewStripe": "Voir mes virements sur Stripe",
+      "opening": "Ouverture…",
+      "stripeError": "Impossible d'ouvrir Stripe, réessaie dans un instant.",
+      "empty": "Tu n'as pas encore réalisé de vente. Dès ta première vente, tu suivras ici tes gains et tes versements.",
+      "emptyCta": "Découvrir comment devenir findr",
+      "step": {
+        "paye_en_attente_reception": "À expédier",
+        "expedie": "Expédié",
+        "livre": "Livré",
+        "versement_en_revue": "En revue"
+      }
     }
   },
   "blog": {

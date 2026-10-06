@@ -121,7 +121,7 @@ export async function releaseFundsForReservation(
     {
       user_id: reservation.findr_id,
       type: "payout_released",
-      title: auto ? "Paiement libéré automatiquement 💰" : "Paiement reçu ! 💰",
+      title: auto ? "Paiement libéré automatiquement" : "Paiement reçu !",
       message: `${netAmount.toFixed(2)} € ont été versés sur ton compte.`,
       link: "/mon-espace",
     },
