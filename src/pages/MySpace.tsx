@@ -252,6 +252,7 @@ const MySpace = () => {
 
   useEffect(() => {
     if (user) {
+      lastFocusRefresh.current = Date.now();
       fetchProfile();
       fetchSearches();
       fetchEvaluations();
@@ -336,9 +337,10 @@ const MySpace = () => {
 
   const refreshRef = useRef(refreshBadges);
   refreshRef.current = refreshBadges;
-  const lastFocusRefresh = useRef(0);
+  const lastFocusRefresh = useRef(Date.now());
   useEffect(() => {
     if (!user) return;
+    let notificationRefreshTimer: ReturnType<typeof setTimeout> | undefined;
     const onFocus = () => {
       if (Date.now() - lastFocusRefresh.current < 60_000) return;
       lastFocusRefresh.current = Date.now();
@@ -350,10 +352,18 @@ const MySpace = () => {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
-        () => refreshRef.current()
+        (payload) => {
+          if (payload.new.type === "new_message") return;
+          clearTimeout(notificationRefreshTimer);
+          notificationRefreshTimer = setTimeout(() => {
+            notificationRefreshTimer = undefined;
+            refreshRef.current();
+          }, 3_000);
+        }
       )
       .subscribe();
     return () => {
+      clearTimeout(notificationRefreshTimer);
       window.removeEventListener("focus", onFocus);
       supabase.removeChannel(channel);
     };
@@ -1379,7 +1389,7 @@ const MySpace = () => {
                             onClick={() => selectTab(key)}
                             className="pb-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm"
                             style={{
-                              color: selected ? "#070E42" : "#4B5563",
+                              color: selected ? "#070E42" : "var(--personal-space-inactive-text)",
                               fontWeight: selected ? 600 : 500,
                               borderBottom: `2px solid ${selected ? "#D9BB87" : "transparent"}`,
                               marginBottom: -1,
@@ -1692,7 +1702,7 @@ const MySpace = () => {
                               fontWeight: isActive ? 600 : 500,
                               cursor: "pointer",
                               backgroundColor: isActive ? "#070E42" : "transparent",
-                              color: isActive ? "#F5F0EA" : "#6B7280",
+                              color: isActive ? "#F5F0EA" : "var(--personal-space-inactive-text)",
                               border: `1px solid ${isActive ? "#070E42" : "rgba(7,14,66,0.15)"}`,
                             }}
                           >
@@ -1700,6 +1710,7 @@ const MySpace = () => {
                             <span style={{ marginLeft: 6, opacity: 0.75 }}>{count}</span>
                             {todo > 0 && (
                               <span
+                                role="img"
                                 aria-label={t("mySpace.searchTabs.todo", { count: todo })}
                                 className="ml-1.5 inline-flex items-center justify-center rounded-full align-middle"
                                 style={{ backgroundColor: "#D9BB87", color: "#070E42", fontSize: 11, fontWeight: 600, minWidth: 18, height: 18, padding: "0 5px", lineHeight: 1 }}
