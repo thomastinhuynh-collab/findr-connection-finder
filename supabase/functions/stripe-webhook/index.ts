@@ -137,7 +137,7 @@ Deno.serve(async (req) => {
               type: "proposal_rejected",
               title: "Proposition non retenue",
               message: "Une autre proposition a été acceptée pour cette recherche.",
-              link: "/mes-propositions",
+              link: "/mon-espace?onglet=propositions",
             });
           }
 
@@ -173,7 +173,7 @@ Deno.serve(async (req) => {
             title: "Proposition acceptée et payée ! 🎉",
             message:
               "Le paiement est sécurisé jusqu'à la confirmation de réception de l'article.",
-            link: "/mes-propositions",
+            link: "/mon-espace?onglet=propositions",
           });
 
           let itemTitle: string | undefined;
