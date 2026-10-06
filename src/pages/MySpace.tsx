@@ -284,16 +284,17 @@ const MySpace = () => {
 
     const rows = data || [];
     setHasMoreProposals(rows.length === PANEL_PAGE_SIZE);
-    const withSearch = await Promise.all(
-      rows.map(async (p) => {
-        const { data: s } = await supabase
-          .from("searches")
-          .select("id, title, description, source_lang")
-          .eq("id", p.search_id)
-          .maybeSingle();
-        return { ...p, search: s };
-      })
-    );
+    const searchIds = [...new Set(rows.map((p) => p.search_id))];
+    const { data: searchRows } = searchIds.length
+      ? await supabase.from("searches").select("id, title, description, source_lang, user_id").in("id", searchIds)
+      : { data: [] as any[] };
+    const ownerIds = [...new Set((searchRows || []).map((r: any) => r.user_id))];
+    const { data: ownerRows } = ownerIds.length
+      ? await supabase.from("profiles").select("user_id, full_name").in("user_id", ownerIds)
+      : { data: [] as any[] };
+    const ownerName = new Map((ownerRows || []).map((o: any) => [o.user_id, o.full_name]));
+    const searchById = new Map((searchRows || []).map((r: any) => [r.id, { ...r, owner_name: ownerName.get(r.user_id) || null }]));
+    const withSearch = rows.map((p) => ({ ...p, search: searchById.get(p.search_id) || null }));
     setMyProposals((prev) => (append ? [...prev, ...withSearch] : withSearch));
     setLoadingProposals(false);
     setLoadingMoreProposals(false);
@@ -1236,61 +1237,39 @@ const MySpace = () => {
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
             {/* Paiements — Stripe Connect (uniquement si une action est requise) */}
-            {!profile.stripe_onboarding_complete && <div
-              className="mb-6 rounded-xl p-5 bg-white"
-              style={{ border: `1px solid ${profile.stripe_onboarding_complete ? '#BFDBC8' : '#E5E1D8'}` }}
-            >
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: profile.stripe_onboarding_complete ? '#E8F1EC' : '#FBF3E2' }}
-                  >
-                    {profile.stripe_onboarding_complete ? (
-                      <CheckCircle2 className="w-5 h-5" style={{ color: '#1F6B47' }} />
-                    ) : (
-                      <CreditCard className="w-5 h-5" style={{ color: '#8B6B1F' }} />
-                    )}
+            {!profile.stripe_onboarding_complete && (profile.is_findr || hasProposals) && (
+              <div className="mb-6 rounded-xl p-5 bg-white" style={{ border: "1px solid #E5E1D8" }}>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#FBF3E2" }}>
+                      <CreditCard className="w-5 h-5" style={{ color: "#8B6B1F" }} />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold" style={{ color: "#070E42" }}>{t("mySpace.payments.title")}</h3>
+                      <p className="text-sm" style={{ color: "#4B5563" }}>{t("mySpace.payments.description")}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold" style={{ color: '#070E42' }}>Paiements</h3>
-                    {profile.stripe_onboarding_complete ? (
-                      <p className="text-sm font-medium" style={{ color: '#1F6B47' }}>
-                        ✓ Paiements configurés — tu peux recevoir tes gains.
-                      </p>
-                    ) : (
-                      <p className="text-sm" style={{ color: '#6B7280' }}>
-                        Configure tes paiements pour recevoir tes gains.
-                      </p>
-                    )}
-                  </div>
-                </div>
-                {!profile.stripe_onboarding_complete && (
-                  <Button
-                    onClick={() => setStripeModalOpen(true)}
-                    disabled={stripeLoading}
-                    style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
-                  >
+                  <Button onClick={() => setStripeModalOpen(true)} disabled={stripeLoading} style={{ backgroundColor: "#070E42", color: "#F5F0EA" }}>
                     {stripeLoading ? (
-                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.redirecting")}</>
                     ) : (
-                      <><CreditCard className="w-4 h-4 mr-2" />Configurer mes paiements</>
+                      <><CreditCard className="w-4 h-4 mr-2" />{t("mySpace.payments.setup")}</>
                     )}
                   </Button>
-                )}
+                </div>
               </div>
-            </div>}
+            )}
 
             {/* Modale d'information avant redirection Stripe */}
             <Dialog open={stripeModalOpen} onOpenChange={setStripeModalOpen}>
               <DialogContent className="sm:max-w-md" style={{ backgroundColor: '#FBFAF6' }}>
                 <DialogHeader>
                   <DialogTitle style={{ fontFamily: "'Playfair Display', serif", color: '#070E42' }}>
-                    Avant de continuer
+                    {t("mySpace.payments.modalTitle")}
                   </DialogTitle>
                 </DialogHeader>
                 <p className="text-sm leading-relaxed" style={{ color: '#4B5563' }}>
-                  Sur Stripe, ignore les mentions « entreprise » ou « auto-entrepreneur » — indique juste tes infos personnelles (identité, coordonnées bancaires).
+                  {t("mySpace.payments.modalBody")}
                 </p>
                 <DialogFooter className="flex items-center justify-between gap-3 sm:justify-between">
                   <Button
@@ -1298,7 +1277,7 @@ const MySpace = () => {
                     onClick={() => setStripeModalOpen(false)}
                     style={{ color: '#6B7280' }}
                   >
-                    Annuler
+                    {t("mySpace.payments.cancel")}
                   </Button>
                   <Button
                     onClick={() => { setStripeModalOpen(false); startOnboarding(); }}
@@ -1306,9 +1285,9 @@ const MySpace = () => {
                     style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
                   >
                     {stripeLoading ? (
-                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Redirection…</>
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.redirecting")}</>
                     ) : (
-                      <>Continuer vers Stripe →</>
+                      <>{t("mySpace.payments.continue")}</>
                     )}
                   </Button>
                 </DialogFooter>
@@ -1330,7 +1309,7 @@ const MySpace = () => {
                   <div className="flex flex-col">
                     <span
                       className="uppercase"
-                      style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#9A8F7A", fontWeight: 600, marginBottom: 4 }}
+                      style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#756B58", fontWeight: 600, marginBottom: 4 }}
                     >
                       {t(`mySpace.tabs.groups.${group.key}`)}
                     </span>
@@ -1351,7 +1330,7 @@ const MySpace = () => {
                             onClick={() => selectTab(key)}
                             className="pb-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm"
                             style={{
-                              color: selected ? "#070E42" : "#6B7280",
+                              color: selected ? "#070E42" : "#4B5563",
                               fontWeight: selected ? 600 : 500,
                               borderBottom: `2px solid ${selected ? "#D9BB87" : "transparent"}`,
                               marginBottom: -1,
@@ -1411,7 +1390,7 @@ const MySpace = () => {
                               disabled={loadingMoreWallet}
                               onClick={() => fetchWallet(walletTransactions.length, true)}
                             >
-                              {loadingMoreWallet ? "Chargement…" : "Charger plus"}
+                              {loadingMoreWallet ? t("common.loading") : t("mySpace.loadMore")}
                             </Button>
                           </div>
                         )}
@@ -1489,7 +1468,12 @@ const MySpace = () => {
                                    </TranslatedContent>
                                   {p.search && (
                                     <p className="text-xs mt-0.5 line-clamp-1" style={{ color: '#6B7280' }}>
-                                      Pour : {p.search.title}
+                                      {t("mySpace.forSearch", { title: p.search.title })}
+                                    </p>
+                                  )}
+                                  {p.search?.owner_name && (
+                                    <p className="text-xs mt-0.5" style={{ color: '#6B7280' }}>
+                                      {t("mySpace.requestedBy", { name: p.search.owner_name })}
                                     </p>
                                   )}
                                   <p className="text-[11px] mt-1" style={{ color: '#9CA3AF' }}>
@@ -1507,7 +1491,7 @@ const MySpace = () => {
                                 disabled={loadingMoreProposals}
                                 onClick={() => fetchMyProposals(myProposals.length, true)}
                               >
-                                {loadingMoreProposals ? "Chargement…" : "Charger plus"}
+                                {loadingMoreProposals ? t("common.loading") : t("mySpace.loadMore")}
                               </Button>
                             </div>
                           )}
@@ -1576,7 +1560,7 @@ const MySpace = () => {
                                 disabled={loadingMoreFavorites}
                                 onClick={() => fetchFavorites(favorites.length, true)}
                               >
-                                {loadingMoreFavorites ? "Chargement…" : "Charger plus"}
+                                {loadingMoreFavorites ? t("common.loading") : t("mySpace.loadMore")}
                               </Button>
                             </div>
                           )}
