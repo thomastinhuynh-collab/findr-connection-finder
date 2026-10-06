@@ -1164,13 +1164,16 @@
       "exportError": "Export impossible"
     },
     "earnings": {
-      "paid": "Versé",
-      "pending": "En cours",
+      "paidTotalLabel": "Total versé",
+      "pendingTotalLabel": "Montant net prévu pour le versement",
+      "pendingDescription": "Ventes confirmées dont le versement n'a pas encore eu lieu.",
+      "paid": "Versements effectués",
+      "pending": "Versements Stripe en attente",
       "paidEmpty": "Aucun versement pour le moment.",
       "pendingEmpty": "Aucune vente en attente de versement.",
       "untitled": "Vente",
-      "stripeNote": "Tes versements sont effectués par Stripe sur ton compte bancaire.",
-      "viewStripe": "Voir mes virements sur Stripe",
+      "stripeNote": "Tes versements sont effectués par Stripe sur le compte bancaire associé à ton compte Stripe.",
+      "viewStripe": "Gérer mes versements dans Stripe",
       "opening": "Ouverture…",
       "stripeError": "Impossible d'ouvrir Stripe, réessaie dans un instant.",
       "empty": "Tu n'as pas encore réalisé de vente. Dès ta première vente, tu suivras ici tes gains et tes versements.",
@@ -1178,9 +1181,9 @@
       "step": {
         "awaitingDeliveryChoice": "En attente du choix de livraison du buyr",
         "paye_en_attente_reception": "À expédier",
-        "expedie": "Expédié",
-        "livre": "Livré",
-        "versement_en_revue": "En revue"
+        "expedie": "Expédié — versement en attente de confirmation de réception",
+        "livre": "Livré — versement en attente de confirmation de réception",
+        "versement_en_revue": "Versement en revue"
       }
     }
   },

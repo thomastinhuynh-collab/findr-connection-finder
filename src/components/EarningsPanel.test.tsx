@@ -66,4 +66,22 @@ describe("EarningsPanel", () => {
     await screen.findByRole("button", { name: fr.mySpace.earnings.viewStripe });
     expect(events).toEqual(["opener", "navigate"]);
   });
+
+  it.each(["fr", "en"])("renders the approved payout wording without prohibited terms in %s", async (language) => {
+    mocks.language = language;
+    mocks.reservations = ["expedie", "livre", "versement_en_revue"].map((status) => ({
+      id: status, delivery_type: "home", payment_status: status,
+      findr_payout_amount: 10, search_id: "search", proposal_id: null,
+    }));
+    const { container } = render(<MemoryRouter><EarningsPanel userId="findr" paymentsConfigured /></MemoryRouter>);
+    const copy = (language === "fr" ? fr : en).mySpace.earnings;
+    expect(await screen.findByRole("heading", { name: copy.pending })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: copy.paid })).toBeInTheDocument();
+    for (const text of [copy.pendingDescription, copy.pendingTotalLabel, copy.paidTotalLabel, copy.stripeNote,
+      copy.step.expedie, copy.step.livre, copy.step.versement_en_revue]) {
+      expect(screen.getByText(text)).toBeInTheDocument();
+    }
+    expect(container.textContent).not.toMatch(/portefeuille|solde|retrait|disponible|fonds bloqués|argent retenu|argent en attente sur ton compte|wallet|balance|withdraw|available|blocked funds|held money|money pending in your account/i);
+    expect(JSON.stringify(copy)).not.toMatch(/portefeuille|solde|retrait|disponible|fonds bloqués|argent retenu|wallet|balance|withdraw|available|blocked funds|held money/i);
+  });
 });
