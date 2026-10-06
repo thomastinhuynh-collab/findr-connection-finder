@@ -80,7 +80,7 @@ interface SearchItem {
   accepted_count?: number;
   unread_count?: number;
   completed_at?: string | null;
-  urgent_reason?: "reservation_pending" | "payment_pending" | null;
+  urgent_reason?: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | null;
   tab_status?: "active" | "ongoing" | "done" | "cancelled";
   findr_name?: string | null;
   final_amount?: number | null;
