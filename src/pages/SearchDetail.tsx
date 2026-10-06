@@ -144,7 +144,6 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
     return (
       <div className="relative rounded-xl overflow-hidden mb-6 bg-secondary">
         <div className="w-full h-[260px] md:h-[420px] flex items-center justify-center">
-          <span className="text-8xl">🔍</span>
         </div>
         <div className="absolute top-3 right-3 flex gap-2">
           {isReserved && <ReservationBadge expiresAt={activeReservation?.expires_at || null} />}

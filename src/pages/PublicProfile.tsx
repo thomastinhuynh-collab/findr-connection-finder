@@ -318,7 +318,6 @@ const PublicProfile = () => {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
-                            <span className="text-3xl">🔍</span>
                           </div>
                         )}
                       </div>

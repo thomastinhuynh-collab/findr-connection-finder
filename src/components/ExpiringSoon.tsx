@@ -141,7 +141,6 @@ const ExpiringSoon = () => {
                     <img src={image} alt={search.title} className="w-full h-full object-cover object-center" loading="lazy" />
                   ) : (
                     <div className="w-full h-full bg-[#E8E0D4] flex items-center justify-center">
-                      <span className="text-4xl">🔍</span>
                     </div>
                   )}
                   <Badge

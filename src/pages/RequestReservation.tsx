@@ -303,7 +303,6 @@ const RequestReservation = () => {
                       />
                     ) : (
                       <div className="w-16 h-16 rounded-xl bg-secondary flex items-center justify-center">
-                        <span className="text-2xl">🔍</span>
                       </div>
                     )}
                     <div>

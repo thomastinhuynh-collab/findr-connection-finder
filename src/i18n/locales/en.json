@@ -1177,7 +1177,7 @@
       "emptyCta": "Learn how to become a findr",
       "step": {
         "awaitingDeliveryChoice": "Awaiting the buyr’s delivery choice",
-"paye_en_attente_reception": "To ship",
+        "paye_en_attente_reception": "To ship",
         "expedie": "Shipped",
         "livre": "Delivered",
         "versement_en_revue": "Under review"
