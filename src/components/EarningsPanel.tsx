@@ -126,9 +126,15 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
   return (
     <div className="space-y-6">
       <section className="rounded-xl bg-white p-5" style={{ border: "1px solid #E5E0D6" }} aria-labelledby="earnings-pending">
-        <div className="flex items-baseline justify-between gap-3 mb-3">
-          <h3 id="earnings-pending" className="font-semibold" style={{ color: "#070E42" }}>{t("mySpace.earnings.pending")}</h3>
-          <span className="text-lg font-semibold" style={{ color: "#070E42" }}>{fmt(pendingTotal)}</span>
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+          <div className="min-w-0">
+            <h3 id="earnings-pending" className="font-semibold" style={{ color: "#070E42" }}>{t("mySpace.earnings.pending")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t("mySpace.earnings.pendingDescription")}</p>
+          </div>
+          <div className="sm:max-w-52 sm:text-right">
+            <p className="text-sm text-muted-foreground">{t("mySpace.earnings.pendingTotalLabel")}</p>
+            <span className="text-lg font-semibold" style={{ color: "#070E42" }}>{fmt(pendingTotal)}</span>
+          </div>
         </div>
         {pending.length === 0 ? (
           <p className="text-sm" style={{ color: "#4B5563" }}>{t("mySpace.earnings.pendingEmpty")}</p>
@@ -150,9 +156,12 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
       </section>
 
       <section className="rounded-xl bg-white p-5" style={{ border: "1px solid #E5E0D6" }} aria-labelledby="earnings-paid">
-        <div className="flex items-baseline justify-between gap-3 mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 mb-3">
           <h3 id="earnings-paid" className="font-semibold" style={{ color: "#070E42" }}>{t("mySpace.earnings.paid")}</h3>
-          <span className="text-lg font-semibold" style={{ color: "#070E42" }}>{fmt(paidTotal)}</span>
+          <div className="sm:text-right">
+            <p className="text-sm text-muted-foreground">{t("mySpace.earnings.paidTotalLabel")}</p>
+            <span className="text-lg font-semibold" style={{ color: "#070E42" }}>{fmt(paidTotal)}</span>
+          </div>
         </div>
         {paid.length === 0 ? (
           <p className="text-sm" style={{ color: "#4B5563" }}>{t("mySpace.earnings.paidEmpty")}</p>

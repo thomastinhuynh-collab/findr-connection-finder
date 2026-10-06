@@ -1164,13 +1164,16 @@
       "exportError": "Export failed"
     },
     "earnings": {
-      "paid": "Paid out",
-      "pending": "In progress",
+      "paidTotalLabel": "Total paid out",
+      "pendingTotalLabel": "Expected net payout amount",
+      "pendingDescription": "Confirmed sales that have not yet been paid out.",
+      "paid": "Completed payouts",
+      "pending": "Pending Stripe payouts",
       "paidEmpty": "No payouts yet.",
       "pendingEmpty": "No sales awaiting payout.",
       "untitled": "Sale",
-      "stripeNote": "Your payouts are made by Stripe to your bank account.",
-      "viewStripe": "View my payouts on Stripe",
+      "stripeNote": "Your payouts are made by Stripe to the bank account linked to your Stripe account.",
+      "viewStripe": "Manage my payouts in Stripe",
       "opening": "Opening…",
       "stripeError": "Couldn't open Stripe, please try again shortly.",
       "empty": "You haven't made a sale yet. From your first sale, you'll track your earnings and payouts here.",
@@ -1178,9 +1181,9 @@
       "step": {
         "awaitingDeliveryChoice": "Awaiting the buyr’s delivery choice",
         "paye_en_attente_reception": "To ship",
-        "expedie": "Shipped",
-        "livre": "Delivered",
-        "versement_en_revue": "Under review"
+        "expedie": "Shipped — payout awaiting confirmation of receipt",
+        "livre": "Delivered — payout awaiting confirmation of receipt",
+        "versement_en_revue": "Payout under review"
       }
     }
   },
