@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { User, Star, Search, Plus, Crown, Wallet, Package, Heart, Clock, Euro, MapPin, Pencil, CreditCard, CheckCircle2, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -24,6 +24,25 @@ import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
 import { isComingSoonCategory } from "@/lib/categories";
 import { useTranslation } from "react-i18next";
+
+type TabKey = "recherches" | "propositions" | "favoris" | "gains";
+const TAB_GROUPS: { key: "seeker" | "finder"; tabs: TabKey[] }[] = [
+  { key: "seeker", tabs: ["recherches"] },
+  { key: "finder", tabs: ["propositions", "favoris", "gains"] },
+];
+const ALL_TABS: TabKey[] = TAB_GROUPS.flatMap((g) => g.tabs);
+
+const FindrEmptyState = ({ text }: { text: string }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="py-12 text-center rounded-xl" style={{ border: "1px dashed #D4CCBC", backgroundColor: "#FAF7F2" }}>
+      <p className="mb-4 text-sm max-w-md mx-auto" style={{ color: "#374151" }}>{text}</p>
+      <Link to="/je-deviens-findr" className="text-sm font-semibold underline-offset-4 hover:underline" style={{ color: "#070E42" }}>
+        {t("mySpace.tabs.empty.cta")} →
+      </Link>
+    </div>
+  );
+};
 
 
 interface Profile {
@@ -132,11 +151,36 @@ const MySpace = () => {
   const [loadingMoreWallet, setLoadingMoreWallet] = useState(false);
   const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
   const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
-  type PanelKey = "favorites" | "wallet" | "evaluations" | "proposals" | "alerts";
-  const [activePanel, setActivePanel] = useState<null | PanelKey>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const rawTab = searchParams.get("onglet") as TabKey | null;
+  const activeTab: TabKey = rawTab && ALL_TABS.includes(rawTab) ? rawTab : "recherches";
+  const tabRefs = useRef<Partial<Record<TabKey, HTMLButtonElement | null>>>({});
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
-  const togglePanel = (p: PanelKey) =>
-    setActivePanel((cur) => (cur === p ? null : p));
+  const selectTab = (key: TabKey, focus = false) => {
+    const next = new URLSearchParams(searchParams);
+    next.set("onglet", key);
+    setSearchParams(next, { replace: true });
+    const el = tabRefs.current[key];
+    if (el) {
+      if (focus) el.focus();
+      el.scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+  };
+  const handleTabKeyDown = (e: React.KeyboardEvent) => {
+    const i = ALL_TABS.indexOf(activeTab);
+    let n = -1;
+    if (e.key === "ArrowRight") n = (i + 1) % ALL_TABS.length;
+    else if (e.key === "ArrowLeft") n = (i - 1 + ALL_TABS.length) % ALL_TABS.length;
+    else if (e.key === "Home") n = 0;
+    else if (e.key === "End") n = ALL_TABS.length - 1;
+    if (n >= 0) {
+      e.preventDefault();
+      selectTab(ALL_TABS[n], true);
+    }
+  };
+  useEffect(() => {
+    tabRefs.current[activeTab]?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [activeTab]);
 
   const openEditProfile = () => {
     setEditForm({
@@ -947,6 +991,13 @@ const MySpace = () => {
                       </span>
                     </>
                   )}
+                  <Link
+                    to={`/profil/${user?.id}/evaluations`}
+                    className="text-xs underline-offset-4 hover:underline"
+                    style={{ color: '#070E42', fontWeight: 500 }}
+                  >
+                    {t("mySpace.tabs.seeReviews")} →
+                  </Link>
                 </div>
 
                 {/* c. À propos — bio */}
@@ -1136,8 +1187,8 @@ const MySpace = () => {
             {/* Separator */}
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
-            {/* Paiements — Stripe Connect */}
-            <div
+            {/* Paiements — Stripe Connect (uniquement si une action est requise) */}
+            {!profile.stripe_onboarding_complete && <div
               className="mb-6 rounded-xl p-5 bg-white"
               style={{ border: `1px solid ${profile.stripe_onboarding_complete ? '#BFDBC8' : '#E5E1D8'}` }}
             >
@@ -1180,7 +1231,7 @@ const MySpace = () => {
                   </Button>
                 )}
               </div>
-            </div>
+            </div>}
 
             {/* Modale d'information avant redirection Stripe */}
             <Dialog open={stripeModalOpen} onOpenChange={setStripeModalOpen}>
