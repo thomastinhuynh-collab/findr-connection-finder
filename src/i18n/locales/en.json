@@ -1073,6 +1073,12 @@
         "propositions": "You haven't made a proposal yet. Your eye for hidden gems can help other enthusiasts.",
         "favorites": "No favorites yet. Save the searches you could help with.",
         "gains": "Your earnings will show up here after your first sale as a findr."
+      },
+      "badgeLabel_one": "{{tab}}, {{count}} action to take",
+      "badgeLabel_other": "{{tab}}, {{count}} actions to take",
+      "action": {
+        "ship": "To ship",
+        "dispute": "Dispute to handle"
       }
     }
   },
@@ -1270,5 +1276,13 @@
     "saving": "Saving…",
     "saved": "Delivery option saved",
     "waitingBuyr": "The buyr hasn't chosen a delivery option yet — you'll be able to ship as soon as they do."
+  },
+  "searchCard": {
+    "urgent": {
+      "reservation_pending": "Confirm the reservation within 48h",
+      "payment_pending": "Proposal accepted — payment pending",
+      "receipt_pending": "Parcel on its way — confirm receipt",
+      "delivery_choice": "Payment confirmed — choose your delivery"
+    }
   }
 }

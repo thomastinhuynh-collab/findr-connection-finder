@@ -80,7 +80,7 @@ interface SearchItem {
   accepted_count?: number;
   unread_count?: number;
   completed_at?: string | null;
-  urgent_reason?: "reservation_pending" | "payment_pending" | null;
+  urgent_reason?: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | null;
   tab_status?: "active" | "ongoing" | "done" | "cancelled";
   findr_name?: string | null;
   final_amount?: number | null;
@@ -137,6 +137,8 @@ const MySpace = () => {
   const bannerDragRef = useRef<{ px: number; py: number; ox: number; oy: number } | null>(null);
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [hasProposals, setHasProposals] = useState(false);
+  const [findrActionCount, setFindrActionCount] = useState(0);
+  const [findrActionByProposal, setFindrActionByProposal] = useState<Record<string, "dispute" | "ship">>({});
   const [hasCommission, setHasCommission] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [stripeModalOpen, setStripeModalOpen] = useState(false);
@@ -161,6 +163,7 @@ const MySpace = () => {
     const next = new URLSearchParams(searchParams);
     next.set("onglet", key);
     setSearchParams(next, { replace: true });
+    if (key !== activeTab) refreshBadges();
     const el = tabRefs.current[key];
     if (el) {
       if (focus) el.focus();
@@ -256,6 +259,7 @@ const MySpace = () => {
       fetchActivityFlags();
       fetchMyProposals();
       fetchWallet();
+      fetchFindrActions();
     }
   }, [user]);
 
@@ -294,6 +298,31 @@ const MySpace = () => {
     setLoadingProposals(false);
     setLoadingMoreProposals(false);
   };
+
+  const fetchFindrActions = async () => {
+    if (!user) return;
+    const { data, count } = await supabase
+      .from("reservations")
+      .select("proposal_id, dispute_open", { count: "exact" })
+      .eq("findr_id", user.id)
+      .or("dispute_open.eq.true,and(payment_status.eq.paye_en_attente_reception,delivery_type.not.is.null)");
+    setFindrActionCount(count || 0);
+    const map: Record<string, "dispute" | "ship"> = {};
+    for (const r of data || []) if (r.proposal_id) map[r.proposal_id] = r.dispute_open ? "dispute" : "ship";
+    setFindrActionByProposal(map);
+  };
+
+  const refreshBadges = () => {
+    fetchSearches();
+    fetchFindrActions();
+    fetchProfile();
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    window.addEventListener("focus", refreshBadges);
+    return () => window.removeEventListener("focus", refreshBadges);
+  });
 
   const fetchActivityFlags = async () => {
     if (!user) return;
@@ -388,7 +417,7 @@ const MySpace = () => {
           const { data: allReservations } = await supabase
             .from("reservations")
             .select(
-              "created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason"
+              "created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason, delivery_type"
             )
             .eq("search_id", search.id)
             .order("updated_at", { ascending: false });
@@ -399,11 +428,19 @@ const MySpace = () => {
             (r) => now - new Date(r.created_at).getTime() < 48 * 3600 * 1000
           );
 
-          const urgent_reason: "reservation_pending" | "payment_pending" | null =
+          const receiptPending = allRes.some((r) => r.payment_status === "expedie" || r.payment_status === "livre");
+          const deliveryChoicePending = allRes.some(
+            (r) => r.payment_status === "paye_en_attente_reception" && !r.delivery_type
+          );
+          const urgent_reason: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | null =
             hasRecentReservation
               ? "reservation_pending"
               : paymentPending
               ? "payment_pending"
+              : deliveryChoicePending
+              ? "delivery_choice"
+              : receiptPending
+              ? "receipt_pending"
               : null;
 
           const paid = allRes.find((r) =>
@@ -687,6 +724,13 @@ const MySpace = () => {
   if (!user || !profile) {
     return null;
   }
+
+  const badgeCounts: Record<TabKey, number> = {
+    recherches: searches.filter((s: any) => (s.unread_count || 0) > 0 || !!s.urgent_reason).length,
+    propositions: findrActionCount,
+    favoris: 0,
+    gains: profile && (profile.is_findr || hasProposals) && !profile.stripe_onboarding_complete ? 1 : 0,
+  };
 
   const averageRating = evaluations.length > 0
     ? (evaluations.reduce((acc, e) => acc + e.rating, 0) / evaluations.length).toFixed(1)
@@ -1301,6 +1345,7 @@ const MySpace = () => {
                             type="button"
                             role="tab"
                             aria-selected={selected}
+                            aria-label={badgeCounts[key] > 0 ? t("mySpace.tabs.badgeLabel", { tab: t(`mySpace.tabs.${key}`), count: badgeCounts[key] }) : undefined}
                             aria-controls={`tabpanel-${key}`}
                             tabIndex={selected ? 0 : -1}
                             onClick={() => selectTab(key)}
@@ -1313,6 +1358,15 @@ const MySpace = () => {
                             }}
                           >
                             {t(`mySpace.tabs.${key}`)}
+                            {badgeCounts[key] > 0 && (
+                              <span
+                                aria-hidden="true"
+                                className="ml-1.5 inline-flex items-center justify-center rounded-full align-middle"
+                                style={{ backgroundColor: "#D9BB87", color: "#070E42", fontSize: 11, fontWeight: 700, minWidth: 18, height: 18, padding: "0 5px", lineHeight: 1 }}
+                              >
+                                {badgeCounts[key] > 9 ? "9+" : badgeCounts[key]}
+                              </span>
+                            )}
                           </button>
                         );
                       })}
@@ -1388,7 +1442,7 @@ const MySpace = () => {
                 ) : (
 
                         <div className="space-y-3">
-                          {myProposals.map((p) => {
+                          {[...myProposals].sort((a, b) => (findrActionByProposal[b.id] ? 1 : 0) - (findrActionByProposal[a.id] ? 1 : 0)).map((p) => {
                             const statusMap: Record<string, { label: string; bg: string; color: string }> = {
                               pending: { label: "En attente", bg: "#FBF3E2", color: "#8B6B1F" },
                               accepted_pending: { label: "Acceptée — paiement en attente", bg: "#E8F1EC", color: "#1F6B47" },
@@ -1420,6 +1474,11 @@ const MySpace = () => {
                                     >
                                       {st.label}
                                     </span>
+                                    {findrActionByProposal[p.id] && (
+                                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: "#D9BB87", color: "#070E42" }}>
+                                        {t(`mySpace.tabs.action.${findrActionByProposal[p.id]}`)}
+                                      </span>
+                                    )}
                                     <span className="flex items-center gap-1 font-bold text-sm" style={{ color: '#070E42' }}>
                                       <Euro className="w-3.5 h-3.5" />
                                       {p.proposed_price}
