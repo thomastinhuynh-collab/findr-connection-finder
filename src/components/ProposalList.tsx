@@ -275,7 +275,7 @@ const ProposalList = ({
           _type: "proposal_rejected",
           _title: "Proposition refusée",
           _message: `Votre proposition pour "${proposal.title}" a été refusée.`,
-          _link: "/mes-propositions"
+          _link: "/mon-espace?onglet=propositions"
         });
 
       toast({

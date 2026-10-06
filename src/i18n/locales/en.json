@@ -1080,6 +1080,19 @@
         "ship": "To ship",
         "dispute": "Dispute to handle"
       }
+    },
+    "loadMore": "Load more",
+    "forSearch": "For: {{title}}",
+    "requestedBy": "Requested by {{name}}",
+    "payments": {
+      "title": "Payments",
+      "description": "Set up your payments to receive your earnings.",
+      "setup": "Set up my payments",
+      "redirecting": "Redirecting…",
+      "modalTitle": "Before you continue",
+      "modalBody": "On Stripe, ignore any mention of “business” or “sole trader” — just enter your personal details (identity, bank details).",
+      "cancel": "Cancel",
+      "continue": "Continue to Stripe →"
     }
   },
   "blog": {

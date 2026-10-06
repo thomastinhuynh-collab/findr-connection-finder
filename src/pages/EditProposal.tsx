@@ -119,7 +119,7 @@ const EditProposal = () => {
         description: "Vous ne pouvez modifier que vos propres propositions.",
         variant: "destructive",
       });
-      navigate("/mes-propositions");
+      navigate("/mon-espace?onglet=propositions");
       return;
     }
 
@@ -130,7 +130,7 @@ const EditProposal = () => {
         description: "Cette proposition ne peut plus être modifiée.",
         variant: "destructive",
       });
-      navigate("/mes-propositions");
+      navigate("/mon-espace?onglet=propositions");
       return;
     }
 
@@ -340,7 +340,7 @@ const EditProposal = () => {
             <h1 className="text-2xl font-serif font-bold text-primary mb-4">
                {t("proposalForm.proposalNotFound")}
             </h1>
-            <Button onClick={() => navigate("/mes-propositions")}>
+            <Button onClick={() => navigate("/mon-espace?onglet=propositions")}>
                {t("proposalForm.backToMyProposals")}
             </Button>
           </div>
@@ -369,7 +369,7 @@ const EditProposal = () => {
               onClick={() => {
                 const idx = (window.history.state as any)?.idx;
                 if (typeof idx === "number" && idx > 0) navigate(-1);
-                else navigate("/mes-propositions");
+                else navigate("/mon-espace?onglet=propositions");
               }}
               className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6"
             >

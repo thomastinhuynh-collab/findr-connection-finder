@@ -1080,6 +1080,19 @@
         "ship": "À expédier",
         "dispute": "Litige à traiter"
       }
+    },
+    "loadMore": "Charger plus",
+    "forSearch": "Pour : {{title}}",
+    "requestedBy": "Demandé par {{name}}",
+    "payments": {
+      "title": "Paiements",
+      "description": "Configure tes paiements pour recevoir tes gains.",
+      "setup": "Configurer mes paiements",
+      "redirecting": "Redirection…",
+      "modalTitle": "Avant de continuer",
+      "modalBody": "Sur Stripe, ignore les mentions « entreprise » ou « auto-entrepreneur » — indique juste tes infos personnelles (identité, coordonnées bancaires).",
+      "cancel": "Annuler",
+      "continue": "Continuer vers Stripe →"
     }
   },
   "blog": {
