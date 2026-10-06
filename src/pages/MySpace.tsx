@@ -1331,6 +1331,26 @@ const MySpace = () => {
                   <FindrEmptyState text={t("mySpace.tabs.empty.propositions")} />
                 ) : (
 
+                        <div className="space-y-3">
+                          {myProposals.map((p) => {
+                            const statusMap: Record<string, { label: string; bg: string; color: string }> = {
+                              pending: { label: "En attente", bg: "#FBF3E2", color: "#8B6B1F" },
+                              accepted_pending: { label: "Acceptée — paiement en attente", bg: "#E8F1EC", color: "#1F6B47" },
+                              completed: { label: "Terminée", bg: "#EDEDED", color: "#4B5563" },
+                              rejected: { label: "Refusée", bg: "#FEF1EA", color: "#993C1D" },
+                            };
+                            const st = statusMap[p.status] || { label: p.status, bg: "#F0EBE3", color: "#6B7280" };
+                            return (
+                              <div
+                                key={p.id}
+                                className="flex gap-3 bg-white rounded-lg border overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                                style={{ borderColor: '#E5E1D8' }}
+                                onClick={() => p.search && navigate(`/recherche/${p.search.id}`)}
+                              >
+                                <div className="w-24 h-24 flex-shrink-0" style={{ backgroundColor: '#F0EBE3' }}>
+                                  {p.image_urls?.[0] ? (
+                                    <img src={p.image_urls[0]} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
+                                  ) : (
                                     <div className="w-full h-full flex items-center justify-center">
                                       <Package className="w-6 h-6" style={{ color: '#D9BB87' }} />
                                     </div>
