@@ -112,7 +112,7 @@ const MySpace = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { startOnboarding, loading: stripeLoading } = useStripeConnect();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -138,6 +138,8 @@ const MySpace = () => {
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [hasProposals, setHasProposals] = useState(false);
   const [findrActionCount, setFindrActionCount] = useState(0);
+  const [actionProposals, setActionProposals] = useState<any[]>([]);
+  const searchTabAutoSelected = useRef(false);
   const [findrActionByProposal, setFindrActionByProposal] = useState<Record<string, "dispute" | "ship">>({});
   const [hasCommission, setHasCommission] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -163,7 +165,6 @@ const MySpace = () => {
     const next = new URLSearchParams(searchParams);
     next.set("onglet", key);
     setSearchParams(next, { replace: true });
-    if (key !== activeTab) refreshBadges();
     const el = tabRefs.current[key];
     if (el) {
       if (focus) el.focus();
@@ -284,6 +285,13 @@ const MySpace = () => {
 
     const rows = data || [];
     setHasMoreProposals(rows.length === PANEL_PAGE_SIZE);
+    const withSearch = await enrichProposals(rows);
+    setMyProposals((prev) => (append ? [...prev, ...withSearch] : withSearch));
+    setLoadingProposals(false);
+    setLoadingMoreProposals(false);
+  };
+
+  const enrichProposals = async (rows: any[]) => {
     const searchIds = [...new Set(rows.map((p) => p.search_id))];
     const { data: searchRows } = searchIds.length
       ? await supabase.from("searches").select("id, title, description, source_lang, user_id").in("id", searchIds)
@@ -294,10 +302,7 @@ const MySpace = () => {
       : { data: [] as any[] };
     const ownerName = new Map((ownerRows || []).map((o: any) => [o.user_id, o.full_name]));
     const searchById = new Map((searchRows || []).map((r: any) => [r.id, { ...r, owner_name: ownerName.get(r.user_id) || null }]));
-    const withSearch = rows.map((p) => ({ ...p, search: searchById.get(p.search_id) || null }));
-    setMyProposals((prev) => (append ? [...prev, ...withSearch] : withSearch));
-    setLoadingProposals(false);
-    setLoadingMoreProposals(false);
+    return rows.map((p) => ({ ...p, search: searchById.get(p.search_id) || null }));
   };
 
   const fetchFindrActions = async () => {
@@ -311,6 +316,16 @@ const MySpace = () => {
     const map: Record<string, "dispute" | "ship"> = {};
     for (const r of data || []) if (r.proposal_id) map[r.proposal_id] = r.dispute_open ? "dispute" : "ship";
     setFindrActionByProposal(map);
+    const ids = Object.keys(map);
+    if (ids.length === 0) {
+      setActionProposals([]);
+      return;
+    }
+    const { data: rows } = await supabase
+      .from("proposals")
+      .select("id, title, description, proposed_price, image_urls, status, created_at, search_id, source_lang")
+      .in("id", ids);
+    setActionProposals(await enrichProposals(rows || []));
   };
 
   const refreshBadges = () => {
@@ -319,11 +334,41 @@ const MySpace = () => {
     fetchProfile();
   };
 
+  const refreshRef = useRef(refreshBadges);
+  refreshRef.current = refreshBadges;
+  const lastFocusRefresh = useRef(0);
   useEffect(() => {
     if (!user) return;
-    window.addEventListener("focus", refreshBadges);
-    return () => window.removeEventListener("focus", refreshBadges);
-  });
+    const onFocus = () => {
+      if (Date.now() - lastFocusRefresh.current < 60_000) return;
+      lastFocusRefresh.current = Date.now();
+      refreshRef.current();
+    };
+    window.addEventListener("focus", onFocus);
+    const channel = supabase
+      .channel(`myspace-notifications-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
+        () => refreshRef.current()
+      )
+      .subscribe();
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (searchTabAutoSelected.current || searches.length === 0) return;
+    searchTabAutoSelected.current = true;
+    const todo = { active: 0, ongoing: 0, done: 0, cancelled: 0 } as Record<string, number>;
+    for (const s of searches as any[]) if ((s.unread_count || 0) > 0 || s.urgent_reason) todo[s.tab_status ?? "active"]++;
+    if (todo.active === 0) {
+      const other = (["ongoing", "done", "cancelled"] as const).find((k) => todo[k] > 0);
+      if (other) setSearchTab(other);
+    }
+  }, [searches]);
 
   const fetchActivityFlags = async () => {
     if (!user) return;
@@ -365,8 +410,8 @@ const MySpace = () => {
       id: t.id,
       type: "credit" as const,
       amount: Number(t.amount || 0),
-      description: "Vente finalisée",
-      date: new Date(t.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }),
+      description: t("mySpace.ui.saleCompleted"),
+      date: new Date(t.created_at).toLocaleDateString(i18n.language, { day: "numeric", month: "short", year: "numeric" }),
     }));
     setWalletTransactions((prev) => (append ? [...prev, ...mapped] : mapped));
     setLoadingMoreWallet(false);
@@ -418,7 +463,7 @@ const MySpace = () => {
           const { data: allReservations } = await supabase
             .from("reservations")
             .select(
-              "created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason, delivery_type"
+              "created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason, delivery_type, dispute_open"
             )
             .eq("search_id", search.id)
             .order("updated_at", { ascending: false });
@@ -429,7 +474,7 @@ const MySpace = () => {
             (r) => now - new Date(r.created_at).getTime() < 48 * 3600 * 1000
           );
 
-          const receiptPending = allRes.some((r) => r.payment_status === "expedie" || r.payment_status === "livre");
+          const receiptPending = allRes.some((r) => (r.payment_status === "expedie" || r.payment_status === "livre") && !r.dispute_open);
           const deliveryChoicePending = allRes.some(
             (r) => r.payment_status === "paye_en_attente_reception" && !r.delivery_type
           );
@@ -667,21 +712,21 @@ const MySpace = () => {
       canvas.width = outW;
       canvas.height = outH;
       const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Canvas indisponible");
+      if (!ctx) throw new Error(t("mySpace.ui.canvasError"));
 
       const image = new Image();
       image.src = bannerPreviewUrl;
       await new Promise<void>((resolve, reject) => {
         if (image.complete) return resolve();
         image.onload = () => resolve();
-        image.onerror = () => reject(new Error("Image illisible"));
+        image.onerror = () => reject(new Error(t("mySpace.ui.imageError")));
       });
       ctx.drawImage(image, sx, sy, sw, sh, 0, 0, outW, outH);
 
       const blob = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob((b) => resolve(b), "image/jpeg", 0.85)
       );
-      if (!blob) throw new Error("Export impossible");
+      if (!blob) throw new Error(t("mySpace.ui.exportError"));
 
       const path = `${user.id}/banner-${Date.now()}.jpg`;
       const { error: upErr } = await supabase.storage
@@ -733,6 +778,11 @@ const MySpace = () => {
     gains: profile && (profile.is_findr || hasProposals) && !profile.stripe_onboarding_complete ? 1 : 0,
   };
 
+  const searchTodoByTab = { active: 0, ongoing: 0, done: 0, cancelled: 0 } as Record<"active" | "ongoing" | "done" | "cancelled", number>;
+  for (const s of searches as any[]) {
+    if ((s.unread_count || 0) > 0 || s.urgent_reason) searchTodoByTab[(s.tab_status ?? "active") as keyof typeof searchTodoByTab]++;
+  }
+
   const averageRating = evaluations.length > 0
     ? (evaluations.reduce((acc, e) => acc + e.rating, 0) / evaluations.length).toFixed(1)
     : "N/A";
@@ -778,10 +828,10 @@ const MySpace = () => {
               <Dialog open={bannerEditorOpen} onOpenChange={(o) => { if (!o) closeBannerEditor(); }}>
                 <DialogContent className="sm:max-w-[680px]">
                   <DialogHeader>
-                    <DialogTitle style={{ color: "#070E42" }}>Positionner la bannière</DialogTitle>
+                    <DialogTitle style={{ color: "#070E42" }}>{t("mySpace.ui.bannerTitle")}</DialogTitle>
                   </DialogHeader>
                   <p style={{ fontSize: 13, color: "#666666" }}>
-                    Fais glisser l'image dans le cadre pour choisir la partie visible.
+                    {t("mySpace.ui.bannerHint")}
                   </p>
                   <div className="flex justify-center">
                     <div
@@ -806,7 +856,7 @@ const MySpace = () => {
                       {bannerPreviewUrl && (
                         <img
                           src={bannerPreviewUrl}
-                          alt="Aperçu de la bannière"
+                          alt={t("mySpace.ui.bannerPreviewAlt")}
                           draggable={false}
                           onLoad={handleBannerImageLoaded}
                           style={{
@@ -824,14 +874,14 @@ const MySpace = () => {
                   </div>
                   <DialogFooter>
                     <Button variant="outline" onClick={closeBannerEditor} disabled={uploadingBanner}>
-                      Annuler
+                      {t("mySpace.payments.cancel")}
                     </Button>
                     <Button
                       onClick={handleBannerConfirm}
                       disabled={uploadingBanner || !bannerNatural}
                       style={{ backgroundColor: "#D9BB87", color: "#070E42" }}
                     >
-                      {uploadingBanner ? "Envoi…" : "Valider la bannière"}
+                      {uploadingBanner ? t("mySpace.ui.uploading") : t("mySpace.ui.bannerConfirm")}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -852,7 +902,7 @@ const MySpace = () => {
                 {profile.banner_url && (
                   <img
                     src={profile.banner_url}
-                    alt="Bannière de profil"
+                    alt={t("mySpace.ui.bannerAlt")}
                     className="absolute inset-0 w-full h-full object-cover" loading="lazy"
                   />
                 )}
@@ -884,10 +934,10 @@ const MySpace = () => {
                   >
                     <Pencil className="w-3 h-3" />
                     {uploadingBanner
-                      ? "Envoi…"
+                      ? t("mySpace.ui.uploading")
                       : profile.banner_url
-                      ? "Changer la bannière"
-                      : "Ajouter une bannière"}
+                      ? t("mySpace.ui.bannerChange")
+                      : t("mySpace.ui.bannerAdd")}
                   </button>
                   {profile.banner_url && (
                     <button
@@ -906,7 +956,7 @@ const MySpace = () => {
                         backdropFilter: "blur(4px)",
                       }}
                     >
-                      Retirer
+                      {t("mySpace.ui.remove")}
                     </button>
                   )}
                 </div>
@@ -949,7 +999,7 @@ const MySpace = () => {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
-                title="Changer ma photo"
+                title={t("mySpace.ui.changePhoto")} aria-label={t("mySpace.ui.changePhoto")}
                 className="group relative flex-shrink-0 rounded-full overflow-hidden"
                 style={{ width: 108, height: 108, marginTop: -76 }}
               >
@@ -983,7 +1033,7 @@ const MySpace = () => {
                 {/* a. Name + status badges + email verified */}
                 <div className="flex items-center gap-3 flex-wrap">
                   <h1 className="text-2xl font-display font-bold" style={{ color: '#1B2A4A' }}>
-                    {profile.full_name || "Utilisateur"}
+                    {profile.full_name || t("mySpace.ui.defaultUser")}
                   </h1>
                   {profile.is_premium && (
                     <Badge style={{ backgroundColor: '#D9BB87', color: '#070E42' }}>
@@ -1009,7 +1059,7 @@ const MySpace = () => {
                         fontWeight: 500,
                       }}
                     >
-                      ✓ Email vérifié
+                      ✓ {t("mySpace.ui.emailVerified")}
                     </span>
                   )}
                 </div>
@@ -1017,7 +1067,7 @@ const MySpace = () => {
                 {/* b. Rating line */}
                 <div className="flex items-center gap-2 mt-2">
                   {evaluations.length === 0 ? (
-                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>Pas encore d'avis</span>
+                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>{t("mySpace.ui.noReviews")}</span>
                   ) : (
                     <>
                       <div className="flex">
@@ -1036,7 +1086,7 @@ const MySpace = () => {
                         {averageRating}
                       </span>
                       <span className="text-xs" style={{ color: '#6B7280' }}>
-                        ({evaluations.length} avis)
+                        {t("mySpace.ui.reviewCount", { count: evaluations.length })}
                       </span>
                     </>
                   )}
@@ -1055,7 +1105,7 @@ const MySpace = () => {
                     className="text-xs font-semibold uppercase tracking-wider mb-2"
                     style={{ color: '#D9BB87', letterSpacing: '0.08em' }}
                   >
-                    À propos
+                    {t("mySpace.ui.about")}
                   </h3>
                   {profile.bio ? (
                     <div
@@ -1076,8 +1126,7 @@ const MySpace = () => {
                       }}
                     >
                       <p style={{ fontSize: 13, color: '#6B6259', display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span>✏️</span>
-                        Ajoute une bio pour te présenter à la communauté
+                        {t("mySpace.ui.addBioHint")}
                       </p>
                       <button
                         type="button"
@@ -1094,7 +1143,7 @@ const MySpace = () => {
                           cursor: 'pointer',
                         }}
                       >
-                        + Ajouter ma bio
+                        + {t("mySpace.ui.addBio")}
                       </button>
                     </div>
                   )}
@@ -1125,7 +1174,7 @@ const MySpace = () => {
                         }}
                       >
                         <span style={{ color: '#D9BB87' }}>◆</span>
-                        Catégorie favorite · {dominant}
+                        {t("mySpace.ui.favoriteCategory", { category: dominant })}
                       </span>
                     </div>
                   );
@@ -1134,7 +1183,7 @@ const MySpace = () => {
                 {/* e. Secondary metadata line */}
                 {(() => {
                   const memberSince = (profile as any).created_at
-                    ? new Date((profile as any).created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+                    ? new Date((profile as any).created_at).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })
                     : null;
                   return (
                     <div
@@ -1144,7 +1193,7 @@ const MySpace = () => {
                       <span style={{ fontSize: 13 }}>
                         <span style={{ fontWeight: 600, color: '#070E42' }}>{searches.length}</span>
                         <span style={{ color: '#9A8570', marginLeft: 4 }}>
-                          {searches.length > 1 ? 'recherches actives' : 'recherche active'}
+                          {t("mySpace.ui.activeSearches", { count: searches.length })}
                         </span>
                       </span>
                       {profile.city && (
@@ -1155,13 +1204,13 @@ const MySpace = () => {
                       )}
                       {memberSince && (
                         <span style={{ fontSize: 12, color: '#9A8570' }}>
-                          Membre depuis <span style={{ color: '#6B6259', fontWeight: 500 }}>{memberSince}</span>
+                          {t("mySpace.ui.memberSince")} <span style={{ color: '#6B6259', fontWeight: 500 }}>{memberSince}</span>
                         </span>
                       )}
                       {gamificationEnabled && (
                         <span className="flex items-center gap-1.5" style={{ fontSize: 13 }}>
                           <Clock className="w-3.5 h-3.5" style={{ color: '#D9BB87' }} />
-                          Niveau {profile.level} · {profile.xp_points} XP
+                          {t("mySpace.ui.level", { level: profile.level, xp: profile.xp_points })}
                         </span>
                       )}
                     </div>
@@ -1175,7 +1224,7 @@ const MySpace = () => {
                       <div style={{ width: `${progressPct}%`, height: '100%', background: 'linear-gradient(90deg, #D9BB87, #c9a876)', transition: 'width 0.3s ease' }} />
                     </div>
                     <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 4 }}>
-                      {xpInLevel} / {xpPerLevel} XP pour le Niveau {profile.level + 1}
+                      {t("mySpace.ui.xpProgress", { current: xpInLevel, total: xpPerLevel, level: profile.level + 1 })}
                     </p>
                   </div>
                 ) : (() => {
@@ -1183,14 +1232,14 @@ const MySpace = () => {
                   const filled = fields.filter(Boolean).length;
                   const pct = Math.round((filled / fields.length) * 100);
                   const missing: string[] = [];
-                  if (!profile.avatar_url) missing.push("une photo");
-                  if (!profile.bio) missing.push("une bio");
+                  if (!profile.avatar_url) missing.push(t("mySpace.ui.missingPhoto"));
+                  if (!profile.bio) missing.push(t("mySpace.ui.missingBio"));
                   if (pct >= 100) return null;
                   return (
                     <div className="mt-3" style={{ maxWidth: 340 }}>
                       <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
                         <span style={{ fontSize: 12, color: '#070E42', fontWeight: 600 }}>
-                          Profil complété à {pct}%
+                          {t("mySpace.ui.profileCompletion", { pct })}
                         </span>
                       </div>
                       <div style={{ width: '100%', height: 6, borderRadius: 3, backgroundColor: '#E8E2D9', overflow: 'hidden' }}>
@@ -1198,7 +1247,7 @@ const MySpace = () => {
                       </div>
                       {missing.length > 0 && (
                         <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 6 }}>
-                          Ajoute {missing.join(" + ")} pour rassurer les chineurs.
+                          {t("mySpace.ui.missingHint", { items: missing.join(" + ") })}
                         </p>
                       )}
                     </div>
@@ -1222,7 +1271,7 @@ const MySpace = () => {
                   }}
                 >
                   <Pencil className="w-3 h-3" />
-                  Modifier mon profil
+                  {t("mySpace.ui.editProfile")}
                 </button>
               </div>
               </div>
@@ -1341,7 +1390,7 @@ const MySpace = () => {
                               <span
                                 aria-hidden="true"
                                 className="ml-1.5 inline-flex items-center justify-center rounded-full align-middle"
-                                style={{ backgroundColor: "#D9BB87", color: "#070E42", fontSize: 11, fontWeight: 700, minWidth: 18, height: 18, padding: "0 5px", lineHeight: 1 }}
+                                style={{ backgroundColor: "#D9BB87", color: "#070E42", fontSize: 11, fontWeight: 600, minWidth: 18, height: 18, padding: "0 5px", lineHeight: 1 }}
                               >
                                 {badgeCounts[key] > 9 ? "9+" : badgeCounts[key]}
                               </span>
@@ -1416,17 +1465,17 @@ const MySpace = () => {
                 )}
                 {loadingProposals ? (
                   <div className="py-12 text-center" style={{ color: '#6B7280' }}>{t("common.loading")}</div>
-                ) : myProposals.length === 0 ? (
+                ) : myProposals.length === 0 && actionProposals.length === 0 ? (
                   <FindrEmptyState text={t("mySpace.tabs.empty.propositions")} />
                 ) : (
 
                         <div className="space-y-3">
-                          {[...myProposals].sort((a, b) => (findrActionByProposal[b.id] ? 1 : 0) - (findrActionByProposal[a.id] ? 1 : 0)).map((p) => {
+                          {[...actionProposals, ...myProposals.filter((p) => !actionProposals.some((a) => a.id === p.id))].map((p) => {
                             const statusMap: Record<string, { label: string; bg: string; color: string }> = {
-                              pending: { label: "En attente", bg: "#FBF3E2", color: "#8B6B1F" },
-                              accepted_pending: { label: "Acceptée — paiement en attente", bg: "#E8F1EC", color: "#1F6B47" },
-                              completed: { label: "Terminée", bg: "#EDEDED", color: "#4B5563" },
-                              rejected: { label: "Refusée", bg: "#FEF1EA", color: "#993C1D" },
+                              pending: { label: t("mySpace.proposalStatus.pending"), bg: "#FBF3E2", color: "#8B6B1F" },
+                              accepted_pending: { label: t("mySpace.proposalStatus.accepted_pending"), bg: "#E8F1EC", color: "#1F6B47" },
+                              completed: { label: t("mySpace.proposalStatus.completed"), bg: "#EDEDED", color: "#4B5563" },
+                              rejected: { label: t("mySpace.proposalStatus.rejected"), bg: "#FEF1EA", color: "#993C1D" },
                             };
                             const st = statusMap[p.status] || { label: p.status, bg: "#F0EBE3", color: "#6B7280" };
                             return (
@@ -1477,7 +1526,7 @@ const MySpace = () => {
                                     </p>
                                   )}
                                   <p className="text-[11px] mt-1" style={{ color: '#9CA3AF' }}>
-                                    {new Date(p.created_at).toLocaleDateString("fr-FR")}
+                                    {new Date(p.created_at).toLocaleDateString(i18n.language)}
                                   </p>
                                 </div>
                               </div>
@@ -1542,7 +1591,7 @@ const MySpace = () => {
                                     <Euro className="w-3 h-3" />
                                     {search.budget_min && search.budget_max
                                       ? `${search.budget_min}€ – ${search.budget_max}€`
-                                      : "Non défini"}
+                                      : t("mySpace.ui.budgetUndefined")}
                                   </span>
                                   <span className="flex items-center gap-1">
                                     <MapPin className="w-3 h-3" />
@@ -1582,7 +1631,7 @@ const MySpace = () => {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h2 style={{ fontSize: 18, fontWeight: 600, color: "#070E42" }}>
-                      Mes recherches en cours
+                      {t("mySpace.ui.mySearchesTitle")}
                     </h2>
                     <div style={{ width: 60, height: 2, backgroundColor: "#D9BB87", borderRadius: 2, marginTop: 8 }} />
                   </div>
@@ -1604,7 +1653,7 @@ const MySpace = () => {
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#1B2A4A")}
                     >
                       <span style={{ fontSize: 16, marginRight: 6, lineHeight: 1 }}>+</span>
-                      Poster une recherche
+                      {t("mySpace.ui.postSearch")}
                     </Link>
                   </div>
                 </div>
@@ -1612,24 +1661,25 @@ const MySpace = () => {
                 {searches.length === 0 ? (
                   <div className="py-16 text-center">
                     <Search className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BB87' }} />
-                    <p style={{ color: '#6B7280' }}>Aucune recherche pour le moment</p>
+                    <p style={{ color: '#6B7280' }}>{t("mySpace.ui.noSearches")}</p>
                     <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>
-                      <Link to="/poster">Poster ma première recherche</Link>
+                      <Link to="/poster">{t("mySpace.ui.firstSearch")}</Link>
                     </Button>
                   </div>
                 ) : (
                   <>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {([
-                        { key: "active", label: "Actives" },
-                        { key: "ongoing", label: "En cours" },
-                        { key: "done", label: "Terminées" },
-                        { key: "cancelled", label: "Annulées" },
+                        { key: "active" },
+                        { key: "ongoing" },
+                        { key: "done" },
+                        { key: "cancelled" },
                       ] as const).map((tab) => {
                         const count = searches.filter(
                           (s) => (s.tab_status ?? "active") === tab.key
                         ).length;
                         const isActive = searchTab === tab.key;
+                        const todo = searchTodoByTab[tab.key];
                         return (
                           <button
                             key={tab.key}
@@ -1646,8 +1696,17 @@ const MySpace = () => {
                               border: `1px solid ${isActive ? "#070E42" : "rgba(7,14,66,0.15)"}`,
                             }}
                           >
-                            {tab.label}
+                            {t(`mySpace.searchTabs.${tab.key}`)}
                             <span style={{ marginLeft: 6, opacity: 0.75 }}>{count}</span>
+                            {todo > 0 && (
+                              <span
+                                aria-label={t("mySpace.searchTabs.todo", { count: todo })}
+                                className="ml-1.5 inline-flex items-center justify-center rounded-full align-middle"
+                                style={{ backgroundColor: "#D9BB87", color: "#070E42", fontSize: 11, fontWeight: 600, minWidth: 18, height: 18, padding: "0 5px", lineHeight: 1 }}
+                              >
+                                {todo > 9 ? "9+" : todo}
+                              </span>
+                            )}
                           </button>
                         );
                       })}
@@ -1660,7 +1719,7 @@ const MySpace = () => {
                       if (filtered.length === 0) {
                         return (
                           <div className="py-12 text-center" style={{ color: "#6B7280", fontSize: 14 }}>
-                            Aucune recherche dans cette catégorie
+                            {t("mySpace.ui.noSearchesInTab")}
                           </div>
                         );
                       }
@@ -1692,34 +1751,34 @@ const MySpace = () => {
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle style={{ color: '#070E42' }}>Modifier mon profil</DialogTitle>
+            <DialogTitle style={{ color: '#070E42' }}>{t("mySpace.ui.editProfile")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2 max-h-[70vh] overflow-y-auto pr-1">
             <div className="space-y-1.5">
-              <Label htmlFor="edit-name">Nom complet</Label>
+              <Label htmlFor="edit-name">{t("mySpace.ui.fullName")}</Label>
               <Input
                 id="edit-name"
                 value={editForm.full_name}
                 onChange={(e) => setEditForm((f) => ({ ...f, full_name: e.target.value }))}
-                placeholder="Ton nom"
+                placeholder={t("mySpace.ui.fullNamePlaceholder")}
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="edit-city">Ville</Label>
+              <Label htmlFor="edit-city">{t("mySpace.ui.city")}</Label>
               <Input
                 id="edit-city"
                 value={editForm.city}
                 onChange={(e) => setEditForm((f) => ({ ...f, city: e.target.value }))}
-                placeholder="Paris, Lyon…"
+                placeholder={t("mySpace.ui.cityPlaceholder")}
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="edit-bio">Bio</Label>
+              <Label htmlFor="edit-bio">{t("mySpace.ui.bio")}</Label>
               <Textarea
                 id="edit-bio"
                 value={editForm.bio}
                 onChange={(e) => setEditForm((f) => ({ ...f, bio: e.target.value }))}
-                placeholder="Présente-toi à la communauté…"
+                placeholder={t("mySpace.ui.bioPlaceholder")}
                 rows={4}
                 maxLength={500}
               />
@@ -1730,14 +1789,14 @@ const MySpace = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditOpen(false)} disabled={savingProfile}>
-              Annuler
+              {t("mySpace.payments.cancel")}
             </Button>
             <Button
               onClick={handleSaveProfile}
               disabled={savingProfile}
               style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
             >
-              {savingProfile ? "Enregistrement…" : "Enregistrer"}
+              {savingProfile ? t("mySpace.ui.saving") : t("mySpace.ui.save")}
             </Button>
           </DialogFooter>
         </DialogContent>

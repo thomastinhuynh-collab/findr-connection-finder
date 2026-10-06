@@ -213,7 +213,7 @@ export function buildEmail(
             { label: "Objet", value: data.itemTitle ?? "—" },
             { label: "Montant net à recevoir", value: money(data.payoutAmount) },
           ],
-          cta: { label: "Marquer comme expédié", url: `${SITE_URL}/mes-propositions` },
+          cta: { label: "Marquer comme expédié", url: `${SITE_URL}/mon-espace?onglet=propositions` },
         }),
       };
 
