@@ -154,6 +154,7 @@ const MySpace = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const rawTab = searchParams.get("onglet") as TabKey | null;
   const activeTab: TabKey = rawTab && ALL_TABS.includes(rawTab) ? rawTab : "recherches";
+  const tabListRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Partial<Record<TabKey, HTMLButtonElement | null>>>({});
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
   const selectTab = (key: TabKey, focus = false) => {
@@ -163,7 +164,6 @@ const MySpace = () => {
     const el = tabRefs.current[key];
     if (el) {
       if (focus) el.focus();
-      el.scrollIntoView({ block: "nearest", inline: "nearest" });
     }
   };
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
@@ -179,8 +179,12 @@ const MySpace = () => {
     }
   };
   useEffect(() => {
-    tabRefs.current[activeTab]?.scrollIntoView({ block: "nearest", inline: "nearest" });
-  }, [activeTab]);
+    const el = tabRefs.current[activeTab];
+    const bar = tabListRef.current;
+    if (!el || !bar) return;
+    const left = el.getBoundingClientRect().left - bar.getBoundingClientRect().left + bar.scrollLeft;
+    bar.scrollTo({ left: Math.max(0, left - (bar.clientWidth - el.offsetWidth) / 2) });
+  });
 
   const openEditProfile = () => {
     setEditForm({
@@ -1269,6 +1273,7 @@ const MySpace = () => {
 
             {/* Navigation par onglets groupés par rôle */}
             <div
+              ref={tabListRef}
               role="tablist"
               aria-label={t("mySpace.tabs.ariaLabel")}
               onKeyDown={handleTabKeyDown}
