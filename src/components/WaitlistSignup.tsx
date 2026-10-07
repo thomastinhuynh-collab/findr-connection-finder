@@ -71,7 +71,7 @@ const WaitlistSignup = () => {
                   <CheckCircle className="w-8 h-8 text-accent" />
                 </div>
                 <p className="text-xl font-semibold text-cream">
-                  {t("waitlistSignup.success")}
+                  {t("waitlistSignup.checkEmail")}
                 </p>
               </div>
             ) : (
