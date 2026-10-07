@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight, CheckCircle, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useWaitlist } from "@/hooks/useWaitlist";
+import { useWaitlist, useWaitlistConfirmationNotice } from "@/hooks/useWaitlist";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const WaitlistSignup = () => {
   const { t } = useTranslation();
@@ -12,6 +13,7 @@ const WaitlistSignup = () => {
   const [website, setWebsite] = useState(""); // honeypot anti-robots
   const [role, setRole] = useState<"buyr" | "findr">("buyr");
   const { count, loading, submitted, submit } = useWaitlist();
+  useWaitlistConfirmationNotice();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,16 +144,24 @@ const WaitlistSignup = () => {
           </motion.div>
 
           {!submitted && (
-            <motion.p
+            <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="mt-5 text-sm flex items-center justify-center gap-1.5 text-cream/50"
+              className="mt-5 space-y-2 text-sm text-cream/50"
             >
-              <Lock className="w-3.5 h-3.5" />
-              {t("waitlistSignup.privacy")}
-            </motion.p>
+              <p className="flex items-center justify-center gap-1.5">
+                <Lock className="w-3.5 h-3.5" />
+                {t("waitlistSignup.privacy")}
+              </p>
+              <p className="text-xs">
+                {t("waitlistSignup.consent")}{" "}
+                <Link to="/confidentialite" className="underline hover:text-cream">
+                  {t("waitlistSignup.consentLink")}
+                </Link>
+              </p>
+            </motion.div>
           )}
         </div>
       </div>
