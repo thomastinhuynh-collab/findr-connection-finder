@@ -704,28 +704,58 @@ export type Database = {
       }
       waitlist: {
         Row: {
+          confirm_sent_at: string | null
+          confirm_token: string | null
+          confirmed_at: string | null
           consent_given: boolean | null
           created_at: string
           email: string
+          email_normalized: string | null
           first_name: string | null
           id: string
           role: string | null
         }
         Insert: {
+          confirm_sent_at?: string | null
+          confirm_token?: string | null
+          confirmed_at?: string | null
           consent_given?: boolean | null
           created_at?: string
           email: string
+          email_normalized?: string | null
           first_name?: string | null
           id?: string
           role?: string | null
         }
         Update: {
+          confirm_sent_at?: string | null
+          confirm_token?: string | null
+          confirmed_at?: string | null
           consent_given?: boolean | null
           created_at?: string
           email?: string
+          email_normalized?: string | null
           first_name?: string | null
           id?: string
           role?: string | null
+        }
+        Relationships: []
+      }
+      waitlist_attempts: {
+        Row: {
+          created_at: string
+          id: string
+          ip_hash: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ip_hash: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ip_hash?: string
         }
         Relationships: []
       }
