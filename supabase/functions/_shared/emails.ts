@@ -480,6 +480,20 @@ export function buildEmail(
 
 
 
+    case "waitlist_confirm":
+      return {
+        subject: "Confirme ton inscription à findr",
+        html: renderEmail({
+          documentTitle: "Confirme ton inscription à findr",
+          paragraphs: [
+            `${hello} merci de ton intérêt pour findr !`,
+            "Pour rejoindre la liste d'attente, confirme ton adresse email en cliquant sur le bouton ci-dessous.",
+            "Si tu n'es pas à l'origine de cette demande, ignore ce message : ton adresse sera supprimée.",
+          ],
+          cta: { label: "Confirmer mon inscription", url: String(data.confirmUrl ?? SITE_URL) },
+        }),
+      };
+
     case "waitlist_signup":
       return {
         subject: `Nouvelle inscription à la liste d'attente : ${esc(data.email ?? "")}`,
