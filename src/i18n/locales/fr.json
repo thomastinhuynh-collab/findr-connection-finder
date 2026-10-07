@@ -311,7 +311,7 @@
     "waitlistCount_other": "Déjà {{count}} personnes sur la liste d'attente",
     "title": "Prêt à trouver tes pépites ?",
     "subtitle": "Rejoins la liste d'attente et sois parmi les premiers à accéder à la plateforme de chinage communautaire.",
-    "success": "C'est noté ! On te prévient dès l'ouverture.",
+    "success": "Dernière étape : clique sur le lien que nous venons de t'envoyer pour confirmer ton adresse.",
     "emailPlaceholder": "ton@email.com",
     "submit": "Je m'inscris"
   },
@@ -354,7 +354,17 @@
     },
     "emailPlaceholder": "ton@email.com",
     "submit": "Rejoindre la liste d'attente",
-    "privacy": "Pas de spam. Juste les vraies nouvelles de Findr."
+    "privacy": "Pas de spam. Juste les vraies nouvelles de Findr.",
+    "checkEmail": "Dernière étape : clique sur le lien que nous venons de t'envoyer pour confirmer ton adresse.",
+    "confirmed": "Ton inscription est confirmée, merci !",
+    "confirmInvalid": "Ce lien n'est plus valide, réinscris-toi.",
+    "consent": "En t'inscrivant, tu acceptes de recevoir des nouvelles de findr.",
+    "consentLink": "Politique de confidentialité",
+    "errors": {
+      "invalidEmail": "Merci d'entrer une adresse email valide.",
+      "rateLimited": "Trop de tentatives, réessaie plus tard.",
+      "generic": "Une erreur est survenue. Réessaie plus tard."
+    }
   },
   "becomeFindr": {
     "eyebrow": "Deux profils, une communauté",

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ export function useWaitlist() {
   const [count, setCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const shownAt = useRef(Date.now());
 
   useEffect(() => {
     supabase.rpc("get_waitlist_count").then(({ data }) => {
@@ -20,55 +21,36 @@ export function useWaitlist() {
     role: "buyr" | "findr" | "unknown" = "unknown",
     honeypot = "",
   ) => {
-    // Anti-robots : le honeypot doit rester vide, et on filtre les adresses
-    // générées aléatoirement :
-    //  - une partie locale de 14+ caractères (points retirés) sans AUCUNE
-    //    voyelle (ex. "xktrzpvqwmnbhst") — un vrai nom en contient presque
-    //    toujours au moins une ;
-    //  - une suite de segments très courts séparés par des points
-    //    (ex. "l.w.z.a.fe.coa.p0.28", l'astuce « dots Gmail » des bots).
-    // Les vraies adresses (thomas.bernard, marc.dupont.pro) ne matchent pas.
-    const localPart = email.trim().toLowerCase().split("@")[0] ?? "";
-    const compact = localPart.replace(/\./g, "");
-    const noVowels = compact.length >= 14 && !/[aeiouy]/.test(compact);
-    const segments = localPart.split(".").filter(Boolean);
-    const shortSegments = segments.filter((s) => s.length <= 2).length;
-    const looksBot = segments.length >= 6 && shortSegments >= 4;
-    if (honeypot || noVowels || looksBot) {
-      toast.error("Merci d'entrer une adresse email valide.");
-      return false;
-    }
-
     const trimmed = email.trim().toLowerCase();
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      toast.error("Merci d'entrer une adresse email valide.");
+      toast.error(t("waitlistSignup.errors.invalidEmail"));
       return false;
     }
 
     setLoading(true);
     try {
-      const { error } = await supabase.from("waitlist").insert({ email: trimmed, role });
+      const { data, error } = await supabase.functions.invoke("join-waitlist", {
+        body: {
+          email: trimmed,
+          role,
+          website: honeypot,
+          elapsed_ms: Date.now() - shownAt.current,
+        },
+      });
       if (error) {
-        if (error.code === "23505") {
-          toast.info("Tu es déjà inscrit(e) sur la liste d'attente !");
-          setSubmitted(true);
-        } else {
-          toast.error("Une erreur est survenue. Réessaie plus tard.");
-        }
+        const status = (error as { context?: Response }).context?.status;
+        toast.error(t(status === 429 ? "waitlistSignup.errors.rateLimited" : "waitlistSignup.errors.generic"));
+        return false;
+      }
+      if (!data?.ok) {
+        toast.error(t("waitlistSignup.errors.generic"));
         return false;
       }
       setSubmitted(true);
-      setCount((prev) => (prev !== null ? prev + 1 : 1));
-      // Alerte interne par email — fire-and-forget, jamais bloquante.
-      supabase.functions
-        .invoke("notify-waitlist-signup", {
-          body: { email: trimmed, role, count: count !== null ? count + 1 : undefined },
-        })
-        .catch(() => {});
-      toast.success(t("waitlistSignup.success"));
+      toast.success(t("waitlistSignup.checkEmail"));
       return true;
     } catch {
-      toast.error("Une erreur est survenue.");
+      toast.error(t("waitlistSignup.errors.generic"));
       return false;
     } finally {
       setLoading(false);
@@ -76,4 +58,18 @@ export function useWaitlist() {
   };
 
   return { count, loading, submitted, submit };
+}
+
+/** Affiche le résultat d'une confirmation (?confirmed=1|0) puis nettoie l'URL. */
+export function useWaitlistConfirmationNotice() {
+  const { t } = useTranslation();
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const c = url.searchParams.get("confirmed");
+    if (c !== "1" && c !== "0") return;
+    if (c === "1") toast.success(t("waitlistSignup.confirmed"));
+    else toast.error(t("waitlistSignup.confirmInvalid"));
+    url.searchParams.delete("confirmed");
+    window.history.replaceState({}, "", url.pathname + url.search + url.hash);
+  }, [t]);
 }

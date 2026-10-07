@@ -3,3 +3,7 @@ project_id = "kfnggqhawjvzgajakbgd"
 [functions]
   [functions.auth-email-hook]
     verify_jwt = false
+  [functions.join-waitlist]
+    verify_jwt = false
+  [functions.confirm-waitlist]
+    verify_jwt = false

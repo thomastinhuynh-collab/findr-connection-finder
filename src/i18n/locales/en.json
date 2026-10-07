@@ -311,7 +311,7 @@
     "waitlistCount_other": "{{count}} people already on the waitlist",
     "title": "Ready to find something special?",
     "subtitle": "Join the waitlist and be among the first to explore our community-powered treasure hunting platform.",
-    "success": "You're on the list! We'll let you know as soon as we launch.",
+    "success": "Last step: click the link we just sent you to confirm your address.",
     "emailPlaceholder": "you@email.com",
     "submit": "Join the waitlist"
   },
@@ -354,7 +354,17 @@
     },
     "emailPlaceholder": "you@email.com",
     "submit": "Join the waitlist",
-    "privacy": "No spam. Just genuine updates from Findr."
+    "privacy": "No spam. Just genuine updates from Findr.",
+    "checkEmail": "Last step: click the link we just sent you to confirm your address.",
+    "confirmed": "Your signup is confirmed, thank you!",
+    "confirmInvalid": "This link is no longer valid, please sign up again.",
+    "consent": "By signing up, you agree to receive news from findr.",
+    "consentLink": "Privacy policy",
+    "errors": {
+      "invalidEmail": "Please enter a valid email address.",
+      "rateLimited": "Too many attempts, please try again later.",
+      "generic": "Something went wrong. Please try again later."
+    }
   },
   "becomeFindr": {
     "eyebrow": "Two roles, one community",
