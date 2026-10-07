@@ -143,7 +143,8 @@ export type EmailType =
   | "chargeback_opened"
   | "reservation_reminder"
   | "waitlist_signup"
-  | "waitlist_welcome";
+  | "waitlist_welcome"
+  | "waitlist_confirm";
 
 // deno-lint-ignore no-explicit-any
 type Data = Record<string, any>;
