@@ -8,6 +8,13 @@
       "when": 1791389665682,
       "tag": "0000_waitlist_double_optin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791460834954,
+      "tag": "0001_drop_open_waitlist_insert",
+      "breakpoints": true
     }
   ]
 }
