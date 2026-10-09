@@ -11,7 +11,6 @@ const WaitlistSignup = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState(""); // honeypot anti-robots
-  const [role, setRole] = useState<"buyr" | "findr">("buyr");
   const { count, loading, submitted, submit } = useWaitlist();
   useWaitlistConfirmationNotice();
 
