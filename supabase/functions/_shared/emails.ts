@@ -505,7 +505,6 @@ export function buildEmail(
           ],
           facts: [
             { label: "Email", value: data.email ?? "—" },
-            { label: "Rôle déclaré", value: data.role ?? "inconnu" },
             ...(data.count ? [{ label: "Total sur la liste", value: String(data.count) }] : []),
           ],
         }),
