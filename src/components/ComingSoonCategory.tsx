@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import CategoryGlyph from "@/components/CategoryGlyph";
 import Logo from "@/components/Logo";
 import { useTranslation } from "react-i18next";
 import { CATEGORIES } from "@/lib/categories";
@@ -28,8 +29,14 @@ const ComingSoonCategory = ({ categoryName }: ComingSoonCategoryProps) => {
     >
       <Logo variant="cream" size={56} />
 
+      <CategoryGlyph
+        slug={categoryIndex >= 0 ? CATEGORIES[categoryIndex].slug : categoryName}
+        size={40}
+        className="mt-12"
+        style={{ color: "#F5F0EA", opacity: 0.5 }}
+      />
       <h1
-        className="mt-12 uppercase"
+        className="mt-6 uppercase"
         style={{
           fontFamily: "'Anton', sans-serif",
           fontWeight: 400,

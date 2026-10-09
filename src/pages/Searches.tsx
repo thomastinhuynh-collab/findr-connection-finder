@@ -1,4 +1,5 @@
 import { usePageMeta } from "@/hooks/usePageMeta";
+import CategoryGlyph from "@/components/CategoryGlyph";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -473,14 +474,15 @@ const Searches = () => {
                           }
                           setSelectedCategory(cat);
                         }}
-                        className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted"
+                        className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted flex items-center gap-1.5"
                         style={{
                           background: selectedCategory === cat ? "#F5F1E8" : "transparent",
                           color: comingSoon ? "#8A8275" : "#1B2A4A",
                           fontWeight: selectedCategory === cat ? 600 : 400,
                         }}
                       >
-                        {cat}
+                        <CategoryGlyph slug={cat} size={14} />
+                        <span>{cat}</span>
                         {comingSoon && (
                           <span className="ml-1.5 text-[11px] italic" style={{ color: "#8A8275" }}>
                              ({t("searchesPage.comingSoon")})
@@ -549,7 +551,7 @@ const Searches = () => {
                     <button
                       key={o.v}
                       onClick={() => setDeadlineFilter(o.v)}
-                      className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted"
+                      className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted flex items-center gap-1.5"
                       style={{
                         background: deadlineFilter === o.v ? "#F5F1E8" : "transparent",
                         color: "#1B2A4A",
@@ -608,7 +610,7 @@ const Searches = () => {
                       <button
                         key={o.v}
                         onClick={() => { setSortBy(o.v); setSortTouched(true); }}
-                        className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted"
+                        className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted flex items-center gap-1.5"
                         style={{
                           background: sortBy === o.v ? "#F5F1E8" : "transparent",
                           color: "#1B2A4A",
@@ -721,8 +723,12 @@ const Searches = () => {
                         padding: "5px 12px",
                         borderRadius: "20px",
                         zIndex: 5,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
                       }}
                     >
+                      <CategoryGlyph slug={search.category} size={14} />
                       {search.category}
                     </span>
 
