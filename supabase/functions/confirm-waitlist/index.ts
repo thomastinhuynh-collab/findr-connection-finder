@@ -42,9 +42,7 @@ Deno.serve(async (req) => {
       if (!sent) await admin.from("waitlist_welcome_emails").delete().eq("email", email);
     }
 
-    await sendEmailTo(ADMIN_EMAIL, "waitlist_signup", {
-      email, role: row.role ?? "unknown",
-    }, CONTACT_SENDER);
+    await sendEmailTo(ADMIN_EMAIL, "waitlist_signup", { email }, CONTACT_SENDER);
 
     return redirect(true);
   } catch (err) {
