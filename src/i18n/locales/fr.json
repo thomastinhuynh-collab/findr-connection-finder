@@ -347,11 +347,6 @@
     "title": "Sois parmi les premiers à rejoindre Findr",
     "subtitle": "Lance-toi en avant-première et façonne la plateforme avec nous.",
     "success": "C'est noté ! On te prévient dès l'ouverture",
-    "rolePrompt": "Je suis plutôt...",
-    "roles": {
-      "buyr": "Un buyr",
-      "findr": "Un findr"
-    },
     "emailPlaceholder": "ton@email.com",
     "submit": "Rejoindre la liste d'attente",
     "privacy": "Pas de spam. Juste les vraies nouvelles de Findr.",
