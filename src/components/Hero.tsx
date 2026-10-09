@@ -294,7 +294,7 @@ const Hero = () => {
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 6,
+                gap: 4,
                 padding: 0,
                 transition: "color 0.2s",
               }}
