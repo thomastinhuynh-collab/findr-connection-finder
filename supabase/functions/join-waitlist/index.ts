@@ -8,9 +8,18 @@ import { sendEmailTo } from "../_shared/brevo.ts";
 import { CONTACT_SENDER } from "../_shared/emails.ts";
 import { DISPOSABLE_DOMAINS } from "../_shared/disposable-domains.ts";
 
+const WAITLIST_ROLES = ["buyr", "findr", "unknown"] as const;
+type WaitlistRole = (typeof WAITLIST_ROLES)[number];
+
 const BodySchema = z.object({
   email: z.string().trim().email().max(255),
-  role: z.enum(["buyr", "findr", "unknown"]).default("unknown"),
+  // Rôle tolérant : absent, vide, null ou en dehors de la liste => "unknown".
+  role: z
+    .unknown()
+    .optional()
+    .transform((r): WaitlistRole =>
+      WAITLIST_ROLES.includes(r as WaitlistRole) ? (r as WaitlistRole) : "unknown",
+    ),
   first_name: z.string().trim().max(120).optional().nullable(),
   website: z.string().max(500).optional().default(""),
   elapsed_ms: z.number().nonnegative().optional().default(0),
