@@ -16,7 +16,7 @@ const WaitlistSignup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = await submit(email, role, website);
+    const ok = await submit(email, "unknown", website);
     if (ok) setEmail("");
   };
 
@@ -74,36 +74,7 @@ const WaitlistSignup = () => {
                 </p>
               </div>
             ) : (
-              <div className="space-y-5">
-                {/* Role toggle */}
-                <div>
-                  <p className="text-sm text-cream/60 mb-3">{t("waitlistSignup.rolePrompt")}</p>
-                  <div className="inline-flex rounded-full p-1 bg-cream/10 border border-cream/20">
-                    <button
-                      type="button"
-                      onClick={() => setRole("buyr")}
-                      className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                        role === "buyr"
-                          ? "bg-accent text-accent-foreground shadow-sm"
-                          : "text-cream/70 hover:text-cream"
-                      }`}
-                    >
-                      {t("waitlistSignup.roles.buyr")}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setRole("findr")}
-                      className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                        role === "findr"
-                          ? "bg-accent text-accent-foreground shadow-sm"
-                          : "text-cream/70 hover:text-cream"
-                      }`}
-                    >
-                      {t("waitlistSignup.roles.findr")}
-                    </button>
-                  </div>
-                </div>
-
+              <div>
                 {/* Email form */}
                 <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
                   {/* Honeypot anti-robots : invisible pour les humains */}

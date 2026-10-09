@@ -347,11 +347,6 @@
     "title": "Be among the first to join Findr",
     "subtitle": "Get early access and help us shape the platform.",
     "success": "You're on the list! We'll let you know as soon as we launch",
-    "rolePrompt": "I'm more of a...",
-    "roles": {
-      "buyr": "Buyr",
-      "findr": "Findr"
-    },
     "emailPlaceholder": "you@email.com",
     "submit": "Join the waitlist",
     "privacy": "No spam. Just genuine updates from Findr.",
