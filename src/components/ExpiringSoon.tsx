@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import CategoryGlyph from "@/components/CategoryGlyph";
 import { useNavigate } from "react-router-dom";
 import { Clock, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -151,7 +152,8 @@ const ExpiringSoon = () => {
                       padding: "4px 12px", border: "none",
                     }}
                   >
-                    {search.category}
+                    <CategoryGlyph slug={search.category} size={14} />
+                    <span style={{ marginLeft: 4 }}>{search.category}</span>
                   </Badge>
                   <div
                     className="absolute bottom-3 left-3 flex items-center gap-1.5"

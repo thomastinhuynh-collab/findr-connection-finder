@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import CategoryGlyph from "@/components/CategoryGlyph";
 import { useNavigate } from "react-router-dom";
 import { Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -233,7 +234,8 @@ const ActiveRequests = () => {
                       padding: "4px 12px", border: "none",
                     }}
                   >
-                    {search.category}
+                    <CategoryGlyph slug={search.category} size={14} />
+                    <span style={{ marginLeft: 4 }}>{search.category}</span>
                   </Badge>
 
                   {/* Deadline badge */}

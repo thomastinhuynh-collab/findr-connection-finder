@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import CategoryGlyph from "@/components/CategoryGlyph";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Clock, ExternalLink, Users, Crown, Sparkles, MapPin } from "lucide-react";
@@ -155,7 +156,8 @@ const PremiumSearches = () => {
                 </div>
 
                 {/* Category badge top-left */}
-                <Badge className="absolute top-3 left-3 bg-card text-primary font-medium text-xs px-3 py-1 shadow-sm border-0">
+                <Badge className="absolute top-3 left-3 bg-card text-primary font-medium text-xs px-3 py-1 shadow-sm border-0 gap-1">
+                  <CategoryGlyph slug={search.category} size={14} />
                   {search.category}
                 </Badge>
 

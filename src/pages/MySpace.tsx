@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import CategoryGlyph from "@/components/CategoryGlyph";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { User, Star, Search, Plus, Crown, Wallet, Package, Heart, Clock, Euro, MapPin, Pencil, CreditCard, CheckCircle2, Loader2 } from "lucide-react";
@@ -1515,7 +1516,8 @@ const MySpace = () => {
                                 </div>
                               )}
                               <div className="p-3 flex-1">
-                                <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: '#F0EBE3', color: '#8B7355' }}>
+                                <span className="text-xs font-medium px-2 py-0.5 rounded-full inline-flex items-center gap-1" style={{ backgroundColor: '#F0EBE3', color: '#8B7355' }}>
+                                  <CategoryGlyph slug={search.category} size={14} />
                                   {search.category}
                                 </span>
                                  <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>

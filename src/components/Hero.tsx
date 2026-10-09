@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import CategoryGlyph from "@/components/CategoryGlyph";
 import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
@@ -293,7 +294,7 @@ const Hero = () => {
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 4,
+                gap: 6,
                 padding: 0,
                 transition: "color 0.2s",
               }}
@@ -302,6 +303,7 @@ const Hero = () => {
                 (e.currentTarget.style.color = "rgba(217, 187, 135, 0.65)")
               }
             >
+              <CategoryGlyph slug={c.slug} size={14} />
               {t(`categoryNav.categories.c${categoryIndex + 1}.name`)}
               <span style={{ fontSize: 10 }}>▾</span>
             </button>
