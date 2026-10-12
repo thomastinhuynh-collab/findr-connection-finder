@@ -1,4 +1,5 @@
 # Traduction complète FR/EN
+- [x] Supprimer la simulation de paiement StripeCheckoutSimulation.tsx et son usage dans la page Premium, qui reste sur « Bientôt disponible »
 - [x] Harmoniser le tutoiement hors textes juridiques, corriger les versements suspendus et auditer les occurrences restantes ainsi que la simulation Stripe
 - [x] Mes gains : vocabulaire juridique Stripe FR/EN, sous-titre et libellés des totaux (5 tests ciblés réussis)
 - [x] Mes gains : attente du choix de livraison FR/EN, ouverture Stripe isolée et nettoyage des émojis visibles (3 tests ciblés réussis)
