@@ -1,27 +1,11 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Crown, Search, Bell, Zap, Shield, Star, Headphones } from "lucide-react";
+import { Crown, Search, Bell, Zap, Shield, Star, Headphones } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import StripeCheckoutSimulation from "@/components/StripeCheckoutSimulation";
-import { toast } from "sonner";
 
 const Premium = () => {
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<"monthly" | "annual">("monthly");
-
-  const handleSelectPlan = (plan: "monthly" | "annual") => {
-    setSelectedPlan(plan);
-    setShowCheckout(true);
-  };
-
-  const handlePaymentSuccess = () => {
-    setShowCheckout(false);
-    toast.success("Félicitations ! Tu es maintenant Premium !");
-  };
-
   // Le programme Premium est volontairement mis de côté pour le lancement.
   // Le code existant est conservé ; on affiche un message temporaire.
   const premiumEnabled = false;
@@ -85,6 +69,9 @@ const Premium = () => {
     }
   ];
 
+  // Les boutons ci-dessous ne lancent plus rien : la simulation de paiement a été retirée.
+  // À la réactivation du programme, ils devront appeler le vrai paiement Stripe
+  // (fonction create-payment-checkout).
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -119,7 +106,7 @@ const Premium = () => {
                   <span className="text-4xl font-bold text-foreground">15€</span>
                   <span className="text-muted-foreground">/mois</span>
                 </div>
-                <Button className="w-full btn-hero" size="lg" onClick={() => handleSelectPlan("monthly")}>
+                <Button className="w-full btn-hero" size="lg">
                   Commencer maintenant
                 </Button>
                 <p className="text-sm text-muted-foreground mt-4">
@@ -144,7 +131,7 @@ const Premium = () => {
                   <span className="text-4xl font-bold text-foreground">100€</span>
                   <span className="text-muted-foreground">/an</span>
                 </div>
-                <Button className="w-full btn-gold" size="lg" onClick={() => handleSelectPlan("annual")}>
+                <Button className="w-full btn-gold" size="lg">
                   Économiser avec l'annuel
                 </Button>
                 <p className="text-sm text-muted-foreground mt-4">
@@ -226,7 +213,7 @@ const Premium = () => {
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                 Rejoins des centaines d'utilisateurs qui profitent déjà des avantages Premium.
               </p>
-              <Button size="lg" className="btn-gold" onClick={() => handleSelectPlan("annual")}>
+              <Button size="lg" className="btn-gold">
                 <Crown className="w-4 h-4 mr-2" />
                 Devenir Premium
               </Button>
@@ -236,15 +223,6 @@ const Premium = () => {
       </main>
 
       <Footer />
-
-      {/* Stripe Checkout Simulation */}
-      {showCheckout && (
-        <StripeCheckoutSimulation
-          plan={selectedPlan}
-          onClose={() => setShowCheckout(false)}
-          onSuccess={handlePaymentSuccess}
-        />
-      )}
     </div>
   );
 };
