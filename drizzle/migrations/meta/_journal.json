@@ -15,6 +15,13 @@
       "when": 1791460834954,
       "tag": "0001_drop_open_waitlist_insert",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791806004605,
+      "tag": "0002_waitlist_cleanup_legacy",
+      "breakpoints": true
     }
   ]
 }
