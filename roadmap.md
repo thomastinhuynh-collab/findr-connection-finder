@@ -1,5 +1,5 @@
 # Traduction complète FR/EN
-- [ ] Harmoniser le tutoiement hors textes juridiques, corriger les versements suspendus et auditer les occurrences restantes ainsi que la simulation Stripe
+- [x] Harmoniser le tutoiement hors textes juridiques, corriger les versements suspendus et auditer les occurrences restantes ainsi que la simulation Stripe
 - [x] Mes gains : vocabulaire juridique Stripe FR/EN, sous-titre et libellés des totaux (5 tests ciblés réussis)
 - [x] Mes gains : attente du choix de livraison FR/EN, ouverture Stripe isolée et nettoyage des émojis visibles (3 tests ciblés réussis)
 - [x] Mon espace : ignorer new_message, regrouper les notifications à 3 secondes, initialiser le délai de focus et rendre les pastilles accessibles avec contraste renforcé
