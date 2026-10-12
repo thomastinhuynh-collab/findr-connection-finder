@@ -20,7 +20,15 @@ const BodySchema = z.object({
     .transform((r): WaitlistRole =>
       WAITLIST_ROLES.includes(r as WaitlistRole) ? (r as WaitlistRole) : "unknown",
     ),
-  first_name: z.string().trim().max(120).optional().nullable(),
+  // Prénom tolérant : invalide => null, sans refuser l'inscription.
+  first_name: z
+    .unknown()
+    .optional()
+    .transform((v): string | null => {
+      if (typeof v !== "string") return null;
+      const t = v.trim();
+      return t && t.length <= 40 && /^[\p{L}' -]+$/u.test(t) ? t : null;
+    }),
   website: z.string().max(500).optional().default(""),
   elapsed_ms: z.number().nonnegative().optional().default(0),
 });
@@ -93,7 +101,18 @@ Deno.serve(async (req) => {
       "unknown";
     const { data: saltRow } = await admin
       .from("webhook_secrets").select("secret").eq("name", "waitlist_ip_salt").maybeSingle();
-    const ipHash = await sha256(ip + (saltRow?.secret ?? ""));
+    let salt = saltRow?.secret ?? "";
+    if (!salt) {
+      salt = randomToken();
+      const { error: saltErr } = await admin
+        .from("webhook_secrets").insert({ name: "waitlist_ip_salt", secret: salt });
+      if (saltErr) {
+        const { data: again } = await admin
+          .from("webhook_secrets").select("secret").eq("name", "waitlist_ip_salt").maybeSingle();
+        if (again?.secret) salt = again.secret;
+      }
+    }
+    const ipHash = await sha256(ip + salt);
     const now = Date.now();
 
     await admin.from("waitlist_attempts").delete()
@@ -129,7 +148,7 @@ Deno.serve(async (req) => {
           confirmUrl: confirmBase + existing.confirm_token,
         }, CONTACT_SENDER);
       }
-      return json({ ok: true, already: true });
+      return json({ ok: true });
     }
 
     // Nettoyage des inscriptions non confirmées de plus de 7 jours (nouveau parcours uniquement).
@@ -149,7 +168,7 @@ Deno.serve(async (req) => {
       confirm_sent_at: new Date().toISOString(),
     });
     if (insertError) {
-      if (insertError.code === "23505") return json({ ok: true, already: true });
+      if (insertError.code === "23505") return json({ ok: true });
       console.error("[join-waitlist] insert error:", insertError);
       return json({ ok: false, error: "server_error" }, 500);
     }

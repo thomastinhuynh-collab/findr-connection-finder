@@ -5,6 +5,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useWaitlist } from "@/hooks/useWaitlist";
 import heroImage from "@/assets/hero-vintage.jpg";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const CallToAction = () => {
   const { t } = useTranslation();
@@ -50,7 +51,7 @@ const CallToAction = () => {
 
             {submitted ? (
               <p className="text-xl font-semibold" style={{ color: 'hsl(42 33% 94%)' }}>
-                {t("callToAction.success")}
+                {t("waitlistSignup.checkEmail")}
               </p>
             ) : (
               <form 
@@ -78,6 +79,14 @@ const CallToAction = () => {
                   {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
                 </Button>
               </form>
+            )}
+            {!submitted && (
+              <p className="mt-5 text-xs" style={{ color: 'hsl(42 33% 94% / 0.6)' }}>
+                {t("waitlistSignup.consent")}{" "}
+                <Link to="/confidentialite" className="underline">
+                  {t("waitlistSignup.consentLink")}
+                </Link>
+              </p>
             )}
           </div>
         </div>

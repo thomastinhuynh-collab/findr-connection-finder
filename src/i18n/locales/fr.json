@@ -311,7 +311,6 @@
     "waitlistCount_other": "Déjà {{count}} personnes sur la liste d'attente",
     "title": "Prêt à trouver tes pépites ?",
     "subtitle": "Rejoins la liste d'attente et sois parmi les premiers à accéder à la plateforme de chinage communautaire.",
-    "success": "Dernière étape : clique sur le lien que nous venons de t'envoyer pour confirmer ton adresse.",
     "emailPlaceholder": "ton@email.com",
     "submit": "Je m'inscris"
   },
