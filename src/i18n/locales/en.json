@@ -30,7 +30,7 @@
     "buyr": {
       "meta": {
         "title": "Finally find the item you've been looking for — findr",
-        "description": "Describe the hard-to-find item you want and let a community of hunters take care of it. Secure payment, held until delivery."
+        "description": "Describe the hard-to-find item you're looking for and a community of hunters takes it from there. Payment via Stripe, payout to the findr after receipt."
       },
       "hero": {
         "eyebrow": "Become a buyr",
@@ -53,8 +53,8 @@
           "p1": "Post your search with a precise description, a budget range and reference photos if you have them. findrs who know their field — flea markets, specialist sites and collector networks — send proposals with the item they found, a real photo and a price. Compare them, choose the one that suits you and proceed to payment."
         },
         "s3": {
-          "title": "Your money stays put until your item arrives",
-          "p1": "This is non-negotiable: your payment is held while the item makes its way to you. You have time to inspect it and confirm delivery. If anything is wrong, you can report the problem before the funds are released to the findr — not afterwards."
+          "title": "The findr is paid after you receive your item",
+          "p1": "Your payment is processed by Stripe. The payout to the findr is made after you confirm receipt, or automatically after the period set out in the Terms of Sale. You have time to check the item and, if something is wrong, you can report a problem before that payout."
         }
       },
       "example": {
@@ -88,7 +88,7 @@
         },
         "s2": {
           "title": "How it works, and what you earn",
-          "p1": "Browse searches posted by buyrs in the categories you know. When you find the item a buyr wants, send a proposal with a real photo and your price. If they accept, the platform takes a 4% fee from your payout — the rest is yours, paid once the buyr confirms the item arrived safely.",
+          "p1": "You browse the searches posted by buyrs in the categories that speak to you. When you find the item a buyr is looking for, you make a proposal with a real photo and your price. If they accept, the platform commission of 4% is deducted from your payout. The rest is paid out to you by Stripe once receipt is confirmed.",
           "p2": "In practice: on an item sold for €100, you receive €96 once the transaction is confirmed."
         },
         "s3": {
@@ -102,7 +102,7 @@
       },
       "example": {
         "label": "Illustrative example",
-        "text": "Imagine a search for a specific 1999 Pokémon card in near-mint condition, with a stated budget of €150 to €200. You happen to have one in your collection in exactly that condition. You make a proposal, the buyr accepts, and you receive payment as soon as delivery is confirmed — without ever having to look for a buyer yourself."
+        "text": "Imagine: a search is posted for a specific Pokémon card, 1999 edition, near-mint condition, with a stated budget of €150 to €200. You happen to have one in your collection, in the requested condition. You make a proposal, the buyr accepts, and the payout is made to you by Stripe once receipt is confirmed — without ever having to look for a buyer yourself."
       },
       "closing": {
         "title": "Buyrs are already waiting for you.",
@@ -170,8 +170,8 @@
       "title": "You close the deal with confidence",
       "description": "findr tracks the transaction and stays with you until your item arrives.",
       "detailsTitle": "How does the transaction work?",
-      "d1": "100% secure payment through the platform",
-      "d2": "Funds are held until the item is received and approved",
+      "d1": "Payment via Stripe",
+      "d2": "The payout to the findr is made after the item is received and approved",
       "d3": "Tracked delivery with a tracking number",
       "d4": "You have 48h to check the item on arrival",
       "d5": "Rate the findr to help the community"
@@ -316,8 +316,8 @@
   },
   "testimonials": {
     "guarantees": {
-      "payment": "Secure payment",
-      "protection": "Buyr protection",
+      "payment": "Payment via Stripe",
+      "protection": "Claims possible before payout",
       "community": "Verified community"
     },
     "eyebrow": "Testimonials",
@@ -435,12 +435,12 @@
         "description": "buyr and findr talk through the built-in messaging. The buyr can ask for extra photos, negotiate, or approve the proposal right away."
       },
       "s5": {
-        "title": "Secure payment",
-        "description": "The buyr pays securely. Funds are held until the item is received and approved — protection for both sides."
+        "title": "Payment via Stripe",
+        "description": "The buyr pays via Stripe. The payout to the findr is made after receipt of the item is confirmed, or automatically after the period set out in the Terms of Sale."
       },
       "s6": {
         "title": "Shipping and delivery",
-        "description": "The findr ships the item with tracking. On arrival, the buyr confirms everything matches. The funds are then released to the findr."
+        "description": "The findr ships the item with tracking. On receipt, the buyr confirms everything is as described. The payout to the findr is then triggered."
       },
       "s7": {
         "title": "Mutual rating",
@@ -462,7 +462,7 @@
     "fees": {
       "title": "Platform fees",
       "summary": "4% BUYR · 4% FINDR · 8% TOTAL",
-      "intro": "findr charges a commission shared between both parties to maintain the platform, secure payments and support the community.",
+      "intro": "findr charges a commission split between both parties to run the platform and support the community.",
       "standardLabel": "Buyr fee — 4%",
       "standardText": "added to the item price at checkout.",
       "premiumLabel": "Findr fee — 4%",
@@ -497,7 +497,7 @@
       },
       "r6": {
         "title": "No off-platform deals",
-        "description": "Every transaction must go through findr so everyone stays protected."
+        "description": "All transactions must go through findr, so that payment, delivery and any claims follow the process set out in the Terms of Sale."
       }
     },
     "cta": "POST A SEARCH →"
@@ -658,8 +658,8 @@
     "proposalHint": "Share your find with photos and a price",
     "sendMessage": "Send a message",
     "requestReservation": "Request a booking",
-    "securePayment": "Secure payment through findr",
-    "fundsHeld": "Funds held until delivery is confirmed",
+    "securePayment": "Payment via Stripe",
+    "fundsHeld": "Payout to the findr pending delivery confirmation",
     "loginRequired": "Login required",
     "proposals": "Proposals",
     "noProposals": "No proposals yet — be the first findr to make one",
@@ -696,12 +696,12 @@
     "contactFindr": "Contact the findr",
     "contactBuyr": "Contact the buyr",
     "close": "Close",
-    "secureAwaiting": "Secure payment — awaiting delivery confirmation.",
+    "secureAwaiting": "Payout to the findr pending your delivery confirmation.",
     "markShipped": "Mark as shipped",
     "confirmReceipt": "Confirm item received",
     "reportProblem": "Report a problem",
     "shipTitle": "Mark as shipped",
-    "shipDescription": "A tracking number is required so the parcel can be tracked automatically and your payment released after delivery.",
+    "shipDescription": "A tracking number is required: it lets the parcel be tracked automatically and triggers your payout after delivery.",
     "carrier": "Carrier",
     "tracking": "Tracking number",
     "confirmShipment": "Confirm shipment",
@@ -714,17 +714,17 @@
     "itemPrice": "Item price",
     "serviceFee": "Service fee (4%)",
     "total": "Total",
-    "paymentHeld": "Payment will be held until receipt of the item is confirmed.",
+    "paymentHeld": "The payout to the findr is made after you confirm receipt of the item, or automatically after the set period.",
     "priceSummary": "Price summary",
     "totalToPay": "Total to pay",
     "matchesDescription": "The item matches the description",
     "goodCondition": "The item is in good condition",
     "authenticityChecked": "Authenticity has been verified",
-    "paymentHeldNotice": "The payment is held until you confirm you received the item.",
+    "paymentHeldNotice": "The payout to the findr is made after you confirm receipt of the item, or automatically after the set period.",
     "confirmReceiptDesc": "Confirm that you received the item and that it matches the description.",
     "irreversibleTitle": "Warning: this cannot be undone",
-    "irreversibleDesc": "Once confirmed, the payment is released to the findr. Make sure the item matches your expectations.",
-    "confirmAndRelease": "Confirm and release the payment",
+    "irreversibleDesc": "Once confirmed, the payout to the findr will be triggered. Make sure the item matches your expectations.",
+    "confirmAndRelease": "Confirm receipt",
     "cannotSupply": "I can no longer supply the item",
     "noNewsCancel": "No news from the findr? Request cancellation and refund",
     "cancelRefundDesc": "The transaction will be cancelled and the buyr fully refunded, service fees included.",
@@ -746,7 +746,7 @@
     "paymentLinkUnavailable": "Payment link unavailable",
     "paymentNotFound": "No payment found for this proposal.",
     "transactionDoneTitle": "Transaction complete!",
-    "transactionDoneDesc": "The payment has been released to the findr. Thanks for your trust!",
+    "transactionDoneDesc": "The payout to the findr has been made. Thanks for your trust!",
     "confirmReceiptError": "Could not confirm receipt.",
     "countdownShipped": "Parcel never delivered? You will be able to request cancellation and a refund in {{delay}}.",
     "countdownNotShipped": "No news from the findr? You will be able to request cancellation and a refund in {{delay}}.",
@@ -1005,15 +1005,15 @@
     "earnings": "Earnings summary",
     "commission": "findr fee (4%)",
     "youReceive": "You will receive",
-    "securePayment": "Secure payment",
+    "securePayment": "Payment via Stripe",
     "stripePayment": "The buyr will pay via Stripe if accepted",
-    "fundsSecured": "Funds secured until delivery",
+    "fundsSecured": "Payout to the findr after delivery",
     "authenticationIncluded": "Authentication included",
-    "protection": "Buyr & findr protection",
+    "protection": "Claims possible before payout",
     "sending": "Sending…",
     "send": "Send my proposal",
     "terms": "By sending this proposal, you accept the findr Terms.",
-    "paymentPromise": "Payment will be secured and released once the item is delivered and approved.",
+    "paymentPromise": "The payout will be made to you by Stripe once the item is delivered and approved.",
     "proposalNotFound": "Proposal not found",
     "backToMyProposals": "Back to my proposals",
     "editTitle": "Edit my proposal",

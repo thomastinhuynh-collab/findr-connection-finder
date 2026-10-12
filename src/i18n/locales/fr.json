@@ -30,7 +30,7 @@
     "buyr": {
       "meta": {
         "title": "Trouve enfin l'objet que tu cherches depuis des mois — findr",
-        "description": "Décris l'objet introuvable que tu cherches, une communauté de chineurs s'en occupe. Paiement sécurisé, bloqué jusqu'à réception."
+        "description": "Décris l'objet introuvable que tu cherches, une communauté de chineurs s'en occupe. Paiement via Stripe, versement au findr après réception."
       },
       "hero": {
         "eyebrow": "Je deviens buyr",
@@ -53,8 +53,8 @@
           "p1": "Tu publies ta recherche avec une description précise, une fourchette de budget, et des photos de référence si tu en as. Des findrs qui connaissent leur domaine — brocantes, sites spécialisés, réseaux de collectionneurs — te font des propositions avec l'objet qu'ils ont trouvé, une photo réelle et un prix. Tu compares, tu choisis celle qui te convient, et tu passes au paiement."
         },
         "s3": {
-          "title": "Ton argent ne part nulle part tant que tu n'as pas ton objet",
-          "p1": "C'est le point sur lequel on ne transige pas : l'argent que tu payes reste bloqué le temps que l'objet arrive chez toi. Tu as un délai pour vérifier et confirmer la réception. Si quelque chose cloche, tu peux signaler un problème avant que les fonds ne soient versés au findr — pas après."
+          "title": "Le findr est payé après la réception de ton objet",
+          "p1": "Ton paiement est traité par Stripe. Le versement au findr intervient après ta confirmation de réception, ou automatiquement après le délai prévu par les CGV. Tu as un délai pour vérifier l'objet et, si quelque chose cloche, tu peux signaler un problème avant ce versement."
         }
       },
       "example": {
@@ -88,7 +88,7 @@
         },
         "s2": {
           "title": "Comment ça marche, et combien ça rapporte",
-          "p1": "Tu parcours les recherches publiées par les buyrs dans les catégories qui te parlent. Quand tu trouves l'objet qu'un buyr cherche, tu fais une proposition avec une photo réelle et ton prix. S'il accepte, la commission de la plateforme est de 4% prélevée sur ton versement — le reste est à toi, versé dès que le buyr confirme avoir bien reçu l'objet.",
+          "p1": "Tu parcours les recherches publiées par les buyrs dans les catégories qui te parlent. Quand tu trouves l'objet qu'un buyr cherche, tu fais une proposition avec une photo réelle et ton prix. S'il accepte, la commission de la plateforme est de 4% déduite de ton versement. Le reste t'est versé par Stripe une fois la réception confirmée.",
           "p2": "Concrètement : pour un objet vendu 100€, tu touches 96€, une fois la transaction confirmée."
         },
         "s3": {
@@ -102,7 +102,7 @@
       },
       "example": {
         "label": "Exemple illustratif",
-        "text": "Imagine : une recherche est postée pour une carte Pokémon précise, édition 1999, état proche du neuf, avec un budget annoncé de 150 à 200€. Tu en as justement une dans ta collection, dans l'état demandé. Tu proposes, le buyr accepte, et tu touches ton paiement dès qu'il confirme la réception — sans jamais avoir eu besoin de chercher un acheteur toi-même."
+        "text": "Imagine : une recherche est postée pour une carte Pokémon précise, édition 1999, état proche du neuf, avec un budget annoncé de 150 à 200€. Tu en as justement une dans ta collection, dans l'état demandé. Tu proposes, le buyr accepte, et le versement t'est effectué par Stripe une fois la réception confirmée — sans jamais avoir eu besoin de chercher un acheteur toi-même."
       },
       "closing": {
         "title": "Des buyrs t'attendent déjà.",
@@ -170,8 +170,8 @@
       "title": "Tu finalises en confiance",
       "description": "findr suit la transaction et t'accompagne jusqu'à la livraison de ton objet.",
       "detailsTitle": "Comment se passe la transaction ?",
-      "d1": "Paiement 100% sécurisé via notre plateforme",
-      "d2": "Les fonds sont bloqués jusqu'à réception et validation",
+      "d1": "Paiement via Stripe",
+      "d2": "Le versement au findr intervient après réception et validation",
       "d3": "Livraison suivie avec numéro de tracking",
       "d4": "Tu disposes de 48h pour vérifier l'objet à réception",
       "d5": "Évalue le findr pour aider la communauté"
@@ -316,8 +316,8 @@
   },
   "testimonials": {
     "guarantees": {
-      "payment": "Paiement sécurisé",
-      "protection": "Protection buyr",
+      "payment": "Paiement via Stripe",
+      "protection": "Réclamation possible avant versement",
       "community": "Communauté vérifiée"
     },
     "eyebrow": "Témoignages",
@@ -435,12 +435,12 @@
         "description": "Le buyr et le findr échangent via la messagerie intégrée. Le buyr peut demander des photos supplémentaires, négocier, ou valider directement la proposition."
       },
       "s5": {
-        "title": "Paiement sécurisé",
-        "description": "Le buyr procède au paiement sécurisé. Les fonds sont conservés jusqu'à réception et validation de l'objet. Protection pour les deux parties."
+        "title": "Paiement via Stripe",
+        "description": "Le buyr procède au paiement via Stripe. Le versement au findr intervient après la confirmation de réception de l'objet, ou automatiquement après le délai prévu par les CGV."
       },
       "s6": {
         "title": "Envoi et réception",
-        "description": "Le findr envoie l'objet avec suivi. À réception, le buyr confirme que tout est conforme. Les fonds sont alors libérés au findr."
+        "description": "Le findr envoie l'objet avec suivi. À réception, le buyr confirme que tout est conforme. Le versement au findr est alors déclenché."
       },
       "s7": {
         "title": "Évaluation mutuelle",
@@ -462,7 +462,7 @@
     "fees": {
       "title": "Les frais de la plateforme",
       "summary": "4 % BUYR · 4 % FINDR · 8 % AU TOTAL",
-      "intro": "findr applique une commission répartie entre les deux parties afin de maintenir la plateforme, sécuriser les paiements et accompagner la communauté.",
+      "intro": "findr applique une commission répartie entre les deux parties afin de faire fonctionner la plateforme et d'accompagner la communauté.",
       "standardLabel": "Commission du buyr — 4 %",
       "standardText": "ajoutés au prix de l'objet lors du paiement.",
       "premiumLabel": "Commission du findr — 4 %",
@@ -497,7 +497,7 @@
       },
       "r6": {
         "title": "Pas de transactions externes",
-        "description": "Toutes les transactions doivent passer par findr pour garantir la protection de chacun."
+        "description": "Toutes les transactions doivent passer par findr, afin que le paiement, la livraison et les éventuelles réclamations suivent le processus prévu par les CGV."
       }
     },
     "cta": "POSTER UNE RECHERCHE →"
@@ -658,8 +658,8 @@
     "proposalHint": "Propose ta trouvaille avec photo et prix",
     "sendMessage": "Envoyer un message",
     "requestReservation": "Demander une réservation",
-    "securePayment": "Paiement sécurisé via findr",
-    "fundsHeld": "Fonds bloqués jusqu'à confirmation de réception",
+    "securePayment": "Paiement via Stripe",
+    "fundsHeld": "Versement au findr en attente de confirmation de réception",
     "loginRequired": "Connexion requise",
     "proposals": "Propositions",
     "noProposals": "Aucune proposition pour l'instant — sois le premier findr à en faire une",
@@ -696,12 +696,12 @@
     "contactFindr": "Contacter le findr",
     "contactBuyr": "Contacter le buyr",
     "close": "Fermer",
-    "secureAwaiting": "Paiement sécurisé — en attente de confirmation de réception.",
+    "secureAwaiting": "Versement au findr en attente de ta confirmation de réception.",
     "markShipped": "Marquer comme expédié",
     "confirmReceipt": "Confirmer la réception de l'objet",
     "reportProblem": "Signaler un problème",
     "shipTitle": "Marquer comme expédié",
-    "shipDescription": "Le numéro de suivi est obligatoire : il permet de suivre le colis automatiquement et de libérer ton paiement dès la livraison.",
+    "shipDescription": "Le numéro de suivi est obligatoire : il permet de suivre le colis automatiquement et de déclencher ton versement après la livraison.",
     "carrier": "Transporteur",
     "tracking": "Numéro de suivi",
     "confirmShipment": "Confirmer l'expédition",
@@ -714,17 +714,17 @@
     "itemPrice": "Prix de l’article",
     "serviceFee": "Frais de service (4%)",
     "total": "Total",
-    "paymentHeld": "Le paiement sera bloqué jusqu’à confirmation de réception de l’article.",
+    "paymentHeld": "Le versement au findr intervient après ta confirmation de réception de l'article, ou automatiquement après le délai prévu.",
     "priceSummary": "Récapitulatif du prix",
     "totalToPay": "Total à payer",
     "matchesDescription": "L’article correspond à la description",
     "goodCondition": "L’article est en bon état",
     "authenticityChecked": "L’authenticité a été vérifiée",
-    "paymentHeldNotice": "Le paiement sera bloqué jusqu'à confirmation de réception de l'article.",
+    "paymentHeldNotice": "Le versement au findr intervient après ta confirmation de réception de l'article, ou automatiquement après le délai prévu.",
     "confirmReceiptDesc": "Confirmez que vous avez bien reçu l'article et qu'il correspond à la description.",
     "irreversibleTitle": "Attention : action irréversible",
-    "irreversibleDesc": "Une fois confirmé, le paiement sera libéré au findr. Assurez-vous que l'article correspond bien à vos attentes.",
-    "confirmAndRelease": "Confirmer et libérer le paiement",
+    "irreversibleDesc": "Une fois confirmé, le versement au findr sera déclenché. Assure-toi que l'article correspond bien à tes attentes.",
+    "confirmAndRelease": "Confirmer la réception",
     "cannotSupply": "Je ne peux plus fournir l'objet",
     "noNewsCancel": "Le findr n'a pas donné de nouvelles ? Demander l'annulation et le remboursement",
     "cancelRefundDesc": "La transaction sera annulée et le buyr intégralement remboursé, frais de service inclus.",
@@ -746,7 +746,7 @@
     "paymentLinkUnavailable": "Lien de paiement indisponible",
     "paymentNotFound": "Paiement introuvable pour cette proposition.",
     "transactionDoneTitle": "Transaction finalisée !",
-    "transactionDoneDesc": "Le paiement a été versé au findr. Merci pour ta confiance !",
+    "transactionDoneDesc": "Le versement au findr a été effectué. Merci pour ta confiance !",
     "confirmReceiptError": "Impossible de confirmer la réception.",
     "countdownShipped": "Colis jamais livré ? Tu pourras demander l'annulation et le remboursement dans {{delay}}.",
     "countdownNotShipped": "Pas de nouvelles du findr ? Tu pourras demander l'annulation et le remboursement dans {{delay}}.",
@@ -1005,15 +1005,15 @@
     "earnings": "Récapitulatif des gains",
     "commission": "Commission findr (4 %)",
     "youReceive": "Vous recevrez",
-    "securePayment": "Paiement sécurisé",
+    "securePayment": "Paiement via Stripe",
     "stripePayment": "Le buyr paiera via Stripe si accepté",
-    "fundsSecured": "Fonds sécurisés jusqu’à livraison",
+    "fundsSecured": "Versement au findr après livraison",
     "authenticationIncluded": "Authentification incluse",
-    "protection": "Protection buyr & findr",
+    "protection": "Réclamation possible avant versement",
     "sending": "Envoi en cours…",
     "send": "Envoyer ma proposition",
     "terms": "En envoyant cette proposition, vous acceptez les conditions générales de findr.",
-    "paymentPromise": "Le paiement sera sécurisé et vous serez payé une fois l’objet livré et validé.",
+    "paymentPromise": "Le versement te sera effectué par Stripe une fois l'objet livré et validé.",
     "proposalNotFound": "Proposition non trouvée",
     "backToMyProposals": "Retour à mes propositions",
     "editTitle": "Modifier ma proposition",
