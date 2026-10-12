@@ -311,7 +311,6 @@
     "waitlistCount_other": "{{count}} people already on the waitlist",
     "title": "Ready to find something special?",
     "subtitle": "Join the waitlist and be among the first to explore our community-powered treasure hunting platform.",
-    "success": "Last step: click the link we just sent you to confirm your address.",
     "emailPlaceholder": "you@email.com",
     "submit": "Join the waitlist"
   },
