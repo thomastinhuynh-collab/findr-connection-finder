@@ -1,4 +1,5 @@
 # Traduction complète FR/EN
+- [x] Retirer la section d'inscription à la liste d'attente de la page d'accueil, en conservant l'alerte de confirmation d'inscription
 - [x] Supprimer la simulation de paiement StripeCheckoutSimulation.tsx et son usage dans la page Premium, qui reste sur « Bientôt disponible »
 - [x] Harmoniser le tutoiement hors textes juridiques, corriger les versements suspendus et auditer les occurrences restantes ainsi que la simulation Stripe
 - [x] Mes gains : vocabulaire juridique Stripe FR/EN, sous-titre et libellés des totaux (5 tests ciblés réussis)
