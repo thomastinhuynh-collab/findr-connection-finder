@@ -6,7 +6,6 @@ import BecomeFindr from "@/components/BecomeFindr";
 import Categories from "@/components/Categories";
 import Testimonials from "@/components/Testimonials";
 import WaitlistSignup from "@/components/WaitlistSignup";
-import BuyrFindrSection from "@/components/BuyrFindrSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -20,7 +19,6 @@ const Index = () => {
       <Categories />
       <Testimonials />
       <WaitlistSignup />
-      <BuyrFindrSection />
       <Footer />
     </div>
   );
