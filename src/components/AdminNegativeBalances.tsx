@@ -148,10 +148,10 @@ const AdminNegativeBalances = () => {
       <header className="mb-4">
         <h2 className="text-2xl font-bold text-primary flex items-center gap-2">
           <Wallet className="w-6 h-6" />
-          Soldes à recouvrer
+          Montants à recouvrer
         </h2>
         <p className="text-sm text-muted-foreground mt-1">
-          {findrs.length} findr{findrs.length > 1 ? "s" : ""} avec un solde négatif ou des
+          {findrs.length} findr{findrs.length > 1 ? "s" : ""} avec un montant à régulariser ou des
           versements en attente — montants les plus élevés en premier.
         </p>
       </header>
@@ -159,7 +159,7 @@ const AdminNegativeBalances = () => {
       {findrs.length === 0 ? (
         <Card>
           <CardContent className="py-10 text-center text-muted-foreground">
-            Aucun solde à recouvrer.
+            Aucun montant à recouvrer.
           </CardContent>
         </Card>
       ) : (
@@ -187,7 +187,7 @@ const AdminNegativeBalances = () => {
                           {Number(f.negative_balance).toFixed(2)} € à recouvrer
                         </Badge>
                       ) : (
-                        <Badge variant="outline">Solde à jour</Badge>
+                        <Badge variant="outline">À jour</Badge>
                       )}
                     </div>
                   </div>

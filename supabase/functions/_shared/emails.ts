@@ -169,7 +169,7 @@ export function buildEmail(
           paragraphs: [
             `${hello} ravis de t'accueillir sur findr.`,
             "Ici, deux rôles cohabitent : en <strong>buyr</strong>, tu décris l'objet que tu cherches ; en <strong>findr</strong>, tu déniches des trouvailles pour les autres et tu es rémunéré pour ça.",
-            "Chaque paiement est sécurisé jusqu'à la réception de l'objet.",
+            "Le versement au findr intervient après la confirmation de réception de l'objet.",
           ],
           cta: { label: "Poster ma première recherche", url: `${SITE_URL}/poster` },
           secondary: { label: "Découvrir les recherches en cours", url: `${SITE_URL}/recherches` },
@@ -207,7 +207,7 @@ export function buildEmail(
           eyebrow: "Proposition acceptée",
           title: "Ta proposition a été acceptée !",
           paragraphs: [
-            `${hello} bonne nouvelle : le buyr a accepté ta proposition et le paiement est déjà sécurisé.`,
+            `${hello} bonne nouvelle : le buyr a accepté ta proposition et le paiement a bien été effectué.`,
             "Il te reste à expédier l'objet et à renseigner le numéro de suivi <strong>dans les 5 jours</strong>, sinon la transaction pourra être annulée et remboursée.",
           ],
           facts: [
@@ -256,7 +256,7 @@ export function buildEmail(
           title: "Ton colis est arrivé",
           paragraphs: [
             `${hello} le transporteur a marqué ton colis comme livré.`,
-            "Confirme la réception pour libérer le paiement du findr. <strong>Sans action de ta part, les fonds seront libérés automatiquement sous 48 h.</strong>",
+            "Confirme la réception pour déclencher le versement au findr. <strong>Sans action de ta part, le versement sera déclenché automatiquement sous 48 h.</strong>",
           ],
           cta: { label: "Confirmer la réception", url: `${SITE_URL}/mon-espace` },
           secondary: { label: "Signaler un problème", url: `${SITE_URL}/mon-espace` },
@@ -277,7 +277,7 @@ export function buildEmail(
             { label: "Montant net", value: money(data.amount) },
             ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
           ],
-          cta: { label: "Voir mon portefeuille", url: `${SITE_URL}/mon-espace` },
+          cta: { label: "Voir mes gains", url: `${SITE_URL}/mon-espace` },
         }),
       };
 
@@ -285,18 +285,18 @@ export function buildEmail(
       const isFindr = data.role === "findr";
       return {
         subject: isFindr
-          ? "Ton paiement a été libéré automatiquement"
-          : "Le paiement a été libéré automatiquement",
+          ? "Ton versement a été déclenché automatiquement"
+          : "Le versement a été déclenché automatiquement",
         html: renderEmail({
-          eyebrow: "Libération automatique",
+          eyebrow: "Versement automatique",
           title: isFindr
-            ? "Ton paiement a été libéré automatiquement"
-            : "Le paiement a été libéré automatiquement",
+            ? "Ton versement a été déclenché automatiquement"
+            : "Le versement a été déclenché automatiquement",
           paragraphs: [
             `${hello} 48 h se sont écoulées depuis la livraison sans confirmation ni signalement.`,
             isFindr
-              ? "Conformément aux CGV, le paiement a donc été libéré automatiquement et versé sur ton compte."
-              : "Conformément aux CGV, le paiement a donc été libéré automatiquement et versé au findr.",
+              ? "Conformément aux CGV, le versement a donc été déclenché automatiquement : il est effectué par Stripe."
+              : "Conformément aux CGV, le versement au findr a donc été déclenché automatiquement.",
           ],
           facts: [
             ...(data.amount ? [{ label: "Montant", value: money(data.amount) }] : []),
@@ -334,7 +334,7 @@ export function buildEmail(
           eyebrow: "Signalement",
           title: "Un problème a été signalé",
           paragraphs: [
-            `${hello} le buyr a signalé un problème concernant ta transaction. Le paiement reste bloqué le temps de l'examen.`,
+            `${hello} le buyr a signalé un problème concernant ta transaction. Le versement est suspendu le temps de l'examen.`,
             "Tu peux répondre directement via la messagerie pour apporter tes éléments. L'équipe findr examine la situation et tranchera de manière impartiale.",
           ],
           facts: [
@@ -355,7 +355,7 @@ export function buildEmail(
           eyebrow: "Signalement",
           title: "Nous avons reçu ton signalement",
           paragraphs: [
-            `${hello} ton signalement a bien été enregistré. Le paiement reste bloqué : aucune somme ne sera versée au findr avant la fin de l'examen.`,
+            `${hello} ton signalement a bien été enregistré. Le versement au findr est suspendu : aucune somme ne lui sera versée avant la fin de l'examen.`,
             "L'équipe findr examine ta réclamation et revient vers toi sous 48 heures ouvrées. Tu peux ajouter des éléments à tout moment via la messagerie.",
           ],
           facts: [
@@ -401,14 +401,14 @@ export function buildEmail(
       return {
         subject: refunded
           ? "Litige résolu — le buyr a été remboursé"
-          : "Litige résolu — ton paiement est débloqué",
+          : "Litige résolu — ton versement est déclenché",
         html: renderEmail({
           eyebrow: "Litige résolu",
-          title: refunded ? "Le buyr a été remboursé" : "Ton paiement est débloqué",
+          title: refunded ? "Le buyr a été remboursé" : "Ton versement est déclenché",
           paragraphs: [
             refunded
               ? `${hello} après examen des éléments, l'équipe findr a décidé de rembourser intégralement le buyr. La transaction est annulée.`
-              : `${hello} après examen des éléments, l'équipe findr a tranché en ta faveur. Ton paiement a été débloqué et versé sur ton compte.`,
+              : `${hello} après examen des éléments, l'équipe findr a tranché en ta faveur. Le versement te sera effectué par Stripe.`,
             refunded
               ? "Si tu souhaites apporter des éléments complémentaires, réponds à cet email."
               : "Le virement arrive généralement sous 1 à 3 jours ouvrés selon ta banque.",

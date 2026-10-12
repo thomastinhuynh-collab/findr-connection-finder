@@ -82,8 +82,8 @@ Deno.serve(async (req) => {
       await admin.from("notifications").insert({
         user_id: body.findrId,
         type: "balance_settled",
-        title: "Solde régularisé",
-        message: `Ton solde à régulariser (${settled.toFixed(2)} €) a été marqué comme réglé par l'équipe findr.`,
+        title: "Montant à régulariser réglé",
+        message: `Ton montant à régulariser (${settled.toFixed(2)} €) a été marqué comme réglé par l'équipe findr.`,
         link: "/mon-espace",
       });
 

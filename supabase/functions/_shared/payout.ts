@@ -95,8 +95,8 @@ export async function releaseFundsForReservation(
     await admin.from("notifications").insert({
       user_id: reservation.findr_id,
       type: "balance_compensated",
-      title: "Solde régularisé sur ton versement",
-      message: `${compensated.toFixed(2)} € ont été déduits de ce versement au titre de ton solde à régulariser. Reste à régulariser : ${remaining.toFixed(2)} €.`,
+      title: "Montant régularisé sur ton versement",
+      message: `${compensated.toFixed(2)} € ont été déduits de ce versement au titre de ton montant à régulariser. Reste à régulariser : ${remaining.toFixed(2)} €.`,
       link: "/mon-espace",
     });
   }
@@ -121,8 +121,8 @@ export async function releaseFundsForReservation(
     {
       user_id: reservation.findr_id,
       type: "payout_released",
-      title: auto ? "Paiement libéré automatiquement" : "Paiement reçu !",
-      message: `${netAmount.toFixed(2)} € ont été versés sur ton compte.`,
+      title: auto ? "Versement déclenché automatiquement" : "Versement effectué",
+      message: `Un versement de ${netAmount.toFixed(2)} € a été effectué par Stripe.`,
       link: "/mon-espace",
     },
   ];
@@ -131,9 +131,9 @@ export async function releaseFundsForReservation(
     notifications.push({
       user_id: reservation.buyr_id,
       type: "payout_released",
-      title: "Fonds libérés automatiquement",
+      title: "Versement au findr déclenché automatiquement",
       message:
-        "48 h après la livraison sans réclamation, le paiement a été versé au findr. Merci pour ta confiance !",
+        "48 h après la livraison sans réclamation, le versement au findr a été effectué. Merci pour ta confiance !",
       link: "/mon-espace",
     });
   }

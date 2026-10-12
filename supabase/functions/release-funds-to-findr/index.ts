@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
       const status = reservation.payment_status ?? "";
       const error =
         status === "termine"
-          ? "Les fonds de cette réservation ont déjà été libérés."
+          ? "Le versement de cette réservation a déjà été effectué."
           : status === "versement_en_revue"
             ? "Ta réception est bien enregistrée. Le versement au findr est en cours de revue par l'équipe findr : il partira automatiquement dès validation."
             : `Cette réservation n'est pas en cours (statut : ${status || "aucun"}).`;

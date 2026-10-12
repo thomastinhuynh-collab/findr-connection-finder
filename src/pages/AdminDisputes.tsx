@@ -115,7 +115,7 @@ const AdminDisputes = () => {
         title: "Litige résolu",
         description:
           resolution === "verse_findr"
-            ? "Les fonds ont été versés au findr."
+            ? "Le versement au findr a été déclenché."
             : "Le buyr a été intégralement remboursé.",
       });
       fetchDisputes();
