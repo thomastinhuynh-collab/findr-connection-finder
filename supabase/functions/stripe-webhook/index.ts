@@ -172,7 +172,7 @@ Deno.serve(async (req) => {
             type: "proposal_accepted",
             title: "Proposition acceptée et payée !",
             message:
-              "Le paiement est sécurisé jusqu'à la confirmation de réception de l'article.",
+              "Le versement au findr interviendra après la confirmation de réception de l'article.",
             link: "/mon-espace?onglet=propositions",
           });
 
@@ -337,7 +337,7 @@ Deno.serve(async (req) => {
             user_id: debit.findr_id,
             type: "chargeback_closed",
             title: "Contestation bancaire rejetée",
-            message: `Le débit de ${Number(debit.amount).toFixed(2)} € a été annulé. Ton solde à régulariser est de ${newBalance.toFixed(2)} €.`,
+            message: `Le débit de ${Number(debit.amount).toFixed(2)} € a été annulé. Ton montant à régulariser est de ${newBalance.toFixed(2)} €.`,
             link: "/mon-espace",
           });
           console.log(`dispute.closed(won) -> débit ${debit.id} annulé`);

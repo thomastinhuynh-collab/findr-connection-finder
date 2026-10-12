@@ -72,14 +72,14 @@ Deno.serve(async (req) => {
           type: "delivery",
           title: "Colis livré",
           message:
-            "Confirme la réception de ton objet. Sans action de ta part, les fonds seront libérés automatiquement sous 48 h.",
+            "Confirme la réception de ton objet. Sans action de ta part, le versement au findr sera déclenché automatiquement sous 48 h.",
           link: "/mon-espace",
         },
         {
           user_id: reservation.findr_id,
           type: "delivery",
           title: "Colis livré",
-          message: "Le buyr a reçu l'objet. Les fonds seront libérés sous 48 h.",
+          message: "Le buyr a reçu l'objet. Ton versement sera déclenché sous 48 h.",
           link: "/mon-espace",
         },
       ]);

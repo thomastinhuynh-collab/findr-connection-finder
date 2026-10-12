@@ -94,7 +94,7 @@ const DisputeDialog = ({
         _user_id: findrId,
         _type: "dispute_opened",
         _title: "Litige ouvert sur une transaction",
-        _message: `Le buyr a signalé un problème sur « ${itemTitle} » : ${DISPUTE_REASONS[reason]}. Le paiement est bloqué le temps de l'examen par l'équipe findr.`,
+        _message: `Le buyr a signalé un problème sur « ${itemTitle} » : ${DISPUTE_REASONS[reason]}. Le versement est suspendu le temps de l'examen par l'équipe findr.`,
         _link: `/messagerie/${searchId}`,
       });
 
@@ -132,7 +132,7 @@ const DisputeDialog = ({
 
       toast({
         title: "Signalement envoyé",
-        description: "Notre équipe examine ta réclamation. Le paiement reste bloqué.",
+        description: "Notre équipe examine ta réclamation. Le versement au findr est suspendu.",
       });
       onOpenChange(false);
       setDescription("");
@@ -202,7 +202,7 @@ const DisputeDialog = ({
           </div>
 
           <p className="text-xs text-muted-foreground bg-secondary/60 rounded-lg p-3">
-            Le paiement restera bloqué le temps que notre équipe examine ta réclamation.
+            Le versement au findr sera suspendu le temps que notre équipe examine ta réclamation.
           </p>
         </div>
 
