@@ -199,7 +199,7 @@ const MakeProposal = () => {
     if (images.length === 0) {
       toast({
         title: "Photo requise",
-        description: "Veuillez ajouter au moins une photo de votre trouvaille.",
+        description: "Ajoute au moins une photo de ta trouvaille.",
         variant: "destructive",
       });
       return;
@@ -208,7 +208,7 @@ const MakeProposal = () => {
     if (!price || !brand || !condition || !objectSize) {
       toast({
         title: "Champs requis",
-        description: "Veuillez remplir tous les champs obligatoires.",
+        description: "Remplis tous les champs obligatoires.",
         variant: "destructive",
       });
       return;
@@ -279,7 +279,7 @@ const MakeProposal = () => {
       
       toast({
         title: t("proposalForm.sentTitle"),
-        description: `Votre proposition a été envoyée à ${search.profiles?.full_name || "l'utilisateur"}. Vous serez notifié de sa réponse.`,
+        description: `Ta proposition a été envoyée à ${search.profiles?.full_name || "l'utilisateur"}. Tu recevras une notification à sa réponse.`,
       });
       
       navigate(`/recherche/${id}`);
@@ -287,7 +287,7 @@ const MakeProposal = () => {
       console.error("Error submitting proposal:", error);
       toast({
         title: "Erreur",
-        description: "Impossible d'envoyer la proposition. Réessayez.",
+        description: "Impossible d'envoyer la proposition. Réessaie.",
         variant: "destructive",
       });
     } finally {

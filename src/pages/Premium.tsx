@@ -19,7 +19,7 @@ const Premium = () => {
 
   const handlePaymentSuccess = () => {
     setShowCheckout(false);
-    toast.success("Félicitations ! Vous êtes maintenant Premium !");
+    toast.success("Félicitations ! Tu es maintenant Premium !");
   };
 
   // Le programme Premium est volontairement mis de côté pour le lancement.
@@ -48,12 +48,12 @@ const Premium = () => {
     {
       icon: Star,
       title: "Mise en avant des propositions",
-      description: "Vos propositions apparaissent en priorité auprès des buyrs"
+      description: "Tes propositions apparaissent en priorité auprès des buyrs"
     },
     {
       icon: Bell,
       title: "Alertes ciblées",
-      description: "Recevez des notifications instantanées pour les recherches correspondant à vos spécialités"
+      description: "Reçois des notifications instantanées pour les recherches correspondant à tes spécialités"
     },
     {
       icon: Zap,
@@ -63,20 +63,20 @@ const Premium = () => {
     {
       icon: Crown,
       title: "0% de frais de plateforme",
-      description: "Gardez 100% de votre marge ! Seuls les 3% de frais d'authentification restent"
+      description: "Garde 100% de ta marge ! Seuls les 3% de frais d'authentification restent"
     }
   ];
 
   const buyerBenefits = [
     {
       icon: Star,
-      title: "Priorité sur vos demandes",
-      description: "Vos recherches sont traitées en priorité par notre communauté de findrs"
+      title: "Priorité sur tes demandes",
+      description: "Tes recherches sont traitées en priorité par notre communauté de findrs"
     },
     {
       icon: Headphones,
       title: "Assistance VIP",
-      description: "Un support dédié pour répondre à toutes vos questions rapidement"
+      description: "Un support dédié pour répondre à toutes tes questions rapidement"
     },
     {
       icon: Shield,
@@ -97,11 +97,11 @@ const Premium = () => {
             Premium
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Passez à la vitesse supérieure
+            Passe à la vitesse supérieure
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Débloquez des fonctionnalités exclusives et maximisez vos chances de trouver 
-            ou de vendre les objets rares que vous recherchez.
+            Débloque des fonctionnalités exclusives et maximise tes chances de trouver 
+            ou de vendre les objets rares que tu recherches.
           </p>
         </section>
 
@@ -123,7 +123,7 @@ const Premium = () => {
                   Commencer maintenant
                 </Button>
                 <p className="text-sm text-muted-foreground mt-4">
-                  Sans engagement, annulez à tout moment
+                  Sans engagement, annule à tout moment
                 </p>
               </CardContent>
             </Card>
@@ -132,7 +132,7 @@ const Premium = () => {
             <Card className="relative border-2 border-primary shadow-lg shadow-primary/10">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <Badge className="bg-accent text-accent-foreground">
-                  Économisez 80€
+                  Économise 80€
                 </Badge>
               </div>
               <CardHeader className="text-center pb-2">
@@ -163,7 +163,7 @@ const Premium = () => {
               Pour les findrs
             </Badge>
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Boostez vos performances de findr
+              Booste tes performances de findr
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
               Des outils puissants pour trouver plus vite et gagner plus
@@ -196,7 +196,7 @@ const Premium = () => {
               Une expérience d'achat privilégiée
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Bénéficiez d'un service exclusif et de garanties premium
+              Bénéficie d'un service exclusif et de garanties premium
             </p>
           </div>
           
@@ -224,7 +224,7 @@ const Premium = () => {
                 Prêt à passer Premium ?
               </h2>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                Rejoignez des centaines d'utilisateurs qui profitent déjà des avantages Premium.
+                Rejoins des centaines d'utilisateurs qui profitent déjà des avantages Premium.
               </p>
               <Button size="lg" className="btn-gold" onClick={() => handleSelectPlan("annual")}>
                 <Crown className="w-4 h-4 mr-2" />

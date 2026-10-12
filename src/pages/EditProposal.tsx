@@ -116,7 +116,7 @@ const EditProposal = () => {
     if (proposalData.findr_id !== user?.id) {
       toast({
         title: "Accès refusé",
-        description: "Vous ne pouvez modifier que vos propres propositions.",
+        description: "Tu ne peux modifier que tes propres propositions.",
         variant: "destructive",
       });
       navigate("/mon-espace?onglet=propositions");
@@ -252,7 +252,7 @@ const EditProposal = () => {
     if (totalImages === 0) {
       toast({
         title: "Photo requise",
-        description: "Veuillez conserver ou ajouter au moins une photo.",
+        description: "Garde ou ajoute au moins une photo.",
         variant: "destructive",
       });
       return;
@@ -261,7 +261,7 @@ const EditProposal = () => {
     if (!price || !brand || !condition || !objectSize) {
       toast({
         title: "Champs requis",
-        description: "Veuillez remplir tous les champs obligatoires.",
+        description: "Remplis tous les champs obligatoires.",
         variant: "destructive",
       });
       return;
@@ -303,7 +303,7 @@ const EditProposal = () => {
       
       toast({
         title: t("proposalForm.updatedTitle"),
-        description: "Vos modifications ont été enregistrées.",
+        description: "Tes modifications ont été enregistrées.",
       });
       
       navigate(`/recherche/${proposal.search_id}`);
@@ -311,7 +311,7 @@ const EditProposal = () => {
       console.error("Error updating proposal:", error);
       toast({
         title: "Erreur",
-        description: "Impossible de mettre à jour la proposition. Réessayez.",
+        description: "Impossible de mettre à jour la proposition. Réessaie.",
         variant: "destructive",
       });
     } finally {

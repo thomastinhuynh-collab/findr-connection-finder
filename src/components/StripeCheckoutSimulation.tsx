@@ -46,7 +46,7 @@ const StripeCheckoutSimulation = ({ plan, onClose, onSuccess }: StripeCheckoutSi
     e.preventDefault();
     
     if (!cardNumber || !expiry || !cvc || !name) {
-      toast.error("Veuillez remplir tous les champs");
+      toast.error("Remplis tous les champs");
       return;
     }
 
@@ -74,7 +74,7 @@ const StripeCheckoutSimulation = ({ plan, onClose, onSuccess }: StripeCheckoutSi
               <CreditCard className="absolute inset-0 m-auto w-8 h-8 text-primary" />
             </div>
             <h2 className="text-xl font-bold text-foreground mb-2">Traitement en cours...</h2>
-            <p className="text-muted-foreground">Veuillez patienter pendant que nous traitons votre paiement</p>
+            <p className="text-muted-foreground">Patiente pendant que nous traitons ton paiement</p>
           </CardContent>
         </Card>
       </div>
@@ -145,7 +145,7 @@ const StripeCheckoutSimulation = ({ plan, onClose, onSuccess }: StripeCheckoutSi
               <p className="text-xs text-muted-foreground mt-2">Renouvelé automatiquement chaque mois</p>
             )}
             {plan === "annual" && (
-              <p className="text-xs text-muted-foreground mt-2">Économisez 80€ par rapport au mensuel</p>
+              <p className="text-xs text-muted-foreground mt-2">Économise 80€ par rapport au mensuel</p>
             )}
           </div>
 
@@ -175,7 +175,7 @@ const StripeCheckoutSimulation = ({ plan, onClose, onSuccess }: StripeCheckoutSi
                 <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               </div>
               <p className="text-xs text-muted-foreground">
-                Utilisez 4242 4242 4242 4242 pour tester
+                Utilise 4242 4242 4242 4242 pour tester
               </p>
             </div>
 
