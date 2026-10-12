@@ -891,7 +891,7 @@ const Messaging = () => {
                       if (e.target.value.length <= MAX_CHARS) setMessage(e.target.value);
                     }}
                     onKeyDown={handleKeyPress}
-                    placeholder={`Écrivez un message à ${firstName}...`}
+                    placeholder={`Écris un message à ${firstName}...`}
                     className="resize-none min-h-[48px] pr-14 rounded-2xl border bg-white"
                     style={{ borderColor: "#D9D2C2" }}
                     rows={1}

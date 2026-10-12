@@ -311,7 +311,7 @@ const EditProposal = () => {
       console.error("Error updating proposal:", error);
       toast({
         title: "Erreur",
-        description: "Impossible de mettre à jour la proposition. Réessayez.",
+        description: "Impossible de mettre à jour la proposition. Réessaie.",
         variant: "destructive",
       });
     } finally {

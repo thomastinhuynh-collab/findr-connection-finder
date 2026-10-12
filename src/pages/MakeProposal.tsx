@@ -287,7 +287,7 @@ const MakeProposal = () => {
       console.error("Error submitting proposal:", error);
       toast({
         title: "Erreur",
-        description: "Impossible d'envoyer la proposition. Réessayez.",
+        description: "Impossible d'envoyer la proposition. Réessaie.",
         variant: "destructive",
       });
     } finally {
