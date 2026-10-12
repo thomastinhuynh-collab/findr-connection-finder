@@ -29,7 +29,7 @@ const reservationSchema = z.object({
     .string()
     .min(20, "La justification doit contenir au moins 20 caractères")
     .max(500, "La justification ne peut pas dépasser 500 caractères"),
-  duration: z.string().min(1, "Veuillez sélectionner une durée"),
+  duration: z.string().min(1, "Sélectionne une durée"),
 });
 
 type ReservationFormData = z.infer<typeof reservationSchema>;

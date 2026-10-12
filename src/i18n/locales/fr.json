@@ -481,7 +481,7 @@
       },
       "r2": {
         "title": "Communication claire",
-        "description": "Répondez aux messages dans un délai raisonnable (24-48h). Soyez précis dans vos descriptions."
+        "description": "Réponds aux messages dans un délai raisonnable (24-48h). Sois précis dans tes descriptions."
       },
       "r3": {
         "title": "Honnêteté",
@@ -489,7 +489,7 @@
       },
       "r4": {
         "title": "Ponctualité",
-        "description": "Respectez vos engagements : délais de réservation, d'envoi, de réponse. Prévenez en cas d'imprévu."
+        "description": "Respecte tes engagements : délais de réservation, d'envoi, de réponse. Préviens en cas d'imprévu."
       },
       "r5": {
         "title": "Évaluations justes",
@@ -508,14 +508,14 @@
   },
   "contact": {
     "title": "Contact",
-    "intro": "Une question, un retour, un signalement ? L'équipe findr est à votre écoute. Choisissez le canal le plus adapté à votre demande :",
+    "intro": "Une question, un retour, un signalement ? L'équipe findr est à ton écoute. Choisis le canal le plus adapté à ta demande :",
     "general": "Général",
     "support": "Support",
     "privacy": "Données / RGPD",
     "responseTitle": "Délai de réponse",
     "responseText": "Nous nous efforçons de répondre à toute demande sous 48 heures ouvrées. Pour les demandes liées à une transaction en cours, merci de préciser l'identifiant de la recherche concernée afin d'accélérer le traitement.",
     "reportTitle": "Signaler un contenu",
-    "reportText": "Si vous repérez un contenu illicite, frauduleux ou contraire à nos CGU, écrivez-nous à <email>support@findrapp.fr</email> en indiquant l’URL concernée et la nature du problème."
+    "reportText": "Si tu repères un contenu illicite, frauduleux ou contraire à nos CGU, écris-nous à <email>support@findrapp.fr</email> en indiquant l’URL concernée et la nature du problème."
   },
   "legalNotice": {
     "title": "Mentions légales",
@@ -721,7 +721,7 @@
     "goodCondition": "L’article est en bon état",
     "authenticityChecked": "L’authenticité a été vérifiée",
     "paymentHeldNotice": "Le versement au findr intervient après ta confirmation de réception de l'article, ou automatiquement après le délai prévu.",
-    "confirmReceiptDesc": "Confirmez que vous avez bien reçu l'article et qu'il correspond à la description.",
+    "confirmReceiptDesc": "Confirme que tu as bien reçu l'article et qu'il correspond à la description.",
     "irreversibleTitle": "Attention : action irréversible",
     "irreversibleDesc": "Une fois confirmé, le versement au findr sera déclenché. Assure-toi que l'article correspond bien à tes attentes.",
     "confirmAndRelease": "Confirmer la réception",
@@ -838,7 +838,7 @@
     "welcome": "Bienvenue sur findr !",
     "loginError": "Erreur de connexion",
     "loginSuccess": "Connexion réussie !",
-    "welcomeBack": "Content de vous revoir !",
+    "welcomeBack": "Content de te revoir !",
     "login": "Connexion",
     "signup": "Inscription",
     "fullName": "Nom complet",
@@ -848,9 +848,9 @@
     "signIn": "Se connecter",
     "signUp": "S’inscrire",
     "emailRequired": "Email requis",
-    "resetPrompt": "Entrez votre email ci-dessus pour recevoir le lien de réinitialisation.",
+    "resetPrompt": "Entre ton email ci-dessus pour recevoir le lien de réinitialisation.",
     "emailSent": "Email envoyé !",
-    "resetSent": "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+    "resetSent": "Vérifie ta boîte mail pour réinitialiser ton mot de passe.",
     "forgotPassword": "Mot de passe oublié ?",
     "noAccount": "Pas encore de compte ?",
     "hasAccount": "Déjà un compte ?",
@@ -986,13 +986,13 @@
     "buyrBudget": "Budget du buyr :",
     "photos": "Photos de l’objet",
     "addPhoto": "Ajouter une photo",
-    "photosHint": "Ajoutez jusqu’à 4 photos de votre trouvaille. Des photos claires augmentent vos chances d’être sélectionné.",
+    "photosHint": "Ajoute jusqu’à 4 photos de ta trouvaille. Des photos claires augmentent tes chances d’être sélectionné.",
     "price": "Prix proposé",
     "budgetIs": "Le budget du buyr est de {{budget}}",
     "brand": "Marque",
     "brandPlaceholder": "Ex : Levi’s, Schott, Sans marque…",
     "condition": "État de l’objet",
-    "selectCondition": "Sélectionnez l’état",
+    "selectCondition": "Sélectionne l’état",
     "conditions": {
       "newWithTags": "Neuf avec étiquette",
       "likeNew": "Comme neuf",
@@ -1001,10 +1001,10 @@
       "fair": "État correct"
     },
     "description": "Description complémentaire",
-    "descriptionPlaceholder": "Décrivez votre trouvaille, son histoire, ses particularités…",
+    "descriptionPlaceholder": "Décris ta trouvaille, son histoire, ses particularités…",
     "earnings": "Récapitulatif des gains",
     "commission": "Commission findr (4 %)",
-    "youReceive": "Vous recevrez",
+    "youReceive": "Tu recevras",
     "securePayment": "Paiement via Stripe",
     "stripePayment": "Le buyr paiera via Stripe si accepté",
     "fundsSecured": "Versement au findr après livraison",
@@ -1012,14 +1012,14 @@
     "protection": "Réclamation possible avant versement",
     "sending": "Envoi en cours…",
     "send": "Envoyer ma proposition",
-    "terms": "En envoyant cette proposition, vous acceptez les conditions générales de findr.",
+    "terms": "En envoyant cette proposition, tu acceptes les conditions générales de findr.",
     "paymentPromise": "Le versement te sera effectué par Stripe une fois l'objet livré et validé.",
     "proposalNotFound": "Proposition non trouvée",
     "backToMyProposals": "Retour à mes propositions",
     "editTitle": "Modifier ma proposition",
     "new": "Nouveau",
     "productLink": "Lien du produit (optionnel)",
-    "productLinkHint": "Ajoutez un lien vers l’annonce originale (Vinted, Leboncoin, etc.)",
+    "productLinkHint": "Ajoute un lien vers l’annonce originale (Vinted, Leboncoin, etc.)",
     "updating": "Mise à jour en cours…",
     "update": "Mettre à jour ma proposition"
   },

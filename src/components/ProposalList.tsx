@@ -274,7 +274,7 @@ const ProposalList = ({
           _user_id: proposal.findr_id,
           _type: "proposal_rejected",
           _title: "Proposition refusée",
-          _message: `Votre proposition pour "${proposal.title}" a été refusée.`,
+          _message: `Ta proposition pour "${proposal.title}" a été refusée.`,
           _link: "/mon-espace?onglet=propositions"
         });
 

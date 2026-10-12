@@ -94,7 +94,7 @@ const ResetPassword = () => {
       setStatus("success");
       toast({
         title: "Mot de passe mis à jour !",
-        description: "Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+        description: "Tu peux maintenant te connecter avec ton nouveau mot de passe.",
       });
       setTimeout(() => navigate("/"), 3000);
     }
@@ -121,7 +121,7 @@ const ResetPassword = () => {
               <CircleAlert className="w-16 h-16 text-accent mx-auto" />
               <h1 className="text-2xl font-display font-bold text-primary">Lien invalide ou expiré</h1>
               <p className="text-muted-foreground">
-                Redemandez un email de réinitialisation depuis la page de connexion.
+                Demande un nouvel email de réinitialisation depuis la page de connexion.
               </p>
               <Button type="button" className="w-full btn-hero" onClick={() => navigate("/")}>
                 Retour à l'accueil
@@ -143,7 +143,7 @@ const ResetPassword = () => {
                 <Lock className="w-12 h-12 text-accent mx-auto mb-4" />
                 <h1 className="text-2xl font-display font-bold text-primary">Nouveau mot de passe</h1>
                 <p className="text-muted-foreground mt-2">
-                  Choisissez un nouveau mot de passe pour votre compte.
+                  Choisis un nouveau mot de passe pour ton compte.
                 </p>
               </div>
 

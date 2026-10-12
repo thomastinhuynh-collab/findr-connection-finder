@@ -178,7 +178,7 @@ const AdminNegativeBalances = () => {
                         <Badge variant="destructive">
                           Versements en attente
                           {heldCounts[f.user_id]
-                            ? ` — ${heldCounts[f.user_id]} versement${heldCounts[f.user_id] > 1 ? "s" : ""} bloqué${heldCounts[f.user_id] > 1 ? "s" : ""}`
+                            ? ` — ${heldCounts[f.user_id]} versement${heldCounts[f.user_id] > 1 ? "s" : ""} suspendu${heldCounts[f.user_id] > 1 ? "s" : ""}`
                             : ""}
                         </Badge>
                       )}

@@ -36,9 +36,9 @@ const MAX_PHOTOS = 5;
 const PAGE_SIZE = 50;
 
 const QUICK_SUGGESTIONS = [
-  "J'ai peut-être ce que vous cherchez",
-  "Quel est votre budget ?",
-  "Pouvez-vous envoyer plus de photos ?",
+  "J'ai peut-être ce que tu cherches",
+  "Quel est ton budget ?",
+  "Peux-tu envoyer plus de photos ?",
 ];
 
 const Messaging = () => {
@@ -587,10 +587,10 @@ const Messaging = () => {
                   </svg>
 
                   <p className="text-lg font-semibold mb-1" style={{ color: "#070E42" }}>
-                    Commencez la conversation
+                    Commence la conversation
                   </p>
                   <p className="text-sm max-w-sm" style={{ color: "#6B7280" }}>
-                    Dites à {firstName} si vous avez l'article qu'il recherche
+                    Dis à {firstName} si tu as l'article qu'il recherche
                   </p>
 
                   {/* Quick suggestions */}
