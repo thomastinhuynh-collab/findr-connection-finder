@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import catModeVintage from "@/assets/cat-mode-vintage.jpg";
 import catPopCulture from "@/assets/cat-pop-culture.jpg";
-import catObjetsDivers from "@/assets/cat-objets-divers.jpg";
+// Image provisoire en attendant cat-livres.jpg
+import catLivres from "@/assets/cat-objets-divers.jpg";
 import { useTranslation } from "react-i18next";
 
 const categories = [
@@ -21,11 +22,11 @@ const categories = [
     subcategoriesKey: "categories.items.popCulture.subcategories",
   },
   {
-    nameKey: "categories.items.misc.name",
-    slug: "Bijoux & Accessoires",
-    image: catObjetsDivers,
-    descriptionKey: "categories.items.misc.description",
-    subcategoriesKey: "categories.items.misc.subcategories",
+    nameKey: "categories.items.books.name",
+    slug: "Livres & BD",
+    image: catLivres,
+    descriptionKey: "categories.items.books.description",
+    subcategoriesKey: "categories.items.books.subcategories",
   },
 ];
 

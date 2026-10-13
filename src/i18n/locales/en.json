@@ -237,6 +237,17 @@
         }
       },
       "c3": {
+        "name": "Books & Comics",
+        "subcategories": {
+          "s1": "Novels & literature",
+          "s2": "Franco-Belgian comics",
+          "s3": "First & early editions",
+          "s4": "Art & illustrated books",
+          "s5": "Children's books & picture books",
+          "s6": "Signed copies"
+        }
+      },
+      "c4": {
         "name": "Vinyl & Music",
         "subcategories": {
           "s1": "LP Records",
@@ -246,7 +257,7 @@
           "s5": "Turntables & Hi-Fi"
         }
       },
-      "c4": {
+      "c5": {
         "name": "Cameras & Electronics",
         "subcategories": {
           "s1": "Film Cameras",
@@ -256,7 +267,7 @@
           "s5": "Vintage Audio"
         }
       },
-      "c5": {
+      "c6": {
         "name": "Jewellery & Accessories",
         "subcategories": {
           "s1": "Rings & Bracelets",
@@ -266,7 +277,7 @@
           "s5": "Eyewear"
         }
       },
-      "c6": {
+      "c7": {
         "name": "Home & Furniture",
         "subcategories": {
           "s1": "Vintage Furniture",
@@ -291,17 +302,17 @@
       "fashion": {
         "name": "Fashion & Leather Goods",
         "description": "Leather jackets, denim, 70s–90s vintage, bags",
-        "subcategories": "Fashion & Leather Goods · Vinyl & Music · Jewellery & Accessories"
+        "subcategories": "Jackets & Coats · T-shirts & Sweatshirts · Jeans · Shoes"
       },
       "popCulture": {
         "name": "Pop Culture",
-        "description": "Collectibles, comics, cards and vinyl",
+        "description": "Collectibles, comics, cards, retro games",
         "subcategories": "Comics · Collectibles · Trading Cards · Video Games"
       },
-      "misc": {
-        "name": "Unique Finds",
-        "description": "Watches, cameras and curious objects",
-        "subcategories": "Cameras & Electronics · Watches · Books · Curiosities"
+      "books": {
+        "name": "Books & Comics",
+        "description": "First editions, comics, art books, rare finds",
+        "subcategories": "Novels · Franco-Belgian comics · Early editions · Art books"
       }
     }
   },
