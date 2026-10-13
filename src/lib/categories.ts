@@ -44,6 +44,19 @@ export const CATEGORIES: Category[] = [
     ],
   },
   {
+    name: "Livres & BD",
+    slug: "Livres & BD",
+    status: "active",
+    subcategories: [
+      { name: "Romans & littérature" },
+      { name: "BD franco-belge" },
+      { name: "Éditions originales & anciennes" },
+      { name: "Beaux livres & art" },
+      { name: "Jeunesse & albums" },
+      { name: "Livres dédicacés" },
+    ],
+  },
+  {
     name: "Vinyles & Musique",
     slug: "Vinyles & Musique",
     status: "coming_soon",

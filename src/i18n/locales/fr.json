@@ -237,6 +237,17 @@
         }
       },
       "c3": {
+        "name": "Livres & BD",
+        "subcategories": {
+          "s1": "Romans & littérature",
+          "s2": "BD franco-belge",
+          "s3": "Éditions originales & anciennes",
+          "s4": "Beaux livres & art",
+          "s5": "Jeunesse & albums",
+          "s6": "Livres dédicacés"
+        }
+      },
+      "c4": {
         "name": "Vinyles & Musique",
         "subcategories": {
           "s1": "Vinyles 33 tours",
@@ -246,7 +257,7 @@
           "s5": "Platines & Hi-Fi"
         }
       },
-      "c4": {
+      "c5": {
         "name": "Photo & Électronique",
         "subcategories": {
           "s1": "Appareils argentiques",
@@ -256,7 +267,7 @@
           "s5": "Audio vintage"
         }
       },
-      "c5": {
+      "c6": {
         "name": "Bijoux & Accessoires",
         "subcategories": {
           "s1": "Bagues & Bracelets",
@@ -266,7 +277,7 @@
           "s5": "Lunettes"
         }
       },
-      "c6": {
+      "c7": {
         "name": "Déco & Mobilier",
         "subcategories": {
           "s1": "Meubles vintage",
@@ -291,17 +302,17 @@
       "fashion": {
         "name": "Mode & Maroquinerie",
         "description": "Vestes en cuir, denim, fripes 70s-90s, sacs",
-        "subcategories": "Mode & Maroquinerie · Vinyles & Musique · Bijoux & Accessoires"
+        "subcategories": "Vestes & Manteaux · T-shirts & Sweats · Jeans · Chaussures"
       },
       "popCulture": {
         "name": "Pop Culture",
-        "description": "Figurines, comics, cartes, vinyles",
+        "description": "Figurines, comics, cartes, jeux rétro",
         "subcategories": "Comics · Figurines · Cartes TCG · Jeux vidéo"
       },
-      "misc": {
-        "name": "Objets Divers",
-        "description": "Montres, appareils photo, curiosités",
-        "subcategories": "Photo & Électronique · Horlogerie · Livres · Curiosités"
+      "books": {
+        "name": "Livres & BD",
+        "description": "Éditions originales, BD, beaux livres, introuvables",
+        "subcategories": "Romans · BD franco-belge · Éditions anciennes · Beaux livres"
       }
     }
   },
