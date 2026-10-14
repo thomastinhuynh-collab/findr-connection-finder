@@ -14,6 +14,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
 import { CATEGORIES, OTHER_CATEGORY } from "@/lib/categories";
+import SubcategorySelect from "@/components/SubcategorySelect";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { useTranslation } from "react-i18next";
 
 const categories = [...CATEGORIES, { name: OTHER_CATEGORY, slug: OTHER_CATEGORY, status: "active" as const, subcategories: [] }];
@@ -32,6 +34,7 @@ const PostSearch = () => {
   const navigate = useNavigate();
   const { i18n, t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { subcategoriesPostEnabled } = useFeatureFlags();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deadlineOpen, setDeadlineOpen] = useState(false);
@@ -41,6 +44,7 @@ const PostSearch = () => {
     title: "",
     description: "",
     category: "",
+    subcategory: "",
     condition: "",
     budgetMin: "",
     budgetMax: "",
@@ -151,6 +155,7 @@ const PostSearch = () => {
         image_url: imageUrl,
         status: "active",
         source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr",
+        ...(subcategoriesPostEnabled ? { subcategory: formData.subcategory || null } : {}),
       });
 
       if (error) throw error;
@@ -276,7 +281,7 @@ const PostSearch = () => {
                      <Label>{t("postSearch.category")} <span className="required-mark">*</span></Label>
                     <Select
                       value={formData.category}
-                      onValueChange={(value) => setFormData({ ...formData, category: value })}
+                      onValueChange={(value) => setFormData({ ...formData, category: value, subcategory: "" })}
                     >
                       <SelectTrigger className="h-12">
                          <SelectValue placeholder={t("postSearch.selectCategory")} />
@@ -295,6 +300,14 @@ const PostSearch = () => {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {subcategoriesPostEnabled && (
+                    <SubcategorySelect
+                      category={formData.category}
+                      value={formData.subcategory}
+                      onChange={(v) => setFormData({ ...formData, subcategory: v })}
+                    />
+                  )}
 
                   <div className="space-y-2">
                      <Label>{t("postSearch.condition")} <span className="required-mark">*</span></Label>

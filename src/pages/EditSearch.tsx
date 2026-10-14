@@ -25,6 +25,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { CATEGORIES, OTHER_CATEGORY } from "@/lib/categories";
+import SubcategorySelect from "@/components/SubcategorySelect";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { useTranslation } from "react-i18next";
 
 const categories = [...CATEGORIES, { name: OTHER_CATEGORY, slug: OTHER_CATEGORY, status: "active" as const, subcategories: [] }];
@@ -44,10 +46,12 @@ const EditSearch = () => {
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [deadlineOpen, setDeadlineOpen] = useState(false);
   const [sourceLang, setSourceLang] = useState("fr");
+  const { subcategoriesPostEnabled } = useFeatureFlags();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     category: "",
+    subcategory: "",
     budgetMin: "",
     budgetMax: "",
     deadline: "no-rush",
@@ -89,6 +93,7 @@ const EditSearch = () => {
       title: data.title,
       description: data.description || "",
       category: data.category,
+      subcategory: data.subcategory || "",
       budgetMin: data.budget_min?.toString() || "",
       budgetMax: data.budget_max?.toString() || "",
       deadline: urgency,
@@ -203,6 +208,7 @@ const EditSearch = () => {
           image_url: imageUrl,
           status: formData.status,
           source_lang: sourceLang,
+          ...(subcategoriesPostEnabled ? { subcategory: formData.subcategory || null } : {}),
         })
         .eq("id", id)
         .eq("user_id", user.id);
@@ -324,7 +330,7 @@ const EditSearch = () => {
                <Label>{t("postSearch.category")} *</Label>
               <Select 
                 value={formData.category}
-                onValueChange={(value) => setFormData({ ...formData, category: value })}
+                onValueChange={(value) => setFormData({ ...formData, category: value, subcategory: "" })}
               >
                 <SelectTrigger className="h-12">
                    <SelectValue placeholder={t("postSearch.selectCategory")} />
@@ -343,6 +349,14 @@ const EditSearch = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {subcategoriesPostEnabled && (
+              <SubcategorySelect
+                category={formData.category}
+                value={formData.subcategory}
+                onChange={(v) => setFormData({ ...formData, subcategory: v })}
+              />
+            )}
 
             {/* Status */}
             <div className="space-y-2">
