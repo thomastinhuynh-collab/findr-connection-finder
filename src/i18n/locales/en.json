@@ -658,8 +658,7 @@
       "minLabel": "Minimum budget",
       "maxLabel": "Maximum budget",
       "minimum": "Minimum",
-      "maximum": "Maximum",
-      "noBudgetNote": "Searches without a stated budget are still shown."
+      "maximum": "Maximum"
     }
   },
   "searchDetail": {
@@ -998,7 +997,8 @@
     "publish": "Post my search",
     "legal": "By publishing, you accept our Terms and Privacy Policy.",
     "categoryHintPopCulture": "Manga and comics: choose Books & Comics instead.",
-    "categoryHintBooks": "Figures, cards and merch: choose Pop Culture & TCG instead."
+    "categoryHintBooks": "Figures, cards and merch: choose Pop Culture & TCG instead.",
+    "budgetRequired": "Enter a minimum and a maximum budget."
   },
   "proposalForm": {
     "sentTitle": "Proposal sent!",

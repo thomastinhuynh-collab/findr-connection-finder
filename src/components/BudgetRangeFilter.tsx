@@ -134,7 +134,6 @@ const BudgetRangeFilter = ({ value, onChange }: Props) => {
           </label>
         ))}
       </div>
-      <p className="mt-3 text-[11px] text-muted-foreground">{t("searchesPage.budgetFilter.noBudgetNote")}</p>
     </div>
   );
 };
