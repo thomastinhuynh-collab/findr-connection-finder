@@ -299,6 +299,11 @@ const PostSearch = () => {
                         ))}
                       </SelectContent>
                     </Select>
+                    {(formData.category === "Pop Culture & TCG" || formData.category === "Livres & BD") && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {t(formData.category === "Pop Culture & TCG" ? "postSearch.categoryHintPopCulture" : "postSearch.categoryHintBooks")}
+                      </p>
+                    )}
                   </div>
 
                   {subcategoriesPostEnabled && (
