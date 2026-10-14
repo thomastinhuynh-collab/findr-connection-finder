@@ -25,6 +25,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useKeywordAlerts } from "@/hooks/useKeywordAlerts";
 import AuthModal from "@/components/AuthModal";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
+import { getSubcategories, getSubcategoryLabelKey } from "@/lib/categories";
 
 interface SearchItem {
   id: string;
@@ -84,6 +86,30 @@ const Searches = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Toutes");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const { subcategoriesBrowseEnabled } = useFeatureFlags();
+  const categorySubs = subcategoriesBrowseEnabled && selectedCategory !== "Toutes" ? getSubcategories(selectedCategory) : [];
+  const activeSubcategory = categorySubs.some((sc) => sc.name === selectedSubcategory) ? selectedSubcategory : "";
+  const subLabel = (name: string) => {
+    const key = getSubcategoryLabelKey(selectedCategory, name);
+    return key ? t(key) : name;
+  };
+  const updateSubcategoryParam = (value: string) => {
+    setSelectedSubcategory(value);
+    const next = new URLSearchParams(searchParams);
+    if (value) next.set("subcategory", value);
+    else next.delete("subcategory");
+    setSearchParams(next, { replace: true });
+  };
+  const changeCategory = (cat: string) => {
+    setSelectedCategory(cat);
+    setSelectedSubcategory("");
+    if (searchParams.has("subcategory")) {
+      const next = new URLSearchParams(searchParams);
+      next.delete("subcategory");
+      setSearchParams(next, { replace: true });
+    }
+  };
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
@@ -177,6 +203,7 @@ const Searches = () => {
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl);
     }
+    setSelectedSubcategory(searchParams.get("subcategory") || "");
     if (queryFromUrl) {
       setSearchQuery(queryFromUrl);
       if (!sortTouched) setSortBy("relevance");
@@ -201,6 +228,7 @@ const Searches = () => {
     fetchSearches(true);
   }, [
     selectedCategory,
+    activeSubcategory,
     debouncedQuery,
     selectedUrgency,
     deadlineFilter,
@@ -227,6 +255,9 @@ const Searches = () => {
 
     if (selectedCategory !== "Toutes") {
       query = query.eq("category", selectedCategory);
+    }
+    if (activeSubcategory) {
+      query = query.eq("subcategory", activeSubcategory);
     }
 
     // Mot-clé : titre ou description
@@ -472,7 +503,7 @@ const Searches = () => {
                             setSearchParams({ category: cat });
                             return;
                           }
-                          setSelectedCategory(cat);
+                          changeCategory(cat);
                         }}
                         className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted flex items-center gap-1.5"
                         style={{
@@ -493,6 +524,34 @@ const Searches = () => {
                   })}
                 </PopoverContent>
               </Popover>
+
+              {/* Sous-catégorie */}
+              {categorySubs.length > 0 && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button style={activeSubcategory ? pillActive : pillBase}>
+                      {activeSubcategory ? subLabel(activeSubcategory) : t("subcategories.label")}
+                      <span aria-hidden="true" className="opacity-70">▾</span>
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="start" className="w-56 p-1">
+                    {[{ v: "", label: t("subcategories.all") }, ...categorySubs.map((sc) => ({ v: sc.name, label: subLabel(sc.name) }))].map((o) => (
+                      <button
+                        key={o.v || "all"}
+                        onClick={() => updateSubcategoryParam(o.v)}
+                        className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-muted flex items-center gap-1.5"
+                        style={{
+                          background: activeSubcategory === o.v ? "#F5F1E8" : "transparent",
+                          color: "#1B2A4A",
+                          fontWeight: activeSubcategory === o.v ? 600 : 400,
+                        }}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+              )}
 
               {/* Budget */}
               <Popover>
@@ -567,7 +626,7 @@ const Searches = () => {
               {(selectedCategory !== "Toutes" || budgetTouched || deadlineFilter !== "all" || searchQuery) && (
                 <button
                   onClick={() => {
-                    setSelectedCategory("Toutes");
+                    changeCategory("Toutes");
                     setBudgetTouched(false);
                     setBudgetRange([0, 5000]);
                     setDeadlineFilter("all");
