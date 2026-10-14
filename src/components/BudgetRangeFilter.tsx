@@ -98,7 +98,7 @@ const BudgetRangeFilter = ({ value, onChange }: Props) => {
               className="absolute whitespace-nowrap"
               style={{
                 left: `${pos(tk)}%`,
-                transform: ["translateX(-25%)", "translateX(-50%)", "translateX(-75%)", "translateX(-25%)", "translateX(-80%)"][i],
+                transform: ["translateX(-25%)", "translateX(-50%)", "translateX(-75%)", "translateX(-60%)", "translateX(-85%)"][i],
               }}
             >
               {formatEuro(tk, lang)}{tk === BUDGET_MAX ? "+" : ""}
