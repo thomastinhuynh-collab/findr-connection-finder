@@ -1,0 +1,1 @@
+ALTER TABLE public.searches ADD CONSTRAINT searches_budget_required CHECK (budget_min IS NOT NULL AND budget_max IS NOT NULL AND budget_min >= 0 AND budget_min <= budget_max) NOT VALID;

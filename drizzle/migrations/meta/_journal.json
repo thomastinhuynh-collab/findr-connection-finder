@@ -36,6 +36,13 @@
       "when": 1791968845204,
       "tag": "0004_subcategories_flags",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791976472581,
+      "tag": "0005_searches_budget_required",
+      "breakpoints": true
     }
   ]
 }
