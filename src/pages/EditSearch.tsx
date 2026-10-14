@@ -175,6 +175,8 @@ const EditSearch = () => {
   const budgetMaxNum = formData.budgetMax !== "" ? parseInt(formData.budgetMax) : null;
   const budgetMissing = budgetMinNum === null || budgetMaxNum === null || Number.isNaN(budgetMinNum) || Number.isNaN(budgetMaxNum);
   const budgetError = !budgetMissing && (budgetMinNum! < 0 || budgetMinNum! > budgetMaxNum!);
+  const otherRequiredFilled = formData.title.trim() !== "" && formData.category !== "";
+  const showBudgetError = budgetError || (budgetMissing && (budgetBlurred || otherRequiredFilled));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -501,11 +503,14 @@ const EditSearch = () => {
                   />
                 </div>
               </div>
-              {budgetBlurred && budgetMissing && (
+              {showBudgetError && budgetMissing && (
                 <p role="alert" className="text-xs text-destructive">{t("postSearch.budgetRequired")}</p>
               )}
               {budgetError && (
                 <p className="text-xs text-destructive">{t("postSearch.budgetError")}</p>
+              )}
+              {!showBudgetError && (
+                <p className="text-xs text-muted-foreground">{t("postSearch.budgetHint")}</p>
               )}
             </div>
 
