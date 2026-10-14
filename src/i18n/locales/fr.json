@@ -650,7 +650,17 @@
     "loading": "Chargement…",
     "deadlinePassed": "Délai dépassé",
     "daysLeft_one": "Il reste {{count}} jour",
-    "daysLeft_other": "Il reste {{count}} jours"
+    "daysLeft_other": "Il reste {{count}} jours",
+    "budgetFilter": {
+      "title": "Ton budget",
+      "hint": "Fais glisser les deux poignées, ou saisis tes montants.",
+      "andMore": "{{amount}} et plus",
+      "minLabel": "Budget minimum",
+      "maxLabel": "Budget maximum",
+      "minimum": "Minimum",
+      "maximum": "Maximum",
+      "noBudgetNote": "Les recherches sans budget indiqué restent affichées."
+    }
   },
   "searchDetail": {
     "notFound": "Annonce non trouvée",

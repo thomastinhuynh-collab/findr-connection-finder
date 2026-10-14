@@ -650,7 +650,17 @@
     "loading": "Loading…",
     "deadlinePassed": "Deadline passed",
     "daysLeft_one": "{{count}} day left",
-    "daysLeft_other": "{{count}} days left"
+    "daysLeft_other": "{{count}} days left",
+    "budgetFilter": {
+      "title": "Your budget",
+      "hint": "Drag both handles, or type your amounts.",
+      "andMore": "{{amount}} and up",
+      "minLabel": "Minimum budget",
+      "maxLabel": "Maximum budget",
+      "minimum": "Minimum",
+      "maximum": "Maximum",
+      "noBudgetNote": "Searches without a stated budget are still shown."
+    }
   },
   "searchDetail": {
     "notFound": "Search not found",
