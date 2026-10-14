@@ -232,8 +232,8 @@
           "s2": "Yu-Gi-Oh! Cards",
           "s3": "Magic Cards",
           "s4": "Collectibles & Toys",
-          "s5": "Manga & Comics",
-          "s6": "Retro Video Games"
+          "s5": "Retro Video Games",
+          "s6": "Merch & posters"
         }
       },
       "c3": {
@@ -241,10 +241,11 @@
         "subcategories": {
           "s1": "Novels & literature",
           "s2": "Franco-Belgian comics",
-          "s3": "First & early editions",
-          "s4": "Art & illustrated books",
-          "s5": "Children's books & picture books",
-          "s6": "Signed copies"
+          "s3": "Manga",
+          "s4": "Comics & graphic novels",
+          "s5": "First & early editions",
+          "s6": "Art & illustrated books",
+          "s7": "Children's books & picture books"
         }
       },
       "c4": {
@@ -306,13 +307,13 @@
       },
       "popCulture": {
         "name": "Pop Culture",
-        "description": "Collectibles, comics, cards, retro games",
-        "subcategories": "Comics · Collectibles · Trading Cards · Video Games"
+        "description": "Trading cards, collectibles, retro games, merch",
+        "subcategories": "Trading Cards · Collectibles · Retro Games · Merch"
       },
       "books": {
         "name": "Books & Comics",
-        "description": "First editions, comics, art books, rare finds",
-        "subcategories": "Novels · Franco-Belgian comics · Early editions · Art books"
+        "description": "First editions, comics, manga, art books, rare finds",
+        "subcategories": "Novels · Comics & manga · Early editions · Art books"
       }
     }
   },
@@ -985,7 +986,9 @@
     "reassurance": "After publication, findr members receive your request and usually send proposals within 48 hours.",
     "publishing": "Publishing…",
     "publish": "Post my search",
-    "legal": "By publishing, you accept our Terms and Privacy Policy."
+    "legal": "By publishing, you accept our Terms and Privacy Policy.",
+    "categoryHintPopCulture": "Manga and comics: choose Books & Comics instead.",
+    "categoryHintBooks": "Figures, cards and merch: choose Pop Culture & TCG instead."
   },
   "proposalForm": {
     "sentTitle": "Proposal sent!",
