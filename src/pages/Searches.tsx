@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Slider } from "@/components/ui/slider";
+import BudgetRangeFilter, { BUDGET_MAX, isBudgetActive, formatBudgetRange } from "@/components/BudgetRangeFilter";
 import { Search, Clock, Euro, MessageCircle, Filter, SlidersHorizontal, Loader2, X, ArrowUpDown, ChevronDown, Tag, Wallet } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -119,7 +119,7 @@ const Searches = () => {
   const [deadlineFilter, setDeadlineFilter] = useState<DeadlineFilter>("all");
   const [budgetRange, setBudgetRange] = useState<[number, number]>([0, 5000]);
   const [debouncedBudget, setDebouncedBudget] = useState<[number, number]>([0, 5000]);
-  const [budgetTouched, setBudgetTouched] = useState(false);
+  const budgetTouched = isBudgetActive(budgetRange);
   const [proposalCounts, setProposalCounts] = useState<Record<string, number>>({});
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -232,7 +232,6 @@ const Searches = () => {
     debouncedQuery,
     selectedUrgency,
     deadlineFilter,
-    budgetTouched,
     debouncedBudget[0],
     debouncedBudget[1],
   ]);
@@ -272,11 +271,10 @@ const Searches = () => {
     }
 
     // Budget : chevauchement des plages
-    if (budgetTouched) {
+    if (isBudgetActive(debouncedBudget)) {
       const [lo, hi] = debouncedBudget;
-      query = query
-        .or(`budget_max.gte.${lo},budget_max.is.null`)
-        .or(`budget_min.lte.${hi},budget_min.is.null`);
+      query = query.or(`budget_max.gte.${lo},budget_max.is.null`);
+      if (hi < BUDGET_MAX) query = query.or(`budget_min.lte.${hi},budget_min.is.null`);
     }
 
     // Délai souhaité
@@ -558,33 +556,12 @@ const Searches = () => {
                 <PopoverTrigger asChild>
                   <button style={budgetTouched ? pillActive : pillBase}>
                     <Wallet className="w-3.5 h-3.5" />
-                     {budgetTouched ? `${budgetRange[0]}€ – ${budgetRange[1]}€` : t("card.budget")}
+                     {budgetTouched ? formatBudgetRange(budgetRange, i18n.language || "fr", t) : t("card.budget")}
                     <ChevronDown className="w-3.5 h-3.5 opacity-70" />
                   </button>
                 </PopoverTrigger>
-                <PopoverContent align="start" className="w-72 p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-medium text-muted-foreground">{t("searchesPage.budgetRange")}</span>
-                    {budgetTouched && (
-                      <button
-                        onClick={() => { setBudgetTouched(false); setBudgetRange([0, 5000]); }}
-                        className="text-xs text-muted-foreground hover:text-foreground"
-                      >
-                         {t("searchesPage.reset")}
-                      </button>
-                    )}
-                  </div>
-                  <Slider
-                    min={0}
-                    max={5000}
-                    step={50}
-                    value={budgetRange}
-                    onValueChange={(v) => { setBudgetRange([v[0], v[1]] as [number, number]); setBudgetTouched(true); }}
-                  />
-                  <div className="flex justify-between mt-3 text-sm font-medium" style={{ color: "#1B2A4A" }}>
-                    <span>{budgetRange[0]}€</span>
-                    <span>{budgetRange[1]}€{budgetRange[1] === 5000 ? "+" : ""}</span>
-                  </div>
+                <PopoverContent align="start" collisionPadding={12} className="w-[min(320px,calc(100vw-24px))] p-4">
+                  <BudgetRangeFilter value={budgetRange} onChange={setBudgetRange} />
                 </PopoverContent>
               </Popover>
 
@@ -627,7 +604,6 @@ const Searches = () => {
                 <button
                   onClick={() => {
                     changeCategory("Toutes");
-                    setBudgetTouched(false);
                     setBudgetRange([0, 5000]);
                     setDeadlineFilter("all");
                     setSearchQuery("");
