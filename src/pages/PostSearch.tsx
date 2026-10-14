@@ -109,10 +109,11 @@ const PostSearch = () => {
 
   // Validation per step
   const isStep1Valid = formData.title.trim() !== "" && formData.category !== "" && formData.condition !== "";
-  const budgetMinNum = formData.budgetMin ? parseInt(formData.budgetMin) : null;
-  const budgetMaxNum = formData.budgetMax ? parseInt(formData.budgetMax) : null;
-  const budgetError =
-    budgetMinNum !== null && budgetMaxNum !== null && budgetMinNum >= budgetMaxNum;
+  const budgetMinNum = formData.budgetMin !== "" ? parseInt(formData.budgetMin) : null;
+  const budgetMaxNum = formData.budgetMax !== "" ? parseInt(formData.budgetMax) : null;
+  const budgetMissing = budgetMinNum === null || budgetMaxNum === null || Number.isNaN(budgetMinNum) || Number.isNaN(budgetMaxNum);
+  const budgetError = !budgetMissing && (budgetMinNum! < 0 || budgetMinNum! > budgetMaxNum!);
+  const [budgetBlurred, setBudgetBlurred] = useState(false);
 
   const goNext = () => setCurrentStep((s) => Math.min(3, s + 1));
   const goPrev = () => setCurrentStep((s) => Math.max(1, s - 1));
@@ -135,7 +136,7 @@ const PostSearch = () => {
       });
       return;
     }
-    if (budgetError) return;
+    if (budgetMissing || budgetError) { setBudgetBlurred(true); return; }
 
     setIsSubmitting(true);
     try {
@@ -508,7 +509,7 @@ const PostSearch = () => {
                   className="space-y-6"
                 >
                   <div className="space-y-2">
-                     <Label>{t("postSearch.budget")}</Label>
+                     <Label>{t("postSearch.budget")} <span className="required-mark">*</span></Label>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="relative input-with-icon">
                         <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 z-10" style={{ color: "#C9A84C" }} />
@@ -517,6 +518,10 @@ const PostSearch = () => {
                           placeholder="50€"
                           value={formData.budgetMin}
                           onChange={(e) => setFormData({ ...formData, budgetMin: e.target.value })}
+                          onBlur={() => setBudgetBlurred(true)}
+                          min={0}
+                          required
+                          aria-invalid={budgetBlurred && (budgetMissing || budgetError)}
                         />
                       </div>
                       <div className="relative input-with-icon">
@@ -526,9 +531,18 @@ const PostSearch = () => {
                           placeholder="200€"
                           value={formData.budgetMax}
                           onChange={(e) => setFormData({ ...formData, budgetMax: e.target.value })}
+                          onBlur={() => setBudgetBlurred(true)}
+                          min={0}
+                          required
+                          aria-invalid={budgetBlurred && (budgetMissing || budgetError)}
                         />
                       </div>
                     </div>
+                    {budgetBlurred && budgetMissing && (
+                      <p role="alert" style={{ color: "#DC2626", fontSize: "12px" }}>
+                         {t("postSearch.budgetRequired")}
+                      </p>
+                    )}
                     {budgetError && (
                       <p style={{ color: "#DC2626", fontSize: "12px" }}>
                          {t("postSearch.budgetError")}
@@ -663,7 +677,7 @@ const PostSearch = () => {
                     </Button>
                     <Button
                       type="submit"
-                      disabled={isSubmitting || budgetError}
+                      disabled={isSubmitting || budgetError || budgetMissing}
                       className="text-white"
                       style={{
                         backgroundColor: "#1B2A4A",

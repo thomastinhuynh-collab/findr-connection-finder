@@ -273,8 +273,8 @@ const Searches = () => {
     // Budget : chevauchement des plages
     if (isBudgetActive(debouncedBudget)) {
       const [lo, hi] = debouncedBudget;
-      query = query.or(`budget_max.gte.${lo},budget_max.is.null`);
-      if (hi < BUDGET_MAX) query = query.or(`budget_min.lte.${hi},budget_min.is.null`);
+      query = query.gte("budget_max", lo);
+      if (hi < BUDGET_MAX) query = query.lte("budget_min", hi);
     }
 
     // Délai souhaité

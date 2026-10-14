@@ -39,6 +39,7 @@ const EditSearch = () => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [budgetBlurred, setBudgetBlurred] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState<File[]>([]);
@@ -170,6 +171,11 @@ const EditSearch = () => {
     return publicUrl.publicUrl;
   };
 
+  const budgetMinNum = formData.budgetMin !== "" ? parseInt(formData.budgetMin) : null;
+  const budgetMaxNum = formData.budgetMax !== "" ? parseInt(formData.budgetMax) : null;
+  const budgetMissing = budgetMinNum === null || budgetMaxNum === null || Number.isNaN(budgetMinNum) || Number.isNaN(budgetMaxNum);
+  const budgetError = !budgetMissing && (budgetMinNum! < 0 || budgetMinNum! > budgetMaxNum!);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -190,6 +196,7 @@ const EditSearch = () => {
       });
       return;
     }
+    if (budgetMissing || budgetError) { setBudgetBlurred(true); return; }
 
     setIsSubmitting(true);
 
@@ -202,8 +209,8 @@ const EditSearch = () => {
           title: formData.title,
           description: formData.description || null,
           category: formData.category,
-          budget_min: formData.budgetMin ? parseInt(formData.budgetMin) : null,
-          budget_max: formData.budgetMax ? parseInt(formData.budgetMax) : null,
+          budget_min: budgetMinNum,
+          budget_max: budgetMaxNum,
           urgency: formData.deadline || "normal",
           image_url: imageUrl,
           status: formData.status,
@@ -463,7 +470,7 @@ const EditSearch = () => {
 
             {/* Budget */}
             <div className="space-y-2">
-               <Label>{t("postSearch.budget")}</Label>
+               <Label>{t("postSearch.budget")} *</Label>
               <div className="grid grid-cols-2 gap-4">
                 <div className="relative">
                   <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -472,6 +479,10 @@ const EditSearch = () => {
                     placeholder="Min"
                     value={formData.budgetMin}
                     onChange={(e) => setFormData({ ...formData, budgetMin: e.target.value })}
+                    onBlur={() => setBudgetBlurred(true)}
+                    min={0}
+                    required
+                    aria-invalid={budgetBlurred && (budgetMissing || budgetError)}
                     className="h-12 pl-10"
                   />
                 </div>
@@ -482,10 +493,20 @@ const EditSearch = () => {
                     placeholder="Max"
                     value={formData.budgetMax}
                     onChange={(e) => setFormData({ ...formData, budgetMax: e.target.value })}
+                    onBlur={() => setBudgetBlurred(true)}
+                    min={0}
+                    required
+                    aria-invalid={budgetBlurred && (budgetMissing || budgetError)}
                     className="h-12 pl-10"
                   />
                 </div>
               </div>
+              {budgetBlurred && budgetMissing && (
+                <p role="alert" className="text-xs text-destructive">{t("postSearch.budgetRequired")}</p>
+              )}
+              {budgetError && (
+                <p className="text-xs text-destructive">{t("postSearch.budgetError")}</p>
+              )}
             </div>
 
             {/* Deadline */}
@@ -550,7 +571,7 @@ const EditSearch = () => {
                 type="submit" 
                 size="lg" 
                 className="flex-1 btn-hero h-14 text-base"
-                disabled={isSubmitting}
+                disabled={isSubmitting || budgetMissing || budgetError}
               >
                 {isSubmitting ? (
                   <>
