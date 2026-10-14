@@ -39,8 +39,8 @@ export const CATEGORIES: Category[] = [
       { name: "Cartes Yu-Gi-Oh!" },
       { name: "Cartes Magic" },
       { name: "Figurines & Jouets" },
-      { name: "Mangas & Comics" },
       { name: "Jeux vidéo rétro" },
+      { name: "Goodies & affiches" },
     ],
   },
   {
@@ -50,10 +50,11 @@ export const CATEGORIES: Category[] = [
     subcategories: [
       { name: "Romans & littérature" },
       { name: "BD franco-belge" },
+      { name: "Mangas" },
+      { name: "Comics & romans graphiques" },
       { name: "Éditions originales & anciennes" },
       { name: "Beaux livres & art" },
       { name: "Jeunesse & albums" },
-      { name: "Livres dédicacés" },
     ],
   },
   {

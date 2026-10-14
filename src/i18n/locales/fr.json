@@ -232,8 +232,8 @@
           "s2": "Cartes Yu-Gi-Oh!",
           "s3": "Cartes Magic",
           "s4": "Figurines & Jouets",
-          "s5": "Mangas & Comics",
-          "s6": "Jeux vidéo rétro"
+          "s5": "Jeux vidéo rétro",
+          "s6": "Goodies & affiches"
         }
       },
       "c3": {
@@ -241,10 +241,11 @@
         "subcategories": {
           "s1": "Romans & littérature",
           "s2": "BD franco-belge",
-          "s3": "Éditions originales & anciennes",
-          "s4": "Beaux livres & art",
-          "s5": "Jeunesse & albums",
-          "s6": "Livres dédicacés"
+          "s3": "Mangas",
+          "s4": "Comics & romans graphiques",
+          "s5": "Éditions originales & anciennes",
+          "s6": "Beaux livres & art",
+          "s7": "Jeunesse & albums"
         }
       },
       "c4": {
@@ -306,13 +307,13 @@
       },
       "popCulture": {
         "name": "Pop Culture",
-        "description": "Figurines, comics, cartes, jeux rétro",
-        "subcategories": "Comics · Figurines · Cartes TCG · Jeux vidéo"
+        "description": "Cartes, figurines, jeux rétro, goodies",
+        "subcategories": "Cartes TCG · Figurines · Jeux rétro · Goodies"
       },
       "books": {
         "name": "Livres & BD",
-        "description": "Éditions originales, BD, beaux livres, introuvables",
-        "subcategories": "Romans · BD franco-belge · Éditions anciennes · Beaux livres"
+        "description": "Éditions originales, BD, mangas, beaux livres, introuvables",
+        "subcategories": "Romans · BD & mangas · Éditions anciennes · Beaux livres"
       }
     }
   },
@@ -985,7 +986,9 @@
     "reassurance": "Après publication, les membres findr reçoivent ta demande et te font des propositions sous 48h en moyenne.",
     "publishing": "Publication…",
     "publish": "Publier ma recherche",
-    "legal": "En publiant, tu acceptes nos CGU et notre politique de confidentialité."
+    "legal": "En publiant, tu acceptes nos CGU et notre politique de confidentialité.",
+    "categoryHintPopCulture": "Mangas et comics : choisis plutôt Livres & BD.",
+    "categoryHintBooks": "Figurines, cartes et goodies : choisis plutôt Pop Culture & TCG."
   },
   "proposalForm": {
     "sentTitle": "Proposition envoyée !",
