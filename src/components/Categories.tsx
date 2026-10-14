@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import catModeVintage from "@/assets/cat-mode-vintage.jpg";
 import catPopCulture from "@/assets/cat-pop-culture.jpg";
-// Image provisoire en attendant cat-livres.jpg
-import catLivres from "@/assets/cat-objets-divers.jpg";
+import catLivres from "@/assets/cat-livres.jpg";
 import { useTranslation } from "react-i18next";
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 
