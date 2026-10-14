@@ -114,6 +114,7 @@ const PostSearch = () => {
   const budgetMissing = budgetMinNum === null || budgetMaxNum === null || Number.isNaN(budgetMinNum) || Number.isNaN(budgetMaxNum);
   const budgetError = !budgetMissing && (budgetMinNum! < 0 || budgetMinNum! > budgetMaxNum!);
   const [budgetBlurred, setBudgetBlurred] = useState(false);
+  const showBudgetError = budgetError || (budgetMissing && budgetBlurred);
 
   const goNext = () => setCurrentStep((s) => Math.min(3, s + 1));
   const goPrev = () => setCurrentStep((s) => Math.max(1, s - 1));
@@ -538,7 +539,7 @@ const PostSearch = () => {
                         />
                       </div>
                     </div>
-                    {budgetBlurred && budgetMissing && (
+                    {showBudgetError && budgetMissing && (
                       <p role="alert" style={{ color: "#DC2626", fontSize: "12px" }}>
                          {t("postSearch.budgetRequired")}
                       </p>
@@ -546,6 +547,11 @@ const PostSearch = () => {
                     {budgetError && (
                       <p style={{ color: "#DC2626", fontSize: "12px" }}>
                          {t("postSearch.budgetError")}
+                      </p>
+                    )}
+                    {!showBudgetError && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {t("postSearch.budgetHint")}
                       </p>
                     )}
                   </div>
