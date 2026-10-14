@@ -1404,5 +1404,11 @@
       "receipt_pending": "Parcel on its way — confirm receipt",
       "delivery_choice": "Payment confirmed — choose your delivery"
     }
+  },
+  "subcategories": {
+    "optionalLabel": "Subcategory (optional)",
+    "label": "Subcategory",
+    "all": "All",
+    "placeholder": "Choose a subcategory"
   }
 }

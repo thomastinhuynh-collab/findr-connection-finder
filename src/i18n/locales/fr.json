@@ -1404,5 +1404,11 @@
       "receipt_pending": "Colis en route — confirme la réception",
       "delivery_choice": "Paiement confirmé — choisis ta livraison"
     }
+  },
+  "subcategories": {
+    "optionalLabel": "Sous-catégorie (facultatif)",
+    "label": "Sous-catégorie",
+    "all": "Toutes",
+    "placeholder": "Choisir une sous-catégorie"
   }
 }

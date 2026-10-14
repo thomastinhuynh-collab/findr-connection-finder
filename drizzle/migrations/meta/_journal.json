@@ -29,6 +29,13 @@
       "when": 1791807305890,
       "tag": "0003_waitlist_count_confirmed_only",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791968845204,
+      "tag": "0004_subcategories_flags",
+      "breakpoints": true
     }
   ]
 }

@@ -5,6 +5,7 @@ import catPopCulture from "@/assets/cat-pop-culture.jpg";
 // Image provisoire en attendant cat-livres.jpg
 import catLivres from "@/assets/cat-objets-divers.jpg";
 import { useTranslation } from "react-i18next";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 
 const categories = [
   {
@@ -33,6 +34,7 @@ const categories = [
 const Categories = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { subcategoriesBrowseEnabled } = useFeatureFlags();
   const headingRef = useScrollReveal();
   const gridRef = useScrollRevealGroup();
 
@@ -89,9 +91,11 @@ const Categories = () => {
                 <p className="text-sm text-cream/80 group-hover:text-cream transition-opacity">
                   {t(cat.descriptionKey)}
                 </p>
+                {subcategoriesBrowseEnabled && (
                 <p className="mt-2 text-xs text-cream/60 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 leading-relaxed">
                   {t(cat.subcategoriesKey)}
                 </p>
+                )}
                 <div className="mt-2 text-xs font-barlow font-medium flex items-center gap-1 text-accent opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 delay-75">
                   <span>{t("categories.viewSearches")}</span>
                 </div>

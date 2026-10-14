@@ -117,3 +117,15 @@ export const isComingSoonCategory = (slug: string): boolean =>
 
 export const isActiveCategory = (slug: string): boolean =>
   getCategoryBySlug(slug)?.status === "active";
+
+/** Clé i18n du nom affiché d'une sous-catégorie (valeur enregistrée = nom français). */
+export const getSubcategoryLabelKey = (categorySlug: string, subName: string): string | null => {
+  const ci = CATEGORIES.findIndex((c) => c.slug === categorySlug || c.name === categorySlug);
+  if (ci < 0) return null;
+  const si = CATEGORIES[ci].subcategories.findIndex((s) => s.name === subName);
+  if (si < 0) return null;
+  return `categoryNav.categories.c${ci + 1}.subcategories.s${si + 1}`;
+};
+
+export const getSubcategories = (categorySlug: string): CategorySub[] =>
+  getCategoryBySlug(categorySlug)?.subcategories ?? [];

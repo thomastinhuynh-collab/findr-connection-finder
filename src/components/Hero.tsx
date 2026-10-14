@@ -8,6 +8,8 @@ import Logo from "@/components/Logo";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { CATEGORIES } from "@/lib/categories";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const GOLD = "rgb(217, 187, 135)";
 const DARK = "#070E42";
@@ -25,6 +27,7 @@ const Hero = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { subcategoriesBrowseEnabled } = useFeatureFlags();
   const [authOpen, setAuthOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isStuck, setIsStuck] = useState(false);
@@ -280,8 +283,8 @@ const Hero = () => {
           }}
         >
           {categories.map((c, categoryIndex) => (
+            <span key={c.slug} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
             <button
-              key={c.slug}
               onClick={() =>
                 navigate(`/recherches?category=${encodeURIComponent(c.slug)}`)
               }
@@ -305,8 +308,40 @@ const Hero = () => {
             >
               <CategoryGlyph slug={c.slug} size={14} />
               {t(`categoryNav.categories.c${categoryIndex + 1}.name`)}
-              <span style={{ fontSize: 10 }}>▾</span>
             </button>
+            {subcategoriesBrowseEnabled && c.subcategories.length > 0 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  aria-label={`${t("subcategories.label")} — ${t(`categoryNav.categories.c${categoryIndex + 1}.name`)}`}
+                  style={{
+                    ...inter,
+                    fontSize: 10,
+                    color: "rgba(217, 187, 135, 0.65)",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: "2px 4px",
+                  }}
+                >
+                  ▾
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="min-w-[200px]">
+                  {c.subcategories.map((sc, subIndex) => (
+                    <DropdownMenuItem
+                      key={sc.name}
+                      onSelect={() =>
+                        navigate(
+                          `/recherches?category=${encodeURIComponent(c.slug)}&subcategory=${encodeURIComponent(sc.name)}`,
+                        )
+                      }
+                    >
+                      {t(`categoryNav.categories.c${categoryIndex + 1}.subcategories.s${subIndex + 1}`)}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            </span>
           ))}
         </div>
 

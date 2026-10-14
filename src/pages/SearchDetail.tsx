@@ -34,12 +34,23 @@ import { useStripeConnect } from "@/hooks/useStripeConnect";
 import { useTranslation } from "react-i18next";
 import { useTranslatedContent } from "@/hooks/useTranslatedContent";
 import TranslationNotice from "@/components/TranslationNotice";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
+import { getSubcategoryLabelKey } from "@/lib/categories";
+
+const CategoryLabel = ({ category, subcategory }: { category: string; subcategory?: string | null }) => {
+  const { t } = useTranslation();
+  const { subcategoriesBrowseEnabled } = useFeatureFlags();
+  if (!subcategoriesBrowseEnabled || !subcategory) return <>{category}</>;
+  const key = getSubcategoryLabelKey(category, subcategory);
+  return <>{category} › {key ? t(key) : subcategory}</>;
+};
 
 interface SearchWithProfile {
   id: string;
   title: string;
   description: string | null;
   category: string;
+  subcategory?: string | null;
   budget_min: number | null;
   budget_max: number | null;
   urgency: string | null;
@@ -147,7 +158,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
         </div>
         <div className="absolute top-3 right-3 flex gap-2">
           {isReserved && <ReservationBadge expiresAt={activeReservation?.expires_at || null} />}
-          <span style={{ backgroundColor: 'rgba(27,42,74,0.92)', color: '#C9A84C', fontSize: '12px', fontWeight: 500, letterSpacing: '0.05em', borderRadius: '20px', padding: '6px 14px' }}>{search.category}</span>
+          <span style={{ backgroundColor: 'rgba(27,42,74,0.92)', color: '#C9A84C', fontSize: '12px', fontWeight: 500, letterSpacing: '0.05em', borderRadius: '20px', padding: '6px 14px' }}><CategoryLabel category={search.category} subcategory={search.subcategory} /></span>
         </div>
       </div>
     );
@@ -211,7 +222,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
         )}
         <div className="absolute top-3 right-3 flex gap-2">
           {isReserved && <ReservationBadge expiresAt={activeReservation?.expires_at || null} />}
-          <span style={{ backgroundColor: 'rgba(27,42,74,0.92)', color: '#C9A84C', fontSize: '12px', fontWeight: 500, letterSpacing: '0.05em', borderRadius: '20px', padding: '6px 14px' }}>{search.category}</span>
+          <span style={{ backgroundColor: 'rgba(27,42,74,0.92)', color: '#C9A84C', fontSize: '12px', fontWeight: 500, letterSpacing: '0.05em', borderRadius: '20px', padding: '6px 14px' }}><CategoryLabel category={search.category} subcategory={search.subcategory} /></span>
         </div>
       </div>
 

@@ -18,16 +18,22 @@ export type Database = {
         Row: {
           gamification_enabled: boolean
           id: boolean
+          subcategories_browse_enabled: boolean
+          subcategories_post_enabled: boolean
           updated_at: string
         }
         Insert: {
           gamification_enabled?: boolean
           id?: boolean
+          subcategories_browse_enabled?: boolean
+          subcategories_post_enabled?: boolean
           updated_at?: string
         }
         Update: {
           gamification_enabled?: boolean
           id?: boolean
+          subcategories_browse_enabled?: boolean
+          subcategories_post_enabled?: boolean
           updated_at?: string
         }
         Relationships: []
@@ -606,6 +612,7 @@ export type Database = {
           is_featured: boolean | null
           source_lang: string
           status: string | null
+          subcategory: string | null
           title: string
           updated_at: string
           urgency: string | null
@@ -624,6 +631,7 @@ export type Database = {
           is_featured?: boolean | null
           source_lang?: string
           status?: string | null
+          subcategory?: string | null
           title: string
           updated_at?: string
           urgency?: string | null
@@ -642,6 +650,7 @@ export type Database = {
           is_featured?: boolean | null
           source_lang?: string
           status?: string | null
+          subcategory?: string | null
           title?: string
           updated_at?: string
           urgency?: string | null
