@@ -16,25 +16,31 @@ export type Database = {
     Tables: {
       app_settings: {
         Row: {
+          beta_open: boolean
           gamification_enabled: boolean
           id: boolean
           subcategories_browse_enabled: boolean
           subcategories_post_enabled: boolean
           updated_at: string
+          waitlist_invite_enabled: boolean
         }
         Insert: {
+          beta_open?: boolean
           gamification_enabled?: boolean
           id?: boolean
           subcategories_browse_enabled?: boolean
           subcategories_post_enabled?: boolean
           updated_at?: string
+          waitlist_invite_enabled?: boolean
         }
         Update: {
+          beta_open?: boolean
           gamification_enabled?: boolean
           id?: boolean
           subcategories_browse_enabled?: boolean
           subcategories_post_enabled?: boolean
           updated_at?: string
+          waitlist_invite_enabled?: boolean
         }
         Relationships: []
       }
@@ -723,6 +729,7 @@ export type Database = {
           first_name: string | null
           id: string
           role: string | null
+          source: string
         }
         Insert: {
           confirm_sent_at?: string | null
@@ -735,6 +742,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           role?: string | null
+          source?: string
         }
         Update: {
           confirm_sent_at?: string | null
@@ -747,6 +755,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           role?: string | null
+          source?: string
         }
         Relationships: []
       }
@@ -765,6 +774,21 @@ export type Database = {
           created_at?: string
           id?: string
           ip_hash?: string
+        }
+        Relationships: []
+      }
+      waitlist_invites: {
+        Row: {
+          invited_at: string
+          user_id: string
+        }
+        Insert: {
+          invited_at?: string
+          user_id: string
+        }
+        Update: {
+          invited_at?: string
+          user_id?: string
         }
         Relationships: []
       }

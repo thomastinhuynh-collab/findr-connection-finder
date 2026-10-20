@@ -4,29 +4,32 @@ import { supabase } from "@/integrations/supabase/client";
 export interface FeatureFlags {
   subcategoriesPostEnabled: boolean;
   subcategoriesBrowseEnabled: boolean;
+  betaOpen: boolean;
 }
 
 const DEFAULT_FLAGS: FeatureFlags = {
   subcategoriesPostEnabled: false,
   subcategoriesBrowseEnabled: false,
+  betaOpen: false,
 };
 
 let cached: FeatureFlags | null = null;
 let pending: Promise<FeatureFlags> | null = null;
 
-const loadFlags = (): Promise<FeatureFlags> => {
+export const loadFeatureFlags = (): Promise<FeatureFlags> => {
   if (cached) return Promise.resolve(cached);
   if (!pending) {
     pending = (async () => {
       try {
         const { data, error } = await supabase
           .from("app_settings")
-          .select("subcategories_post_enabled, subcategories_browse_enabled")
+          .select("subcategories_post_enabled, subcategories_browse_enabled, beta_open")
           .maybeSingle();
         if (error) throw error;
         cached = {
           subcategoriesPostEnabled: !!data?.subcategories_post_enabled,
           subcategoriesBrowseEnabled: !!data?.subcategories_browse_enabled,
+          betaOpen: !!data?.beta_open,
         };
       } catch (err) {
         console.error("Failed to load feature flags", err);
@@ -44,7 +47,7 @@ export const useFeatureFlags = (): FeatureFlags => {
   useEffect(() => {
     if (cached) return;
     let active = true;
-    loadFlags().then((f) => active && setFlags(f));
+    loadFeatureFlags().then((f) => active && setFlags(f));
     return () => {
       active = false;
     };
