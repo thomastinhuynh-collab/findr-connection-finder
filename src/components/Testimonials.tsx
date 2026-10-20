@@ -2,6 +2,7 @@ import { Star, Lock, ShieldCheck, BadgeCheck, Users } from "lucide-react";
 import { useScrollReveal, useScrollRevealGroup } from "@/hooks/useScrollReveal";
 import { useEffect, useRef, useState } from "react";
 import { useWaitlist } from "@/hooks/useWaitlist";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { useTranslation } from "react-i18next";
 
 const guarantees = [
@@ -9,6 +10,10 @@ const guarantees = [
   { icon: ShieldCheck, labelKey: "testimonials.guarantees.protection" },
   { icon: BadgeCheck, labelKey: "testimonials.guarantees.community" },
 ];
+
+// Les avis ci-dessous sont fictifs : ils restent dans le code, éteints,
+// jusqu'à ce que de vrais retours d'utilisateurs puissent être publiés.
+const testimonialsEnabled = false;
 
 const testimonials = [
   {
@@ -36,17 +41,16 @@ const testimonials = [
 
 const WAITLIST_GOAL = 2_000;
 
-
-const Testimonials = () => {
+/**
+ * Compteur de liste d'attente. Monté uniquement quand le vrai compteur est
+ * chargé et que la bêta n'est pas encore ouverte : il s'affiche donc sans
+ * valeur inventée, et son animation d'apparition se joue au montage.
+ */
+const WaitlistPanel = ({ count }: { count: number }) => {
   const { t, i18n } = useTranslation();
-  const guaranteesRef = useScrollReveal();
-  const headingRef = useScrollReveal();
-  const cardsRef = useScrollRevealGroup();
   const waitlistRef = useScrollReveal();
   const progressRef = useRef<HTMLDivElement>(null);
   const [progressRevealed, setProgressRevealed] = useState(false);
-  const { count } = useWaitlist();
-  const waitlistCount = count ?? 1247;
 
   useEffect(() => {
     const el = progressRef.current;
@@ -65,6 +69,39 @@ const Testimonials = () => {
   }, []);
 
   return (
+    <div ref={waitlistRef} className="scroll-reveal max-w-lg mx-auto rounded-2xl p-8 border border-secondary/40 text-center bg-navy-primary">
+      <div className="flex items-center justify-center gap-2 mb-3">
+        <Users className="w-5 h-5 text-accent" />
+        <span className="text-sm font-barlow font-medium text-cream/70">{t("testimonials.waitlist.label")}</span>
+      </div>
+
+      <p className="text-2xl md:text-3xl font-display font-bold mb-1 text-cream">
+        {t("testimonials.waitlist.count", { count: count.toLocaleString(i18n.language) })}
+      </p>
+      <p className="text-xs mb-5 text-cream/50">
+        {t("testimonials.waitlist.goal", { count: WAITLIST_GOAL.toLocaleString(i18n.language) })}
+      </p>
+
+      {/* Progress bar */}
+      <div ref={progressRef} className="h-3 rounded-full overflow-hidden bg-cream/15">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-accent to-accent/70 transition-all duration-1000 ease-out"
+          style={{ width: progressRevealed ? `${(count / WAITLIST_GOAL) * 100}%` : '0%' }}
+        />
+      </div>
+    </div>
+  );
+};
+
+const Testimonials = () => {
+  const { t } = useTranslation();
+  const guaranteesRef = useScrollReveal();
+  const headingRef = useScrollReveal();
+  const cardsRef = useScrollRevealGroup();
+  const { count } = useWaitlist();
+  const { betaOpen } = useFeatureFlags();
+
+  return (
     <section className="py-14 bg-cream">
       <div className="container mx-auto px-4">
 
@@ -78,67 +115,51 @@ const Testimonials = () => {
           ))}
         </div>
 
-        {/* Section header */}
-        <div ref={headingRef} className="scroll-reveal text-center mb-7">
-          <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
-            {t("testimonials.eyebrow")}
-          </span>
-          <h2 className="text-3xl md:text-5xl font-display font-bold mt-4 text-foreground">
-            {t("testimonials.title")}
-          </h2>
-        </div>
-
-        {/* Testimonial cards */}
-        <div ref={cardsRef} className="stagger-group grid md:grid-cols-3 gap-4 max-w-5xl mx-auto mb-10">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className="stagger-item rounded-2xl p-7 border border-foreground/8 bg-background"
-            >
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-accent fill-accent" />
-                ))}
-              </div>
-              <p className="text-sm leading-relaxed mb-6 text-foreground/80">
-                “{t(testimonial.quoteKey)}”
-              </p>
-              <div className="flex items-center gap-3">
-                <img src={testimonial.avatar} alt={testimonial.author} loading="lazy" className="w-10 h-10 rounded-full" />
-                <div>
-                  <p className="text-sm font-semibold text-foreground">{testimonial.author}</p>
-                  <p className="text-xs text-foreground/50">{testimonial.role}</p>
-                </div>
-              </div>
-              <p className="mt-4 text-foreground/60" style={{ fontSize: '11px', opacity: 0.6 }}>
-                {t("testimonials.disclaimer")}
-              </p>
+        {testimonialsEnabled && (
+          <>
+            {/* Section header */}
+            <div ref={headingRef} className="scroll-reveal text-center mb-7">
+              <span className="text-sm font-barlow font-medium uppercase tracking-wider text-accent">
+                {t("testimonials.eyebrow")}
+              </span>
+              <h2 className="text-3xl md:text-5xl font-display font-bold mt-4 text-foreground">
+                {t("testimonials.title")}
+              </h2>
             </div>
-          ))}
-        </div>
+
+            {/* Testimonial cards */}
+            <div ref={cardsRef} className="stagger-group grid md:grid-cols-3 gap-4 max-w-5xl mx-auto mb-10">
+              {testimonials.map((testimonial, index) => (
+                <div
+                  key={index}
+                  className="stagger-item rounded-2xl p-7 border border-foreground/8 bg-background"
+                >
+                  <div className="flex gap-1 mb-4">
+                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-accent fill-accent" />
+                    ))}
+                  </div>
+                  <p className="text-sm leading-relaxed mb-6 text-foreground/80">
+                    “{t(testimonial.quoteKey)}”
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <img src={testimonial.avatar} alt={testimonial.author} loading="lazy" className="w-10 h-10 rounded-full" />
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{testimonial.author}</p>
+                      <p className="text-xs text-foreground/50">{testimonial.role}</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-foreground/60" style={{ fontSize: '11px', opacity: 0.6 }}>
+                    {t("testimonials.disclaimer")}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Waitlist counter */}
-        <div ref={waitlistRef} className="scroll-reveal max-w-lg mx-auto rounded-2xl p-8 border border-secondary/40 text-center bg-navy-primary">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Users className="w-5 h-5 text-accent" />
-            <span className="text-sm font-barlow font-medium text-cream/70">{t("testimonials.waitlist.label")}</span>
-          </div>
-
-          <p className="text-2xl md:text-3xl font-display font-bold mb-1 text-cream">
-            {t("testimonials.waitlist.count", { count: waitlistCount.toLocaleString(i18n.language) })}
-          </p>
-          <p className="text-xs mb-5 text-cream/50">
-            {t("testimonials.waitlist.goal", { count: WAITLIST_GOAL.toLocaleString(i18n.language) })}
-          </p>
-
-          {/* Progress bar */}
-          <div ref={progressRef} className="h-3 rounded-full overflow-hidden bg-cream/15">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-accent to-accent/70 transition-all duration-1000 ease-out"
-              style={{ width: progressRevealed ? `${(waitlistCount / WAITLIST_GOAL) * 100}%` : '0%' }}
-            />
-          </div>
-        </div>
+        {count !== null && !betaOpen && <WaitlistPanel count={count} />}
       </div>
     </section>
   );
