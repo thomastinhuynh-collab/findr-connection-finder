@@ -1,4 +1,5 @@
 # Traduction complète FR/EN
+- [x] Accueil : compteur de liste d'attente sans valeur inventée, avis fictifs désactivés et badge « Adresse email vérifiée »
 - [x] Retirer la section d'inscription à la liste d'attente de la page d'accueil, en conservant l'alerte de confirmation d'inscription
 - [x] Supprimer la simulation de paiement StripeCheckoutSimulation.tsx et son usage dans la page Premium, qui reste sur « Bientôt disponible »
 - [x] Harmoniser le tutoiement hors textes juridiques, corriger les versements suspendus et auditer les occurrences restantes ainsi que la simulation Stripe
