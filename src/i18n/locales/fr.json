@@ -330,7 +330,7 @@
     "guarantees": {
       "payment": "Paiement via Stripe",
       "protection": "Réclamation possible avant versement",
-      "community": "Communauté vérifiée"
+      "community": "Adresse email vérifiée"
     },
     "eyebrow": "Témoignages",
     "title": "Ce qu'ils disent de findr",
