@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { loadFeatureFlags } from "@/hooks/useFeatureFlags";
 
 interface AuthContextType {
   user: User | null;
@@ -35,6 +36,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 body: { type: "welcome", userId: u.id, data: { firstName: name.split(" ")[0] } },
               })
               .catch((e) => console.error("welcome email failed:", e));
+          }, 0);
+        }
+        // Invitation à la liste d'attente : une fois par session, non bloquante, erreurs ignorées.
+        if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && u?.email_confirmed_at) {
+          const key = `findr_waitlist_invite_${u.id}`;
+          try {
+            if (sessionStorage.getItem(key)) return;
+            sessionStorage.setItem(key, "1");
+          } catch {
+            /* stockage indisponible : on tente quand même */
+          }
+          setTimeout(() => {
+            loadFeatureFlags()
+              .then((f) => (f.betaOpen ? null : supabase.functions.invoke("invite-to-waitlist", { body: {} })))
+              .catch(() => {});
           }, 0);
         }
       }
