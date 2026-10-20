@@ -31,7 +31,13 @@ Deno.serve(async (req) => {
 
     if (row.confirmed_at) return redirect(true); // idempotent
 
-    await admin.from("waitlist").update({ confirmed_at: new Date().toISOString() }).eq("id", row.id);
+    await admin.from("waitlist")
+      .update({ confirmed_at: new Date().toISOString(), consent_given: true })
+      .eq("id", row.id);
+
+    // Bêta ouverte : confirmation seule, ni bienvenue ni alerte interne.
+    const { data: settings } = await admin.from("app_settings").select("beta_open").maybeSingle();
+    if (settings?.beta_open) return redirect(true);
 
     // Email de bienvenue avec verrou d'idempotence.
     const email = row.email.toLowerCase();

@@ -38,6 +38,8 @@ interface Block {
   imageUrl?: string | null;
   /** lien discret sous le CTA */
   secondary?: { label: string; url: string };
+  /** phrase discrète affichée sous le CTA (texte brut, échappé) */
+  footnote?: string;
   /** titre du document HTML quand aucun titre visible n'est affiché */
   documentTitle?: string;
 }
@@ -113,6 +115,7 @@ export function renderEmail(block: Block): string {
       ${facts}
       ${cta}
       ${secondary}
+      ${block.footnote ? `<p style="margin:18px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#6B7280;">${esc(block.footnote)}</p>` : ""}
     </td></tr>
     <tr><td bgcolor="${CREAM}" style="padding:20px 24px;text-align:center;">
       <p style="margin:0 0 6px 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B7280;">Findr — L'objet que tu cherches existe quelque part.</p>
@@ -144,7 +147,9 @@ export type EmailType =
   | "reservation_reminder"
   | "waitlist_signup"
   | "waitlist_welcome"
-  | "waitlist_confirm";
+  | "waitlist_confirm"
+  | "waitlist_invite"
+  | "waitlist_account_invite";
 
 // deno-lint-ignore no-explicit-any
 type Data = Record<string, any>;
@@ -491,6 +496,31 @@ export function buildEmail(
             "Si tu n'es pas à l'origine de cette demande, ignore ce message : ton adresse sera supprimée.",
           ],
           cta: { label: "Confirmer mon inscription", url: String(data.confirmUrl ?? SITE_URL) },
+        }),
+      };
+
+    case "waitlist_invite":
+      return {
+        subject: "Ton compte findr : veux-tu être prévenu(e) de l'ouverture ?",
+        html: renderEmail({
+          documentTitle: "Ton compte findr : veux-tu être prévenu(e) de l'ouverture ?",
+          paragraphs: [
+            `${hello} tu as créé un compte sur findr alors que l'application est encore en bêta fermée. Pour être prévenu(e) de l'ouverture, confirme ton adresse.`,
+          ],
+          cta: { label: "Confirmer mon inscription", url: String(data.confirmUrl ?? SITE_URL) },
+          footnote:
+            "Si tu ne fais rien, rien ne sera enregistré et ton adresse sera retirée de la liste sous 7 jours. Pour supprimer ton compte, réponds simplement à ce message.",
+        }),
+      };
+
+    case "waitlist_account_invite":
+      return {
+        subject: `Nouveau compte : invitation envoyée à ${esc(data.email ?? "")}`,
+        html: renderEmail({
+          eyebrow: "Liste d'attente",
+          title: "Nouveau compte : invitation envoyée",
+          paragraphs: [`Nouveau compte : invitation envoyée à ${esc(data.email ?? "")}.`],
+          facts: [{ label: "Email", value: data.email ?? "—" }],
         }),
       };
 
