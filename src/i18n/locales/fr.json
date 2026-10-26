@@ -1032,7 +1032,7 @@
     "earnings": "Récapitulatif des gains",
     "commission": "Commission findr (4 %)",
     "youReceive": "Tu recevras",
-    "feeNote": "Tu reçois le prix de ton objet moins 4 %. Les 0,50 € de frais fixes sont payés par le buyr.",
+    "feeNote": "Tu reçois le prix de ton objet moins 4 %.",
     "securePayment": "Paiement via Stripe",
     "stripePayment": "Le buyr paiera via Stripe si accepté",
     "fundsSecured": "Versement au findr après livraison",
