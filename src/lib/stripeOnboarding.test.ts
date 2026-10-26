@@ -15,3 +15,18 @@ describe("Stripe onboarding access", () => {
     expect(needsStripeOnboarding({ stripe_onboarding_complete: true })).toBe(false);
   });
 });
+
+describe("Stripe action badge", () => {
+  it("lights up only when onboarding is missing and a proposal exists", () => {
+    expect(shouldShowStripeActionBadge({ stripe_onboarding_complete: false }, true)).toBe(true);
+    expect(shouldShowStripeActionBadge({ stripe_onboarding_complete: null }, true)).toBe(true);
+  });
+
+  it("stays off for accounts that never sent a proposal", () => {
+    expect(shouldShowStripeActionBadge({ stripe_onboarding_complete: false }, false)).toBe(false);
+  });
+
+  it("stays off once onboarding is complete", () => {
+    expect(shouldShowStripeActionBadge({ stripe_onboarding_complete: true }, true)).toBe(false);
+  });
+});
