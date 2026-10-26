@@ -1121,7 +1121,7 @@
     "requestedBy": "Requested by {{name}}",
     "payments": {
       "title": "Payments",
-      "description": "Set up your payments to receive your earnings.",
+      "description": "To receive the money from your sales as a findr. Not needed to buy.",
       "setup": "Set up my payments",
       "redirecting": "Redirecting…",
       "modalTitle": "Before you continue",

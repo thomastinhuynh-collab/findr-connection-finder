@@ -1121,7 +1121,7 @@
     "requestedBy": "Demandé par {{name}}",
     "payments": {
       "title": "Paiements",
-      "description": "Configure tes paiements pour recevoir tes gains.",
+      "description": "Pour recevoir l'argent de tes ventes en tant que findr. Pas nécessaire pour acheter.",
       "setup": "Configurer mes paiements",
       "redirecting": "Redirection…",
       "modalTitle": "Avant de continuer",
