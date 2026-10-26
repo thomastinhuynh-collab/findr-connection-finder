@@ -24,7 +24,7 @@ import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
 import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
 import { isComingSoonCategory } from "@/lib/categories";
-import { needsStripeOnboarding } from "@/lib/stripeOnboarding";
+import { needsStripeOnboarding, shouldShowStripeActionBadge } from "@/lib/stripeOnboarding";
 import { useTranslation } from "react-i18next";
 
 type TabKey = "recherches" | "propositions" | "favoris" | "gains";
@@ -735,7 +735,7 @@ const MySpace = () => {
     recherches: searches.filter((s: any) => (s.unread_count || 0) > 0 || !!s.urgent_reason).length,
     propositions: findrActionCount,
     favoris: 0,
-    gains: needsStripeOnboarding(profile) ? 1 : 0,
+    gains: shouldShowStripeActionBadge(profile, hasProposals) ? 1 : 0,
   };
 
   const searchTodoByTab = { active: 0, ongoing: 0, done: 0, cancelled: 0 } as Record<"active" | "ongoing" | "done" | "cancelled", number>;
