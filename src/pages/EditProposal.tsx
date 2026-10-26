@@ -1,3 +1,4 @@
+import { FINDR_RATE } from "@/lib/fees";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -76,9 +77,8 @@ const EditProposal = () => {
   const [loading, setLoading] = useState(true);
 
   const isPremium = userProfile?.is_premium || false;
-  const FINDR_FEE_RATE = 0.04;
   const priceNum = parseFloat(price) || 0;
-  const findrFee = Math.round(priceNum * FINDR_FEE_RATE * 100) / 100;
+  const findrFee = Math.round(priceNum * FINDR_RATE * 100) / 100;
   const finalAmount = Math.round((priceNum - findrFee) * 100) / 100;
 
   useEffect(() => {
@@ -579,6 +579,7 @@ const EditProposal = () => {
                     <span className="font-semibold text-primary">{t("proposalForm.youReceive")}</span>
                     <span className="text-2xl font-bold text-success">{finalAmount.toFixed(2)} €</span>
                   </div>
+                  <p className="mt-2 text-xs text-muted-foreground">{t("proposalForm.feeNote")}</p>
                 </div>
               </div>
             </div>

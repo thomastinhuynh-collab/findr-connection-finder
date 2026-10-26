@@ -50,6 +50,8 @@ import { useAuth } from "@/hooks/useAuth";
 import DisputeBanner from "@/components/DisputeBanner";
 import DisputeDialog from "@/components/DisputeDialog";
 import { useTranslation } from "react-i18next";
+import { computeFees } from "@/lib/fees";
+import ServiceFeeLabel from "@/components/ServiceFeeLabel";
 import TranslatedContent from "@/components/TranslatedContent";
 import DeliveryChoicePicker, {
   DeliveryAddress,
@@ -107,8 +109,6 @@ interface ProposalListProps {
   onProposalUpdate: () => void;
 }
 
-const FEE_RATE = 0.04;
-const round2 = (n: number) => Math.round(n * 100) / 100;
 
 const ProposalList = ({ 
   proposals, 
@@ -137,18 +137,7 @@ const ProposalList = ({
   // Check if current user is the findr of the selected proposal
   const isCurrentUserFindr = selectedProposal && user?.id === selectedProposal.findr_id;
 
-  const getFees = (price: number) => {
-    const objectPrice = round2(price);
-    const buyrFee = round2(objectPrice * FEE_RATE);
-    const findrFee = round2(objectPrice * FEE_RATE);
-    return {
-      objectPrice,
-      buyrFee,
-      findrFee,
-      total: round2(objectPrice + buyrFee),
-      payout: round2(objectPrice - findrFee),
-    };
-  };
+  const getFees = computeFees;
 
   const fetchPayments = useCallback(async () => {
     if (!user) return;
@@ -816,7 +805,7 @@ const ProposalList = ({
                     <span className="text-right flex-shrink-0">{fees.objectPrice.toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between text-sm gap-4">
-                    <span className="text-muted-foreground break-words">{t("proposal.serviceFee")}</span>
+                    <ServiceFeeLabel />
                     <span className="text-right flex-shrink-0">+{fees.buyrFee.toFixed(2)} €</span>
                   </div>
                   <div className="border-t border-border pt-2 flex justify-between font-semibold gap-4">
@@ -976,7 +965,7 @@ const ProposalList = ({
                       <span className="text-right flex-shrink-0">{fees.objectPrice.toFixed(2)} €</span>
                     </div>
                     <div className="flex justify-between text-sm gap-4">
-                      <span className="text-muted-foreground break-words">{t("proposal.serviceFee")}</span>
+                      <ServiceFeeLabel />
                       <span className="text-right flex-shrink-0">+{fees.buyrFee.toFixed(2)} €</span>
                     </div>
                     <div className="border-t border-border pt-2 flex justify-between font-semibold gap-4">

@@ -362,6 +362,8 @@ const HowItWorksPage = () => {
                   {t("howItWorks.fees.example")}
                 </Dash>
               </ul>
+              <p style={{ fontSize: 13.5, color: NAVY, marginTop: 18 }}>{t("howItWorks.fees.faqQuestion")}</p>
+              <p style={{ fontSize: 13, color: "#6B7280", marginTop: 4 }}>{t("howItWorks.fees.faqAnswer")}</p>
               <span
                 style={{
                   display: "inline-block",
