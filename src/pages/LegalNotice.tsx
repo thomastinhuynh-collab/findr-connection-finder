@@ -11,7 +11,7 @@ const LegalNotice = () => {
       <Trans i18nKey="legalNotice.publisher.text" components={{ strong: <strong /> }} />
     </p>
     <ul>
-      {["company", "capital", "office", "rcs", "president", "email", "vat"].map((key) => (
+      {["company", "capital", "office", "rcs", "president", "email"].map((key) => (
         <li key={key}><strong>{t(`legalNotice.publisher.${key}Label`)}</strong> {t(`legalNotice.publisher.${key}`)}</li>
       ))}
     </ul>

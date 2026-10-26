@@ -547,9 +547,7 @@
       "presidentLabel": "Président :",
       "president": "Thomas Huynh",
       "emailLabel": "Email :",
-      "email": "contact@findrapp.fr",
-      "vatLabel": "Numéro de TVA intracommunautaire :",
-      "vat": "[à compléter une fois attribué]"
+      "email": "contact@findrapp.fr"
     },
     "hosting": {
       "title": "Hébergement",
