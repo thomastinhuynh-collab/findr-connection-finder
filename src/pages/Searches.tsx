@@ -97,6 +97,8 @@ const Searches = () => {
   const updateSubcategoryParam = (value: string) => {
     setSelectedSubcategory(value);
     const next = new URLSearchParams(searchParams);
+    if (selectedCategory && selectedCategory !== "Toutes") next.set("category", selectedCategory);
+    else next.delete("category");
     if (value) next.set("subcategory", value);
     else next.delete("subcategory");
     setSearchParams(next, { replace: true });
@@ -104,9 +106,13 @@ const Searches = () => {
   const changeCategory = (cat: string) => {
     setSelectedCategory(cat);
     setSelectedSubcategory("");
-    if (searchParams.has("subcategory")) {
+    const urlCat = searchParams.get("category");
+    const wanted = cat && cat !== "Toutes" ? cat : null;
+    if (searchParams.has("subcategory") || (urlCat && urlCat !== wanted)) {
       const next = new URLSearchParams(searchParams);
       next.delete("subcategory");
+      if (wanted) next.set("category", wanted);
+      else next.delete("category");
       setSearchParams(next, { replace: true });
     }
   };
