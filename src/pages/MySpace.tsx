@@ -24,6 +24,7 @@ import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
 import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
 import { isComingSoonCategory } from "@/lib/categories";
+import { needsStripeOnboarding } from "@/lib/stripeOnboarding";
 import { useTranslation } from "react-i18next";
 
 type TabKey = "recherches" | "propositions" | "favoris" | "gains";
@@ -734,7 +735,7 @@ const MySpace = () => {
     recherches: searches.filter((s: any) => (s.unread_count || 0) > 0 || !!s.urgent_reason).length,
     propositions: findrActionCount,
     favoris: 0,
-    gains: profile && (profile.is_findr || hasProposals) && !profile.stripe_onboarding_complete ? 1 : 0,
+    gains: needsStripeOnboarding(profile) ? 1 : 0,
   };
 
   const searchTodoByTab = { active: 0, ongoing: 0, done: 0, cancelled: 0 } as Record<"active" | "ongoing" | "done" | "cancelled", number>;
@@ -1245,7 +1246,7 @@ const MySpace = () => {
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
             {/* Paiements — Stripe Connect (uniquement si une action est requise) */}
-            {!profile.stripe_onboarding_complete && (profile.is_findr || hasProposals) && (
+            {needsStripeOnboarding(profile) && (
               <div className="mb-6 rounded-xl p-5 bg-white" style={{ border: "1px solid #E5E1D8" }}>
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-start gap-3">
