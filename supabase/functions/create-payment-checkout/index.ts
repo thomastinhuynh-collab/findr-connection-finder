@@ -1,6 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import Stripe from "npm:stripe@18";
+import { computeFees } from "../_shared/fees.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -8,7 +9,7 @@ const json = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 
-const round2 = (n: number) => Math.round(n * 100) / 100;
+const eur = (n: number) => n.toFixed(2).replace(".", ",");
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -51,11 +52,13 @@ Deno.serve(async (req) => {
     if (!search) return json({ error: "Recherche introuvable" }, 404);
     if (search.user_id !== user.id) return json({ error: "Non autorisé" }, 403);
 
-    const objectPrice = round2(Number(proposal.proposed_price));
-    const buyrFee = round2(objectPrice * 0.04);
-    const findrFee = round2(objectPrice * 0.04);
-    const totalBuyrAmount = round2(objectPrice + buyrFee);
-    const findrPayoutAmount = round2(objectPrice - findrFee);
+    const {
+      objectPrice,
+      buyrFee,
+      findrFee,
+      total: totalBuyrAmount,
+      payout: findrPayoutAmount,
+    } = computeFees(Number(proposal.proposed_price));
 
     const amounts = {
       search_id: proposal.search_id,
@@ -108,7 +111,7 @@ Deno.serve(async (req) => {
             unit_amount: Math.round(totalBuyrAmount * 100),
             product_data: {
               name: proposal.title,
-              description: `Prix ${objectPrice.toFixed(2)} € + frais de service 4% (${buyrFee.toFixed(2)} €)`,
+              description: `Prix ${eur(objectPrice)} € + frais de service (0,50 € + 4 % = ${eur(buyrFee)} €)`,
             },
           },
           quantity: 1,
