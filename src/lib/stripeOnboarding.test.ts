@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { needsStripeOnboarding } from "./stripeOnboarding";
+import { needsStripeOnboarding, shouldShowStripeActionBadge } from "./stripeOnboarding";
 
 describe("Stripe onboarding access", () => {
   it("allows a newly created profile without findr status or proposals", () => {
