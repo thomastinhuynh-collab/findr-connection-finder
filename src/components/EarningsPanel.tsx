@@ -147,6 +147,9 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
                     {r.title || t("mySpace.earnings.untitled")}
                   </Link>
                   <span style={{ color: "#4B5563" }}>{t(`mySpace.earnings.step.${r.status === "paye_en_attente_reception" && !r.delivery_type ? "awaitingDeliveryChoice" : r.status}`)}</span>
+                  <Link to={`/transaction/${r.id}`} className="text-xs font-medium hover:underline underline-offset-4 block mt-0.5" style={{ color: "#070E42" }}>
+                    {t("transaction.viewTransaction")} →
+                  </Link>
                 </div>
                 <span className="font-medium shrink-0" style={{ color: "#070E42" }}>{fmt(r.amount)}</span>
               </li>

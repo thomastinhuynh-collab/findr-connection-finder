@@ -1454,5 +1454,52 @@
     "label": "Sous-catégorie",
     "all": "Toutes",
     "placeholder": "Choisir une sous-catégorie"
+  },
+  "transaction": {
+    "title": "Transaction",
+    "with": "avec {{name}}",
+    "theBuyr": "le buyr",
+    "viewSearch": "Voir la recherche",
+    "viewTransaction": "Voir la transaction",
+    "steps": {
+      "paid": "Payé",
+      "deliveryChosen": "Livraison choisie",
+      "toShip": "À expédier",
+      "enRoute": "En route",
+      "received": "Reçu",
+      "payout": "Versement"
+    },
+    "shipYourItem": "Expédie ton objet",
+    "whereToSend": "Où l'envoyer",
+    "homeDelivery": "À domicile",
+    "relayDelivery": "Point relais",
+    "sizeLabel": "Taille de l'objet",
+    "size": {
+      "S": "S — petit objet (carte, bijou)",
+      "M": "M — à peu près une boîte à chaussures",
+      "L": "L — objet volumineux (petit meuble)",
+      "XL": "XL — meuble imposant"
+    },
+    "waitingDelivery": "{{name}} n'a pas encore choisi sa livraison, nous te prévenons dès que c'est fait.",
+    "createLabel": "Crée ton étiquette",
+    "labelHint": "Choisis le transporteur qui correspond au mode de livraison de {{name}}.",
+    "trackingStep": "Renseigne ton numéro de suivi",
+    "trackingLocked": "Tu pourras renseigner le suivi dès que la livraison sera choisie.",
+    "carrier": "Transporteur",
+    "carrierOther": "Autre",
+    "carrierOtherName": "Nom du transporteur",
+    "trackingNumber": "Numéro de suivi",
+    "confirmShipment": "Confirmer l'expédition",
+    "shippedTracking": "Suis ton colis",
+    "receiptTitle": "As-tu reçu ton objet ?",
+    "yourPayout": "Ton versement",
+    "yourPayment": "Ton paiement",
+    "itemPrice": "Prix de l'objet",
+    "feeWithheld": "Frais retenus (4 %)",
+    "netPayout": "Net à recevoir",
+    "payoutAfter": "Versé après la confirmation de réception du buyr.",
+    "payoutDone": "Versement effectué.",
+    "totalPaid": "Total payé",
+    "sendMessage": "Envoyer un message"
   }
 }

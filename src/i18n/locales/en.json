@@ -1454,5 +1454,52 @@
     "label": "Subcategory",
     "all": "All",
     "placeholder": "Choose a subcategory"
+  },
+  "transaction": {
+    "title": "Transaction",
+    "with": "with {{name}}",
+    "theBuyr": "the buyr",
+    "viewSearch": "View the search",
+    "viewTransaction": "View transaction",
+    "steps": {
+      "paid": "Paid",
+      "deliveryChosen": "Delivery chosen",
+      "toShip": "To ship",
+      "enRoute": "On its way",
+      "received": "Received",
+      "payout": "Payout"
+    },
+    "shipYourItem": "Ship your item",
+    "whereToSend": "Where to send it",
+    "homeDelivery": "Home delivery",
+    "relayDelivery": "Relay point",
+    "sizeLabel": "Item size",
+    "size": {
+      "S": "S — small item (card, jewellery)",
+      "M": "M — about a shoebox",
+      "L": "L — bulky item (small furniture)",
+      "XL": "XL — large furniture"
+    },
+    "waitingDelivery": "{{name}} hasn't chosen a delivery method yet, we'll let you know as soon as they do.",
+    "createLabel": "Create your label",
+    "labelHint": "Pick the carrier that matches {{name}}'s delivery method.",
+    "trackingStep": "Enter your tracking number",
+    "trackingLocked": "You can add tracking once the delivery method is chosen.",
+    "carrier": "Carrier",
+    "carrierOther": "Other",
+    "carrierOtherName": "Carrier name",
+    "trackingNumber": "Tracking number",
+    "confirmShipment": "Confirm shipment",
+    "shippedTracking": "Track your parcel",
+    "receiptTitle": "Have you received your item?",
+    "yourPayout": "Your payout",
+    "yourPayment": "Your payment",
+    "itemPrice": "Item price",
+    "feeWithheld": "Fees withheld (4%)",
+    "netPayout": "Net payout",
+    "payoutAfter": "Paid out after the buyr confirms receipt.",
+    "payoutDone": "Payout completed.",
+    "totalPaid": "Total paid",
+    "sendMessage": "Send a message"
   }
 }

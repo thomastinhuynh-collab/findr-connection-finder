@@ -282,7 +282,7 @@ const SearchDetail = () => {
   const { t, i18n } = useTranslation();
   const [search, setSearch] = useState<SearchWithProfile | null>(null);
   const [proposals, setProposals] = useState<Proposal[]>([]);
-  const [salePayments, setSalePayments] = useState<Record<string, { payment_status: string | null; shipped_at: string | null; delivery_type: string | null }>>({});
+  const [salePayments, setSalePayments] = useState<Record<string, { id: string; payment_status: string | null; shipped_at: string | null; delivery_type: string | null }>>({});
   const [shipRequest, setShipRequest] = useState(0);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -788,6 +788,15 @@ const SearchDetail = () => {
       {canShip && (
         <Button className="w-full mt-4" onClick={() => setShipRequest((n) => n + 1)}>
           {t("searchDetail.shipItem")}
+        </Button>
+      )}
+      {myPayment?.id && (
+        <Button
+          variant="outline"
+          className={`w-full ${canShip ? "mt-2" : "mt-4"}`}
+          onClick={() => navigate(`/transaction/${myPayment.id}`)}
+        >
+          {t("transaction.viewTransaction")}
         </Button>
       )}
     </div>
