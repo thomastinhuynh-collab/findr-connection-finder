@@ -1,9 +1,10 @@
 # Contrôle des numéros de suivi
 
-- [ ] Validation partagée, unicité et colonnes de reconnaissance sans modifier les lignes existantes.
-- [ ] Reconnaissance 17TRACK, revérifications et alertes avec versements protégés.
-- [ ] Affichage FR/EN et annulation à 7 jours pour un suivi non confirmé.
-- [ ] Tests et vérification du parcours sans modifier de transaction réelle.
+- [x] Validation partagée, unicité et colonnes de reconnaissance sans modifier les lignes existantes.
+- [x] Reconnaissance 17TRACK, revérifications et alertes avec versements protégés.
+- [x] Affichage FR/EN et annulation à 7 jours pour un suivi non confirmé.
+- [x] Tests et refus serveur vérifiés sans modifier de transaction réelle ; formulaire testé avec données simulées dans le navigateur.
+- [ ] Reconnaissance réelle d'un nouveau colis et alertes après 72 h : nécessite une nouvelle expédition réelle ; aucun numéro réel enregistré pour tester.
 
 # Liens de transaction
 
