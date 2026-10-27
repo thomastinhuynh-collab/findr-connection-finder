@@ -113,6 +113,10 @@ const MySpace = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const [stripeVerifying, setStripeVerifying] = useState(false);
+  const [stripeStatus, setStripeStatus] = useState<StripeSyncStatus | null>(null);
+  const [stripeCompleteBanner, setStripeCompleteBanner] = useState(
+    () => typeof window !== "undefined" && sessionStorage.getItem("findr_stripe_banner") === "show"
+  );
   const stripeReturnHandled = useRef(false);
   const stripeAutoSynced = useRef(false);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -223,53 +227,63 @@ const MySpace = () => {
   }, [user, loading, navigate]);
 
   // Synchronise l'état de l'inscription Stripe depuis Stripe
-  const syncStripeAccount = async (): Promise<boolean> => {
+  const syncStripeAccount = async (): Promise<StripeSyncStatus | null> => {
     try {
       const { data } = await supabase.functions.invoke("sync-stripe-account");
-      return data?.complete === true;
+      if (!data || typeof data.complete !== "boolean") return null;
+      setStripeStatus(data);
+      return data;
     } catch {
-      return false;
+      return null;
     }
   };
 
-  // Retour depuis l'onboarding Stripe
+  const showStripeBanner = () => {
+    sessionStorage.setItem("findr_stripe_banner", "show");
+    setStripeCompleteBanner(true);
+  };
+  const dismissStripeBanner = () => {
+    sessionStorage.setItem("findr_stripe_banner", "dismissed");
+    setStripeCompleteBanner(false);
+  };
+
+  // Vérification : synchro immédiate puis toutes les 3 s pendant 30 s au plus
+  const stripeVerifyCancelled = useRef(false);
+  const runStripeVerification = async (poll = true) => {
+    stripeVerifyCancelled.current = false;
+    setStripeVerifying(true);
+    const start = Date.now();
+    let status = await syncStripeAccount();
+    while (poll && !status?.complete && !stripeVerifyCancelled.current && Date.now() - start < 30000) {
+      await new Promise((r) => setTimeout(r, 3000));
+      if (stripeVerifyCancelled.current) return;
+      status = await syncStripeAccount();
+    }
+    if (stripeVerifyCancelled.current) return;
+    await fetchProfile();
+    setStripeVerifying(false);
+    if (status?.complete) showStripeBanner();
+  };
+
+  // Retour depuis l'onboarding Stripe (attend que l'utilisateur soit chargé)
   useEffect(() => {
+    if (!user) return;
     const status = new URLSearchParams(window.location.search).get("stripe");
     if (!status) return;
+    window.history.replaceState({}, "", "/mon-espace");
     if (status === "success") {
       stripeReturnHandled.current = true;
-      toast({
-        title: t("mySpace.thanks"),
-        description: t("mySpace.stripePending"),
-      });
-      if (user) {
-        let cancelled = false;
-        setStripeVerifying(true);
-        (async () => {
-          const start = Date.now();
-          let complete = await syncStripeAccount();
-          while (!complete && !cancelled && Date.now() - start < 30000) {
-            await new Promise((r) => setTimeout(r, 3000));
-            if (cancelled) return;
-            complete = await syncStripeAccount();
-          }
-          if (cancelled) return;
-          await fetchProfile();
-          setStripeVerifying(false);
-          if (complete) toast({ title: t("mySpace.stripeComplete") });
-        })();
-        window.history.replaceState({}, "", "/mon-espace");
-        return () => { cancelled = true; setStripeVerifying(false); };
-      }
-    } else if (status === "refresh") {
+      runStripeVerification();
+      return () => { stripeVerifyCancelled.current = true; setStripeVerifying(false); };
+    }
+    if (status === "refresh") {
       toast({
         title: t("mySpace.setupIncomplete"),
         description: t("mySpace.setupResume"),
         variant: "destructive",
       });
     }
-    if (user) fetchProfile();
-    window.history.replaceState({}, "", "/mon-espace");
+    fetchProfile();
   }, [user]);
 
   // Compte Stripe existant mais incomplet à l'ouverture : une synchronisation
@@ -277,7 +291,7 @@ const MySpace = () => {
     if (!user || !profile || stripeReturnHandled.current || stripeAutoSynced.current) return;
     if (profile.stripe_account_id && profile.stripe_onboarding_complete !== true) {
       stripeAutoSynced.current = true;
-      syncStripeAccount().then((complete) => { if (complete) fetchProfile(); });
+      syncStripeAccount().then((s) => { if (s?.complete) fetchProfile(); });
     }
   }, [user, profile]);
 
@@ -795,6 +809,19 @@ const MySpace = () => {
       
       <main className="pt-24 pb-16">
         <div className="px-6 md:px-12 lg:px-16 mx-auto">
+          {stripeCompleteBanner && (
+            <div role="status" className="mb-6 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border border-success/40 bg-success/10">
+              <p className="text-sm font-medium text-success">{t("mySpace.stripeCompleteBanner")}</p>
+              <div className="flex items-center gap-4">
+                <button type="button" className="text-sm font-semibold underline text-success" onClick={() => selectTab("gains")}>
+                  {t("mySpace.stripeCompleteLink")}
+                </button>
+                <button type="button" aria-label={t("mySpace.stripeCompleteClose")} className="text-lg leading-none text-success" onClick={dismissStripeBanner}>
+                  ×
+                </button>
+              </div>
+            </div>
+          )}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1304,6 +1331,13 @@ const MySpace = () => {
                     <p className="text-sm flex items-center" style={{ color: "#4B5563" }} role="status">
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.verifying")}
                     </p>
+                  ) : profile.stripe_account_id && stripeStatus?.details_submitted ? (
+                    <div className="flex flex-wrap items-center gap-3">
+                      <p className="text-sm" style={{ color: "#4B5563" }} role="status">{t("mySpace.payments.underReview")}</p>
+                      <Button variant="outline" onClick={() => runStripeVerification(false)}>
+                        {t("mySpace.payments.checkAgain")}
+                      </Button>
+                    </div>
                   ) : (
                   <Button onClick={() => setStripeModalOpen(true)} disabled={stripeLoading} style={{ backgroundColor: "#070E42", color: "#F5F0EA" }}>
                     {stripeLoading ? (
