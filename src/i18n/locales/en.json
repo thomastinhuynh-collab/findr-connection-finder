@@ -1085,7 +1085,8 @@
     "max8": "Max 8 MB",
     "comingSoon": "Coming soon",
     "thanks": "Thank you!",
-    "stripePending": "Stripe is finalising your account verification, this may take a moment.",
+    "stripePending": "We're checking your registration…",
+    "stripeComplete": "Your Stripe registration is complete.",
     "setupIncomplete": "Setup incomplete",
     "setupResume": "Resume your payment setup to complete it.",
     "tabs": {
@@ -1126,6 +1127,8 @@
       "title": "Payments",
       "description": "To receive the money from your sales as a findr. Not needed to buy.",
       "setup": "Set up my payments",
+      "resume": "Resume my Stripe registration",
+      "verifying": "Checking your Stripe registration…",
       "redirecting": "Redirecting…",
       "modalTitle": "Before you continue",
       "modalBody": "On Stripe, ignore any mention of “business” or “sole trader” — just enter your personal details (identity, bank details).",

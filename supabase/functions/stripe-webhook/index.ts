@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import Stripe from "npm:stripe@18";
+import { isStripeAccountComplete } from "../_shared/stripeAccount.ts";
 import { sendEmailTo, sendEmailToUser } from "../_shared/brevo.ts";
 
 const ADMIN_EMAIL = "thomas@findrapp.fr";
@@ -43,7 +44,7 @@ Deno.serve(async (req) => {
 
     if (event.type === "account.updated") {
       const account = event.data.object as Stripe.Account;
-      const complete = !!account.charges_enabled && !!account.payouts_enabled;
+      const complete = isStripeAccountComplete(account);
 
       const { error } = await admin
         .from("profiles")
