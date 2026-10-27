@@ -50,7 +50,7 @@ import { useAuth } from "@/hooks/useAuth";
 import DisputeBanner from "@/components/DisputeBanner";
 import DisputeDialog from "@/components/DisputeDialog";
 import { useTranslation } from "react-i18next";
-import { computeFees } from "@/lib/fees";
+import { formatPrice, computeFees } from "@/lib/fees";
 import ServiceFeeLabel from "@/components/ServiceFeeLabel";
 import TranslatedContent from "@/components/TranslatedContent";
 import DeliveryChoicePicker, {
@@ -477,7 +477,7 @@ const ProposalList = ({
 
                     <div className="flex items-center gap-2">
                       <span className="text-base font-bold text-accent">
-                        {proposal.proposed_price.toFixed(2)} €
+                        {formatPrice(proposal.proposed_price, i18n.language)}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {formatDate(proposal.created_at)}
@@ -802,15 +802,15 @@ const ProposalList = ({
                 <div className="bg-card border border-border rounded-lg p-4 space-y-2">
                   <div className="flex justify-between text-sm gap-4">
                     <span className="text-muted-foreground break-words">{t("proposal.itemPrice")}</span>
-                    <span className="text-right flex-shrink-0">{fees.objectPrice.toFixed(2)} €</span>
+                    <span className="text-right flex-shrink-0">{formatPrice(fees.objectPrice, i18n.language)}</span>
                   </div>
                   <div className="flex justify-between text-sm gap-4">
                     <ServiceFeeLabel />
-                    <span className="text-right flex-shrink-0">+{fees.buyrFee.toFixed(2)} €</span>
+                    <span className="text-right flex-shrink-0">+{formatPrice(fees.buyrFee, i18n.language)}</span>
                   </div>
                   <div className="border-t border-border pt-2 flex justify-between font-semibold gap-4">
                     <span className="break-words">{t("proposal.total")}</span>
-                    <span className="text-accent text-right flex-shrink-0">{fees.total.toFixed(2)} €</span>
+                    <span className="text-accent text-right flex-shrink-0">{formatPrice(fees.total, i18n.language)}</span>
                   </div>
                 </div>
 
@@ -836,7 +836,7 @@ const ProposalList = ({
               ) : (
                 <>
                   <CreditCard className="w-4 h-4 mr-2 flex-shrink-0" />
-                  <span className="break-words">Payer {selectedProposal && getFees(selectedProposal.proposed_price).total.toFixed(2)} € par carte bancaire</span>
+                  <span className="break-words">Payer {selectedProposal && formatPrice(getFees(selectedProposal.proposed_price).total, i18n.language)} par carte bancaire</span>
                 </>
               )}
             </Button>
@@ -922,7 +922,7 @@ const ProposalList = ({
                 </div>
                 <div className="text-right">
                   <span className="text-2xl font-bold text-accent">
-                    {selectedProposal.proposed_price.toFixed(2)} €
+                    {formatPrice(selectedProposal.proposed_price, i18n.language)}
                   </span>
                   {getStatusBadge(selectedProposal.status)}
                 </div>
@@ -962,15 +962,15 @@ const ProposalList = ({
                     <h4 className="font-medium mb-2">{t("proposal.priceSummary")}</h4>
                     <div className="flex justify-between text-sm gap-4">
                       <span className="text-muted-foreground break-words">{t("proposal.itemPrice")}</span>
-                      <span className="text-right flex-shrink-0">{fees.objectPrice.toFixed(2)} €</span>
+                      <span className="text-right flex-shrink-0">{formatPrice(fees.objectPrice, i18n.language)}</span>
                     </div>
                     <div className="flex justify-between text-sm gap-4">
                       <ServiceFeeLabel />
-                      <span className="text-right flex-shrink-0">+{fees.buyrFee.toFixed(2)} €</span>
+                      <span className="text-right flex-shrink-0">+{formatPrice(fees.buyrFee, i18n.language)}</span>
                     </div>
                     <div className="border-t border-border pt-2 flex justify-between font-semibold gap-4">
                       <span className="break-words">{t("proposal.totalToPay")}</span>
-                      <span className="text-accent text-right flex-shrink-0">{fees.total.toFixed(2)} €</span>
+                      <span className="text-accent text-right flex-shrink-0">{formatPrice(fees.total, i18n.language)}</span>
                     </div>
                   </div>
                 );

@@ -1004,6 +1004,7 @@
     "budgetHint": "Enter a minimum and a maximum (the minimum can be 0)."
   },
   "proposalForm": {
+    "priceDecimalsError": "Enter a price with at most 2 decimals.",
     "sentTitle": "Proposal sent!",
     "updatedTitle": "Proposal updated!",
     "searchNotFound": "Search not found",

@@ -17,3 +17,16 @@ export const computeFees = (price: number) => {
     payout: round2(objectPrice - findrFee),
   };
 };
+
+// Saisie de prix : virgule ou point, 2 décimales au maximum, sinon NaN.
+export const parsePrice = (value: string): number => {
+  const v = (value ?? "").trim().replace(",", ".");
+  if (!/^\d+(\.\d{1,2})?$/.test(v)) return NaN;
+  return round2(Number(v));
+};
+
+export const hasTooManyDecimals = (value: string): boolean =>
+  /^\s*\d+[.,]\d{3,}\s*$/.test(value ?? "");
+
+export const formatPrice = (n: number, lang: string): string =>
+  `${n.toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;

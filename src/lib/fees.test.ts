@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeFees } from "./fees";
+import { computeFees, parsePrice } from "./fees";
 import * as shared from "../../supabase/functions/_shared/fees";
 
 const cases = [
@@ -14,5 +14,20 @@ describe("computeFees", () => {
   it.each(cases)("price $price €", ({ price, ...expected }) => {
     expect(computeFees(price)).toEqual({ objectPrice: price, ...expected });
     expect(shared.computeFees(price)).toEqual({ objectPrice: price, ...expected });
+  });
+});
+
+describe("parsePrice", () => {
+  it.each([
+    ["33,33", 33.33],
+    ["33.33", 33.33],
+    ["33", 33],
+  ])("accepte %s", (input, expected) => {
+    expect(parsePrice(input)).toBe(expected);
+    expect(shared.parsePrice(input)).toBe(expected);
+  });
+  it.each(["33.333", "", "abc"])("refuse « %s »", (input) => {
+    expect(parsePrice(input)).toBeNaN();
+    expect(shared.parsePrice(input)).toBeNaN();
   });
 });

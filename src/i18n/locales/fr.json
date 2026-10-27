@@ -1004,6 +1004,7 @@
     "budgetHint": "Indique un minimum et un maximum (le minimum peut être 0)."
   },
   "proposalForm": {
+    "priceDecimalsError": "Indique un prix avec 2 décimales au maximum.",
     "sentTitle": "Proposition envoyée !",
     "updatedTitle": "Proposition mise à jour !",
     "searchNotFound": "Recherche non trouvée",
