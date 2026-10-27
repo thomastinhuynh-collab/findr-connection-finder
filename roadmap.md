@@ -1,3 +1,10 @@
+# Contrôle des numéros de suivi
+
+- [ ] Validation partagée, unicité et colonnes de reconnaissance sans modifier les lignes existantes.
+- [ ] Reconnaissance 17TRACK, revérifications et alertes avec versements protégés.
+- [ ] Affichage FR/EN et annulation à 7 jours pour un suivi non confirmé.
+- [ ] Tests et vérification du parcours sans modifier de transaction réelle.
+
 # Liens de transaction
 
 - [x] Relier les emails et notifications de transaction à leur réservation.
