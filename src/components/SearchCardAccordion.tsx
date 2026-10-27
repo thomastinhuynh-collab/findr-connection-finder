@@ -254,6 +254,22 @@ const SearchCardAccordion = ({ search }: SearchCardAccordionProps) => {
             : `${proposalCount} proposition${proposalCount !== 1 ? "s" : ""} reçue${proposalCount !== 1 ? "s" : ""}, dont ${acceptedCount} acceptée${acceptedCount !== 1 ? "s" : ""}`}
         </p>
 
+        {search.transaction_id && (
+          <div style={{ marginTop: 10 }}>
+            <Link
+              to={`/transaction/${search.transaction_id}`}
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#070E42",
+                textDecoration: "none",
+              }}
+            >
+              {t("transaction.viewTransaction")} →
+            </Link>
+          </div>
+        )}
+
         {(isDone || isCancelled) && (
           <div className="flex items-center gap-3" style={{ marginTop: 10 }}>
             <Link
