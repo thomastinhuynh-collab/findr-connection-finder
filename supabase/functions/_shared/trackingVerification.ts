@@ -14,9 +14,10 @@ export async function recheckUnrecognizedTracking(admin: any, now = Date.now()) 
   for (const row of rows ?? []) {
     let recognized = false;
     if (row.tracking_number && needsTrackingCheck(row, now)) {
-      const { data: claimed, error: claimError } = await admin.from("reservations")
-        .update({ tracking_last_attempt_at: new Date(now).toISOString() }).eq("id", row.id)
-        .is("tracking_last_attempt_at", row.tracking_last_attempt_at).select("id").maybeSingle();
+      let claim = admin.from("reservations")
+        .update({ tracking_last_attempt_at: new Date(now).toISOString() }).eq("id", row.id);
+      claim = row.tracking_last_attempt_at ? claim.eq("tracking_last_attempt_at", row.tracking_last_attempt_at) : claim.is("tracking_last_attempt_at", null);
+      const { data: claimed, error: claimError } = await claim.select("id").maybeSingle();
       if (claimError) throw claimError;
       if (!claimed) continue;
       const evidence = await checkTracking(row.tracking_number, row.carrier ?? "", true);

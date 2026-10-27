@@ -77,9 +77,10 @@ Deno.serve(async (req) => {
       update.payment_status = "livre";
     }
 
-    const { data: updated, error } = await admin.from("reservations").update(update).eq("id", reservation.id)
-      .eq("payment_status", reservation.payment_status).is("delivered_at", reservation.delivered_at)
-      .select("id").maybeSingle();
+    let write = admin.from("reservations").update(update).eq("id", reservation.id)
+      .eq("payment_status", reservation.payment_status);
+    write = reservation.delivered_at ? write.eq("delivered_at", reservation.delivered_at) : write.is("delivered_at", null);
+    const { data: updated, error } = await write.select("id").maybeSingle();
     if (error) throw error;
     if (!updated) continue;
 
