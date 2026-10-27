@@ -69,6 +69,8 @@ export default {
         gold: "hsl(var(--gold))",
         "warm-neutral": "hsl(var(--warm-neutral))",
         "blog-body-muted": "hsl(var(--blog-body-muted))",
+        "proposal-muted": "hsl(var(--proposal-muted))",
+        "proposal-price-label": "hsl(var(--proposal-price-label))",
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",

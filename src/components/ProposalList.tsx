@@ -394,7 +394,10 @@ const ProposalList = ({
     );
   }
 
-  const renderProposal = (proposal: Proposal, index: number, highlight = false) => (
+  const renderProposal = (proposal: Proposal, index: number, highlight = false) => {
+    const isPendingBuyr = isOwner && proposal.status === "pending";
+    const fees = computeFees(proposal.proposed_price);
+    return (
     <div key={proposal.id} style={highlight ? { border: "2px solid #D9BB87", borderRadius: 14, padding: 3, position: "relative" } : undefined}>
       {highlight && (
         <span
@@ -457,32 +460,48 @@ const ProposalList = ({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-1 mb-1">
                        <TranslatedContent type="proposal" id={proposal.id} title={proposal.title} description={proposal.description} sourceLang={proposal.source_lang}>
-                         {({ title }) => <h4 className="font-semibold text-primary text-sm leading-tight line-clamp-2">{title}</h4>}
+                         {({ title }) => <h4 className={isPendingBuyr ? "font-display font-medium text-[17px] text-navy-primary leading-tight line-clamp-2" : "font-semibold text-primary text-sm leading-tight line-clamp-2"}>{title}</h4>}
                        </TranslatedContent>
                       {getStatusBadge(proposal.status)}
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); navigate(`/profil/${proposal.findr_id}`); }}
-                      className="text-xs text-muted-foreground hover:text-accent transition-colors flex items-center gap-1 mb-1"
+                      className={`${isPendingBuyr ? "text-proposal-muted" : "text-muted-foreground"} text-xs hover:text-accent transition-colors flex items-center gap-1 mb-1`}
                     >
-                      {proposal.findr_profile?.full_name || "findr"}
+                      {isPendingBuyr ? t("proposal.proposedBy", { name: proposal.findr_profile?.full_name || "findr" }) : proposal.findr_profile?.full_name || "findr"}
                       {proposal.findr_profile?.is_premium && (
                         <Crown className="w-3 h-3 text-accent" />
                       )}
                     </button>
 
+                    {isPendingBuyr && (
+                      <div className="mt-3">
+                        <p className="proposal-total-label text-[11px] uppercase text-proposal-price-label">{t("proposal.totalToPay")}</p>
+                        <p
+                          className="text-[22px] font-medium text-navy-primary"
+                          aria-label={t("proposal.totalToPayAria", { amount: formatPrice(fees.total, i18n.language).replace(" €", "") })}
+                        >
+                          {formatPrice(fees.total, i18n.language)}
+                        </p>
+                        <div className="text-xs text-proposal-muted leading-relaxed">
+                          {t("proposal.priceBreakdown", { price: formatPrice(fees.objectPrice, i18n.language), fee: formatPrice(fees.buyrFee, i18n.language) })}{" "}
+                          <ServiceFeeLabel iconOnly />
+                        </div>
+                      </div>
+                    )}
+
                      {proposal.description && <TranslatedContent type="proposal" id={proposal.id} title={proposal.title} description={proposal.description} sourceLang={proposal.source_lang}>
                        {({ description }) => description ? <p className="text-xs text-muted-foreground line-clamp-2 mb-1.5">{description}</p> : null}
                      </TranslatedContent>}
 
-                    <div className="flex items-center gap-2">
+                    {!isPendingBuyr && <div className="flex items-center gap-2">
                       <span className="text-base font-bold text-accent">
                         {formatPrice(proposal.proposed_price, i18n.language)}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {formatDate(proposal.created_at)}
                       </span>
-                    </div>
+                    </div>}
                   </div>
                 </div>
 
@@ -688,7 +707,8 @@ const ProposalList = ({
             </Card>
           </motion.div>
     </div>
-  );
+    );
+  };
 
   const acceptedProposal = proposals.find(
     (p) => p.status === "accepted_pending" || p.status === "completed"
