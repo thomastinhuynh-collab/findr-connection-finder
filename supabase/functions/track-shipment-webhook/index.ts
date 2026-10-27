@@ -2,6 +2,9 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { sendEmailToUser } from "../_shared/brevo.ts";
+import { checkTracking } from "../_shared/track17.ts";
+import { normalizeTrackingNumber, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
+import { putTrackingInReview } from "../_shared/trackingReview.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -27,13 +30,19 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   try {
-    const payload = await req.json().catch(() => null);
+    const raw = await req.text();
+    const key = Deno.env.get("TRACK17_API_KEY");
+    if (!key) return json({ error: "Tracking verification unavailable" }, 503);
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${raw}/${key}`));
+    const expected = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, "0")).join("");
+    const signature = req.headers.get("sign")?.toLowerCase() ?? "";
+    if (signature.length !== expected.length || Array.from(expected).reduce((diff, c, i) => diff | (c.charCodeAt(0) ^ signature.charCodeAt(i)), 0) !== 0) return json({ error: "Invalid signature" }, 401);
+    const payload = JSON.parse(raw);
     if (!payload) return json({ error: "Payload invalide" }, 400);
 
     const data = payload?.data ?? payload;
-    const trackingNumber: string | undefined = data?.number ?? data?.tracking_number;
-    const statusCode: string | undefined =
-      data?.track_info?.latest_status?.status ?? data?.status ?? data?.track?.e;
+    const number = data?.number ?? data?.tracking_number;
+    const trackingNumber = typeof number === "string" && number.length <= 64 ? normalizeTrackingNumber(number) : null;
 
     if (!trackingNumber) return json({ error: "Numéro de suivi absent" }, 400);
 
@@ -42,30 +51,39 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
 
-    const { data: reservation } = await admin
+    const { data: reservations } = await admin
       .from("reservations")
-      .select("id, buyr_id, findr_id, payment_status")
-      .eq("tracking_number", trackingNumber)
-      .maybeSingle();
+      .select("id, buyr_id, findr_id, payment_status, tracking_number, carrier, accepted_at, tracking_review_notified_at, delivered_at")
+      .eq("tracking_number_key", trackingNumber);
 
-    if (!reservation) {
-      console.log("Aucune réservation pour le suivi", trackingNumber);
-      return json({ received: true });
+    for (const reservation of reservations ?? []) {
+    // Never trust a supplied Delivered status alone: read back official evidence
+    // for this reservation's carrier and reject recycled shipments.
+    const evidence = await checkTracking(trackingNumber, reservation.carrier ?? "");
+    if (!evidence) continue;
+    if (isOldTrackingEvent(evidence.firstEventAt, reservation.accepted_at)) {
+      await putTrackingInReview(admin, reservation, "old");
+      continue;
     }
+    const statusCode = evidence.status;
 
     const label = (statusCode && STATUS_LABELS[statusCode]) || statusCode || "En transit";
-    const isDelivered = statusCode === "Delivered";
+    const isDelivered = evidence.recognized && statusCode === "Delivered" && !reservation.delivered_at && !reservation.tracking_review_notified_at;
 
     // deno-lint-ignore no-explicit-any
-    const update: any = { tracking_status: label };
+    const update: any = { tracking_status: label, tracking_recognized: evidence.recognized, tracking_first_event_at: evidence.firstEventAt, tracking_checked_at: evidence.checkedAt };
     if (isDelivered && ["paye_en_attente_reception", "expedie"].includes(reservation.payment_status ?? "")) {
       update.delivered_at = new Date().toISOString();
       update.payment_status = "livre";
     }
 
-    await admin.from("reservations").update(update).eq("id", reservation.id);
+    const { data: updated, error } = await admin.from("reservations").update(update).eq("id", reservation.id)
+      .eq("payment_status", reservation.payment_status).is("delivered_at", reservation.delivered_at)
+      .select("id").maybeSingle();
+    if (error) throw error;
+    if (!updated) continue;
 
-    if (isDelivered) {
+    if (isDelivered && update.payment_status === "livre") {
       await admin.from("notifications").insert([
         {
           user_id: reservation.buyr_id,
@@ -86,6 +104,7 @@ Deno.serve(async (req) => {
 
       await sendEmailToUser(admin, reservation.buyr_id, "delivered", {
       reservationId: reservation.id,});
+    }
     }
 
     return json({ received: true });
