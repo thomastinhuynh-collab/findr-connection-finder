@@ -107,6 +107,9 @@ interface ProposalListProps {
   searchOwnerId: string;
   isPremium: boolean;
   onProposalUpdate: () => void;
+  buyrFirstName?: string;
+  shipRequest?: number;
+  onPaymentsChange?: (payments: Record<string, ReservationPayment>) => void;
 }
 
 
@@ -116,7 +119,10 @@ const ProposalList = ({
   searchId,
   searchOwnerId,
   isPremium,
-  onProposalUpdate 
+  onProposalUpdate,
+  buyrFirstName = "",
+  shipRequest = 0,
+  onPaymentsChange,
 }: ProposalListProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -150,11 +156,25 @@ const ProposalList = ({
       if (r.proposal_id) map[r.proposal_id] = r as ReservationPayment;
     });
     setPayments(map);
+    onPaymentsChange?.(map);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchId, user]);
 
   useEffect(() => {
     fetchPayments();
   }, [fetchPayments]);
+
+  // Ouverture de la fenêtre d'expédition demandée depuis la fiche de la recherche
+  useEffect(() => {
+    if (!shipRequest || !user) return;
+    const mine = proposals.find(
+      (p) => p.findr_id === user.id && (p.status === "accepted_pending" || p.status === "completed"),
+    );
+    if (!mine) return;
+    setSelectedProposal(mine);
+    setShipDialogOpen(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shipRequest]);
 
   const handleAccept = async (proposal: Proposal) => {
     setSelectedProposal(proposal);
@@ -369,7 +389,24 @@ const ProposalList = ({
     });
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (proposal: Proposal) => {
+    const ps = payments[proposal.id]?.payment_status;
+    const isFindrView = user?.id === proposal.findr_id;
+    switch (ps) {
+      case "en_attente_paiement":
+        return <Badge className="bg-warning text-warning-foreground">{t("proposal.paymentPending")}</Badge>;
+      case "paye_en_attente_reception":
+        return <Badge className="bg-success text-success-foreground">{isFindrView ? t("proposal.statusPaidToShip") : t("proposal.statusPaid")}</Badge>;
+      case "expedie":
+        return <Badge className="bg-success text-success-foreground">{t("proposal.statusShipped")}</Badge>;
+      case "livre":
+        return <Badge className="bg-success text-success-foreground">{t("proposal.statusDelivered")}</Badge>;
+      case "termine":
+        return <Badge className="bg-success text-success-foreground">{t("proposal.statusDone")}</Badge>;
+      case "annule":
+        return <Badge variant="destructive">{t("proposal.statusCancelled")}</Badge>;
+    }
+    const status = proposal.status;
     switch (status) {
       case "pending":
         return <Badge variant="secondary">{t("proposal.pending")}</Badge>;
@@ -462,7 +499,7 @@ const ProposalList = ({
                        <TranslatedContent type="proposal" id={proposal.id} title={proposal.title} description={proposal.description} sourceLang={proposal.source_lang}>
                          {({ title }) => <h4 className={isPendingBuyr ? "font-display font-medium text-[17px] text-navy-primary leading-tight line-clamp-2" : "font-semibold text-primary text-sm leading-tight line-clamp-2"}>{title}</h4>}
                        </TranslatedContent>
-                      {getStatusBadge(proposal.status)}
+                      {getStatusBadge(proposal)}
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); navigate(`/profil/${proposal.findr_id}`); }}
@@ -543,7 +580,9 @@ const ProposalList = ({
                       payments[proposal.id]?.payment_status ?? "",
                     ) && (
                       <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
-                        {t("proposal.secureAwaiting")}
+                        {isOwner
+                          ? t("proposal.secureAwaiting")
+                          : t("proposal.secureAwaitingFindr", { name: buyrFirstName || "buyr" })}
                         {payments[proposal.id]?.tracking_status && (
                           <span className="font-medium text-primary">
                             · {payments[proposal.id]?.tracking_status}
@@ -736,7 +775,13 @@ const ProposalList = ({
               fontWeight: 600,
             }}
           >
-             {dealDone ? t("proposal.dealDone") : t("proposal.paymentInProgress")}
+             {dealDone
+               ? t("proposal.dealDone")
+               : isOwner
+                 ? t("proposal.purchaseInProgress")
+                 : user?.id === acceptedProposal.findr_id
+                   ? t("proposal.saleInProgress")
+                   : t("proposal.paymentInProgress")}
           </div>
 
           {renderProposal(acceptedProposal, 0, true)}
@@ -944,7 +989,7 @@ const ProposalList = ({
                   <span className="text-2xl font-bold text-accent">
                     {formatPrice(selectedProposal.proposed_price, i18n.language)}
                   </span>
-                  {getStatusBadge(selectedProposal.status)}
+                  {getStatusBadge(selectedProposal)}
                 </div>
               </div>
 

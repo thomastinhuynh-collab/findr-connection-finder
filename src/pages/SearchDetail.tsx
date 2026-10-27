@@ -282,6 +282,8 @@ const SearchDetail = () => {
   const { t, i18n } = useTranslation();
   const [search, setSearch] = useState<SearchWithProfile | null>(null);
   const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [salePayments, setSalePayments] = useState<Record<string, { payment_status: string | null; shipped_at: string | null; delivery_type: string | null }>>({});
+  const [shipRequest, setShipRequest] = useState(0);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -657,6 +659,9 @@ const SearchDetail = () => {
               onProposalUpdate={() => {
                 fetchProposals();
               }}
+              buyrFirstName={(search.profiles?.full_name || "").trim().split(/\s+/)[0] || ""}
+              shipRequest={shipRequest}
+              onPaymentsChange={setSalePayments}
             />
           </div>
         </CollapsibleContent>
@@ -747,7 +752,39 @@ const SearchDetail = () => {
     </div>
   );
 
-  const reservationStatusBlock = isReserved && !isOwner ? (
+  const acceptedProposal = proposals.find(
+    (p) => p.status === "accepted_pending" || p.status === "completed",
+  );
+  const myAcceptedProposal =
+    acceptedProposal && acceptedProposal.findr_id === user?.id ? acceptedProposal : null;
+  const myPayment = myAcceptedProposal ? salePayments[myAcceptedProposal.id] : undefined;
+  const buyrFirstName = (search.profiles?.full_name || "").trim().split(/\s+/)[0] || "";
+  const saleDone =
+    myAcceptedProposal?.status === "completed" || myPayment?.payment_status === "termine";
+  const saleShipped =
+    !saleDone && (!!myPayment?.shipped_at || ["expedie", "livre"].includes(myPayment?.payment_status ?? ""));
+  const canShip =
+    myPayment?.payment_status === "paye_en_attente_reception" && !myPayment?.shipped_at && !!myPayment?.delivery_type;
+
+  const saleStatusBlock = myAcceptedProposal && !isOwner ? (
+    <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6 mb-6">
+      <h3 className="font-semibold text-accent mb-3">{t("searchDetail.saleInProgress")}</h3>
+      <p className="text-sm text-muted-foreground">
+        {saleDone
+          ? t("searchDetail.saleDone")
+          : saleShipped
+            ? t("searchDetail.saleShipped", { name: buyrFirstName })
+            : t("searchDetail.saleBought", { name: buyrFirstName })}
+      </p>
+      {canShip && (
+        <Button className="w-full mt-4" onClick={() => setShipRequest((n) => n + 1)}>
+          {t("searchDetail.shipItem")}
+        </Button>
+      )}
+    </div>
+  ) : null;
+
+  const reservationStatusBlock = saleStatusBlock ?? (isReserved && !isOwner && !acceptedProposal ? (
     <div className="bg-accent/10 border border-accent/30 rounded-2xl p-6 mb-6">
       <div className="flex items-center gap-3 mb-3">
         <Lock className="w-5 h-5 text-accent" />
@@ -759,25 +796,29 @@ const SearchDetail = () => {
           : t("searchDetail.reservedByOther")}
       </p>
     </div>
-  ) : null;
+  ) : null);
 
   const actionsBlock = !isOwner && canInteract ? (
     <div className="bg-card border border-border rounded-2xl p-6">
-      <Button
-        className="w-full gap-2 rounded-lg"
-        style={{ height: '52px', fontSize: '15px', fontWeight: 600, backgroundColor: '#D9BB87', color: '#070E42' }}
-        onClick={handleProposal}
-      >
-        <Tag className="w-5 h-5" />
-         {t("searchDetail.makeProposal")}
-      </Button>
-      <p style={{ fontSize: '11px', color: '#8A8070', textAlign: 'center', marginTop: '4px' }}>
-         {t("searchDetail.proposalHint")}
-      </p>
+      {!acceptedProposal && (
+        <>
+          <Button
+            className="w-full gap-2 rounded-lg"
+            style={{ height: '52px', fontSize: '15px', fontWeight: 600, backgroundColor: '#D9BB87', color: '#070E42' }}
+            onClick={handleProposal}
+          >
+            <Tag className="w-5 h-5" />
+             {t("searchDetail.makeProposal")}
+          </Button>
+          <p style={{ fontSize: '11px', color: '#8A8070', textAlign: 'center', marginTop: '4px' }}>
+             {t("searchDetail.proposalHint")}
+          </p>
+        </>
+      )}
 
       <Button
         variant="outline"
-        className="w-full gap-2 rounded-lg mt-4"
+        className={`w-full gap-2 rounded-lg ${acceptedProposal ? "" : "mt-4"}`}
         style={{ height: '44px', fontSize: '14px', fontWeight: 500, backgroundColor: 'transparent', border: '1.5px solid #C9A84C', color: '#1B2A4A' }}
         onClick={handleContact}
       >
@@ -969,7 +1010,7 @@ const SearchDetail = () => {
       </main>
 
       {/* Mobile fixed action bar */}
-      {!isOwner && canInteract && (
+      {!isOwner && canInteract && !proposals.some((p) => p.status === "accepted_pending" || p.status === "completed") && (
         <div
           className="lg:hidden fixed bottom-0 left-0 right-0 z-50 px-4 py-3"
           style={{ backgroundColor: '#070E42', boxShadow: '0 -4px 16px rgba(10,22,40,0.25)' }}
