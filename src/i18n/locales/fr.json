@@ -700,6 +700,7 @@
     "loginToReserve": "Tu dois être connecté pour demander une réservation.",
     "saleInProgress": "Vente en cours",
     "saleBought": "{{name}} a acheté ton objet. Prochaine étape : l'expédier.",
+    "saleWaitingDelivery": "{{name}} n'a pas encore choisi sa livraison. Nous te prévenons dès que c'est fait.",
     "shipItem": "Expédier l'objet",
     "saleShipped": "Colis expédié, en route vers {{name}}.",
     "saleDone": "Vente terminée."
