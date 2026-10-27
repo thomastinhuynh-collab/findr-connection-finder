@@ -40,6 +40,8 @@ import {
 
 } from "lucide-react";
 import { trackingUrl } from "@/lib/tracking";
+import { normalizeTrackingNumber, validateTrackingNumber, cancellationDays, type TrackingError } from "@/lib/trackingValidation";
+import TrackingRecognition from "@/components/TrackingRecognition";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -85,6 +87,8 @@ interface ReservationPayment {
   total_buyr_amount: number | null;
   findr_payout_amount: number | null;
   tracking_number?: string | null;
+  tracking_recognized?: boolean;
+  tracking_review_notified_at?: string | null;
   carrier?: string | null;
   shipped_at?: string | null;
   delivered_at?: string | null;
@@ -137,6 +141,7 @@ const ProposalList = ({
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [disputeDialogOpen, setDisputeDialogOpen] = useState(false);
   const [trackingNumber, setTrackingNumber] = useState("");
+  const [trackingError, setTrackingError] = useState<TrackingError | null>(null);
   const [carrier, setCarrier] = useState("");
   const [showOthers, setShowOthers] = useState(false);
 
@@ -149,7 +154,7 @@ const ProposalList = ({
     if (!user) return;
     const { data } = await supabase
       .from("reservations")
-      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description, delivery_type, delivery_address, delivery_relay_point")
+      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description, delivery_type, delivery_address, delivery_relay_point")
       .eq("search_id", searchId);
     const map: Record<string, ReservationPayment> = {};
     (data || []).forEach((r: any) => {
@@ -187,8 +192,8 @@ const ProposalList = ({
   // Le buyr peut demander l'annulation : 5 jours sans expédition,
   // ou 10 jours après une expédition jamais livrée.
   const cancelUnlockAt = (p?: ReservationPayment) => {
-    if (!p || !["paye_en_attente_reception", "expedie", "livre"].includes(p.payment_status ?? "")) return null;
-    if (p.shipped_at) return new Date(p.shipped_at).getTime() + 10 * DAY;
+    if (!p || (!["paye_en_attente_reception", "expedie", "livre"].includes(p.payment_status ?? "") && !(p.payment_status === "versement_en_revue" && p.tracking_review_notified_at))) return null;
+    if (p.shipped_at) return new Date(p.shipped_at).getTime() + cancellationDays(p.tracking_recognized) * DAY;
     const since = new Date(p.accepted_at ?? p.created_at ?? Date.now()).getTime();
     return since + 5 * DAY;
   };
@@ -218,24 +223,21 @@ const ProposalList = ({
   const handleMarkShipped = async () => {
     const reservation = selectedProposal ? payments[selectedProposal.id] : null;
     if (!reservation) return;
-    if (trackingNumber.trim().length < 4 || carrier.trim().length < 2) {
-      toast({
-        title: t("proposal.missingInfoTitle"),
-        description: t("proposal.missingInfoDesc"),
-        variant: "destructive",
-      });
-      return;
-    }
+    const invalid = validateTrackingNumber(trackingNumber, carrier);
+    setTrackingError(invalid);
+    if (invalid) return;
     setIsProcessing(true);
     try {
       const { data, error } = await supabase.functions.invoke("mark-shipped", {
         body: {
           reservationId: reservation.id,
-          trackingNumber: trackingNumber.trim(),
+          trackingNumber: normalizeTrackingNumber(trackingNumber),
           carrier: carrier.trim(),
         },
       });
-      if (error || (data as any)?.error) throw new Error((data as any)?.error ?? error?.message);
+      const payload = error?.context instanceof Response ? await error.context.json().catch(() => null) : data;
+      if (payload?.errorCode) { setTrackingError(payload.errorCode); return; }
+      if (error || data?.error) throw new Error(data?.error ?? error?.message);
       toast({ title: t("proposal.shippedTitle"), description: t("proposal.shippedDesc") });
       setShipDialogOpen(false);
       setTrackingNumber("");
@@ -576,7 +578,7 @@ const ProposalList = ({
                   )}
 
                   {payments[proposal.id]?.dispute_status !== "ouvert" &&
-                    ["paye_en_attente_reception", "expedie", "livre"].includes(
+                    ["paye_en_attente_reception", "expedie", "livre", "versement_en_revue"].includes(
                       payments[proposal.id]?.payment_status ?? "",
                     ) && (
                       <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
@@ -589,6 +591,7 @@ const ProposalList = ({
                           </span>
                         )}
                         {payments[proposal.id]?.tracking_number && (
+                          <>
                           <a
                             href={
                               trackingUrl(
@@ -604,6 +607,8 @@ const ProposalList = ({
                             {payments[proposal.id]?.tracking_number}
                             <ExternalLink className="w-3 h-3" />
                           </a>
+                          <TrackingRecognition recognized={payments[proposal.id]?.tracking_recognized} isFindr={!isOwner} />
+                          </>
                         )}
                       </div>
 
@@ -1226,7 +1231,7 @@ const ProposalList = ({
                 id="carrier"
                 placeholder="Colissimo, Chronopost, Mondial Relay, UPS…"
                 value={carrier}
-                onChange={(e) => setCarrier(e.target.value)}
+                onChange={(e) => { setCarrier(e.target.value); setTrackingError(null); }}
               />
             </div>
             <div className="space-y-2">
@@ -1235,11 +1240,16 @@ const ProposalList = ({
                 id="tracking"
                 placeholder="Ex. 6A12345678901"
                 value={trackingNumber}
-                onChange={(e) => setTrackingNumber(e.target.value)}
+                onChange={(e) => { setTrackingNumber(e.target.value); setTrackingError(null); }}
+                onBlur={() => setTrackingError(validateTrackingNumber(trackingNumber, carrier))}
+                aria-invalid={!!trackingError}
+                aria-describedby={trackingError ? "proposal-tracking-error" : undefined}
+                maxLength={64}
               />
             </div>
           </div>
 
+          {trackingError && <p id="proposal-tracking-error" role="alert" className="text-xs text-destructive">{t(`trackingSafety.errors.${trackingError}`)}</p>}
           <DialogFooter>
             <Button variant="outline" onClick={() => setShipDialogOpen(false)}>
               {t("proposal.cancel")}

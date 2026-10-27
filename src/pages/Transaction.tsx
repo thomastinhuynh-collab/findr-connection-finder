@@ -36,6 +36,8 @@ import DeliveryChoicePicker, {
 import ServiceFeeLabel from "@/components/ServiceFeeLabel";
 import { computeFees, formatPrice } from "@/lib/fees";
 import { trackingUrl } from "@/lib/tracking";
+import { normalizeTrackingNumber, validateTrackingNumber, cancellationDays, type TrackingError } from "@/lib/trackingValidation";
+import TrackingRecognition from "@/components/TrackingRecognition";
 
 const NAVY = "#070E42";
 const GOLD = "#D9BB87";
@@ -68,6 +70,8 @@ interface ReservationRow {
   delivery_address: DeliveryAddress | null;
   delivery_relay_point: DeliveryRelayPoint | null;
   tracking_number: string | null;
+  tracking_recognized: boolean;
+  tracking_review_notified_at: string | null;
   carrier: string | null;
   shipped_at: string | null;
   delivered_at: string | null;
@@ -103,6 +107,7 @@ const Transaction = () => {
   const [carrier, setCarrier] = useState<string>("");
   const [carrierOther, setCarrierOther] = useState("");
   const [trackingNumber, setTrackingNumber] = useState("");
+  const [trackingError, setTrackingError] = useState<TrackingError | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [confirmReceiptOpen, setConfirmReceiptOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -116,7 +121,7 @@ const Transaction = () => {
     const { data: r } = await supabase
       .from("reservations")
       .select(
-        "id, search_id, findr_id, buyr_id, proposal_id, object_price, buyr_fee, findr_fee, total_buyr_amount, findr_payout_amount, payment_status, delivery_type, delivery_address, delivery_relay_point, tracking_number, carrier, shipped_at, delivered_at, accepted_at, created_at, dispute_status",
+        "id, search_id, findr_id, buyr_id, proposal_id, object_price, buyr_fee, findr_fee, total_buyr_amount, findr_payout_amount, payment_status, delivery_type, delivery_address, delivery_relay_point, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, accepted_at, created_at, dispute_status",
       )
       .eq("id", reservationId)
       .maybeSingle();
@@ -159,24 +164,21 @@ const Transaction = () => {
   const handleMarkShipped = async () => {
     if (!reservation) return;
     const finalCarrier = carrier === "other" ? carrierOther.trim() : carrier;
-    if (trackingNumber.trim().length < 4 || finalCarrier.length < 2) {
-      toast({
-        title: t("proposal.missingInfoTitle"),
-        description: t("proposal.missingInfoDesc"),
-        variant: "destructive",
-      });
-      return;
-    }
+    const invalid = validateTrackingNumber(trackingNumber, finalCarrier);
+    setTrackingError(invalid);
+    if (invalid) return;
     setIsProcessing(true);
     try {
       const { data, error } = await supabase.functions.invoke("mark-shipped", {
         body: {
           reservationId: reservation.id,
-          trackingNumber: trackingNumber.trim(),
+          trackingNumber: normalizeTrackingNumber(trackingNumber),
           carrier: finalCarrier,
         },
       });
-      if (error || (data as any)?.error) throw new Error((data as any)?.error ?? error?.message);
+      const payload = error?.context instanceof Response ? await error.context.json().catch(() => null) : data;
+      if (payload?.errorCode) { setTrackingError(payload.errorCode); return; }
+      if (error || data?.error) throw new Error(data?.error ?? error?.message);
       toast({ title: t("proposal.shippedTitle"), description: t("proposal.shippedDesc") });
       setTrackingNumber("");
       setCarrier("");
@@ -273,8 +275,8 @@ const Transaction = () => {
   const paid = PAID_STATUSES.includes(ps);
   const shipped = paid && (!!reservation.shipped_at || ["expedie", "livre", "versement_en_revue", "termine"].includes(ps));
   const deliveryChosen = paid && (!!reservation.delivery_type || shipped);
-  const arrived = !!reservation.delivered_at || ["livre", "versement_en_revue", "termine"].includes(ps);
-  const received = ["versement_en_revue", "termine"].includes(ps);
+  const arrived = !!reservation.delivered_at || ["livre", "termine"].includes(ps);
+  const received = ps === "termine" || (ps === "versement_en_revue" && !reservation.tracking_review_notified_at);
   const payoutDone = ps === "termine";
   const stepDone = [paid, deliveryChosen, shipped, arrived, received, payoutDone];
   const currentStep = stepDone.findIndex((d) => !d);
@@ -282,8 +284,8 @@ const Transaction = () => {
 
   // Annulation buyr : 5 jours sans expédition, 10 jours après expédition jamais livrée.
   const cancelUnlockAt = () => {
-    if (!["paye_en_attente_reception", "expedie", "livre"].includes(ps)) return null;
-    if (reservation.shipped_at) return new Date(reservation.shipped_at).getTime() + 10 * DAY;
+    if (!["paye_en_attente_reception", "expedie", "livre"].includes(ps) && !(ps === "versement_en_revue" && reservation.tracking_review_notified_at)) return null;
+    if (reservation.shipped_at) return new Date(reservation.shipped_at).getTime() + cancellationDays(reservation.tracking_recognized) * DAY;
     const since = new Date(reservation.accepted_at ?? reservation.created_at).getTime();
     return since + 5 * DAY;
   };
@@ -479,7 +481,7 @@ const Transaction = () => {
                     <select
                       id="tx-carrier"
                       value={carrier}
-                      onChange={(e) => setCarrier(e.target.value)}
+                      onChange={(e) => { setCarrier(e.target.value); setTrackingError(null); }}
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                     >
                       <option value="">{t("common.select")}</option>
@@ -496,7 +498,7 @@ const Transaction = () => {
                       <Input
                         id="tx-carrier-other"
                         value={carrierOther}
-                        onChange={(e) => setCarrierOther(e.target.value)}
+                        onChange={(e) => { setCarrierOther(e.target.value); setTrackingError(null); }}
                         placeholder="DPD, GLS…"
                       />
                     </div>
@@ -506,10 +508,15 @@ const Transaction = () => {
                     <Input
                       id="tx-tracking"
                       value={trackingNumber}
-                      onChange={(e) => setTrackingNumber(e.target.value)}
+                      onChange={(e) => { setTrackingNumber(e.target.value); setTrackingError(null); }}
+                      onBlur={() => setTrackingError(validateTrackingNumber(trackingNumber, carrier === "other" ? carrierOther : carrier))}
+                      aria-invalid={!!trackingError}
+                      aria-describedby={trackingError ? "tx-tracking-error" : undefined}
+                      maxLength={64}
                       placeholder="Ex. 6A12345678901"
                     />
                   </div>
+                  {trackingError && <p id="tx-tracking-error" role="alert" className="text-xs text-destructive">{t(`trackingSafety.errors.${trackingError}`)}</p>}
                   <Button onClick={handleMarkShipped} disabled={isProcessing} className="w-full sm:w-auto">
                     {isProcessing ? (
                       <>
@@ -553,6 +560,7 @@ const Transaction = () => {
               {reservation.carrier} — {reservation.tracking_number}
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
+            <TrackingRecognition recognized={reservation.tracking_recognized} isFindr />
           </section>
         )}
 
@@ -580,6 +588,7 @@ const Transaction = () => {
               {t("transaction.receiptTitle")}
             </h2>
             {reservation.tracking_number && trackUrl && (
+              <div className="flex flex-wrap items-center gap-2">
               <a
                 href={trackUrl}
                 target="_blank"
@@ -590,6 +599,8 @@ const Transaction = () => {
                 {reservation.carrier} — {reservation.tracking_number}
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
+              <TrackingRecognition recognized={reservation.tracking_recognized} isFindr={false} />
+              </div>
             )}
             <div className="flex flex-wrap items-center gap-3">
               <Button
@@ -611,6 +622,8 @@ const Transaction = () => {
           </section>
         )}
 
+        {reservation.tracking_review_notified_at && !payoutDone && <p role="status" className="text-sm text-muted-foreground">{t("trackingSafety.review")}</p>}
+        {isBuyr && reservation.tracking_number && !showBuyrReceipt && !payoutDone && <div className="flex flex-wrap items-center gap-2"><a href={trackUrl ?? "#"} target="_blank" rel="noopener noreferrer" className="text-sm text-primary underline">{reservation.carrier} — {reservation.tracking_number}</a><TrackingRecognition recognized={reservation.tracking_recognized} isFindr={false} /></div>}
         {/* Carte montants */}
         <section
           className="rounded-2xl p-5 space-y-2"

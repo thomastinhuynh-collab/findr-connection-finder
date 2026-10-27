@@ -454,7 +454,14 @@ export type Database = {
           stripe_payment_intent_id: string | null
           stripe_transfer_id: string | null
           total_buyr_amount: number | null
+          tracking_carrier_key: string | null
+          tracking_checked_at: string | null
+          tracking_first_event_at: string | null
+          tracking_last_attempt_at: string | null
           tracking_number: string | null
+          tracking_number_key: string | null
+          tracking_recognized: boolean
+          tracking_review_notified_at: string | null
           tracking_status: string | null
           updated_at: string
         }
@@ -498,7 +505,14 @@ export type Database = {
           stripe_payment_intent_id?: string | null
           stripe_transfer_id?: string | null
           total_buyr_amount?: number | null
+          tracking_carrier_key?: string | null
+          tracking_checked_at?: string | null
+          tracking_first_event_at?: string | null
+          tracking_last_attempt_at?: string | null
           tracking_number?: string | null
+          tracking_number_key?: string | null
+          tracking_recognized?: boolean
+          tracking_review_notified_at?: string | null
           tracking_status?: string | null
           updated_at?: string
         }
@@ -542,7 +556,14 @@ export type Database = {
           stripe_payment_intent_id?: string | null
           stripe_transfer_id?: string | null
           total_buyr_amount?: number | null
+          tracking_carrier_key?: string | null
+          tracking_checked_at?: string | null
+          tracking_first_event_at?: string | null
+          tracking_last_attempt_at?: string | null
           tracking_number?: string | null
+          tracking_number_key?: string | null
+          tracking_recognized?: boolean
+          tracking_review_notified_at?: string | null
           tracking_status?: string | null
           updated_at?: string
         }
@@ -909,6 +930,7 @@ export type Database = {
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      tracking_carrier_key: { Args: { value: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

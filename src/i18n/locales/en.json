@@ -1504,5 +1504,22 @@
     "payoutDone": "Payout completed.",
     "totalPaid": "Total paid",
     "sendMessage": "Send a message"
+  },
+  "trackingSafety": {
+    "errors": {
+      "required": "Enter the tracking number.",
+      "carrier": "Choose a carrier or enter its name (2 to 60 characters).",
+      "sequence": "This number looks like a dummy sequence. Check the number provided by the carrier.",
+      "ups": "UPS: the number must start with 1Z followed by 16 letters or digits.",
+      "mondial": "Mondial Relay: the number must contain 8 to 12 digits.",
+      "postal": "Colissimo and Chronopost: the number must contain 10 to 15 letters or digits.",
+      "other": "The number must contain 8 to 30 letters or digits.",
+      "duplicate": "This tracking number is already used for another transaction.",
+      "old": "This number belongs to an older shipment."
+    },
+    "findrHint": "The carrier does not recognize this number yet. This is normal for a few hours after the label is created.",
+    "badge": "Tracking not confirmed",
+    "tooltip": "The carrier has not recognized this number yet.",
+    "review": "Payout under review — the findr team is checking the tracking before any automatic payout."
   }
 }

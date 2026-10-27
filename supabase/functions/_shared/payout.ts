@@ -2,6 +2,7 @@
 // manuelle (buyr) et la libération automatique (tâche planifiée).
 import Stripe from "npm:stripe@18";
 import { sendEmailToUser } from "./brevo.ts";
+import { blocksAutomaticTrackingPayout } from "./trackingValidation.ts";
 
 // deno-lint-ignore no-explicit-any
 type Admin = any;
@@ -16,6 +17,18 @@ export async function releaseFundsForReservation(
   | { ok: true; transferId: string | null; compensated?: number }
   | { ok: false; error: string; held?: boolean }
 > {
+  // Re-read the server-owned review marker before any automatic transfer.
+  // Tracking review must never be treated as an ordinary account payout hold.
+  if (auto) {
+    const { data: current, error } = await admin.from("reservations")
+      .select("tracking_review_notified_at, tracking_recognized, shipped_at, delivered_at, payment_status")
+      .eq("id", reservation.id).maybeSingle();
+    if (error || !current) return { ok: false, error: "Vérification du versement impossible." };
+    if (blocksAutomaticTrackingPayout(current)) {
+      return { ok: false, held: true, error: "Le suivi doit être examiné avant tout versement automatique." };
+    }
+    if (current.payment_status === "termine") return { ok: false, error: "Versement déjà effectué." };
+  }
   const { data: findrProfile } = await admin
     .from("profiles")
     .select("stripe_account_id, negative_balance, payout_hold")

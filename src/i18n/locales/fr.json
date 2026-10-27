@@ -1504,5 +1504,22 @@
     "payoutDone": "Versement effectué.",
     "totalPaid": "Total payé",
     "sendMessage": "Envoyer un message"
+  },
+  "trackingSafety": {
+    "errors": {
+      "required": "Renseigne le numéro de suivi.",
+      "carrier": "Choisis un transporteur ou indique son nom (2 à 60 caractères).",
+      "sequence": "Ce numéro ressemble à une suite fictive. Vérifie le numéro fourni par le transporteur.",
+      "ups": "UPS : le numéro doit commencer par 1Z, suivi de 16 lettres ou chiffres.",
+      "mondial": "Mondial Relay : le numéro doit contenir 8 à 12 chiffres.",
+      "postal": "Colissimo et Chronopost : le numéro doit contenir 10 à 15 lettres ou chiffres.",
+      "other": "Le numéro doit contenir 8 à 30 lettres ou chiffres.",
+      "duplicate": "Ce numéro de suivi est déjà utilisé pour une autre transaction.",
+      "old": "Ce numéro correspond à un envoi plus ancien."
+    },
+    "findrHint": "Le transporteur ne reconnaît pas encore ce numéro. C'est normal pendant quelques heures après la création de l'étiquette.",
+    "badge": "Suivi non confirmé",
+    "tooltip": "Le transporteur n'a pas encore reconnu ce numéro.",
+    "review": "Versement en revue — l'équipe findr vérifie le suivi avant tout versement automatique."
   }
 }
