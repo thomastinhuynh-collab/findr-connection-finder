@@ -1,14 +1,17 @@
 // Étape buyr : comment veut-il recevoir son colis ?
 // Composant autonome (domicile ou point relais), sauvegarde directe sur la réservation.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 
 export type DeliveryAddress = {
+  recipient_first_name?: string;
+  recipient_last_name?: string;
   street: string;
   postal_code: string;
   city: string;
@@ -20,6 +23,8 @@ export type DeliveryRelayPoint = {
   name: string;
   address: string;
   postal_code?: string | null;
+  recipient_first_name?: string;
+  recipient_last_name?: string;
 };
 
 export type DeliveryChoice = {
@@ -27,6 +32,10 @@ export type DeliveryChoice = {
   delivery_address: DeliveryAddress | null;
   delivery_relay_point: DeliveryRelayPoint | null;
 };
+
+// Prénom / nom du destinataire : lettres (accents inclus), espaces, tirets et apostrophes, 2 à 60 caractères.
+const NAME_RE = /^[\p{L}][\p{L}\s'’-]{0,58}$/u;
+export const isValidRecipientName = (value: string) => NAME_RE.test(value.trim());
 
 const CARRIERS: Record<DeliveryRelayPoint["carrier"], { label: string; url: string }> = {
   mondial_relay: {
@@ -51,12 +60,20 @@ const CREAM = "#F5F0EA";
 
 const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [mode, setMode] = useState<"domicile" | "point_relais">(
     value.delivery_type ?? "domicile",
   );
   const [street, setStreet] = useState(value.delivery_address?.street ?? "");
   const [addrPostal, setAddrPostal] = useState(value.delivery_address?.postal_code ?? "");
   const [city, setCity] = useState(value.delivery_address?.city ?? "");
+
+  const [recipientFirst, setRecipientFirst] = useState(
+    value.delivery_address?.recipient_first_name ?? value.delivery_relay_point?.recipient_first_name ?? "",
+  );
+  const [recipientLast, setRecipientLast] = useState(
+    value.delivery_address?.recipient_last_name ?? value.delivery_relay_point?.recipient_last_name ?? "",
+  );
 
   const [carrier, setCarrier] = useState<DeliveryRelayPoint["carrier"]>(
     value.delivery_relay_point?.carrier ?? "mondial_relay",
@@ -68,10 +85,36 @@ const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
 
   const [saving, setSaving] = useState(false);
 
+  // Préremplissage avec le nom du profil, sans écraser ce que l'utilisateur a déjà saisi.
+  useEffect(() => {
+    let cancelled = false;
+    if (!user?.id) return;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      const full = (data?.full_name ?? "").trim();
+      if (cancelled || !full) return;
+      const [first, ...rest] = full.split(/\s+/);
+      const last = rest.join(" ");
+      setRecipientFirst((prev) => prev.trim() || first);
+      setRecipientLast((prev) => prev.trim() || last);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
+
+  const recipientValid =
+    isValidRecipientName(recipientFirst) && isValidRecipientName(recipientLast);
+
   const canSave =
-    mode === "domicile"
+    recipientValid &&
+    (mode === "domicile"
       ? street.trim().length > 3 && addrPostal.trim().length >= 4 && city.trim().length > 1
-      : relayName.trim().length > 1 && relayAddress.trim().length > 3 && relayId.trim().length > 1;
+      : relayName.trim().length > 1 && relayAddress.trim().length > 3 && relayId.trim().length > 1);
 
   const save = async () => {
     if (!canSave) return;
@@ -82,6 +125,8 @@ const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
           ? {
               delivery_type: "domicile",
               delivery_address: {
+                recipient_first_name: recipientFirst.trim(),
+                recipient_last_name: recipientLast.trim(),
                 street: street.trim(),
                 postal_code: addrPostal.trim(),
                 city: city.trim(),
@@ -97,6 +142,8 @@ const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
                 name: relayName.trim(),
                 address: relayAddress.trim(),
                 postal_code: relayPostal.trim() || null,
+                recipient_first_name: recipientFirst.trim(),
+                recipient_last_name: recipientLast.trim(),
               },
             };
 
@@ -149,6 +196,28 @@ const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
 
       {mode === "domicile" ? (
         <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="del-first-name">{t("delivery.recipientFirstName")}</Label>
+              <Input
+                id="del-first-name"
+                value={recipientFirst}
+                onChange={(e) => setRecipientFirst(e.target.value)}
+                autoComplete="given-name"
+                maxLength={60}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="del-last-name">{t("delivery.recipientLastName")}</Label>
+              <Input
+                id="del-last-name"
+                value={recipientLast}
+                onChange={(e) => setRecipientLast(e.target.value)}
+                autoComplete="family-name"
+                maxLength={60}
+              />
+            </div>
+          </div>
           <div className="space-y-1.5">
             <Label htmlFor="del-street">{t("delivery.street")}</Label>
             <Input
@@ -199,6 +268,29 @@ const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
                 {CARRIERS[c].label}
               </button>
             ))}
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="del-relay-first-name">{t("delivery.recipientFirstName")}</Label>
+              <Input
+                id="del-relay-first-name"
+                value={recipientFirst}
+                onChange={(e) => setRecipientFirst(e.target.value)}
+                autoComplete="given-name"
+                maxLength={60}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="del-relay-last-name">{t("delivery.recipientLastName")}</Label>
+              <Input
+                id="del-relay-last-name"
+                value={recipientLast}
+                onChange={(e) => setRecipientLast(e.target.value)}
+                autoComplete="family-name"
+                maxLength={60}
+              />
+            </div>
           </div>
 
           <div className="space-y-1.5">

@@ -259,6 +259,16 @@ const Transaction = () => {
   const price = reservation.object_price ?? proposal?.proposed_price ?? 0;
   const fees = computeFees(price);
 
+  // Destinataire du colis (enregistré avec le choix de livraison, s'il existe).
+  const deliveryData =
+    reservation.delivery_type === "domicile"
+      ? reservation.delivery_address
+      : reservation.delivery_relay_point;
+  const recipientName = [deliveryData?.recipient_first_name, deliveryData?.recipient_last_name]
+    .map((v) => (v ?? "").trim())
+    .filter(Boolean)
+    .join(" ");
+
   // Frise d'avancement en six étapes
   const paid = PAID_STATUSES.includes(ps);
   const shipped = paid && (!!reservation.shipped_at || ["expedie", "livre", "versement_en_revue", "termine"].includes(ps));
@@ -400,9 +410,13 @@ const Transaction = () => {
                       ? t("transaction.homeDelivery")
                       : t("transaction.relayDelivery")}
                   </p>
+                  {recipientName ? (
+                    <p className="font-medium" style={{ color: NAVY }}>
+                      {t("transaction.recipient", { name: recipientName })}
+                    </p>
+                  ) : null}
                   {reservation.delivery_type === "domicile" && reservation.delivery_address ? (
                     <p style={{ color: "#44403A" }}>
-                      {otherName && `${otherName} — `}
                       {reservation.delivery_address.street}, {reservation.delivery_address.postal_code}{" "}
                       {reservation.delivery_address.city}
                     </p>

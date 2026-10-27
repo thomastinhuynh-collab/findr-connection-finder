@@ -1428,6 +1428,8 @@
     "hint": "The findr needs this information to ship your item.",
     "home": "Home delivery",
     "relay": "Pickup point",
+    "recipientFirstName": "Recipient's first name",
+    "recipientLastName": "Recipient's last name",
     "street": "Street",
     "postalCode": "Postcode",
     "city": "City",
@@ -1458,6 +1460,7 @@
   "transaction": {
     "title": "Transaction",
     "with": "with {{name}}",
+    "recipient": "Recipient: {{name}}",
     "theBuyr": "the buyr",
     "viewSearch": "View the search",
     "viewTransaction": "View transaction",
