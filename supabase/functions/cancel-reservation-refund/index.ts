@@ -6,6 +6,7 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import Stripe from "npm:stripe@18";
 import { z } from "npm:zod@3";
 import { sendEmailToUser } from "../_shared/brevo.ts";
+import { cancellationDays } from "../_shared/trackingValidation.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -47,7 +48,7 @@ Deno.serve(async (req) => {
     const { data: reservation } = await admin
       .from("reservations")
       .select(
-        "id, buyr_id, findr_id, proposal_id, payment_status, stripe_payment_intent_id, shipped_at, accepted_at, created_at, total_buyr_amount",
+        "id, buyr_id, findr_id, proposal_id, payment_status, stripe_payment_intent_id, shipped_at, accepted_at, created_at, total_buyr_amount, tracking_recognized, tracking_review_notified_at",
       )
       .eq("id", reservationId)
       .maybeSingle();
@@ -58,7 +59,7 @@ Deno.serve(async (req) => {
     const isFindr = reservation.findr_id === user.id;
     if (!isBuyr && !isFindr) return json({ error: "Non autorisé" }, 403);
 
-    if (!["paye_en_attente_reception", "expedie", "livre"].includes(reservation.payment_status ?? "")) {
+    if (!["paye_en_attente_reception", "expedie", "livre"].includes(reservation.payment_status ?? "") && !(reservation.payment_status === "versement_en_revue" && reservation.tracking_review_notified_at)) {
       return json({ error: "Cette réservation ne peut plus être annulée." }, 400);
     }
 
@@ -71,12 +72,13 @@ Deno.serve(async (req) => {
         reservation.accepted_at ?? reservation.created_at,
       ).getTime();
       const noShipment5d = !shippedAt && Date.now() - acceptedAt >= 5 * DAY;
-      const lost10d = !!shippedAt && Date.now() - shippedAt >= 10 * DAY;
+      const days = cancellationDays(reservation.tracking_recognized);
+      const lost10d = !!shippedAt && Date.now() - shippedAt >= days * DAY;
       if (!noShipment5d && !lost10d) {
         return json(
           {
             error:
-              "L'annulation est possible 5 jours après l'acceptation sans expédition, ou 10 jours après une expédition non livrée.",
+              `L'annulation est possible 5 jours après l'acceptation sans expédition, ou ${days} jours après une expédition non livrée.`,
           },
           400,
         );

@@ -135,6 +135,7 @@ export type EmailType =
   | "new_proposal"
   | "proposal_accepted"
   | "shipped"
+  | "tracking_review"
   | "delivered"
   | "funds_released"
   | "auto_release"
@@ -255,6 +256,21 @@ export function buildEmail(
       };
     }
 
+
+    case "tracking_review":
+      return {
+        subject: "Suivi à vérifier — versement en revue",
+        html: renderEmail({
+          eyebrow: "Suivi à vérifier",
+          title: "Le suivi de ton colis doit être vérifié",
+          paragraphs: [
+            data.role === "team" ? `La transaction ${esc(data.reservationId)} nécessite un examen du suivi.` : `${hello} le transporteur ne confirme pas encore le suivi de ce colis.`,
+            data.reason === "old" ? "Ce numéro correspond à un envoi antérieur au paiement." : "Aucun événement de suivi fiable n'a été confirmé dans le délai prévu.",
+            "Le versement est en revue : aucun versement automatique ne sera effectué avant l'examen par l'équipe findr.",
+          ],
+          cta: { label: "Voir la transaction", url: transactionUrl },
+        }),
+      };
 
     case "delivered":
       return {

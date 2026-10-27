@@ -8,6 +8,9 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import Stripe from "npm:stripe@18";
 import { releaseFundsForReservation } from "../_shared/payout.ts";
+import { recheckUnrecognizedTracking } from "../_shared/trackingVerification.ts";
+import { putTrackingInReview } from "../_shared/trackingReview.ts";
+import { canAutoReleaseShipped, cancellationDays } from "../_shared/trackingValidation.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -33,6 +36,7 @@ Deno.serve(async (req) => {
     const now = Date.now();
     const released: string[] = [];
     const failed: string[] = [];
+    await recheckUnrecognizedTracking(admin, now);
 
     // 1. Libération automatique 48 h après livraison
     const { data: toRelease } = await admin
@@ -61,7 +65,7 @@ Deno.serve(async (req) => {
     const { data: staleShipped } = await admin
       .from("reservations")
       .select(
-        "id, buyr_id, findr_id, proposal_id, findr_payout_amount, stripe_payment_intent_id",
+        "id, buyr_id, findr_id, proposal_id, findr_payout_amount, stripe_payment_intent_id, tracking_recognized, shipped_at, delivered_at, dispute_open",
       )
       .in("payment_status", ["paye_en_attente_reception", "expedie"])
       .eq("dispute_open", false)
@@ -71,6 +75,10 @@ Deno.serve(async (req) => {
 
     for (const reservation of staleShipped ?? []) {
       try {
+        if (!canAutoReleaseShipped(reservation, now)) {
+          await putTrackingInReview(admin, reservation);
+          continue;
+        }
         const result = await releaseFundsForReservation(admin, stripe, reservation, true);
         if (result.ok) released.push(reservation.id);
         else failed.push(reservation.id);
@@ -90,6 +98,7 @@ Deno.serve(async (req) => {
         "id, buyr_id, findr_id, proposal_id, findr_payout_amount, stripe_payment_intent_id",
       )
       .eq("payment_status", "versement_en_revue")
+      .is("tracking_review_notified_at", null)
       .eq("dispute_open", false);
 
     for (const reservation of inReview ?? []) {
@@ -107,21 +116,25 @@ Deno.serve(async (req) => {
     // 2. Filet de sécurité : colis expédié depuis 10 jours et jamais livré
     const { data: lost } = await admin
       .from("reservations")
-      .select("id, buyr_id, findr_id")
-      .in("payment_status", ["paye_en_attente_reception", "expedie"])
+      .select("id, buyr_id, findr_id, shipped_at, tracking_recognized")
+      .in("payment_status", ["paye_en_attente_reception", "expedie", "versement_en_revue"])
       .is("delivered_at", null)
       .is("lost_notified_at", null)
       .not("shipped_at", "is", null)
-      .lt("shipped_at", new Date(now - 10 * DAY).toISOString());
+      .lt("shipped_at", new Date(now - 7 * DAY).toISOString());
 
+    let lostNotified = 0;
     for (const reservation of lost ?? []) {
+      const days = cancellationDays(reservation.tracking_recognized);
+      if (now - Date.parse(reservation.shipped_at) < days * DAY) continue;
+      lostNotified++;
       await admin.from("notifications").insert([
         {
           user_id: reservation.buyr_id,
           type: "shipment_lost",
           title: "Colis toujours pas livré",
           message:
-            "Ton colis n'a pas été signalé comme livré depuis 10 jours. Tu peux demander l'annulation et le remboursement complet.",
+            `Ton colis n'a pas été signalé comme livré depuis ${days} jours. Tu peux demander l'annulation et le remboursement complet.`,
           link: `/transaction/${reservation.id}`,
         },
         {
@@ -129,7 +142,7 @@ Deno.serve(async (req) => {
           type: "shipment_lost",
           title: "Colis toujours pas livré",
           message:
-            "Le colis expédié il y a 10 jours n'a pas été livré. Le buyr peut demander un remboursement.",
+            `Le colis expédié il y a ${days} jours n'a pas été livré. Le buyr peut demander un remboursement.`,
           link: `/transaction/${reservation.id}`,
         },
       ]);
@@ -171,7 +184,7 @@ Deno.serve(async (req) => {
       released,
       failed,
       stillHeld,
-      lostNotified: (lost ?? []).length,
+      lostNotified,
       expired: (expired ?? []).length,
     });
   } catch (err) {

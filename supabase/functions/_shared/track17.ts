@@ -22,7 +22,7 @@ export function parseTrackingEvidence(value: unknown): TrackingEvidence {
   };
 }
 // Known v2 carrier keys; unknown carriers retain 17TRACK auto-detection.
-const CARRIERS: Record<string, number> = { ups: 100002, colissimo: 100007, chronopost: 100008, "mondial relay": 100027 };
+const CARRIERS: Record<string, number> = { ups: 100002, colissimo: 6051, chronopost: 100273, "mondial relay": 100304 };
 export async function checkTracking(number: string, carrier: string, register = false): Promise<(TrackingEvidence & { checkedAt: string }) | null> {
   const key = Deno.env.get("TRACK17_API_KEY");
   if (!key) return null;
