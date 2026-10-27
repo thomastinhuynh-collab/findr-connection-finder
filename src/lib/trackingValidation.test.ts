@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { normalizeTrackingNumber, validateTrackingNumber, isObviousTrackingSequence, trackingIdentity, isOldTrackingEvent, canAutoReleaseShipped, cancellationDays, needsTrackingCheck, DAY } from "./trackingValidation";
-import { parseTrackingEvidence } from "../../supabase/functions/_shared/track17";
+import { parseTrackingEvidence } from "../../supabase/functions/_shared/trackingEvidence";
 
 describe("shipping tracking rules", () => {
   it("normalizes uppercase, spaces and hyphens", () => expect(normalizeTrackingNumber(" 1z-ab 23\t45 ")).toBe("1ZAB2345"));
