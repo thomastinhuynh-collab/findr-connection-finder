@@ -2,6 +2,7 @@ import { useState, useEffect, createContext, useContext, ReactNode } from "react
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { loadFeatureFlags } from "@/hooks/useFeatureFlags";
+import { authCallbackUrl } from "@/lib/authRedirect";
 
 interface AuthContextType {
   user: User | null;
@@ -20,9 +21,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let authEventReceived = false;
+    let active = true;
     // Set up auth state listener BEFORE checking session
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        authEventReceived = true;
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -58,12 +62,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!active || authEventReceived) return;
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => { active = false; subscription.unsubscribe(); };
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
@@ -71,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       password,
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: authCallbackUrl(),
         data: {
           full_name: fullName,
         },

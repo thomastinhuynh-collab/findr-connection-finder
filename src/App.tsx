@@ -11,6 +11,7 @@ import VintageBackground from "@/components/VintageBackground";
 import ScrollToTop from "@/components/ScrollToTop";
 import BackButton from "./components/BackButton";
 import Navbar from "./components/Navbar";
+import ProtectedRoute, { AuthCallback, AuthContinuation } from "@/components/ProtectedRoute";
 
 const Index = lazy(() => import("./pages/Index"));
 const Searches = lazy(() => import("./pages/Searches"));
@@ -54,6 +55,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <AuthContinuation />
           <ScrollToTop />
           <Navbar />
           <BackButton />
@@ -64,29 +66,30 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/recherches" element={<Searches />} />
               <Route path="/recherche/:id" element={<SearchDetail />} />
-              <Route path="/modifier-recherche/:id" element={<EditSearch />} />
-              <Route path="/messagerie/:id" element={<Messaging />} />
-              <Route path="/proposition/:id" element={<MakeProposal />} />
-              <Route path="/modifier-proposition/:id" element={<EditProposal />} />
+              <Route path="/modifier-recherche/:id" element={<ProtectedRoute><EditSearch /></ProtectedRoute>} />
+              <Route path="/messagerie/:id" element={<ProtectedRoute><Messaging /></ProtectedRoute>} />
+              <Route path="/proposition/:id" element={<ProtectedRoute><MakeProposal /></ProtectedRoute>} />
+              <Route path="/modifier-proposition/:id" element={<ProtectedRoute><EditProposal /></ProtectedRoute>} />
               <Route path="/mes-propositions" element={<Navigate to="/mon-espace?onglet=propositions" replace />} />
-              <Route path="/poster" element={<PostSearch />} />
-              <Route path="/mon-espace" element={<MySpace />} />
+              <Route path="/poster" element={<ProtectedRoute><PostSearch /></ProtectedRoute>} />
+              <Route path="/mon-espace" element={<ProtectedRoute><MySpace /></ProtectedRoute>} />
               <Route path="/profil/:userId" element={<PublicProfile />} />
               <Route path="/profil/:userId/evaluations" element={<UserEvaluations />} />
               <Route path="/premium" element={<Premium />} />
-              <Route path="/reservation/:id" element={<RequestReservation />} />
+              <Route path="/reservation/:id" element={<ProtectedRoute><RequestReservation /></ProtectedRoute>} />
               <Route path="/comment-ca-marche" element={<HowItWorksPage />} />
               <Route path="/je-deviens-buyr" element={<BecomeBuyrPage />} />
               <Route path="/je-deviens-findr" element={<BecomeFindrPage />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/mentions-legales" element={<LegalNotice />} />
               <Route path="/cgu" element={<Terms />} />
               <Route path="/confidentialite" element={<Privacy />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
-              <Route path="/admin/litiges" element={<AdminDisputes />} />
-              <Route path="/transaction/:reservationId" element={<Transaction />} />
+              <Route path="/admin/litiges" element={<ProtectedRoute><AdminDisputes /></ProtectedRoute>} />
+              <Route path="/transaction/:reservationId" element={<ProtectedRoute><Transaction /></ProtectedRoute>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
