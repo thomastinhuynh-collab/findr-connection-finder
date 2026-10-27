@@ -790,6 +790,15 @@ const SearchDetail = () => {
           {t("searchDetail.shipItem")}
         </Button>
       )}
+      {myPayment?.id && (
+        <Button
+          variant="outline"
+          className={`w-full ${canShip ? "mt-2" : "mt-4"}`}
+          onClick={() => navigate(`/transaction/${myPayment.id}`)}
+        >
+          {t("transaction.viewTransaction")}
+        </Button>
+      )}
     </div>
   ) : null;
 
