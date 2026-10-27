@@ -700,6 +700,7 @@
     "loginToReserve": "Tu dois être connecté pour demander une réservation.",
     "saleInProgress": "Vente en cours",
     "saleBought": "{{name}} a acheté ton objet. Prochaine étape : l'expédier.",
+    "saleWaitingDelivery": "{{name}} n'a pas encore choisi sa livraison. Nous te prévenons dès que c'est fait.",
     "shipItem": "Expédier l'objet",
     "saleShipped": "Colis expédié, en route vers {{name}}.",
     "saleDone": "Vente terminée."
@@ -718,7 +719,6 @@
     "receivedOn": "Proposition reçue le {{date}}",
     "selected": "Acceptée",
     "dealDone": "Terminée",
-    "paymentInProgress": "Paiement en cours",
     "contactFindr": "Contacter le findr",
     "contactBuyr": "Contacter le buyr",
     "close": "Fermer",
@@ -787,6 +787,7 @@
     "delayHours": "{{count}} h",
     "saleInProgress": "Vente en cours",
     "purchaseInProgress": "Achat en cours",
+    "transactionInProgress": "Transaction en cours",
     "statusPaid": "Payée",
     "statusPaidToShip": "Payée — à expédier",
     "statusShipped": "Expédiée",

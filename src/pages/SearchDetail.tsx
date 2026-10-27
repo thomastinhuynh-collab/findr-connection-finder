@@ -763,6 +763,13 @@ const SearchDetail = () => {
     myAcceptedProposal?.status === "completed" || myPayment?.payment_status === "termine";
   const saleShipped =
     !saleDone && (!!myPayment?.shipped_at || ["expedie", "livre"].includes(myPayment?.payment_status ?? ""));
+  const salePaid =
+    !!myPayment &&
+    ["paye_en_attente_reception", "expedie", "livre", "termine"].includes(
+      myPayment.payment_status ?? "",
+    );
+  const saleWaitingDelivery =
+    !saleDone && !saleShipped && salePaid && !myPayment?.delivery_type;
   const canShip =
     myPayment?.payment_status === "paye_en_attente_reception" && !myPayment?.shipped_at && !!myPayment?.delivery_type;
 
@@ -774,7 +781,9 @@ const SearchDetail = () => {
           ? t("searchDetail.saleDone")
           : saleShipped
             ? t("searchDetail.saleShipped", { name: buyrFirstName })
-            : t("searchDetail.saleBought", { name: buyrFirstName })}
+            : saleWaitingDelivery
+              ? t("searchDetail.saleWaitingDelivery", { name: buyrFirstName })
+              : t("searchDetail.saleBought", { name: buyrFirstName })}
       </p>
       {canShip && (
         <Button className="w-full mt-4" onClick={() => setShipRequest((n) => n + 1)}>

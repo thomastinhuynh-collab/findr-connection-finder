@@ -781,7 +781,7 @@ const ProposalList = ({
                  ? t("proposal.purchaseInProgress")
                  : user?.id === acceptedProposal.findr_id
                    ? t("proposal.saleInProgress")
-                   : t("proposal.paymentInProgress")}
+                   : t("proposal.transactionInProgress")}
           </div>
 
           {renderProposal(acceptedProposal, 0, true)}

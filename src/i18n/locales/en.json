@@ -700,6 +700,7 @@
     "loginToReserve": "You must be logged in to request a reservation.",
     "saleInProgress": "Sale in progress",
     "saleBought": "{{name}} bought your item. Next step: ship it.",
+    "saleWaitingDelivery": "{{name}} hasn't chosen a delivery method yet. We'll let you know as soon as they do.",
     "shipItem": "Ship the item",
     "saleShipped": "Parcel shipped, on its way to {{name}}.",
     "saleDone": "Sale completed."
@@ -718,7 +719,6 @@
     "receivedOn": "Proposal received on {{date}}",
     "selected": "Accepted",
     "dealDone": "Completed",
-    "paymentInProgress": "Payment in progress",
     "contactFindr": "Contact the findr",
     "contactBuyr": "Contact the buyr",
     "close": "Close",
@@ -787,6 +787,7 @@
     "delayHours": "{{count}} h",
     "saleInProgress": "Sale in progress",
     "purchaseInProgress": "Purchase in progress",
+    "transactionInProgress": "Transaction in progress",
     "statusPaid": "Paid",
     "statusPaidToShip": "Paid — to ship",
     "statusShipped": "Shipped",
