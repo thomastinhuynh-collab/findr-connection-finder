@@ -270,6 +270,29 @@ const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
             ))}
           </div>
 
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="del-relay-first-name">{t("delivery.recipientFirstName")}</Label>
+              <Input
+                id="del-relay-first-name"
+                value={recipientFirst}
+                onChange={(e) => setRecipientFirst(e.target.value)}
+                autoComplete="given-name"
+                maxLength={60}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="del-relay-last-name">{t("delivery.recipientLastName")}</Label>
+              <Input
+                id="del-relay-last-name"
+                value={recipientLast}
+                onChange={(e) => setRecipientLast(e.target.value)}
+                autoComplete="family-name"
+                maxLength={60}
+              />
+            </div>
+          </div>
+
           <div className="space-y-1.5">
             <Label htmlFor="del-relay-cp">{t("delivery.postalCode")}</Label>
             <Input
