@@ -122,7 +122,7 @@ export function renderEmail(block: Block): string {
       <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#9CA3AF;">
         <a href="mailto:${CONTACT_EMAIL}" style="color:#9CA3AF;text-decoration:underline;">${CONTACT_EMAIL}</a>
         &nbsp;·&nbsp;
-        <a href="${SITE_URL}/mon-espace" style="color:#9CA3AF;text-decoration:underline;">Se désabonner</a>
+        <a href="${SITE_URL}/mon-espace" style="color:#9CA3AF;text-decoration:underline;">Mon espace</a>
       </p>
     </td></tr>
   </table>
