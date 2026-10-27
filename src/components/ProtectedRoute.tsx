@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import AuthModal from "@/components/AuthModal";
-import { authCallbackUrl, clearAuthDestination, readAuthDestination, rememberAuthDestination, safeAuthDestination } from "@/lib/authRedirect";
+import { clearAuthDestination, readAuthDestination, rememberAuthDestination, safeAuthDestination } from "@/lib/authRedirect";
 
 export function AuthContinuation() {
   const { user, loading } = useAuth();
