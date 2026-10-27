@@ -113,18 +113,19 @@ Deno.serve(async (req) => {
         message: isBuyr
           ? "Le buyr a demandé l'annulation et a été intégralement remboursé."
           : "Tu as annulé cette transaction. Le buyr a été intégralement remboursé.",
-        link: "/mon-espace",
+        link: `/transaction/${reservation.id}`,
       },
       {
         user_id: reservation.buyr_id,
         type: "cancellation",
         title: "Remboursement en cours",
         message: `${amount} € (frais inclus) te seront recrédités sous quelques jours.`,
-        link: "/mon-espace",
+        link: `/transaction/${reservation.id}`,
       },
     ]);
 
     await sendEmailToUser(admin, reservation.buyr_id, "refund", {
+      reservationId: reservation.id,
       amount: reservation.total_buyr_amount,
       reason: isBuyr
         ? "annulation demandée faute d'expédition ou de livraison dans les délais"

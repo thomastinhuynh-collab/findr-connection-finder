@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
 
     if (type === "welcome") {
       // Bienvenue : uniquement pour soi-même, après confirmation de l'email, une seule fois.
-      if (!internal && caller!.id !== userId) return json({ error: "Interdit" }, 403);
+      if (!internal && caller?.id !== userId) return json({ error: "Interdit" }, 403);
       const { data: target } = await admin.auth.admin.getUserById(userId);
       if (!target?.user?.email_confirmed_at) return json({ sent: false });
       const { error: claimErr } = await admin
@@ -71,6 +71,19 @@ Deno.serve(async (req) => {
     }
 
 
+
+    // Les liens de transaction doivent désigner une réservation réelle des deux parties.
+    if (!["welcome", "new_proposal", "reservation_reminder"].includes(type)) {
+      const reservationId = z.string().uuid().safeParse(data?.reservationId);
+      if (!reservationId.success) return json({ error: "Réservation requise" }, 400);
+      const { data: reservation } = await admin.from("reservations")
+        .select("buyr_id, findr_id")
+        .eq("id", reservationId.data).maybeSingle();
+      if (!reservation || ![reservation.buyr_id, reservation.findr_id].includes(userId)
+        || (!internal && (!caller || ![reservation.buyr_id, reservation.findr_id].includes(caller.id)))) {
+        return json({ error: "Interdit" }, 403);
+      }
+    }
 
     // L'envoi ne doit jamais faire échouer l'appelant : on répond toujours 200.
     const sent = await sendEmailToUser(admin, userId, type as EmailType, data ?? {});

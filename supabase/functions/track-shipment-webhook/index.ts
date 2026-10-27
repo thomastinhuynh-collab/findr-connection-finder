@@ -73,18 +73,19 @@ Deno.serve(async (req) => {
           title: "Colis livré",
           message:
             "Confirme la réception de ton objet. Sans action de ta part, le versement au findr sera déclenché automatiquement sous 48 h.",
-          link: "/mon-espace",
+          link: `/transaction/${reservation.id}`,
         },
         {
           user_id: reservation.findr_id,
           type: "delivery",
           title: "Colis livré",
           message: "Le buyr a reçu l'objet. Ton versement sera déclenché sous 48 h.",
-          link: "/mon-espace",
+          link: `/transaction/${reservation.id}`,
         },
       ]);
 
-      await sendEmailToUser(admin, reservation.buyr_id, "delivered", {});
+      await sendEmailToUser(admin, reservation.buyr_id, "delivered", {
+      reservationId: reservation.id,});
     }
 
     return json({ received: true });

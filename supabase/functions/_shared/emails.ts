@@ -163,6 +163,9 @@ export function buildEmail(
 ): { subject: string; html: string } {
   const first = esc(data.firstName ?? data.name ?? "").trim();
   const hello = first ? `Salut ${first},` : "Salut,";
+  const transactionUrl = data.reservationId
+    ? `${SITE_URL}/transaction/${encodeURIComponent(String(data.reservationId))}`
+    : `${SITE_URL}/mon-espace`;
 
   switch (type) {
     case "welcome":
@@ -219,7 +222,7 @@ export function buildEmail(
             { label: "Objet", value: data.itemTitle ?? "—" },
             { label: "Montant net à recevoir", value: money(data.payoutAmount) },
           ],
-          cta: { label: "Marquer comme expédié", url: `${SITE_URL}/mon-espace?onglet=propositions` },
+          cta: { label: "Expédier mon objet", url: transactionUrl },
         }),
       };
 
@@ -244,10 +247,10 @@ export function buildEmail(
             ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
           ],
           cta: {
-            label: trackUrl ? "Suivre mon colis" : "Voir ma commande",
-            url: trackUrl ?? `${SITE_URL}/mon-espace`,
+            label: "Suivre mon colis",
+            url: transactionUrl,
           },
-          secondary: { label: "Voir dans mon espace", url: `${SITE_URL}/mon-espace` },
+          secondary: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
     }
@@ -263,8 +266,8 @@ export function buildEmail(
             `${hello} le transporteur a marqué ton colis comme livré.`,
             "Confirme la réception pour déclencher le versement au findr. <strong>Sans action de ta part, le versement sera déclenché automatiquement sous 48 h.</strong>",
           ],
-          cta: { label: "Confirmer la réception", url: `${SITE_URL}/mon-espace` },
-          secondary: { label: "Signaler un problème", url: `${SITE_URL}/mon-espace` },
+          cta: { label: "Voir la transaction", url: transactionUrl },
+          secondary: { label: "Signaler un problème", url: transactionUrl },
         }),
       };
 
@@ -282,7 +285,7 @@ export function buildEmail(
             { label: "Montant net", value: money(data.amount) },
             ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
           ],
-          cta: { label: "Voir mes gains", url: `${SITE_URL}/mon-espace` },
+          cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
 
@@ -307,7 +310,7 @@ export function buildEmail(
             ...(data.amount ? [{ label: "Montant", value: money(data.amount) }] : []),
             ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
           ],
-          cta: { label: "Voir la transaction", url: `${SITE_URL}/mon-espace` },
+          cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
     }
@@ -328,7 +331,7 @@ export function buildEmail(
             { label: "Montant remboursé (frais inclus)", value: money(data.amount) },
             ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
           ],
-          cta: { label: "Voir mes transactions", url: `${SITE_URL}/mon-espace` },
+          cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
 
@@ -347,8 +350,8 @@ export function buildEmail(
             { label: "Motif du signalement", value: data.reasonLabel ?? "Non précisé" },
           ],
           cta: {
-            label: "Répondre via la messagerie",
-            url: data.searchId ? `${SITE_URL}/messagerie/${esc(data.searchId)}` : `${SITE_URL}/messagerie`,
+            label: "Voir la transaction",
+            url: transactionUrl,
           },
         }),
       };
@@ -368,8 +371,8 @@ export function buildEmail(
             { label: "Motif du signalement", value: data.reasonLabel ?? "Non précisé" },
           ],
           cta: {
-            label: "Ouvrir la messagerie",
-            url: data.searchId ? `${SITE_URL}/messagerie/${esc(data.searchId)}` : `${SITE_URL}/messagerie`,
+            label: "Voir la transaction",
+            url: transactionUrl,
           },
         }),
       };
@@ -396,7 +399,7 @@ export function buildEmail(
             ...(data.amount ? [{ label: refunded ? "Montant remboursé" : "Montant versé", value: money(data.amount) }] : []),
             ...(data.notes ? [{ label: "Motif de la décision", value: data.notes }] : []),
           ],
-          cta: { label: "Voir mes transactions", url: `${SITE_URL}/mon-espace` },
+          cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
     }
@@ -423,7 +426,7 @@ export function buildEmail(
             ...(data.amount && !refunded ? [{ label: "Montant versé", value: money(data.amount) }] : []),
             ...(data.notes ? [{ label: "Motif de la décision", value: data.notes }] : []),
           ],
-          cta: { label: "Voir mes transactions", url: `${SITE_URL}/mon-espace` },
+          cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
     }
@@ -445,7 +448,7 @@ export function buildEmail(
             ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
             { label: "Montant concerné", value: money(data.amount) },
           ],
-          cta: { label: "Voir le détail", url: `${SITE_URL}/mon-espace` },
+          cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
 

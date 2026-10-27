@@ -95,7 +95,7 @@ const DisputeDialog = ({
         _type: "dispute_opened",
         _title: "Litige ouvert sur une transaction",
         _message: `Le buyr a signalé un problème sur « ${itemTitle} » : ${DISPUTE_REASONS[reason]}. Le versement est suspendu le temps de l'examen par l'équipe findr.`,
-        _link: `/messagerie/${searchId}`,
+        _link: `/transaction/${reservationId}`,
       });
 
       // Email au findr — non bloquant.
@@ -105,6 +105,7 @@ const DisputeDialog = ({
             type: "dispute_opened",
             userId: findrId,
             data: {
+              reservationId,
               itemTitle,
               reasonLabel: DISPUTE_REASONS[reason],
               searchId,
@@ -120,6 +121,7 @@ const DisputeDialog = ({
             type: "dispute_received",
             userId: (await supabase.auth.getUser()).data.user?.id,
             data: {
+              reservationId,
               itemTitle,
               reasonLabel: DISPUTE_REASONS[reason],
               searchId,

@@ -1,5 +1,8 @@
 # Architecture rules
 
+- Guard authenticated pages with `ProtectedRoute` and resume only validated same-origin destinations through the public `/auth/callback`; include the destination in callback URLs so email confirmation survives a different browser, without bypassing reservation RLS.
+- Transaction lifecycle emails carry `reservationId` and notifications store `/transaction/:id` in their existing link field; keep unpaid exclusivity and admin dispute links separate because the transaction page is participant-only.
+
 - Use `needsStripeOnboarding` for payment setup card visibility and `shouldShowStripeActionBadge` for its action badge, so both follow the same onboarding rule while the badge stays limited to accounts that already sent a proposal.
 
 - Role-conviction pages share `RoleLandingPage`; keep their structure synchronized while content remains locale-driven.- The `app_settings.beta_open` switch disables the account-to-waitlist invitation flow; any future signup restriction must also respect it, and normal sign-in/sign-up must never depend on that flow.

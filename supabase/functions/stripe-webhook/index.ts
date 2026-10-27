@@ -174,7 +174,7 @@ Deno.serve(async (req) => {
             title: "Proposition acceptée et payée !",
             message:
               "Le versement au findr interviendra après la confirmation de réception de l'article.",
-            link: "/mon-espace?onglet=propositions",
+            link: `/transaction/${reservationId}`,
           });
 
           let itemTitle: string | undefined;
@@ -188,6 +188,7 @@ Deno.serve(async (req) => {
           }
 
           await sendEmailToUser(admin, reservation.findr_id, "proposal_accepted", {
+            reservationId,
             itemTitle,
             payoutAmount: reservation.findr_payout_amount,
           });
@@ -282,15 +283,17 @@ Deno.serve(async (req) => {
               type: "chargeback_opened",
               title: "Contestation bancaire sur une transaction réglée",
               message: `${disputeAmount.toFixed(2)} € seront déduits de tes prochains versements.`,
-              link: "/mon-espace",
+              link: `/transaction/${reservation.id}`,
             });
 
             await sendEmailToUser(admin, reservation.findr_id, "chargeback_opened", {
+              reservationId: reservation.id,
               amount: disputeAmount,
               itemTitle,
             });
 
             await sendEmailTo(ADMIN_EMAIL, "chargeback_opened", {
+              reservationId: reservation.id,
               firstName: "équipe findr",
               amount: disputeAmount,
               itemTitle: itemTitle ?? `Réservation ${reservation.id}`,
@@ -339,7 +342,7 @@ Deno.serve(async (req) => {
             type: "chargeback_closed",
             title: "Contestation bancaire rejetée",
             message: `Le débit de ${Number(debit.amount).toFixed(2)} € a été annulé. Ton montant à régulariser est de ${newBalance.toFixed(2)} €.`,
-            link: "/mon-espace",
+            link: `/transaction/${reservation.id}`,
           });
           console.log(`dispute.closed(won) -> débit ${debit.id} annulé`);
         }

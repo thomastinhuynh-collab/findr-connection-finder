@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { translateAuthError } from "@/lib/authErrors";
 import { useTranslation } from "react-i18next";
+import { authCallbackUrl } from "@/lib/authRedirect";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = "login" }: AuthModalProps) =
 
   const handleGoogleSignIn = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: authCallbackUrl(),
     });
 
     if (result.error) {
