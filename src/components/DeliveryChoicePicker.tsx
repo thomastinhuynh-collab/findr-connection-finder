@@ -125,6 +125,8 @@ const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
           ? {
               delivery_type: "domicile",
               delivery_address: {
+                recipient_first_name: recipientFirst.trim(),
+                recipient_last_name: recipientLast.trim(),
                 street: street.trim(),
                 postal_code: addrPostal.trim(),
                 city: city.trim(),
@@ -140,6 +142,8 @@ const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
                 name: relayName.trim(),
                 address: relayAddress.trim(),
                 postal_code: relayPostal.trim() || null,
+                recipient_first_name: recipientFirst.trim(),
+                recipient_last_name: recipientLast.trim(),
               },
             };
 
