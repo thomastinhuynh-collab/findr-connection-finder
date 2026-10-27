@@ -112,6 +112,9 @@ const MySpace = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
+  const [stripeVerifying, setStripeVerifying] = useState(false);
+  const stripeReturnHandled = useRef(false);
+  const stripeAutoSynced = useRef(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [searches, setSearches] = useState<SearchItem[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
@@ -219,15 +222,45 @@ const MySpace = () => {
     }
   }, [user, loading, navigate]);
 
+  // Synchronise l'état de l'inscription Stripe depuis Stripe
+  const syncStripeAccount = async (): Promise<boolean> => {
+    try {
+      const { data } = await supabase.functions.invoke("sync-stripe-account");
+      return data?.complete === true;
+    } catch {
+      return false;
+    }
+  };
+
   // Retour depuis l'onboarding Stripe
   useEffect(() => {
     const status = new URLSearchParams(window.location.search).get("stripe");
     if (!status) return;
     if (status === "success") {
+      stripeReturnHandled.current = true;
       toast({
         title: t("mySpace.thanks"),
         description: t("mySpace.stripePending"),
       });
+      if (user) {
+        let cancelled = false;
+        setStripeVerifying(true);
+        (async () => {
+          const start = Date.now();
+          let complete = await syncStripeAccount();
+          while (!complete && !cancelled && Date.now() - start < 30000) {
+            await new Promise((r) => setTimeout(r, 3000));
+            if (cancelled) return;
+            complete = await syncStripeAccount();
+          }
+          if (cancelled) return;
+          await fetchProfile();
+          setStripeVerifying(false);
+          if (complete) toast({ title: t("mySpace.stripeComplete") });
+        })();
+        window.history.replaceState({}, "", "/mon-espace");
+        return () => { cancelled = true; setStripeVerifying(false); };
+      }
     } else if (status === "refresh") {
       toast({
         title: t("mySpace.setupIncomplete"),
@@ -238,6 +271,15 @@ const MySpace = () => {
     if (user) fetchProfile();
     window.history.replaceState({}, "", "/mon-espace");
   }, [user]);
+
+  // Compte Stripe existant mais incomplet à l'ouverture : une synchronisation
+  useEffect(() => {
+    if (!user || !profile || stripeReturnHandled.current || stripeAutoSynced.current) return;
+    if (profile.stripe_account_id && profile.stripe_onboarding_complete !== true) {
+      stripeAutoSynced.current = true;
+      syncStripeAccount().then((complete) => { if (complete) fetchProfile(); });
+    }
+  }, [user, profile]);
 
 
 
@@ -1258,13 +1300,19 @@ const MySpace = () => {
                       <p className="text-sm" style={{ color: "#4B5563" }}>{t("mySpace.payments.description")}</p>
                     </div>
                   </div>
+                  {stripeVerifying ? (
+                    <p className="text-sm flex items-center" style={{ color: "#4B5563" }} role="status">
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.verifying")}
+                    </p>
+                  ) : (
                   <Button onClick={() => setStripeModalOpen(true)} disabled={stripeLoading} style={{ backgroundColor: "#070E42", color: "#F5F0EA" }}>
                     {stripeLoading ? (
                       <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.redirecting")}</>
                     ) : (
-                      <><CreditCard className="w-4 h-4 mr-2" />{t("mySpace.payments.setup")}</>
+                      <><CreditCard className="w-4 h-4 mr-2" />{t(profile.stripe_account_id ? "mySpace.payments.resume" : "mySpace.payments.setup")}</>
                     )}
                   </Button>
+                  )}
                 </div>
               </div>
             )}

@@ -1085,7 +1085,8 @@
     "max8": "Max 8 Mo",
     "comingSoon": "Bientôt disponible",
     "thanks": "Merci !",
-    "stripePending": "Stripe finalise la vérification de ton compte, ça peut prendre quelques instants.",
+    "stripePending": "Nous vérifions ton inscription…",
+    "stripeComplete": "Ton inscription Stripe est terminée.",
     "setupIncomplete": "Configuration incomplète",
     "setupResume": "Reprends la configuration de tes paiements pour la terminer.",
     "tabs": {
@@ -1126,6 +1127,8 @@
       "title": "Paiements",
       "description": "Pour recevoir l'argent de tes ventes en tant que findr. Pas nécessaire pour acheter.",
       "setup": "Configurer mes paiements",
+      "resume": "Reprendre mon inscription Stripe",
+      "verifying": "Vérification de ton inscription Stripe…",
       "redirecting": "Redirection…",
       "modalTitle": "Avant de continuer",
       "modalBody": "Sur Stripe, ignore les mentions « entreprise » ou « auto-entrepreneur » — indique juste tes infos personnelles (identité, coordonnées bancaires).",
