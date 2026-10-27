@@ -4,6 +4,8 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
 import { sendEmailToUser } from "../_shared/brevo.ts";
+import { normalizeTrackingNumber, normalizeCarrier, validateTrackingNumber, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
+import { checkTracking } from "../_shared/track17.ts";
 
 
 
@@ -39,12 +41,16 @@ Deno.serve(async (req) => {
     if (!parsed.success) {
       return json({ error: parsed.error.flatten().fieldErrors }, 400);
     }
-    const { reservationId, trackingNumber, carrier } = parsed.data;
+    const { reservationId } = parsed.data;
+    const trackingNumber = normalizeTrackingNumber(parsed.data.trackingNumber);
+    const carrier = parsed.data.carrier;
+    const validation = validateTrackingNumber(trackingNumber, carrier);
+    if (validation) return json({ error: "Numéro de suivi invalide", errorCode: validation }, 400);
 
     const admin = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const { data: reservation } = await admin
       .from("reservations")
-      .select("id, buyr_id, findr_id, payment_status, shipped_at, delivery_type")
+      .select("id, buyr_id, findr_id, payment_status, shipped_at, delivery_type, accepted_at")
       .eq("id", reservationId)
       .maybeSingle();
 
@@ -61,19 +67,14 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Enregistrement du colis auprès de 17TRACK (mode sandbox tant que la clé est en test)
-    const trackKey = Deno.env.get("TRACK17_API_KEY");
-    if (trackKey) {
-      try {
-        const res = await fetch("https://api.17track.net/track/v2.2/register", {
-          method: "POST",
-          headers: { "17token": trackKey, "Content-Type": "application/json" },
-          body: JSON.stringify([{ number: trackingNumber, auto_detection: true }]),
-        });
-        console.log("17track register:", res.status, await res.text());
-      } catch (e) {
-        console.error("17track register failed:", e);
-      }
+    const { data: duplicate, error: duplicateError } = await admin.from("reservations")
+      .select("id").eq("tracking_carrier_key", normalizeCarrier(carrier))
+      .eq("tracking_number_key", trackingNumber).neq("id", reservation.id).limit(1);
+    if (duplicateError) throw duplicateError;
+    if (duplicate?.length) return json({ error: "Ce numéro de suivi est déjà utilisé.", errorCode: "duplicate" }, 409);
+    const evidence = await checkTracking(trackingNumber, carrier, true);
+    if (isOldTrackingEvent(evidence?.firstEventAt ?? null, reservation.accepted_at)) {
+      return json({ error: "Ce numéro correspond à un envoi plus ancien.", errorCode: "old" }, 400);
     }
 
     const { error: upErr } = await admin
@@ -84,8 +85,13 @@ Deno.serve(async (req) => {
         shipped_at: new Date().toISOString(),
         payment_status: "expedie",
         tracking_status: "expedie",
+        tracking_recognized: evidence?.recognized ?? false,
+        tracking_first_event_at: evidence?.firstEventAt ?? null,
+        tracking_checked_at: evidence?.checkedAt ?? null,
       })
-      .eq("id", reservation.id);
+      .eq("id", reservation.id).eq("payment_status", "paye_en_attente_reception").is("shipped_at", null)
+      .select("id").single();
+    if (upErr?.code === "23505") return json({ error: "Ce numéro de suivi est déjà utilisé.", errorCode: "duplicate" }, 409);
     if (upErr) throw upErr;
 
 
@@ -105,7 +111,7 @@ Deno.serve(async (req) => {
     });
 
 
-    return json({ success: true });
+    return json({ success: true, tracking_recognized: evidence?.recognized ?? false });
   } catch (err) {
     console.error("mark-shipped error:", err);
     return json({ error: (err as Error).message ?? "Erreur serveur" }, 500);
