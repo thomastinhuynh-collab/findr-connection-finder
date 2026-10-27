@@ -1088,6 +1088,9 @@
     "thanks": "Merci !",
     "stripePending": "Nous vérifions ton inscription…",
     "stripeComplete": "Ton inscription Stripe est terminée.",
+    "stripeCompleteBanner": "Ton inscription Stripe est terminée. Tu peux maintenant faire des propositions et recevoir tes versements.",
+    "stripeCompleteLink": "Voir mes gains",
+    "stripeCompleteClose": "Fermer",
     "setupIncomplete": "Configuration incomplète",
     "setupResume": "Reprends la configuration de tes paiements pour la terminer.",
     "tabs": {
@@ -1130,6 +1133,8 @@
       "setup": "Configurer mes paiements",
       "resume": "Reprendre mon inscription Stripe",
       "verifying": "Vérification de ton inscription Stripe…",
+      "underReview": "Stripe vérifie ton inscription. Cela peut prendre quelques minutes.",
+      "checkAgain": "Vérifier à nouveau",
       "redirecting": "Redirection…",
       "modalTitle": "Avant de continuer",
       "modalBody": "Sur Stripe, ignore les mentions « entreprise » ou « auto-entrepreneur » — indique juste tes infos personnelles (identité, coordonnées bancaires).",

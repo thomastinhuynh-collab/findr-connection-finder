@@ -27,6 +27,7 @@ import { isComingSoonCategory } from "@/lib/categories";
 import { needsStripeOnboarding, shouldShowStripeActionBadge } from "@/lib/stripeOnboarding";
 import { useTranslation } from "react-i18next";
 
+type StripeSyncStatus = { complete: boolean; details_submitted: boolean; payouts_enabled: boolean; transfers: string | null };
 type TabKey = "recherches" | "propositions" | "favoris" | "gains";
 const TAB_GROUPS: { key: "seeker" | "finder"; tabs: TabKey[] }[] = [
   { key: "seeker", tabs: ["recherches"] },

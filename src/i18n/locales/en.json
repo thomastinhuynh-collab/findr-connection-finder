@@ -1088,6 +1088,9 @@
     "thanks": "Thank you!",
     "stripePending": "We're checking your registration…",
     "stripeComplete": "Your Stripe registration is complete.",
+    "stripeCompleteBanner": "Your Stripe setup is complete. You can now make proposals and receive your payouts.",
+    "stripeCompleteLink": "See my earnings",
+    "stripeCompleteClose": "Close",
     "setupIncomplete": "Setup incomplete",
     "setupResume": "Resume your payment setup to complete it.",
     "tabs": {
@@ -1130,6 +1133,8 @@
       "setup": "Set up my payments",
       "resume": "Resume my Stripe registration",
       "verifying": "Checking your Stripe registration…",
+      "underReview": "Stripe is reviewing your registration. This may take a few minutes.",
+      "checkAgain": "Check again",
       "redirecting": "Redirecting…",
       "modalTitle": "Before you continue",
       "modalBody": "On Stripe, ignore any mention of “business” or “sole trader” — just enter your personal details (identity, bank details).",
