@@ -661,7 +661,7 @@ const SearchDetail = () => {
               }}
               buyrFirstName={(search.profiles?.full_name || "").trim().split(/\s+/)[0] || ""}
               shipRequest={shipRequest}
-              onPaymentsChange={setSalePayments}
+              onPaymentsChange={(m) => setSalePayments(m as typeof salePayments)}
             />
           </div>
         </CollapsibleContent>
