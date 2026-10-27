@@ -63,4 +63,10 @@ describe("shipping tracking rules", () => {
     expect(parseTrackingEvidence({ latest_status: { status: "Delivered" } }).recognized).toBe(false);
     expect(parseTrackingEvidence({ tracking: { providers: [{ events: [{ time_utc: "2026-10-27T17:00:00Z" }, { time_iso: "2026-10-27T17:00:00+01:00" }] }] } })).toMatchObject({ recognized: true, firstEventAt: "2026-10-27T16:00:00.000Z" });
   });
+  it("retries unavailable checks only on the next daily window", () => {
+    const start = Date.parse("2026-10-01T00:00:00Z");
+    const r = { shipped_at: new Date(start).toISOString(), tracking_checked_at: null, tracking_last_attempt_at: new Date(start + 2 * DAY).toISOString() };
+    expect(needsTrackingCheck(r, start + 2 * DAY + 3600000)).toBe(false);
+    expect(needsTrackingCheck(r, start + 3 * DAY)).toBe(true);
+  });
 });

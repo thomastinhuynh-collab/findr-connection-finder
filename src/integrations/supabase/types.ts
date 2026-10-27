@@ -457,6 +457,7 @@ export type Database = {
           tracking_carrier_key: string | null
           tracking_checked_at: string | null
           tracking_first_event_at: string | null
+          tracking_last_attempt_at: string | null
           tracking_number: string | null
           tracking_number_key: string | null
           tracking_recognized: boolean
@@ -507,6 +508,7 @@ export type Database = {
           tracking_carrier_key?: string | null
           tracking_checked_at?: string | null
           tracking_first_event_at?: string | null
+          tracking_last_attempt_at?: string | null
           tracking_number?: string | null
           tracking_number_key?: string | null
           tracking_recognized?: boolean
@@ -557,6 +559,7 @@ export type Database = {
           tracking_carrier_key?: string | null
           tracking_checked_at?: string | null
           tracking_first_event_at?: string | null
+          tracking_last_attempt_at?: string | null
           tracking_number?: string | null
           tracking_number_key?: string | null
           tracking_recognized?: boolean

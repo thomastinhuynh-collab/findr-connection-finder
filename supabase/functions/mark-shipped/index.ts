@@ -88,6 +88,7 @@ Deno.serve(async (req) => {
         tracking_recognized: evidence?.recognized ?? false,
         tracking_first_event_at: evidence?.firstEventAt ?? null,
         tracking_checked_at: evidence?.checkedAt ?? null,
+        tracking_last_attempt_at: new Date().toISOString(),
       })
       .eq("id", reservation.id).eq("payment_status", "paye_en_attente_reception").is("shipped_at", null)
       .select("id").single();

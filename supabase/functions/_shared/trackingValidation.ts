@@ -46,12 +46,12 @@ export function cancellationDays(recognized: boolean | null | undefined): number
 export function canAutoReleaseShipped(r: { tracking_recognized?: boolean; shipped_at?: string | null; delivered_at?: string | null; dispute_open?: boolean }, now = Date.now()): boolean {
   return r.tracking_recognized === true && !r.dispute_open && !r.delivered_at && !!r.shipped_at && now - Date.parse(r.shipped_at) >= 14 * DAY;
 }
-export function needsTrackingCheck(r: { tracking_recognized?: boolean; shipped_at: string | null; tracking_checked_at?: string | null }, now = Date.now()): boolean {
+export function needsTrackingCheck(r: { tracking_recognized?: boolean; shipped_at: string | null; tracking_checked_at?: string | null; tracking_last_attempt_at?: string | null }, now = Date.now()): boolean {
   if (r.tracking_recognized || !r.shipped_at) return false;
   const shipped = Date.parse(r.shipped_at);
   const age = now - shipped;
   if (age < DAY) return false;
-  const last = r.tracking_checked_at ? Date.parse(r.tracking_checked_at) : shipped;
+  const last = Date.parse(r.tracking_last_attempt_at ?? r.tracking_checked_at ?? r.shipped_at);
   if (age >= 2 * DAY && last < shipped + 2 * DAY) return true;
   if (age >= DAY && last < shipped + DAY) return true;
   return now - last >= DAY;
