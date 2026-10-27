@@ -1,14 +1,17 @@
 // Étape buyr : comment veut-il recevoir son colis ?
 // Composant autonome (domicile ou point relais), sauvegarde directe sur la réservation.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 
 export type DeliveryAddress = {
+  recipient_first_name?: string;
+  recipient_last_name?: string;
   street: string;
   postal_code: string;
   city: string;
@@ -20,6 +23,8 @@ export type DeliveryRelayPoint = {
   name: string;
   address: string;
   postal_code?: string | null;
+  recipient_first_name?: string;
+  recipient_last_name?: string;
 };
 
 export type DeliveryChoice = {
@@ -27,6 +32,10 @@ export type DeliveryChoice = {
   delivery_address: DeliveryAddress | null;
   delivery_relay_point: DeliveryRelayPoint | null;
 };
+
+// Prénom / nom du destinataire : lettres (accents inclus), espaces, tirets et apostrophes, 2 à 60 caractères.
+const NAME_RE = /^[\p{L}][\p{L}\s'’-]{0,58}$/u;
+export const isValidRecipientName = (value: string) => NAME_RE.test(value.trim());
 
 const CARRIERS: Record<DeliveryRelayPoint["carrier"], { label: string; url: string }> = {
   mondial_relay: {
