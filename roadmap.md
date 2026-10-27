@@ -1,15 +1,11 @@
-# Traduction complète FR/EN
-- [x] Accueil : compteur de liste d'attente sans valeur inventée, avis fictifs désactivés et badge « Adresse email vérifiée »
-- [x] Retirer la section d'inscription à la liste d'attente de la page d'accueil, en conservant l'alerte de confirmation d'inscription
-- [x] Supprimer la simulation de paiement StripeCheckoutSimulation.tsx et son usage dans la page Premium, qui reste sur « Bientôt disponible »
-- [x] Harmoniser le tutoiement hors textes juridiques, corriger les versements suspendus et auditer les occurrences restantes ainsi que la simulation Stripe
-- [x] Mes gains : vocabulaire juridique Stripe FR/EN, sous-titre et libellés des totaux (5 tests ciblés réussis)
-- [x] Mes gains : attente du choix de livraison FR/EN, ouverture Stripe isolée et nettoyage des émojis visibles (3 tests ciblés réussis)
-- [x] Carte Paiements : description FR/EN précisée et pastille « Mes gains » limitée aux comptes ayant déjà envoyé une proposition (6 tests ciblés réussis)
-- [x] Mon espace : ignorer new_message, regrouper les notifications à 3 secondes, initialiser le délai de focus et rendre les pastilles accessibles avec contraste renforcé
-- [x] Créer les pages bilingues « Je deviens buyr » et « Je deviens findr » et raccorder la navigation
-- [x] Ajouter le stockage sécurisé et la fonction de traduction
-- [x] Traduire annonces et propositions avec retour au texte original
-- [ ] Raccorder les pages et composants métier à i18next
-- [ ] Vérifier les parcours FR/EN et la traduction automatique
-- [x] Remplacer et retraduire les textes juridiques et le modèle de commission
+# Roadmap
+
+- [ ] Page de transaction /transaction/:reservationId (buyr + findr uniquement)
+  - [ ] En-tête : photo, titre proposition, prix, autre personne, lien recherche
+  - [ ] Frise 6 étapes (Payé, Livraison choisie, À expédier, En route, Reçu, Versement)
+  - [ ] Carte d'action findr : expédition en 3 sous-étapes (adresse, étiquette, suivi via mark-shipped)
+  - [ ] Carte d'action buyr : choix livraison, confirmer réception, signaler problème
+  - [ ] Actions communes : message, annulation / « Je ne peux plus fournir l'objet »
+  - [ ] Cartes « Ton versement » (findr) / « Ton paiement » (buyr) avec computeFees + formatPrice
+  - [ ] Boutons « Voir la transaction » dans Mon espace et bloc « Vente en cours »
+  - [ ] i18n FR/EN, charte existante, build OK, vérification écran
