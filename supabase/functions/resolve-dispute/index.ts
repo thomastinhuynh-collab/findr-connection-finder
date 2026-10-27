@@ -102,25 +102,27 @@ Deno.serve(async (req) => {
           title: "Litige résolu",
           message:
             "Après examen de ta réclamation, l'équipe findr a versé le paiement au findr.",
-          link: "/mon-espace",
+          link: `/transaction/${reservation.id}`,
         },
         {
           user_id: reservation.findr_id,
           type: "dispute_resolved",
           title: "Litige résolu en ta faveur",
           message: "Le litige est clos, ton paiement a été versé.",
-          link: "/mon-espace",
+          link: `/transaction/${reservation.id}`,
         },
       ]);
 
       await Promise.allSettled([
         sendEmailToUser(admin, reservation.buyr_id, "dispute_resolved_buyr", {
+      reservationId: reservation.id,
           outcome: "verse_findr",
           itemTitle,
           amount: reservation.total_buyr_amount,
           notes,
         }),
         sendEmailToUser(admin, reservation.findr_id, "dispute_resolved_findr", {
+      reservationId: reservation.id,
           outcome: "verse_findr",
           itemTitle,
           amount: reservation.findr_payout_amount,
@@ -169,25 +171,27 @@ Deno.serve(async (req) => {
         type: "dispute_resolved",
         title: "Litige résolu — remboursement",
         message: `Ta réclamation a été acceptée : ${amount} € (frais inclus) te seront recrédités sous quelques jours.`,
-        link: "/mon-espace",
+        link: `/transaction/${reservation.id}`,
       },
       {
         user_id: reservation.findr_id,
         type: "dispute_resolved",
         title: "Litige résolu — remboursement du buyr",
         message: "Après examen, le buyr a été intégralement remboursé et la transaction annulée.",
-        link: "/mon-espace",
+        link: `/transaction/${reservation.id}`,
       },
     ]);
 
     await Promise.allSettled([
       sendEmailToUser(admin, reservation.buyr_id, "dispute_resolved_buyr", {
+      reservationId: reservation.id,
         outcome: "rembourse_buyr",
         itemTitle,
         amount: reservation.total_buyr_amount,
         notes,
       }),
       sendEmailToUser(admin, reservation.findr_id, "dispute_resolved_findr", {
+      reservationId: reservation.id,
         outcome: "rembourse_buyr",
         itemTitle,
         notes,

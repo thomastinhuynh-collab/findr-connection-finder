@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
           title: "Colis toujours pas livré",
           message:
             "Ton colis n'a pas été signalé comme livré depuis 10 jours. Tu peux demander l'annulation et le remboursement complet.",
-          link: "/mon-espace",
+          link: `/transaction/${reservation.id}`,
         },
         {
           user_id: reservation.findr_id,
@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
           title: "Colis toujours pas livré",
           message:
             "Le colis expédié il y a 10 jours n'a pas été livré. Le buyr peut demander un remboursement.",
-          link: "/mon-espace",
+          link: `/transaction/${reservation.id}`,
         },
       ]);
       await admin
