@@ -286,7 +286,8 @@ const MySpace = () => {
       });
     }
     fetchProfile();
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   // Compte Stripe existant mais incomplet à l'ouverture : une synchronisation
   useEffect(() => {
@@ -295,7 +296,8 @@ const MySpace = () => {
       stripeAutoSynced.current = true;
       syncStripeAccount().then((s) => { if (s?.complete) fetchProfile(); });
     }
-  }, [user, profile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, profile?.stripe_account_id, profile?.stripe_onboarding_complete]);
 
 
 
