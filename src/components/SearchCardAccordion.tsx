@@ -26,6 +26,7 @@ interface SearchItem {
   finalized_at?: string | null;
   cancel_reason?: string | null;
   has_invoice?: boolean;
+  transaction_id?: string | null;
   source_lang?: string;
 }
 

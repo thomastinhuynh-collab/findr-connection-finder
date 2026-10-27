@@ -483,7 +483,7 @@ const MySpace = () => {
           const { data: allReservations } = await supabase
             .from("reservations")
             .select(
-              "created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason, delivery_type, dispute_open"
+              "id, created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason, delivery_type, dispute_open"
             )
             .eq("search_id", search.id)
             .order("updated_at", { ascending: false });
@@ -543,6 +543,7 @@ const MySpace = () => {
             tab_status,
             findr_name,
             final_amount: paid?.total_buyr_amount ?? paid?.object_price ?? null,
+            transaction_id: paid?.id ?? null,
             finalized_at: paid?.updated_at || null,
             cancel_reason: paid?.dispute_reason || null,
             has_invoice: tab_status === "done",
