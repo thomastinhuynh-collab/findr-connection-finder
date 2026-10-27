@@ -15,7 +15,7 @@ const ServiceFeeLabel = ({ iconOnly = false }: { iconOnly?: boolean }) => {
             type="button"
             aria-label={t("proposal.serviceFeeInfo")}
             onClick={iconOnly ? (event) => event.stopPropagation() : undefined}
-            className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-current text-[10px] font-semibold leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className={`inline-flex h-4 w-4 items-center justify-center rounded-full border ${iconOnly ? "border-current" : "border-muted-foreground/50"} text-[10px] font-semibold leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-ring`}
           >
             ?
           </button>
