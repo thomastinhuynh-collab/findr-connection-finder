@@ -60,12 +60,20 @@ const CREAM = "#F5F0EA";
 
 const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [mode, setMode] = useState<"domicile" | "point_relais">(
     value.delivery_type ?? "domicile",
   );
   const [street, setStreet] = useState(value.delivery_address?.street ?? "");
   const [addrPostal, setAddrPostal] = useState(value.delivery_address?.postal_code ?? "");
   const [city, setCity] = useState(value.delivery_address?.city ?? "");
+
+  const [recipientFirst, setRecipientFirst] = useState(
+    value.delivery_address?.recipient_first_name ?? value.delivery_relay_point?.recipient_first_name ?? "",
+  );
+  const [recipientLast, setRecipientLast] = useState(
+    value.delivery_address?.recipient_last_name ?? value.delivery_relay_point?.recipient_last_name ?? "",
+  );
 
   const [carrier, setCarrier] = useState<DeliveryRelayPoint["carrier"]>(
     value.delivery_relay_point?.carrier ?? "mondial_relay",
@@ -77,10 +85,36 @@ const DeliveryChoicePicker = ({ reservationId, value, onSaved }: Props) => {
 
   const [saving, setSaving] = useState(false);
 
+  // Préremplissage avec le nom du profil, sans écraser ce que l'utilisateur a déjà saisi.
+  useEffect(() => {
+    let cancelled = false;
+    if (!user?.id) return;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      const full = (data?.full_name ?? "").trim();
+      if (cancelled || !full) return;
+      const [first, ...rest] = full.split(/\s+/);
+      const last = rest.join(" ");
+      setRecipientFirst((prev) => prev.trim() || first);
+      setRecipientLast((prev) => prev.trim() || last);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
+
+  const recipientValid =
+    isValidRecipientName(recipientFirst) && isValidRecipientName(recipientLast);
+
   const canSave =
-    mode === "domicile"
+    recipientValid &&
+    (mode === "domicile"
       ? street.trim().length > 3 && addrPostal.trim().length >= 4 && city.trim().length > 1
-      : relayName.trim().length > 1 && relayAddress.trim().length > 3 && relayId.trim().length > 1;
+      : relayName.trim().length > 1 && relayAddress.trim().length > 3 && relayId.trim().length > 1);
 
   const save = async () => {
     if (!canSave) return;
