@@ -1,4 +1,4 @@
-import { FINDR_RATE } from "@/lib/fees";
+import { FINDR_RATE, parsePrice, hasTooManyDecimals, formatPrice } from "@/lib/fees";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -68,7 +68,9 @@ const MakeProposal = () => {
   const [loading, setLoading] = useState(true);
 
   const isPremium = userProfile?.is_premium || false;
-  const priceNum = parseFloat(price) || 0;
+  const parsedPrice = parsePrice(price);
+  const priceNum = Number.isNaN(parsedPrice) ? 0 : parsedPrice;
+  const priceDecimalsError = hasTooManyDecimals(price);
   const findrFee = Math.round(priceNum * FINDR_RATE * 100) / 100;
   const finalAmount = Math.round((priceNum - findrFee) * 100) / 100;
 
@@ -205,7 +207,7 @@ const MakeProposal = () => {
       return;
     }
 
-    if (!price || !brand || !condition || !objectSize) {
+    if (Number.isNaN(parsedPrice) || parsedPrice < 1 || !brand || !condition || !objectSize) {
       toast({
         title: "Champs requis",
         description: "Remplis tous les champs obligatoires.",
@@ -230,7 +232,7 @@ const MakeProposal = () => {
           findr_id: user.id,
           title: `${brand} - ${conditions.find(c => c.value === condition)?.label}`,
           description: description || null,
-          proposed_price: parseFloat(price),
+          proposed_price: parsedPrice,
           image_urls: uploadedImageUrls,
           product_link: productLink || null,
           status: 'pending'
@@ -253,7 +255,7 @@ const MakeProposal = () => {
           _user_id: search.user_id,
           _type: "new_proposal",
           _title: "Nouvelle proposition reçue !",
-          _message: `${findrProfile?.full_name || "Un findr"} a fait une proposition de ${price}€ pour "${search.title}"`,
+          _message: `${findrProfile?.full_name || "Un findr"} a fait une proposition de ${formatPrice(parsedPrice, "fr")} pour "${search.title}"`,
           _link: `/recherche/${id}`
         });
 
@@ -268,7 +270,7 @@ const MakeProposal = () => {
               searchId: id,
               findrName: findrProfile?.full_name ?? "Un findr",
               proposalTitle: `${brand} - ${conditions.find(c => c.value === condition)?.label}`,
-              price: parseFloat(price),
+              price: parsedPrice,
               imageUrl: uploadedImageUrls?.[0] ?? null,
             },
           },
@@ -420,15 +422,20 @@ const MakeProposal = () => {
               <div className="relative">
                 <Input
                   id="price"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   placeholder="Ex: 120"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   className="pr-8 text-lg"
-                  min="1"
+                  aria-invalid={priceDecimalsError}
+                  aria-describedby={priceDecimalsError ? "price-decimals-error" : undefined}
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">€</span>
               </div>
+              {priceDecimalsError && (
+                <p id="price-decimals-error" className="text-xs text-destructive mt-2">{t("proposalForm.priceDecimalsError")}</p>
+              )}
               <p className="text-xs text-muted-foreground mt-2">
                  {t("proposalForm.budgetIs", { budget: formatBudget(search.budget_min, search.budget_max) })}
               </p>
@@ -505,15 +512,15 @@ const MakeProposal = () => {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                      <span className="text-muted-foreground">{t("proposalForm.price")}</span>
-                    <span className="font-medium">{priceNum.toFixed(2)} €</span>
+                    <span className="font-medium">{formatPrice(priceNum, i18n.language)}</span>
                   </div>
                   <div className="flex justify-between">
                      <span className="text-muted-foreground">{t("proposalForm.commission")}</span>
-                    <span className="font-medium text-destructive">-{findrFee.toFixed(2)} €</span>
+                    <span className="font-medium text-destructive">-{formatPrice(findrFee, i18n.language)}</span>
                   </div>
                   <div className="border-t border-border pt-2 flex justify-between">
                      <span className="font-semibold text-primary">{t("proposalForm.youReceive")}</span>
-                    <span className="font-bold text-lg text-accent">{finalAmount.toFixed(2)} €</span>
+                    <span className="font-bold text-lg text-accent">{formatPrice(finalAmount, i18n.language)}</span>
                   </div>
                   <p className="text-xs text-muted-foreground">{t("proposalForm.feeNote")}</p>
                 </div>
