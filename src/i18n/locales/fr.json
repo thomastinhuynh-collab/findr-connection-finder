@@ -1428,6 +1428,8 @@
     "hint": "Le findr a besoin de cette information pour expédier ton objet.",
     "home": "Livraison à domicile",
     "relay": "Retrait en point relais",
+    "recipientFirstName": "Prénom du destinataire",
+    "recipientLastName": "Nom du destinataire",
     "street": "Rue",
     "postalCode": "Code postal",
     "city": "Ville",
@@ -1458,6 +1460,7 @@
   "transaction": {
     "title": "Transaction",
     "with": "avec {{name}}",
+    "recipient": "Destinataire : {{name}}",
     "theBuyr": "le buyr",
     "viewSearch": "Voir la recherche",
     "viewTransaction": "Voir la transaction",

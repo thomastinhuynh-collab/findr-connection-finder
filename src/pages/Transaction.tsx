@@ -410,9 +410,13 @@ const Transaction = () => {
                       ? t("transaction.homeDelivery")
                       : t("transaction.relayDelivery")}
                   </p>
+                  {recipientName ? (
+                    <p className="font-medium" style={{ color: NAVY }}>
+                      {t("transaction.recipient", { name: recipientName })}
+                    </p>
+                  ) : null}
                   {reservation.delivery_type === "domicile" && reservation.delivery_address ? (
                     <p style={{ color: "#44403A" }}>
-                      {otherName && `${otherName} — `}
                       {reservation.delivery_address.street}, {reservation.delivery_address.postal_code}{" "}
                       {reservation.delivery_address.city}
                     </p>
