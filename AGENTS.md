@@ -1,5 +1,7 @@
 # Architecture rules
 
+- Tracking validation is shared from `supabase/functions/_shared/trackingValidation.ts`; recognition comes only from official 17TRACK evidence and is server-owned. The existing lifecycle job performs per-parcel checks at 24 h, 48 h and daily thereafter, and a persistent tracking-review marker prevents automatic payout retries from bypassing manual review.
+
 - Guard authenticated pages with `ProtectedRoute` and resume only validated same-origin destinations through the public `/auth/callback`; include the destination in callback URLs so email confirmation survives a different browser, without bypassing reservation RLS.
 - Transaction lifecycle emails carry `reservationId` and notifications store `/transaction/:id` in their existing link field; keep unpaid exclusivity and admin dispute links separate because the transaction page is participant-only.
 
