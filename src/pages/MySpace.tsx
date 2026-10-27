@@ -162,6 +162,7 @@ const MySpace = () => {
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
   const selectTab = (key: TabKey, focus = false) => {
     const next = new URLSearchParams(searchParams);
+    next.delete("stripe");
     next.set("onglet", key);
     setSearchParams(next, { replace: true });
     const el = tabRefs.current[key];
