@@ -788,6 +788,7 @@
     "delayHours": "{{count}} h",
     "saleInProgress": "Vente en cours",
     "purchaseInProgress": "Achat en cours",
+    "transactionInProgress": "Transaction en cours",
     "statusPaid": "Payée",
     "statusPaidToShip": "Payée — à expédier",
     "statusShipped": "Expédiée",
