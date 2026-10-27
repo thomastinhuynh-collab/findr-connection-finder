@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { normalizeTrackingNumber, validateTrackingNumber, isObviousTrackingSequence, trackingIdentity, isOldTrackingEvent, canAutoReleaseShipped, cancellationDays, needsTrackingCheck, DAY } from "./trackingValidation";
+import { normalizeTrackingNumber, validateTrackingNumber, isObviousTrackingSequence, trackingIdentity, isOldTrackingEvent, canAutoReleaseShipped, cancellationDays, needsTrackingCheck, blocksAutomaticTrackingPayout, DAY } from "./trackingValidation";
 import { parseTrackingEvidence } from "../../supabase/functions/_shared/trackingEvidence";
 
 describe("shipping tracking rules", () => {
+  it("never retries an automatic payout in tracking review", () => {
+    expect(blocksAutomaticTrackingPayout({ tracking_review_notified_at: "2026-10-27T17:00:00Z", tracking_recognized: true, delivered_at: "2026-10-27T18:00:00Z" })).toBe(true);
+    expect(blocksAutomaticTrackingPayout({ shipped_at: "2026-10-01T00:00:00Z", tracking_recognized: false })).toBe(true);
+    expect(blocksAutomaticTrackingPayout({ delivered_at: "2026-10-27T17:00:00Z", tracking_recognized: false })).toBe(false);
+  });
   it("normalizes uppercase, spaces and hyphens", () => expect(normalizeTrackingNumber(" 1z-ab 23\t45 ")).toBe("1ZAB2345"));
   it("requires UPS 1Z plus 16 alphanumeric characters", () => {
     expect(validateTrackingNumber("1Z999AA10123456784", "UPS")).toBeNull();

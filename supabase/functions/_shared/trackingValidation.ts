@@ -43,6 +43,9 @@ export function isOldTrackingEvent(first: string | null, paidAt: string | null):
 export function cancellationDays(recognized: boolean | null | undefined): number {
   return recognized === true ? 10 : 7;
 }
+export function blocksAutomaticTrackingPayout(r: { tracking_review_notified_at?: string | null; tracking_recognized?: boolean; shipped_at?: string | null; delivered_at?: string | null }): boolean {
+  return !!r.tracking_review_notified_at || (!!r.shipped_at && !r.delivered_at && r.tracking_recognized !== true);
+}
 export function canAutoReleaseShipped(r: { tracking_recognized?: boolean; shipped_at?: string | null; delivered_at?: string | null; dispute_open?: boolean }, now = Date.now()): boolean {
   return r.tracking_recognized === true && !r.dispute_open && !r.delivered_at && !!r.shipped_at && now - Date.parse(r.shipped_at) >= 14 * DAY;
 }

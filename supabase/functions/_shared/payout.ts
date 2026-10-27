@@ -2,6 +2,7 @@
 // manuelle (buyr) et la libération automatique (tâche planifiée).
 import Stripe from "npm:stripe@18";
 import { sendEmailToUser } from "./brevo.ts";
+import { blocksAutomaticTrackingPayout } from "./trackingValidation.ts";
 
 // deno-lint-ignore no-explicit-any
 type Admin = any;
@@ -23,7 +24,7 @@ export async function releaseFundsForReservation(
       .select("tracking_review_notified_at, tracking_recognized, shipped_at, delivered_at, payment_status")
       .eq("id", reservation.id).maybeSingle();
     if (error || !current) return { ok: false, error: "Vérification du versement impossible." };
-    if (current.tracking_review_notified_at || (current.shipped_at && !current.delivered_at && current.tracking_recognized !== true)) {
+    if (blocksAutomaticTrackingPayout(current)) {
       return { ok: false, held: true, error: "Le suivi doit être examiné avant tout versement automatique." };
     }
     if (current.payment_status === "termine") return { ok: false, error: "Versement déjà effectué." };

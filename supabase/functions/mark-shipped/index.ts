@@ -17,8 +17,8 @@ const json = (body: unknown, status = 200) =>
 
 const BodySchema = z.object({
   reservationId: z.string().uuid(),
-  trackingNumber: z.string().trim().min(4).max(64),
-  carrier: z.string().trim().min(2).max(60),
+  trackingNumber: z.string().trim().max(64),
+  carrier: z.string().trim().max(60),
 });
 
 Deno.serve(async (req) => {
