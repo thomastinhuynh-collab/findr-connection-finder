@@ -9,7 +9,7 @@ export function AuthContinuation() {
   const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
-    if (loading) return;
+    if (loading || location.pathname === "/reset-password") return;
     const callback = location.pathname === "/auth/callback";
     const fromUrl = callback ? safeAuthDestination(new URLSearchParams(location.search).get("next")) : null;
     if (!user) {
