@@ -261,8 +261,8 @@ const Transaction = () => {
 
   // Frise d'avancement en six étapes
   const paid = PAID_STATUSES.includes(ps);
-  const deliveryChosen = paid && !!reservation.delivery_type;
   const shipped = paid && (!!reservation.shipped_at || ["expedie", "livre", "versement_en_revue", "termine"].includes(ps));
+  const deliveryChosen = paid && (!!reservation.delivery_type || shipped);
   const arrived = !!reservation.delivered_at || ["livre", "versement_en_revue", "termine"].includes(ps);
   const received = ["versement_en_revue", "termine"].includes(ps);
   const payoutDone = ps === "termine";
