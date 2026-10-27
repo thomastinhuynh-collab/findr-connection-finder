@@ -697,7 +697,12 @@
     "urgent": "Urgent",
     "loginToContact": "You must be logged in to contact the poster.",
     "loginToPropose": "You must be logged in to make a proposal.",
-    "loginToReserve": "You must be logged in to request a reservation."
+    "loginToReserve": "You must be logged in to request a reservation.",
+    "saleInProgress": "Sale in progress",
+    "saleBought": "{{name}} bought your item. Next step: ship it.",
+    "shipItem": "Ship the item",
+    "saleShipped": "Parcel shipped, on its way to {{name}}.",
+    "saleDone": "Sale completed."
   },
   "proposal": {
     "pending": "Pending",
@@ -711,13 +716,13 @@
     "findrMessage": "Message from the findr",
     "noPhoto": "No photo provided",
     "receivedOn": "Proposal received on {{date}}",
-    "selected": "Selected",
-    "dealDone": "✓ Deal completed",
+    "selected": "Accepted",
+    "dealDone": "Completed",
     "paymentInProgress": "Payment in progress",
     "contactFindr": "Contact the findr",
     "contactBuyr": "Contact the buyr",
     "close": "Close",
-    "secureAwaiting": "Payout to the findr pending your delivery confirmation.",
+    "secureAwaiting": "The payout to the findr will happen after you confirm receipt.",
     "markShipped": "Mark as shipped",
     "confirmReceipt": "Confirm item received",
     "reportProblem": "Report a problem",
@@ -779,7 +784,16 @@
     "delayDays_one": "{{count}} day",
     "delayDays_other": "{{count}} days",
     "delayAndHours": " and {{hours}} h",
-    "delayHours": "{{count}} h"
+    "delayHours": "{{count}} h",
+    "saleInProgress": "Sale in progress",
+    "purchaseInProgress": "Purchase in progress",
+    "statusPaid": "Paid",
+    "statusPaidToShip": "Paid — to ship",
+    "statusShipped": "Shipped",
+    "statusDelivered": "Delivered",
+    "statusDone": "Completed",
+    "statusCancelled": "Cancelled",
+    "secureAwaitingFindr": "{{name}} has paid. Your payout will be made after they confirm receipt."
   },
   "terms": {
     "title": "Terms of Use",

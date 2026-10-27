@@ -697,7 +697,12 @@
     "urgent": "Urgent",
     "loginToContact": "Tu dois être connecté pour contacter l’annonceur.",
     "loginToPropose": "Tu dois être connecté pour faire une proposition.",
-    "loginToReserve": "Tu dois être connecté pour demander une réservation."
+    "loginToReserve": "Tu dois être connecté pour demander une réservation.",
+    "saleInProgress": "Vente en cours",
+    "saleBought": "{{name}} a acheté ton objet. Prochaine étape : l'expédier.",
+    "shipItem": "Expédier l'objet",
+    "saleShipped": "Colis expédié, en route vers {{name}}.",
+    "saleDone": "Vente terminée."
   },
   "proposal": {
     "pending": "En attente",
@@ -711,13 +716,13 @@
     "findrMessage": "Message du findr",
     "noPhoto": "Aucune photo fournie",
     "receivedOn": "Proposition reçue le {{date}}",
-    "selected": "Retenue",
-    "dealDone": "✓ Accord conclu",
+    "selected": "Acceptée",
+    "dealDone": "Terminée",
     "paymentInProgress": "Paiement en cours",
     "contactFindr": "Contacter le findr",
     "contactBuyr": "Contacter le buyr",
     "close": "Fermer",
-    "secureAwaiting": "Versement au findr en attente de ta confirmation de réception.",
+    "secureAwaiting": "Le versement au findr aura lieu après ta confirmation de réception.",
     "markShipped": "Marquer comme expédié",
     "confirmReceipt": "Confirmer la réception de l'objet",
     "reportProblem": "Signaler un problème",
@@ -779,7 +784,16 @@
     "delayDays_one": "{{count}} jour",
     "delayDays_other": "{{count}} jours",
     "delayAndHours": " et {{hours}} h",
-    "delayHours": "{{count}} h"
+    "delayHours": "{{count}} h",
+    "saleInProgress": "Vente en cours",
+    "purchaseInProgress": "Achat en cours",
+    "statusPaid": "Payée",
+    "statusPaidToShip": "Payée — à expédier",
+    "statusShipped": "Expédiée",
+    "statusDelivered": "Livrée",
+    "statusDone": "Terminée",
+    "statusCancelled": "Annulée",
+    "secureAwaitingFindr": "{{name}} a payé. Ton versement sera effectué après sa confirmation de réception."
   },
   "terms": {
     "title": "Conditions Générales d'Utilisation",
