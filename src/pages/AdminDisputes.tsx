@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ const PAGE_SIZE = 25;
 
 const AdminDisputes = () => {
   const { user, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
   const { isAdmin, loading: roleLoading } = useIsAdmin();
   const navigate = useNavigate();
   const [disputes, setDisputes] = useState<DisputeRow[]>([]);
@@ -156,15 +158,20 @@ const AdminDisputes = () => {
   return (
     <main className="min-h-screen bg-background pt-24 pb-16">
       <div className="container mx-auto px-4 max-w-4xl">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-primary flex items-center gap-2">
-            <AlertTriangle className="w-7 h-7 text-destructive" />
-            Litiges en cours
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {disputes.length} litige{disputes.length > 1 ? "s" : ""} affiché
-            {disputes.length > 1 ? "s" : ""} — les plus récents en premier.
-          </p>
+        <header className="mb-8 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-bold text-primary flex items-center gap-2">
+              <AlertTriangle className="w-7 h-7 text-destructive" />
+              Litiges en cours
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              {disputes.length} litige{disputes.length > 1 ? "s" : ""} affiché
+              {disputes.length > 1 ? "s" : ""} — les plus récents en premier.
+            </p>
+          </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/admin/tarifs-port">{t("adminShipping.link")}</Link>
+          </Button>
         </header>
 
         {disputes.length === 0 ? (
