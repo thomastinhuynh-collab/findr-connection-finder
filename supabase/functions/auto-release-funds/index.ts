@@ -6,6 +6,7 @@
 // 3. Lève les réservations exclusives expirées sans proposition.
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { isAuthorizedCron } from "../_shared/cronAuth.ts";
 import Stripe from "npm:stripe@18";
 import { releaseFundsForReservation } from "../_shared/payout.ts";
 import { recheckUnrecognizedTracking } from "../_shared/trackingVerification.ts";
@@ -22,6 +23,7 @@ const DAY = 24 * 60 * 60 * 1000;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (!(await isAuthorizedCron(req))) return json({ error: "unauthorized" }, 401);
 
   try {
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");

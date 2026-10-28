@@ -2,6 +2,7 @@
 // expire dans 2 jours et qui n'ont pas encore déposé de proposition.
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { isAuthorizedCron } from "../_shared/cronAuth.ts";
 import { sendEmailToUser } from "../_shared/brevo.ts";
 
 const json = (body: unknown, status = 200) =>
@@ -15,6 +16,7 @@ const BATCH = 100;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (!(await isAuthorizedCron(req))) return json({ error: "unauthorized" }, 401);
 
   try {
     const admin = createClient(
