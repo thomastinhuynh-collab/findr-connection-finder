@@ -1451,7 +1451,8 @@
       "reservation_pending": "Confirme la réservation sous 48h",
       "payment_pending": "Proposition acceptée — paiement en attente",
       "receipt_pending": "Colis en route — confirme la réception",
-      "delivery_choice": "Paiement confirmé — choisis ta livraison"
+      "delivery_choice": "Paiement confirmé — choisis ta livraison",
+      "label_pending": "Paiement confirmé — étiquette à fournir"
     }
   },
   "subcategories": {
