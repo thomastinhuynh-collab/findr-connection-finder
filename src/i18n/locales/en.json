@@ -1590,6 +1590,8 @@
     "error": "Error",
     "invalid": "Check the carrier, weight and price.",
     "saved": "Rate saved",
-    "link": "Shipping rates"
+    "link": "Shipping rates",
+    "accessTitle": "Reserved for administrators",
+    "accessIntro": "This page is reserved for the findr team."
   }
 }

@@ -1590,6 +1590,8 @@
     "error": "Erreur",
     "invalid": "Vérifie le transporteur, le poids et le prix.",
     "saved": "Tarif enregistré",
-    "link": "Tarifs de port"
+    "link": "Tarifs de port",
+    "accessTitle": "Accès réservé aux administrateurs",
+    "accessIntro": "Cette page est réservée à l’équipe findr."
   }
 }

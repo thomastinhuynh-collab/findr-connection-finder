@@ -67,9 +67,9 @@ const AdminShippingRates = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 px-4 text-center">
         <ShieldAlert className="w-10 h-10 text-destructive" />
-        <h1 className="text-xl font-semibold text-primary">Accès refusé</h1>
-        <p className="text-sm text-muted-foreground">Cette page est réservée à l'équipe findr.</p>
-        <Button asChild variant="outline"><Link to="/">Retour à l'accueil</Link></Button>
+        <h1 className="text-xl font-semibold text-primary">{t("adminShipping.accessTitle")}</h1>
+        <p className="text-sm text-muted-foreground">{t("adminShipping.accessIntro")}</p>
+        <Button asChild variant="outline"><Link to="/">{t("notFound.backHome")}</Link></Button>
       </div>
     );
   }
