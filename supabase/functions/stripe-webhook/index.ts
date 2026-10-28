@@ -2,6 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import Stripe from "npm:stripe@18";
 import { isStripeAccountComplete } from "../_shared/stripeAccount.ts";
 import { sendEmailTo, sendEmailToUser } from "../_shared/brevo.ts";
+import { ALREADY_PAID_STATUSES, AWAITING_LABEL, labelDeadlineAt } from "../_shared/paymentStatus.ts";
 
 const ADMIN_EMAIL = "thomas@findrapp.fr";
 
