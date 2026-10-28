@@ -791,7 +791,7 @@ const SearchDetail = () => {
     !saleDone && (!!myPayment?.shipped_at || ["expedie", "livre"].includes(myPayment?.payment_status ?? ""));
   const salePaid =
     !!myPayment &&
-    ["paye_en_attente_reception", "expedie", "livre", "termine"].includes(
+    ["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre", "termine"].includes(
       myPayment.payment_status ?? "",
     );
   const saleWaitingDelivery =

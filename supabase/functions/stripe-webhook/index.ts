@@ -2,6 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import Stripe from "npm:stripe@18";
 import { isStripeAccountComplete } from "../_shared/stripeAccount.ts";
 import { sendEmailTo, sendEmailToUser } from "../_shared/brevo.ts";
+import { ALREADY_PAID_STATUSES, AWAITING_LABEL, labelDeadlineAt } from "../_shared/paymentStatus.ts";
 
 const ADMIN_EMAIL = "thomas@findrapp.fr";
 
@@ -78,14 +79,6 @@ Deno.serve(async (req) => {
             : session.payment_intent?.id ?? null;
 
         // Idempotence : si le paiement est déjà enregistré (ou plus avancé), on ignore.
-        const ALREADY_PAID_STATUSES = [
-          "paye_en_attente_reception",
-          "expedie",
-          "livre",
-          "versement_en_revue",
-          "termine",
-          "annule",
-        ];
         const { data: current } = await admin
           .from("reservations")
           .select("payment_status")
@@ -123,12 +116,14 @@ Deno.serve(async (req) => {
           }
         }
 
+        const paidAt = Date.now();
         const { data: reservation, error } = await admin
           .from("reservations")
           .update({
             ship_from: shipFrom,
-            payment_status: "paye_en_attente_reception",
-            accepted_at: new Date().toISOString(),
+            payment_status: AWAITING_LABEL,
+            label_deadline_at: labelDeadlineAt(shipFrom, paidAt),
+            accepted_at: new Date(paidAt).toISOString(),
             stripe_payment_intent_id: paymentIntentId,
           })
           .eq("id", reservationId)

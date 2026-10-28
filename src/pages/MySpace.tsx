@@ -91,7 +91,7 @@ interface SearchItem {
   accepted_count?: number;
   unread_count?: number;
   completed_at?: string | null;
-  urgent_reason?: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | null;
+  urgent_reason?: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | "label_pending" | null;
   tab_status?: "active" | "ongoing" | "done" | "cancelled";
   findr_name?: string | null;
   final_amount?: number | null;
@@ -491,7 +491,7 @@ const MySpace = () => {
           const { data: allReservations } = await supabase
             .from("reservations")
             .select(
-              "id, created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason, delivery_type, dispute_open"
+              "id, created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason, delivery_type, dispute_open, label_deadline_at"
             )
             .eq("search_id", search.id)
             .order("updated_at", { ascending: false });
@@ -506,11 +506,14 @@ const MySpace = () => {
           const deliveryChoicePending = allRes.some(
             (r) => r.payment_status === "paye_en_attente_reception" && !r.delivery_type
           );
-          const urgent_reason: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | null =
+          const labelPending = allRes.some((r) => r.payment_status === "paye_attente_etiquette" && !!r.label_deadline_at);
+          const urgent_reason: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | "label_pending" | null =
             hasRecentReservation
               ? "reservation_pending"
               : paymentPending
               ? "payment_pending"
+              : labelPending
+              ? "label_pending"
               : deliveryChoicePending
               ? "delivery_choice"
               : receiptPending
@@ -518,7 +521,7 @@ const MySpace = () => {
               : null;
 
           const paid = allRes.find((r) =>
-            ["paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine", "annule"].includes(
+            ["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine", "annule"].includes(
               r.payment_status ?? ""
             )
           );

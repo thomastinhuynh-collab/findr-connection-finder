@@ -46,7 +46,7 @@ const GOLD = "#D9BB87";
 const CREAM = "#F5F0EA";
 
 const DAY = 24 * 60 * 60 * 1000;
-const PAID_STATUSES = ["paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine"];
+const PAID_STATUSES = ["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine"];
 
 const LABEL_SITES = [
   { key: "mondial_relay", label: "Mondial Relay", url: "https://www.mondialrelay.fr/envoi-de-colis/" },
@@ -287,7 +287,7 @@ const Transaction = () => {
 
   // Annulation buyr : 5 jours sans expédition, 10 jours après expédition jamais livrée.
   const cancelUnlockAt = () => {
-    if (!["paye_en_attente_reception", "expedie", "livre"].includes(ps) && !(ps === "versement_en_revue" && reservation.tracking_review_notified_at)) return null;
+    if (!["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre"].includes(ps) && !(ps === "versement_en_revue" && reservation.tracking_review_notified_at)) return null;
     if (reservation.shipped_at) return new Date(reservation.shipped_at).getTime() + cancellationDays(reservation.tracking_recognized) * DAY;
     const since = new Date(reservation.accepted_at ?? reservation.created_at).getTime();
     return since + 5 * DAY;
@@ -391,6 +391,12 @@ const Transaction = () => {
             );
           })}
         </ol>
+
+        {ps === "paye_attente_etiquette" && (
+          <p className="text-sm font-medium" style={{ color: NAVY }}>
+            {isFindr ? t("proposal.statusAwaitingLabelFindr") : t("proposal.statusAwaitingLabelBuyr")}
+          </p>
+        )}
 
         {/* Carte d'action — findr : expédition en trois sous-étapes */}
         {showShipFlow && (

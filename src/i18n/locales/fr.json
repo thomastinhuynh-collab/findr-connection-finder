@@ -789,6 +789,8 @@
     "purchaseInProgress": "Achat en cours",
     "transactionInProgress": "Transaction en cours",
     "statusPaid": "Payée",
+    "statusAwaitingLabelFindr": "Payée — en attente de l’étiquette",
+    "statusAwaitingLabelBuyr": "Étiquette à fournir",
     "statusPaidToShip": "Payée — à expédier",
     "statusShipped": "Expédiée",
     "statusDelivered": "Livrée",
@@ -1239,6 +1241,7 @@
       "emptyCta": "Découvrir comment devenir findr",
       "step": {
         "awaitingDeliveryChoice": "En attente du choix de livraison du buyr",
+        "paye_attente_etiquette": "Payée — en attente de l’étiquette",
         "paye_en_attente_reception": "À expédier",
         "expedie": "Expédié — versement en attente de confirmation de réception",
         "livre": "Livré — versement en attente de confirmation de réception",
@@ -1448,7 +1451,8 @@
       "reservation_pending": "Confirme la réservation sous 48h",
       "payment_pending": "Proposition acceptée — paiement en attente",
       "receipt_pending": "Colis en route — confirme la réception",
-      "delivery_choice": "Paiement confirmé — choisis ta livraison"
+      "delivery_choice": "Paiement confirmé — choisis ta livraison",
+      "label_pending": "Paiement confirmé — étiquette à fournir"
     }
   },
   "subcategories": {

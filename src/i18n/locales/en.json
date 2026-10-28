@@ -789,6 +789,8 @@
     "purchaseInProgress": "Purchase in progress",
     "transactionInProgress": "Transaction in progress",
     "statusPaid": "Paid",
+    "statusAwaitingLabelFindr": "Paid — awaiting label",
+    "statusAwaitingLabelBuyr": "Label to provide",
     "statusPaidToShip": "Paid — to ship",
     "statusShipped": "Shipped",
     "statusDelivered": "Delivered",
@@ -1239,6 +1241,7 @@
       "emptyCta": "Learn how to become a findr",
       "step": {
         "awaitingDeliveryChoice": "Awaiting the buyr’s delivery choice",
+        "paye_attente_etiquette": "Paid — awaiting label",
         "paye_en_attente_reception": "To ship",
         "expedie": "Shipped — payout awaiting confirmation of receipt",
         "livre": "Delivered — payout awaiting confirmation of receipt",
@@ -1448,7 +1451,8 @@
       "reservation_pending": "Confirm the reservation within 48h",
       "payment_pending": "Proposal accepted — payment pending",
       "receipt_pending": "Parcel on its way — confirm receipt",
-      "delivery_choice": "Payment confirmed — choose your delivery"
+      "delivery_choice": "Payment confirmed — choose your delivery",
+      "label_pending": "Payment confirmed — label to provide"
     }
   },
   "subcategories": {

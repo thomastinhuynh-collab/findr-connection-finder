@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 const PAGE_SIZE = 20;
-const PENDING_STATUSES = ["paye_en_attente_reception", "expedie", "livre", "versement_en_revue"] as const;
+const PENDING_STATUSES = ["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue"] as const;
 
 interface PaidRow { id: string; amount: number; created_at: string; title: string | null }
 interface PendingRow { id: string; amount: number; status: string; delivery_type: string | null; search_id: string; title: string | null }

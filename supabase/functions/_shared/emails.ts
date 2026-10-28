@@ -136,6 +136,7 @@ export type EmailType =
   | "proposal_accepted"
   | "shipped"
   | "tracking_review"
+  | "label_ready"
   | "delivered"
   | "funds_released"
   | "auto_release"
@@ -268,6 +269,21 @@ export function buildEmail(
             data.reason === "old" ? "Ce numéro correspond à un envoi antérieur au paiement." : "Aucun événement de suivi fiable n'a été confirmé dans le délai prévu.",
             "Le versement est en revue : aucun versement automatique ne sera effectué avant l'examen par l'équipe findr.",
           ],
+          cta: { label: "Voir la transaction", url: transactionUrl },
+        }),
+      };
+
+    case "label_ready":
+      return {
+        subject: "Tu peux créer l'étiquette d'envoi",
+        html: renderEmail({
+          eyebrow: "Étiquette d'envoi",
+          title: "L'étiquette peut être créée",
+          paragraphs: [
+            `${hello} le findr a renseigné son adresse d'expédition.`,
+            "Tu peux maintenant créer l'étiquette d'envoi <strong>dans les 3 jours</strong> et la fournir depuis la page de la transaction.",
+          ],
+          facts: data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : undefined,
           cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };

@@ -465,7 +465,13 @@ export type Database = {
           findr_payout_amount: number | null
           id: string
           justification: string
+          label_carrier: string | null
+          label_deadline_at: string | null
+          label_path: string | null
           label_provided_at: string | null
+          label_rejected_at: string | null
+          label_rejection_count: number
+          label_tracking_number: string | null
           lost_notified_at: string | null
           object_price: number | null
           payment_status: string | null
@@ -518,7 +524,13 @@ export type Database = {
           findr_payout_amount?: number | null
           id?: string
           justification: string
+          label_carrier?: string | null
+          label_deadline_at?: string | null
+          label_path?: string | null
           label_provided_at?: string | null
+          label_rejected_at?: string | null
+          label_rejection_count?: number
+          label_tracking_number?: string | null
           lost_notified_at?: string | null
           object_price?: number | null
           payment_status?: string | null
@@ -571,7 +583,13 @@ export type Database = {
           findr_payout_amount?: number | null
           id?: string
           justification?: string
+          label_carrier?: string | null
+          label_deadline_at?: string | null
+          label_path?: string | null
           label_provided_at?: string | null
+          label_rejected_at?: string | null
+          label_rejection_count?: number
+          label_tracking_number?: string | null
           lost_notified_at?: string | null
           object_price?: number | null
           payment_status?: string | null
