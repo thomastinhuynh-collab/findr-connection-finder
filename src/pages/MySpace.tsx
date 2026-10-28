@@ -53,6 +53,12 @@ const FindrEmptyState = ({ text }: { text: string }) => {
 interface Profile {
   id: string;
   full_name: string | null;
+  ship_from_first_name?: string | null;
+  ship_from_last_name?: string | null;
+  ship_from_street?: string | null;
+  ship_from_postal_code?: string | null;
+  ship_from_city?: string | null;
+  ship_from_updated_at?: string | null;
   avatar_url: string | null;
   banner_url: string | null;
   bio: string | null;
