@@ -46,12 +46,12 @@ const Navbar = () => {
               <Logo size={34} />
             </Link>
 
-            <div className="hidden flex-1 items-center justify-center gap-8 lg:flex">
+            <div className="hidden flex-1 items-center justify-center gap-5 lg:flex xl:gap-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="text-[13px] font-normal text-accent/75 transition-colors hover:text-accent"
+                  className="whitespace-nowrap text-[13px] font-normal text-accent/75 transition-colors hover:text-accent"
                 >
                   {t(`nav.${link.key}`)}
                 </Link>
@@ -63,7 +63,7 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={() => navigate("/poster")}
-                className="rounded-full border border-accent/40 bg-transparent px-5 py-[9px] text-[13px] font-normal text-accent transition-colors hover:border-accent hover:bg-accent/10"
+                className="rounded-full border border-accent/40 bg-transparent whitespace-nowrap px-5 py-[9px] text-[13px] font-normal text-accent transition-colors hover:border-accent hover:bg-accent/10"
               >
                 {t("nav.postSearch")}
               </button>
