@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CategoryGlyph from "@/components/CategoryGlyph";
 import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "@/components/AuthModal";
@@ -21,7 +21,7 @@ const navLinks = [
   { key: "blog", to: "/blog" },
 ];
 
-const categories = CATEGORIES.slice(0, 5);
+const categories = CATEGORIES;
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -39,6 +39,19 @@ const Hero = () => {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(168);
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const measure = () => setHeaderHeight(el.offsetHeight);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -71,6 +84,7 @@ const Hero = () => {
       }}
     >
       <div
+        ref={headerRef}
         style={{
           position: isStuck ? "fixed" : "relative",
           top: 0,
@@ -274,16 +288,24 @@ const Hero = () => {
 
         {/* ============ ZONE 2: CATEGORIES ============ */}
         <div
-          className="hidden md:flex"
+          className="hidden md:flex flex-wrap justify-center"
           style={{
-            gap: 32,
-            padding: "12px 32px",
+            gap: "6px 32px",
+            padding: "8px 32px",
             borderBottom: borderLine,
             alignItems: "center",
           }}
         >
           {categories.map((c, categoryIndex) => (
-            <span key={c.slug} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <span
+              key={c.slug}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                opacity: c.status === "coming_soon" ? 0.55 : 1,
+              }}
+            >
             <button
               onClick={() =>
                 navigate(`/recherches?category=${encodeURIComponent(c.slug)}`)
@@ -418,7 +440,7 @@ const Hero = () => {
       {/* Spacer to compensate for fixed header (only when stuck) */}
       {isStuck && (
         <>
-          <div style={{ height: 168 }} className="hidden md:block" />
+          <div style={{ height: headerHeight }} className="hidden md:block" />
           <div style={{ height: 128 }} className="md:hidden" />
         </>
       )}
