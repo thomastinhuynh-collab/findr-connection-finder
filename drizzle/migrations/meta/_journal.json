@@ -85,6 +85,13 @@
       "when": 1793206463987,
       "tag": "0011_parcel_weight_and_shipping_rates",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1793207644651,
+      "tag": "0012_buyer_label_flow",
+      "breakpoints": true
     }
   ]
 }
