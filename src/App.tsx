@@ -37,6 +37,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const AdminDisputes = lazy(() => import("./pages/AdminDisputes"));
+const AdminShippingRates = lazy(() => import("./pages/AdminShippingRates"));
 const Transaction = lazy(() => import("./pages/Transaction"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -89,6 +90,7 @@ const App = () => (
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/admin/litiges" element={<ProtectedRoute><AdminDisputes /></ProtectedRoute>} />
+              <Route path="/admin/tarifs-port" element={<ProtectedRoute><AdminShippingRates /></ProtectedRoute>} />
               <Route path="/transaction/:reservationId" element={<ProtectedRoute><Transaction /></ProtectedRoute>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
