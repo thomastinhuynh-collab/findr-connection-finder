@@ -41,29 +41,29 @@ const Navbar = () => {
     <>
       <header className="findr-navigation-bg fixed inset-x-0 top-0 z-50 shadow-lg">
         <div className="mx-auto max-w-[1280px]">
-          <nav className="flex items-center justify-between gap-10 border-b border-accent/10 px-4 py-5 md:px-8">
+          <nav className="flex items-center justify-between gap-10 border-b border-accent/10 px-4 py-5 lg:px-8">
             <Link to="/" className="shrink-0 no-underline" aria-label={t("nav.home", { defaultValue: "Accueil" })}>
               <Logo size={34} />
             </Link>
 
-            <div className="hidden flex-1 items-center justify-center gap-8 md:flex">
+            <div className="hidden flex-1 items-center justify-center gap-5 lg:flex xl:gap-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className="text-[13px] font-normal text-accent/75 transition-colors hover:text-accent"
+                  className="whitespace-nowrap text-[13px] font-normal text-accent/75 transition-colors hover:text-accent"
                 >
                   {t(`nav.${link.key}`)}
                 </Link>
               ))}
             </div>
 
-            <div className="hidden shrink-0 items-center gap-3 md:flex">
+            <div className="hidden shrink-0 items-center gap-3 lg:flex">
               {user && <HeaderActions variant="gold" />}
               <button
                 type="button"
                 onClick={() => navigate("/poster")}
-                className="rounded-full border border-accent/40 bg-transparent px-5 py-[9px] text-[13px] font-normal text-accent transition-colors hover:border-accent hover:bg-accent/10"
+                className="rounded-full border border-accent/40 bg-transparent whitespace-nowrap px-5 py-[9px] text-[13px] font-normal text-accent transition-colors hover:border-accent hover:bg-accent/10"
               >
                 {t("nav.postSearch")}
               </button>
@@ -87,16 +87,16 @@ const Navbar = () => {
             </div>
 
             {user && (
-              <div className="ml-auto md:hidden">
+              <div className="ml-auto lg:hidden">
                 <HeaderActions variant="gold" />
               </div>
             )}
-            <div className={`${user ? "" : "ml-auto"} md:hidden`}>
+            <div className={`${user ? "" : "ml-auto"} lg:hidden`}>
               <LanguageSwitcher variant="gold" />
             </div>
             <button
               type="button"
-              className="p-1 text-[22px] leading-none text-accent md:hidden"
+              className="p-1 text-[22px] leading-none text-accent lg:hidden"
               onClick={() => setIsOpen((open) => !open)}
               aria-label={t("nav.menu")}
               aria-expanded={isOpen}
@@ -106,7 +106,7 @@ const Navbar = () => {
           </nav>
 
           {isOpen && (
-            <div className="flex flex-col gap-[14px] border-b border-accent/10 px-8 py-4 md:hidden">
+            <div className="flex flex-col gap-[14px] border-b border-accent/10 px-8 py-4 lg:hidden">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
