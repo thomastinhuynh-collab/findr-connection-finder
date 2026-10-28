@@ -12,6 +12,8 @@ import { releaseFundsForReservation } from "../_shared/payout.ts";
 import { recheckUnrecognizedTracking } from "../_shared/trackingVerification.ts";
 import { putTrackingInReview } from "../_shared/trackingReview.ts";
 import { canAutoReleaseShipped, cancellationDays } from "../_shared/trackingValidation.ts";
+import { AWAITING_LABEL, labelDeadlineAt } from "../_shared/paymentStatus.ts";
+import { sendEmailToUser } from "../_shared/brevo.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -182,7 +184,53 @@ Deno.serve(async (req) => {
       });
     }
 
+    // 4. Nouveau parcours : le findr a renseigné son adresse après le paiement.
+    // On recopie l'adresse, on pose l'échéance de l'étiquette et on prévient le buyr.
+    const { data: awaitingAddress } = await admin
+      .from("reservations")
+      .select("id, buyr_id, findr_id")
+      .eq("payment_status", AWAITING_LABEL)
+      .is("ship_from", null);
+
+    let labelReady = 0;
+    for (const reservation of awaitingAddress ?? []) {
+      try {
+        const { data: fp } = await admin
+          .from("profiles")
+          .select("ship_from_first_name, ship_from_last_name, ship_from_street, ship_from_postal_code, ship_from_city, ship_from_country")
+          .eq("user_id", reservation.findr_id).maybeSingle();
+        if (!fp?.ship_from_street || !fp.ship_from_postal_code || !fp.ship_from_city) continue;
+        const shipFrom = {
+          first_name: fp.ship_from_first_name ?? "",
+          last_name: fp.ship_from_last_name ?? "",
+          street: fp.ship_from_street,
+          postal_code: fp.ship_from_postal_code,
+          city: fp.ship_from_city,
+          country: fp.ship_from_country ?? "FR",
+        };
+        // Mise à jour conditionnelle : un seul passage prévient le buyr.
+        const { data: updated } = await admin
+          .from("reservations")
+          .update({ ship_from: shipFrom, label_deadline_at: labelDeadlineAt(shipFrom, Date.now()) })
+          .eq("id", reservation.id).eq("payment_status", AWAITING_LABEL).is("ship_from", null)
+          .select("id").maybeSingle();
+        if (!updated) continue;
+        labelReady++;
+        await admin.from("notifications").insert({
+          user_id: reservation.buyr_id,
+          type: "label_ready",
+          title: "Tu peux créer l'étiquette d'envoi",
+          message: "Le findr a renseigné son adresse d'expédition. Tu as 3 jours pour fournir l'étiquette.",
+          link: `/transaction/${reservation.id}`,
+        });
+        await sendEmailToUser(admin, reservation.buyr_id, "label_ready", { reservationId: reservation.id });
+      } catch (e) {
+        console.error("label-ready step failed for", reservation.id, e);
+      }
+    }
+
     return json({
+      labelReady,
       released,
       failed,
       stillHeld,
