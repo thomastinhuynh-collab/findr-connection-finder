@@ -1521,5 +1521,33 @@
     "badge": "Tracking not confirmed",
     "tooltip": "The carrier has not recognized this number yet.",
     "review": "Payout under review — the findr team is checking the tracking before any automatic payout."
+  },
+  "shipFrom": {
+    "title": "Shipping address",
+    "description": "The address you send your sold items from.",
+    "info": "Used only to create shipping labels for your sales. It is shared with the buyer only once their order is paid, while the label is created.",
+    "fields": {
+      "first_name": "First name",
+      "last_name": "Last name",
+      "street": "Address",
+      "postal_code": "Postcode",
+      "city": "City"
+    },
+    "errors": {
+      "first_name": "2 to 60 characters: letters, spaces, hyphens and apostrophes.",
+      "last_name": "2 to 60 characters: letters, spaces, hyphens and apostrophes.",
+      "street": "Enter an address of 3 to 120 characters.",
+      "postal_code": "The postcode must have 5 digits.",
+      "city": "Enter a city of 2 to 80 characters."
+    },
+    "countryFr": "Country: France (the only country available for now).",
+    "save": "Save address",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "saved": "Shipping address saved",
+    "saveError": "Couldn't save the address. Check the fields and try again.",
+    "gateTitle": "Add your shipping address",
+    "gateText": "It's used to create the shipping label when your item is bought. Add it before making your first proposal.",
+    "gateCta": "Add my address"
   }
 }
