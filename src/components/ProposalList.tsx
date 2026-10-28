@@ -53,6 +53,7 @@ import DisputeBanner from "@/components/DisputeBanner";
 import DisputeDialog from "@/components/DisputeDialog";
 import { useTranslation } from "react-i18next";
 import { formatPrice, computeFees } from "@/lib/fees";
+import ShippingEstimate from "@/components/ShippingEstimate";
 import ServiceFeeLabel from "@/components/ServiceFeeLabel";
 import TranslatedContent from "@/components/TranslatedContent";
 import DeliveryChoicePicker, {
@@ -71,6 +72,7 @@ interface Proposal {
   created_at: string;
   findr_id: string;
   source_lang?: string | null;
+  parcel_weight_kg?: number | null;
   findr_profile?: {
     full_name: string | null;
     avatar_url: string | null;
@@ -526,6 +528,7 @@ const ProposalList = ({
                           {t("proposal.priceBreakdown", { price: formatPrice(fees.objectPrice, i18n.language), fee: formatPrice(fees.buyrFee, i18n.language) })}{" "}
                           <ServiceFeeLabel iconOnly />
                         </div>
+                        <ShippingEstimate weightKg={proposal.parcel_weight_kg} className="text-proposal-muted mt-1" />
                       </div>
                     )}
 
@@ -882,6 +885,7 @@ const ProposalList = ({
                     <span className="break-words">{t("proposal.total")}</span>
                     <span className="text-accent text-right flex-shrink-0">{formatPrice(fees.total, i18n.language)}</span>
                   </div>
+                  <ShippingEstimate weightKg={selectedProposal.parcel_weight_kg} className="text-muted-foreground pt-1" />
                 </div>
 
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">

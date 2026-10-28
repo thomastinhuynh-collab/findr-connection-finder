@@ -2,7 +2,7 @@ import { FINDR_RATE, parsePrice, hasTooManyDecimals, formatPrice } from "@/lib/f
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import ObjectSizeField from "@/components/ObjectSizeField";
+import ParcelWeightField from "@/components/ParcelWeightField";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -61,7 +61,7 @@ const MakeProposal = () => {
   const [condition, setCondition] = useState("");
   const [description, setDescription] = useState("");
   const [productLink, setProductLink] = useState("");
-  const [objectSize, setObjectSize] = useState("");
+  const [parcelWeight, setParcelWeight] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [search, setSearch] = useState<SearchData | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -207,7 +207,7 @@ const MakeProposal = () => {
       return;
     }
 
-    if (Number.isNaN(parsedPrice) || parsedPrice < 1 || !brand || !condition || !objectSize) {
+    if (Number.isNaN(parsedPrice) || parsedPrice < 1 || !brand || !condition || !parcelWeight) {
       toast({
         title: "Champs requis",
         description: "Remplis tous les champs obligatoires.",
@@ -236,7 +236,7 @@ const MakeProposal = () => {
           image_urls: uploadedImageUrls,
           product_link: productLink || null,
           status: 'pending'
-          ,object_size: objectSize
+          ,parcel_weight_kg: Number(parcelWeight)
           ,source_lang: i18n.resolvedLanguage?.startsWith("en") ? "en" : "fr"
         } as any);
       
@@ -477,7 +477,7 @@ const MakeProposal = () => {
             </div>
 
 
-            <ObjectSizeField value={objectSize} onChange={setObjectSize} />
+            <ParcelWeightField value={parcelWeight} onChange={setParcelWeight} />
 
             {/* Description (optional) */}
             <div className="bg-card border border-border rounded-2xl p-6">

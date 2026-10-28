@@ -33,6 +33,8 @@ import DeliveryChoicePicker, {
   DeliveryAddress,
   DeliveryRelayPoint,
 } from "@/components/DeliveryChoicePicker";
+import ShippingEstimate from "@/components/ShippingEstimate";
+import { weightKey } from "@/components/ParcelWeightField";
 import ServiceFeeLabel from "@/components/ServiceFeeLabel";
 import { computeFees, formatPrice } from "@/lib/fees";
 import { trackingUrl } from "@/lib/tracking";
@@ -86,6 +88,7 @@ interface ProposalRow {
   proposed_price: number;
   image_urls: string[] | null;
   object_size: string | null;
+  parcel_weight_kg: number | null;
 }
 
 const firstName = (full: string | null | undefined) =>
@@ -138,7 +141,7 @@ const Transaction = () => {
       res.proposal_id
         ? supabase
             .from("proposals")
-            .select("id, title, proposed_price, image_urls, object_size")
+            .select("id, title, proposed_price, image_urls, object_size, parcel_weight_kg")
             .eq("id", res.proposal_id)
             .maybeSingle()
         : Promise.resolve({ data: null }),
@@ -431,7 +434,11 @@ const Transaction = () => {
                         : ""}
                     </p>
                   ) : null}
-                  {sizeKey && (
+                  {proposal?.parcel_weight_kg != null ? (
+                    <p className="text-xs pt-1" style={{ color: "#666666" }}>
+                      {t("parcelWeight.weightLabel")} : {t(`parcelWeight.option.${weightKey(Number(proposal.parcel_weight_kg))}`)}
+                    </p>
+                  ) : sizeKey && (
                     <p className="text-xs pt-1" style={{ color: "#666666" }}>
                       {t("transaction.sizeLabel")} : {t(`transaction.size.${sizeKey}`)}
                     </p>
@@ -669,6 +676,7 @@ const Transaction = () => {
                   {formatPrice(reservation.total_buyr_amount ?? fees.total, i18n.language)}
                 </span>
               </div>
+              <ShippingEstimate weightKg={proposal?.parcel_weight_kg} className="pt-1 text-muted-foreground" />
             </>
           )}
         </section>

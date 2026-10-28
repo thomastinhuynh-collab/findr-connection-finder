@@ -2,7 +2,7 @@ import { FINDR_RATE, parsePrice, hasTooManyDecimals, formatPrice } from "@/lib/f
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import ObjectSizeField from "@/components/ObjectSizeField";
+import ParcelWeightField from "@/components/ParcelWeightField";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -69,7 +69,7 @@ const EditProposal = () => {
   const [condition, setCondition] = useState("");
   const [description, setDescription] = useState("");
   const [productLink, setProductLink] = useState("");
-  const [objectSize, setObjectSize] = useState("");
+  const [parcelWeight, setParcelWeight] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [proposal, setProposal] = useState<ProposalData | null>(null);
   const [search, setSearch] = useState<SearchData | null>(null);
@@ -141,7 +141,7 @@ const EditProposal = () => {
     setPrice(proposalData.proposed_price.toString());
     setDescription(proposalData.description || "");
     setProductLink(proposalData.product_link || "");
-    setObjectSize(((proposalData as any).object_size as string) || "");
+    setParcelWeight((proposalData as any).parcel_weight_kg != null ? String(Number((proposalData as any).parcel_weight_kg)) : "");
     
     // Parse brand and condition from title if possible
     const titleParts = proposalData.title.split(" - ");
@@ -260,7 +260,7 @@ const EditProposal = () => {
       return;
     }
 
-    if (Number.isNaN(parsedPrice) || parsedPrice < 1 || !brand || !condition || !objectSize) {
+    if (Number.isNaN(parsedPrice) || parsedPrice < 1 || !brand || !condition || !parcelWeight) {
       toast({
         title: "Champs requis",
         description: "Remplis tous les champs obligatoires.",
@@ -287,7 +287,7 @@ const EditProposal = () => {
           proposed_price: parsedPrice,
           image_urls: allImageUrls,
           product_link: productLink || null,
-          object_size: objectSize,
+          parcel_weight_kg: Number(parcelWeight),
         } as any)
         .eq("id", id);
       
@@ -520,7 +520,7 @@ const EditProposal = () => {
               </Select>
             </div>
 
-            <ObjectSizeField value={objectSize} onChange={setObjectSize} />
+            <ParcelWeightField value={parcelWeight} onChange={setParcelWeight} />
 
             {/* Product Link (optional) */}
             <div className="bg-card border border-border rounded-2xl p-6">

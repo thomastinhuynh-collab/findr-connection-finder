@@ -1549,5 +1549,47 @@
     "gateTitle": "Add your shipping address",
     "gateText": "It's used to create the shipping label when your item is bought. Add it before making your first proposal.",
     "gateCta": "Add my address"
+  },
+  "parcelWeight": {
+    "label": "Parcel weight, packaging included",
+    "help": "Pick the bracket that covers your packed parcel.",
+    "weightLabel": "Parcel weight",
+    "option": {
+      "0_5": "Up to 0.5 kg",
+      "1": "Up to 1 kg",
+      "2": "Up to 2 kg",
+      "5": "Up to 5 kg",
+      "10": "Up to 10 kg"
+    },
+    "hint": {
+      "0_5": "A paperback or a few cards",
+      "1": "Two or three books",
+      "2": "A thick sweatshirt or five books",
+      "5": "A pair of boots",
+      "10": "A large parcel"
+    }
+  },
+  "shippingEstimate": {
+    "line": "Estimated shipping: {{min}} to {{max}} (paid to the carrier, not to findr)",
+    "info": "Estimate based on the weight given by the findr and the carriers' public rates. The exact price is the carrier's when you buy the label."
+  },
+  "adminShipping": {
+    "title": "Shipping rates",
+    "intro": "Carriers' public rates, used for the shipping estimate shown to the buyr.",
+    "carrier": "Carrier",
+    "mode": "Mode",
+    "relais": "Relay point",
+    "domicile": "Home",
+    "maxWeight": "Max weight (kg)",
+    "price": "Price (€)",
+    "updated": "Updated",
+    "add": "Add",
+    "delete": "Delete",
+    "save": "Save",
+    "empty": "No rates yet: the estimate stays hidden.",
+    "error": "Error",
+    "invalid": "Check the carrier, weight and price.",
+    "saved": "Rate saved",
+    "link": "Shipping rates"
   }
 }
