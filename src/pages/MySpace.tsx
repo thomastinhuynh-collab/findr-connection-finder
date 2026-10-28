@@ -25,6 +25,8 @@ import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
 import TranslatedContent from "@/components/TranslatedContent";
 import { isComingSoonCategory } from "@/lib/categories";
 import { needsStripeOnboarding, shouldShowStripeActionBadge } from "@/lib/stripeOnboarding";
+import { shouldShowShipFromActionBadge } from "@/lib/shipFrom";
+import ShipFromCard from "@/components/ShipFromCard";
 import { useTranslation } from "react-i18next";
 
 type StripeSyncStatus = { complete: boolean; details_submitted: boolean; payouts_enabled: boolean; transfers: string | null };
@@ -51,6 +53,12 @@ const FindrEmptyState = ({ text }: { text: string }) => {
 interface Profile {
   id: string;
   full_name: string | null;
+  ship_from_first_name?: string | null;
+  ship_from_last_name?: string | null;
+  ship_from_street?: string | null;
+  ship_from_postal_code?: string | null;
+  ship_from_city?: string | null;
+  ship_from_updated_at?: string | null;
   avatar_url: string | null;
   banner_url: string | null;
   bio: string | null;
@@ -796,7 +804,7 @@ const MySpace = () => {
     recherches: searches.filter((s: any) => (s.unread_count || 0) > 0 || !!s.urgent_reason).length,
     propositions: findrActionCount,
     favoris: 0,
-    gains: shouldShowStripeActionBadge(profile, hasProposals) ? 1 : 0,
+    gains: shouldShowStripeActionBadge(profile, hasProposals) || shouldShowShipFromActionBadge(profile, hasProposals) ? 1 : 0,
   };
 
   const searchTodoByTab = { active: 0, ongoing: 0, done: 0, cancelled: 0 } as Record<"active" | "ongoing" | "done" | "cancelled", number>;
@@ -1355,6 +1363,9 @@ const MySpace = () => {
                 </div>
               </div>
             )}
+
+            {/* Adresse d'expédition du findr (expéditeur des étiquettes) */}
+            <ShipFromCard key={profile.ship_from_updated_at ?? "new"} profile={profile} onSaved={fetchProfile} />
 
             {/* Modale d'information avant redirection Stripe */}
             <Dialog open={stripeModalOpen} onOpenChange={setStripeModalOpen}>

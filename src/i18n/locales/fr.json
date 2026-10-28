@@ -1521,5 +1521,33 @@
     "badge": "Suivi non confirmé",
     "tooltip": "Le transporteur n'a pas encore reconnu ce numéro.",
     "review": "Versement en revue — l'équipe findr vérifie le suivi avant tout versement automatique."
+  },
+  "shipFrom": {
+    "title": "Adresse d'expédition",
+    "description": "L'adresse depuis laquelle tu envoies tes objets vendus.",
+    "info": "Utilisée uniquement pour créer les étiquettes d'expédition de tes ventes. Elle n'est communiquée à l'acheteur qu'une fois sa commande payée, le temps de créer l'étiquette.",
+    "fields": {
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "street": "Adresse",
+      "postal_code": "Code postal",
+      "city": "Ville"
+    },
+    "errors": {
+      "first_name": "2 à 60 caractères : lettres, espaces, tirets et apostrophes.",
+      "last_name": "2 à 60 caractères : lettres, espaces, tirets et apostrophes.",
+      "street": "Indique une adresse de 3 à 120 caractères.",
+      "postal_code": "Le code postal doit compter 5 chiffres.",
+      "city": "Indique une ville de 2 à 80 caractères."
+    },
+    "countryFr": "Pays : France (seul pays disponible pour l'instant).",
+    "save": "Enregistrer l'adresse",
+    "edit": "Modifier",
+    "cancel": "Annuler",
+    "saved": "Adresse d'expédition enregistrée",
+    "saveError": "Impossible d'enregistrer l'adresse. Vérifie les champs et réessaie.",
+    "gateTitle": "Ajoute ton adresse d'expédition",
+    "gateText": "Elle sert à créer l'étiquette d'envoi quand ton objet est acheté. Renseigne-la avant de faire ta première proposition.",
+    "gateCta": "Renseigner mon adresse"
   }
 }

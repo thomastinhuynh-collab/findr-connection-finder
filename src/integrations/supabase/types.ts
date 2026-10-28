@@ -268,6 +268,13 @@ export type Database = {
           negative_balance: number
           payout_hold: boolean
           preferred_relay_point: Json | null
+          ship_from_city: string | null
+          ship_from_country: string
+          ship_from_first_name: string | null
+          ship_from_last_name: string | null
+          ship_from_postal_code: string | null
+          ship_from_street: string | null
+          ship_from_updated_at: string | null
           stripe_account_id: string | null
           stripe_onboarding_complete: boolean
           updated_at: string
@@ -288,6 +295,13 @@ export type Database = {
           negative_balance?: number
           payout_hold?: boolean
           preferred_relay_point?: Json | null
+          ship_from_city?: string | null
+          ship_from_country?: string
+          ship_from_first_name?: string | null
+          ship_from_last_name?: string | null
+          ship_from_postal_code?: string | null
+          ship_from_street?: string | null
+          ship_from_updated_at?: string | null
           stripe_account_id?: string | null
           stripe_onboarding_complete?: boolean
           updated_at?: string
@@ -308,6 +322,13 @@ export type Database = {
           negative_balance?: number
           payout_hold?: boolean
           preferred_relay_point?: Json | null
+          ship_from_city?: string | null
+          ship_from_country?: string
+          ship_from_first_name?: string | null
+          ship_from_last_name?: string | null
+          ship_from_postal_code?: string | null
+          ship_from_street?: string | null
+          ship_from_updated_at?: string | null
           stripe_account_id?: string | null
           stripe_onboarding_complete?: boolean
           updated_at?: string
@@ -441,6 +462,7 @@ export type Database = {
           findr_payout_amount: number | null
           id: string
           justification: string
+          label_provided_at: string | null
           lost_notified_at: string | null
           object_price: number | null
           payment_status: string | null
@@ -449,6 +471,7 @@ export type Database = {
           renewal_requested: boolean
           requested_duration_days: number
           search_id: string
+          ship_from: Json | null
           shipped_at: string | null
           status: string
           stripe_payment_intent_id: string | null
@@ -492,6 +515,7 @@ export type Database = {
           findr_payout_amount?: number | null
           id?: string
           justification: string
+          label_provided_at?: string | null
           lost_notified_at?: string | null
           object_price?: number | null
           payment_status?: string | null
@@ -500,6 +524,7 @@ export type Database = {
           renewal_requested?: boolean
           requested_duration_days?: number
           search_id: string
+          ship_from?: Json | null
           shipped_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
@@ -543,6 +568,7 @@ export type Database = {
           findr_payout_amount?: number | null
           id?: string
           justification?: string
+          label_provided_at?: string | null
           lost_notified_at?: string | null
           object_price?: number | null
           payment_status?: string | null
@@ -551,6 +577,7 @@ export type Database = {
           renewal_requested?: boolean
           requested_duration_days?: number
           search_id?: string
+          ship_from?: Json | null
           shipped_at?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
@@ -907,6 +934,13 @@ export type Database = {
           negative_balance: number
           payout_hold: boolean
           preferred_relay_point: Json | null
+          ship_from_city: string | null
+          ship_from_country: string
+          ship_from_first_name: string | null
+          ship_from_last_name: string | null
+          ship_from_postal_code: string | null
+          ship_from_street: string | null
+          ship_from_updated_at: string | null
           stripe_account_id: string | null
           stripe_onboarding_complete: boolean
           updated_at: string
@@ -928,9 +962,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      purge_reservation_ship_from: { Args: never; Returns: number }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       tracking_carrier_key: { Args: { value: string }; Returns: string }
+      update_ship_from: {
+        Args: {
+          _city: string
+          _country?: string
+          _first_name: string
+          _last_name: string
+          _postal_code: string
+          _street: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

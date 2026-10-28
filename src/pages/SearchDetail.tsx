@@ -36,6 +36,8 @@ import { useTranslatedContent } from "@/hooks/useTranslatedContent";
 import TranslationNotice from "@/components/TranslationNotice";
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { getSubcategoryLabelKey } from "@/lib/categories";
+import { hasShipFrom } from "@/lib/shipFrom";
+import { SHIP_FROM_ANCHOR } from "@/components/ShipFromCard";
 
 const CategoryLabel = ({ category, subcategory }: { category: string; subcategory?: string | null }) => {
   const { t } = useTranslation();
@@ -292,6 +294,7 @@ const SearchDetail = () => {
   const [gamificationEnabled, setGamificationEnabled] = useState(false);
   const [stripeGateOpen, setStripeGateOpen] = useState(false);
   const stripeReady = !!userProfile?.stripe_onboarding_complete;
+  const [shipFromGateOpen, setShipFromGateOpen] = useState(false);
   const translatedSearch = useTranslatedContent({
     type: "search",
     id: search?.id,
@@ -512,6 +515,10 @@ const SearchDetail = () => {
       setStripeGateOpen(true);
       return;
     }
+    if (!hasShipFrom(userProfile as any)) {
+      setShipFromGateOpen(true);
+      return;
+    }
     navigate(`/proposition/${id}`);
   };
 
@@ -543,7 +550,26 @@ const SearchDetail = () => {
         <main className="pt-24 pb-16 flex items-center justify-center">
           <Loader2 className="w-12 h-12 animate-spin text-primary" />
         </main>
-        <Footer />
+        {/* Blocage : adresse d'expédition manquante */}
+      <Dialog open={shipFromGateOpen} onOpenChange={setShipFromGateOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle style={{ color: '#070E42' }}>{t("shipFrom.gateTitle")}</DialogTitle>
+            <DialogDescription>{t("shipFrom.gateText")}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => setShipFromGateOpen(false)}>{t("searchDetail.later")}</Button>
+            <Button
+              onClick={() => navigate(`/mon-espace#${SHIP_FROM_ANCHOR}`)}
+              style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}
+            >
+              {t("shipFrom.gateCta")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Footer />
       </div>
     );
   }
