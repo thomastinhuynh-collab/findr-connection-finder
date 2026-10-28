@@ -506,6 +506,7 @@ const MySpace = () => {
           const deliveryChoicePending = allRes.some(
             (r) => r.payment_status === "paye_en_attente_reception" && !r.delivery_type
           );
+          const labelPending = allRes.some((r) => r.payment_status === "paye_attente_etiquette");
           const urgent_reason: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | null =
             hasRecentReservation
               ? "reservation_pending"
@@ -518,7 +519,7 @@ const MySpace = () => {
               : null;
 
           const paid = allRes.find((r) =>
-            ["paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine", "annule"].includes(
+            ["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine", "annule"].includes(
               r.payment_status ?? ""
             )
           );

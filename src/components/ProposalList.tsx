@@ -194,7 +194,7 @@ const ProposalList = ({
   // Le buyr peut demander l'annulation : 5 jours sans expédition,
   // ou 10 jours après une expédition jamais livrée.
   const cancelUnlockAt = (p?: ReservationPayment) => {
-    if (!p || (!["paye_en_attente_reception", "expedie", "livre"].includes(p.payment_status ?? "") && !(p.payment_status === "versement_en_revue" && p.tracking_review_notified_at))) return null;
+    if (!p || (!["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre"].includes(p.payment_status ?? "") && !(p.payment_status === "versement_en_revue" && p.tracking_review_notified_at))) return null;
     if (p.shipped_at) return new Date(p.shipped_at).getTime() + cancellationDays(p.tracking_recognized) * DAY;
     const since = new Date(p.accepted_at ?? p.created_at ?? Date.now()).getTime();
     return since + 5 * DAY;
@@ -399,6 +399,8 @@ const ProposalList = ({
     switch (ps) {
       case "en_attente_paiement":
         return <Badge className="bg-warning text-warning-foreground">{t("proposal.paymentPending")}</Badge>;
+      case "paye_attente_etiquette":
+        return <Badge className="bg-success text-success-foreground">{isFindrView ? t("proposal.statusAwaitingLabelFindr") : t("proposal.statusAwaitingLabelBuyr")}</Badge>;
       case "paye_en_attente_reception":
         return <Badge className="bg-success text-success-foreground">{isFindrView ? t("proposal.statusPaidToShip") : t("proposal.statusPaid")}</Badge>;
       case "expedie":
@@ -581,7 +583,7 @@ const ProposalList = ({
                   )}
 
                   {payments[proposal.id]?.dispute_status !== "ouvert" &&
-                    ["paye_en_attente_reception", "expedie", "livre", "versement_en_revue"].includes(
+                    ["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue"].includes(
                       payments[proposal.id]?.payment_status ?? "",
                     ) && (
                       <div className="w-full flex flex-wrap items-center gap-2 bg-success/10 border border-success/30 rounded-lg p-2 text-xs text-foreground">
