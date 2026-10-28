@@ -12,14 +12,15 @@ Deno.serve(async (req) => {
 
   const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
   const rawBody = await req.text();
-  const webhookType = (JSON.parse(rawBody) as { type?: string }).type ?? "";
+  // Try every configured signing secret: the endpoint that delivered the event
+  // (platform or Connect) is not reliably inferable from the event type.
+  const secrets = [
+    Deno.env.get("STRIPE_WEBHOOK_SECRET_PLATFORM"),
+    Deno.env.get("STRIPE_WEBHOOK_SECRET"),
+  ].filter((s): s is string => !!s);
 
-  const webhookSecret = webhookType === "account.updated"
-    ? Deno.env.get("STRIPE_WEBHOOK_SECRET")
-    : Deno.env.get("STRIPE_WEBHOOK_SECRET_PLATFORM");
-
-  if (!stripeKey || !webhookSecret) {
-    console.error("Missing STRIPE_SECRET_KEY or appropriate webhook secret");
+  if (!stripeKey || secrets.length === 0) {
+    console.error("Missing STRIPE_SECRET_KEY or webhook secrets");
     return new Response("Server not configured", { status: 500 });
   }
 
@@ -27,11 +28,18 @@ Deno.serve(async (req) => {
   const signature = req.headers.get("stripe-signature");
   if (!signature) return new Response("Missing signature", { status: 400 });
 
-  let event: Stripe.Event;
-  try {
-    event = await stripe.webhooks.constructEventAsync(rawBody, signature, webhookSecret);
-  } catch (err) {
-    console.error("Signature verification failed:", (err as Error).message);
+  let event: Stripe.Event | null = null;
+  let lastError = "";
+  for (const secret of secrets) {
+    try {
+      event = await stripe.webhooks.constructEventAsync(rawBody, signature, secret);
+      break;
+    } catch (err) {
+      lastError = (err as Error).message;
+    }
+  }
+  if (!event) {
+    console.error("Signature verification failed:", lastError);
     return new Response("Invalid signature", { status: 400 });
   }
 
