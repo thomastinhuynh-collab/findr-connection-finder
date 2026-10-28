@@ -386,6 +386,7 @@ export type Database = {
           id: string
           image_urls: string[] | null
           object_size: string | null
+          parcel_weight_kg: number | null
           product_link: string | null
           proposed_price: number
           search_id: string
@@ -401,6 +402,7 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           object_size?: string | null
+          parcel_weight_kg?: number | null
           product_link?: string | null
           proposed_price: number
           search_id: string
@@ -416,6 +418,7 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           object_size?: string | null
+          parcel_weight_kg?: number | null
           product_link?: string | null
           proposed_price?: number
           search_id?: string
@@ -709,6 +712,33 @@ export type Database = {
           updated_at?: string
           urgency?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      shipping_rates: {
+        Row: {
+          carrier: string
+          id: string
+          max_weight_kg: number
+          mode: string
+          price_eur: number
+          updated_at: string
+        }
+        Insert: {
+          carrier: string
+          id?: string
+          max_weight_kg: number
+          mode: string
+          price_eur: number
+          updated_at?: string
+        }
+        Update: {
+          carrier?: string
+          id?: string
+          max_weight_kg?: number
+          mode?: string
+          price_eur?: number
+          updated_at?: string
         }
         Relationships: []
       }
