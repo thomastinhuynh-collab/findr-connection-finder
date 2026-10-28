@@ -2,6 +2,7 @@
 // Peut être déclenché par le buyr (findr sans nouvelles depuis 5 jours ou colis perdu)
 // ou par le findr lui-même (objet finalement indisponible).
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { CANCELLABLE_STATUSES } from "../_shared/paymentStatus.ts";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import Stripe from "npm:stripe@18";
 import { z } from "npm:zod@3";
@@ -59,7 +60,7 @@ Deno.serve(async (req) => {
     const isFindr = reservation.findr_id === user.id;
     if (!isBuyr && !isFindr) return json({ error: "Non autorisé" }, 403);
 
-    if (!["paye_en_attente_reception", "expedie", "livre"].includes(reservation.payment_status ?? "") && !(reservation.payment_status === "versement_en_revue" && reservation.tracking_review_notified_at)) {
+    if (!CANCELLABLE_STATUSES.includes(reservation.payment_status ?? "") && !(reservation.payment_status === "versement_en_revue" && reservation.tracking_review_notified_at)) {
       return json({ error: "Cette réservation ne peut plus être annulée." }, 400);
     }
 

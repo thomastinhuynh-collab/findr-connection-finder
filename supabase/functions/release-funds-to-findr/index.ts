@@ -51,7 +51,9 @@ Deno.serve(async (req) => {
       const error =
         status === "termine"
           ? "Le versement de cette réservation a déjà été effectué."
-          : status === "versement_en_revue"
+          : status === "paye_attente_etiquette"
+            ? "L'objet n'a pas encore été expédié : l'étiquette d'envoi est attendue."
+            : status === "versement_en_revue"
             ? "Ta réception est bien enregistrée. Le versement au findr est en cours de revue par l'équipe findr : il partira automatiquement dès validation."
             : `Cette réservation n'est pas en cours (statut : ${status || "aucun"}).`;
       return json({ error }, 400);
