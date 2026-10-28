@@ -102,9 +102,31 @@ Deno.serve(async (req) => {
           });
         }
 
+        // Copie de l'adresse d'expédition du findr (expéditeur des étiquettes)
+        const { data: resFindr } = await admin
+          .from("reservations").select("findr_id").eq("id", reservationId).maybeSingle();
+        let shipFrom: Record<string, string> | null = null;
+        if (resFindr?.findr_id) {
+          const { data: fp } = await admin
+            .from("profiles")
+            .select("ship_from_first_name, ship_from_last_name, ship_from_street, ship_from_postal_code, ship_from_city, ship_from_country")
+            .eq("user_id", resFindr.findr_id).maybeSingle();
+          if (fp?.ship_from_street && fp.ship_from_postal_code && fp.ship_from_city) {
+            shipFrom = {
+              first_name: fp.ship_from_first_name ?? "",
+              last_name: fp.ship_from_last_name ?? "",
+              street: fp.ship_from_street,
+              postal_code: fp.ship_from_postal_code,
+              city: fp.ship_from_city,
+              country: fp.ship_from_country ?? "FR",
+            };
+          }
+        }
+
         const { data: reservation, error } = await admin
           .from("reservations")
           .update({
+            ship_from: shipFrom,
             payment_status: "paye_en_attente_reception",
             accepted_at: new Date().toISOString(),
             stripe_payment_intent_id: paymentIntentId,
