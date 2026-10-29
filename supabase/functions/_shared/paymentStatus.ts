@@ -3,11 +3,22 @@
 // paye_en_attente_reception : étiquette fournie (ou ancien parcours), colis à déposer.
 export const AWAITING_LABEL = "paye_attente_etiquette";
 
-/** Parcours étiquette pas encore construit : tant que false, les paiements démarrent dans l'ancien parcours. */
-export const LABEL_FLOW_ENABLED = false;
+/** Statut posé par le webhook Stripe à la confirmation du paiement, selon app_settings.label_flow_enabled. */
+export function initialPaidStatus(labelFlowEnabled: boolean): string {
+  return labelFlowEnabled ? AWAITING_LABEL : "paye_en_attente_reception";
+}
 
-/** Statut posé par le webhook Stripe à la confirmation du paiement. */
-export const INITIAL_PAID_STATUS = LABEL_FLOW_ENABLED ? AWAITING_LABEL : "paye_en_attente_reception";
+/** Lit app_settings.label_flow_enabled à chaque exécution ; faux si la lecture échoue. */
+// deno-lint-ignore no-explicit-any
+export async function loadLabelFlowEnabled(admin: any): Promise<boolean> {
+  try {
+    const { data, error } = await admin.from("app_settings").select("label_flow_enabled").maybeSingle();
+    if (error) return false;
+    return data?.label_flow_enabled === true;
+  } catch {
+    return false;
+  }
+}
 
 /** Statuts où le paiement est déjà enregistré (idempotence du webhook Stripe). */
 export const ALREADY_PAID_STATUSES = [

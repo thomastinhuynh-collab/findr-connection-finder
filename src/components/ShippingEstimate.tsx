@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { estimateShipping, type ShippingRate } from "@/lib/shippingEstimate";
 import { formatPrice } from "@/lib/fees";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 
 let cache: Promise<ShippingRate[]> | null = null;
 const loadRates = () => {
@@ -20,13 +21,15 @@ const loadRates = () => {
 
 const ShippingEstimate = ({ weightKg, className = "" }: { weightKg: number | null | undefined; className?: string }) => {
   const { t, i18n } = useTranslation();
+  const { labelFlowEnabled } = useFeatureFlags();
   const [rates, setRates] = useState<ShippingRate[] | null>(null);
   useEffect(() => {
+    if (!labelFlowEnabled) return;
     let alive = true;
     loadRates().then((r) => alive && setRates(r));
     return () => { alive = false; };
-  }, []);
-  const est = rates ? estimateShipping(rates, weightKg) : null;
+  }, [labelFlowEnabled]);
+  const est = labelFlowEnabled && rates ? estimateShipping(rates, weightKg) : null;
   if (!est) return null;
   return (
     <p className={`text-xs leading-relaxed inline-flex items-center gap-1.5 flex-wrap ${className}`}>

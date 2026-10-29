@@ -12,7 +12,7 @@ import { releaseFundsForReservation } from "../_shared/payout.ts";
 import { recheckUnrecognizedTracking } from "../_shared/trackingVerification.ts";
 import { putTrackingInReview } from "../_shared/trackingReview.ts";
 import { canAutoReleaseShipped, cancellationDays } from "../_shared/trackingValidation.ts";
-import { AWAITING_LABEL, LABEL_FLOW_ENABLED, labelDeadlineAt } from "../_shared/paymentStatus.ts";
+import { AWAITING_LABEL, labelDeadlineAt, loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
 import { sendEmailToUser } from "../_shared/brevo.ts";
 
 const json = (body: unknown, status = 200) =>
@@ -186,8 +186,9 @@ Deno.serve(async (req) => {
 
     // 4. Nouveau parcours : le findr a renseigné son adresse après le paiement.
     // On recopie l'adresse, on pose l'échéance de l'étiquette et on prévient le buyr.
-    // Désactivé tant que l'écran de l'étiquette n'existe pas (LABEL_FLOW_ENABLED).
-    const { data: awaitingAddress } = LABEL_FLOW_ENABLED
+    // Actif seulement si app_settings.label_flow_enabled est vrai (lu à chaque exécution).
+    const labelFlowEnabled = await loadLabelFlowEnabled(admin);
+    const { data: awaitingAddress } = labelFlowEnabled
       ? await admin
         .from("reservations")
         .select("id, buyr_id, findr_id")

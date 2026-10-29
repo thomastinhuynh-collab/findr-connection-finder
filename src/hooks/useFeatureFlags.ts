@@ -5,12 +5,14 @@ export interface FeatureFlags {
   subcategoriesPostEnabled: boolean;
   subcategoriesBrowseEnabled: boolean;
   betaOpen: boolean;
+  labelFlowEnabled: boolean;
 }
 
 const DEFAULT_FLAGS: FeatureFlags = {
   subcategoriesPostEnabled: false,
   subcategoriesBrowseEnabled: false,
   betaOpen: false,
+  labelFlowEnabled: false,
 };
 
 let cached: FeatureFlags | null = null;
@@ -23,13 +25,14 @@ export const loadFeatureFlags = (): Promise<FeatureFlags> => {
       try {
         const { data, error } = await supabase
           .from("app_settings")
-          .select("subcategories_post_enabled, subcategories_browse_enabled, beta_open")
+          .select("subcategories_post_enabled, subcategories_browse_enabled, beta_open, label_flow_enabled")
           .maybeSingle();
         if (error) throw error;
         cached = {
           subcategoriesPostEnabled: !!data?.subcategories_post_enabled,
           subcategoriesBrowseEnabled: !!data?.subcategories_browse_enabled,
           betaOpen: !!data?.beta_open,
+          labelFlowEnabled: data?.label_flow_enabled === true,
         };
       } catch (err) {
         console.error("Failed to load feature flags", err);
