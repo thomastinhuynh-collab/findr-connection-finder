@@ -1565,6 +1565,7 @@
     "help": "Pick the bracket that covers your packed parcel.",
     "weightLabel": "Parcel weight",
     "option": {
+      "0_25": "Up to 0.25 kg",
       "0_5": "Up to 0.5 kg",
       "1": "Up to 1 kg",
       "2": "Up to 2 kg",
@@ -1572,7 +1573,8 @@
       "10": "Up to 10 kg"
     },
     "hint": {
-      "0_5": "A paperback or a few cards",
+      "0_25": "A few cards, a small piece of jewellery, a thick letter",
+      "0_5": "A paperback",
       "1": "Two or three books",
       "2": "A thick sweatshirt or five books",
       "5": "A pair of boots",
