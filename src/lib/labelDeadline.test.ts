@@ -32,7 +32,11 @@ describe("label deadline", () => {
   });
   it("counts from the deadline start, not from accepted_at", () => {
     const r = row({ accepted_at: new Date(paid + 47 * H).toISOString() });
-    expect(planLabelDeadline(r, paid + 48 * H)).toMatchObject({ kind: "reminder", marks: ["label_reminder_48h_at"] });
+    // 1 h après le paiement seulement, mais 48 h après l'ouverture du délai : les deux rappels partent.
+    expect(planLabelDeadline(r, paid + 48 * H)).toMatchObject({
+      kind: "reminder",
+      marks: ["label_reminder_48h_at", "label_reminder_24h_at"],
+    });
   });
   it("does not need accepted_at", () => {
     expect(planLabelDeadline(row({ accepted_at: null }), paid + 24 * H)).toMatchObject({
