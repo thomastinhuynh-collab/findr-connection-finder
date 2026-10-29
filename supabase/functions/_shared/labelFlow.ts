@@ -64,3 +64,32 @@ export function checkLabelEligibility(
   if (!LABEL_UPLOAD_STATUSES.includes(reservation.payment_status ?? "")) return "status";
   return null;
 }
+
+const PURGE_DAY = 86_400_000;
+export const LABEL_PURGE_ENDED_DAYS = 30;
+export const LABEL_PURGE_DELIVERED_DAYS = 7;
+const ENDED_STATUSES = ["termine", "annule", "rembourse"];
+
+export interface LabelPurgeCandidate {
+  label_path: string | null;
+  payment_status: string | null;
+  dispute_open?: boolean | null;
+  dispute_status?: string | null;
+  dispute_resolved_at?: string | null;
+  delivered_at?: string | null;
+  updated_at: string;
+}
+
+/** Le fichier d'étiquette peut être effacé : 30 j après la fin de la vente, ou 7 j après « livré » ; jamais en litige ouvert. */
+export function isLabelPurgeable(r: LabelPurgeCandidate, now = Date.now()): boolean {
+  if (!r.label_path) return false;
+  if (r.dispute_open || r.dispute_status === "ouvert") return false;
+  if (ENDED_STATUSES.includes(r.payment_status ?? "")) {
+    const end = Date.parse(r.dispute_resolved_at ?? r.updated_at);
+    return Number.isFinite(end) && now - end >= LABEL_PURGE_ENDED_DAYS * PURGE_DAY;
+  }
+  if (r.payment_status === "livre" && r.delivered_at) {
+    return now - Date.parse(r.delivered_at) >= LABEL_PURGE_DELIVERED_DAYS * PURGE_DAY;
+  }
+  return false;
+}
