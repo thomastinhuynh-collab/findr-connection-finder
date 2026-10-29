@@ -40,6 +40,8 @@ import { computeFees, formatPrice } from "@/lib/fees";
 import { trackingUrl } from "@/lib/tracking";
 import { normalizeTrackingNumber, validateTrackingNumber, cancellationDays, type TrackingError } from "@/lib/trackingValidation";
 import TrackingRecognition from "@/components/TrackingRecognition";
+import BuyrLabelCard, { type ShipFrom } from "@/components/BuyrLabelCard";
+import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 
 const NAVY = "#070E42";
 const GOLD = "#D9BB87";
@@ -80,6 +82,9 @@ interface ReservationRow {
   accepted_at: string | null;
   created_at: string;
   dispute_status: string | null;
+  ship_from: ShipFrom | null;
+  label_deadline_at: string | null;
+  label_provided_at: string | null;
 }
 
 interface ProposalRow {
@@ -99,6 +104,7 @@ const Transaction = () => {
   const { user, loading: authLoading } = useAuth();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { labelFlowEnabled } = useFeatureFlags();
 
   const [loading, setLoading] = useState(true);
   const [reservation, setReservation] = useState<ReservationRow | null>(null);
@@ -124,7 +130,7 @@ const Transaction = () => {
     const { data: r } = await supabase
       .from("reservations")
       .select(
-        "id, search_id, findr_id, buyr_id, proposal_id, object_price, buyr_fee, findr_fee, total_buyr_amount, findr_payout_amount, payment_status, delivery_type, delivery_address, delivery_relay_point, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, accepted_at, created_at, dispute_status",
+        "id, search_id, findr_id, buyr_id, proposal_id, object_price, buyr_fee, findr_fee, total_buyr_amount, findr_payout_amount, payment_status, delivery_type, delivery_address, delivery_relay_point, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, accepted_at, created_at, dispute_status, ship_from, label_deadline_at, label_provided_at",
       )
       .eq("id", reservationId)
       .maybeSingle();
@@ -313,7 +319,8 @@ const Transaction = () => {
   const trackUrl = trackingUrl(reservation.carrier, reservation.tracking_number);
   const showShipFlow = isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at;
   const showFindrTracking = isFindr && shipped && !payoutDone;
-  const showDeliveryPicker = isBuyr && ps === "paye_en_attente_reception" && !reservation.delivery_type && !reservation.shipped_at;
+  const showDeliveryPicker = isBuyr && ps === "paye_en_attente_reception" && !reservation.delivery_type && !reservation.shipped_at && !reservation.label_provided_at;
+  const showLabelCard = labelFlowEnabled && isBuyr && ["paye_attente_etiquette", "etiquette_refusee"].includes(ps);
   const showBuyrReceipt = isBuyr && ["expedie", "livre"].includes(ps) && reservation.dispute_status !== "ouvert";
 
   const sizeKey = proposal?.object_size as "S" | "M" | "L" | "XL" | null;
@@ -575,6 +582,17 @@ const Transaction = () => {
             </a>
             <TrackingRecognition recognized={reservation.tracking_recognized} isFindr />
           </section>
+        )}
+
+        {/* Buyr : fournir l'étiquette (parcours étiquette) */}
+        {showLabelCard && (
+          <BuyrLabelCard
+            reservationId={reservation.id}
+            shipFrom={reservation.ship_from}
+            parcelWeightKg={proposal?.parcel_weight_kg ?? null}
+            deadlineAt={reservation.label_deadline_at}
+            onSent={load}
+          />
         )}
 
         {/* Buyr : choix de la livraison */}

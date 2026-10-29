@@ -180,6 +180,7 @@ const BuyrLabelCard = ({ reservationId, shipFrom, parcelWeightKg, deadlineAt, on
 
           <li className="space-y-1">
             <h3 className="text-sm font-semibold" style={{ color: NAVY }}>2. {t("labelFlow.step2")}</h3>
+            <p className="text-sm text-muted-foreground">{t("labelFlow.step2Help")}</p>
           </li>
 
           <li className="space-y-3">
