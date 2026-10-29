@@ -37,7 +37,7 @@ interface Props {
   onSent: () => void;
 }
 
-const useCountdown = (deadline: string | null) => {
+export const useCountdown = (deadline: string | null) => {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     if (!deadline) return;
