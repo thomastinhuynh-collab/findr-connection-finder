@@ -9,9 +9,14 @@ export const LABEL_MAX_BYTES = 1.5 * 1024 * 1024;
 export const LABEL_CARRIERS = ["Mondial Relay", "Colissimo", "Chronopost"] as const;
 
 export type LabelKind = "pdf" | "png" | "jpeg";
-export type LabelFileError = "empty" | "too_large" | "signature" | "pdf_active_content";
+export type LabelFileError = "empty" | "too_large" | "signature" | "pdf_active_content" | "pdf_refused";
 
 const FORBIDDEN_PDF = /\/(JavaScript|JS|Launch|EmbeddedFile|OpenAction)(?![A-Za-z])/;
+// Actions, formulaires, contenus riches, chiffrement : refusés.
+const REFUSED_PDF = /\/(AA|URI|SubmitForm|GoToR|GoToE|RichMedia|XFA|Encrypt)(?![A-Za-z0-9])/;
+// Nom PDF commençant par « / » contenant un échappement hexadécimal #xx (masquage de mot-clé).
+const HEX_ESCAPED_NAME = /\/[^\s\/\[\]<>(){}%]*#[0-9A-Fa-f]{2}/;
+const OBJECT_STREAM = /\/ObjStm(?![A-Za-z0-9])/;
 
 export function detectLabelKind(bytes: Uint8Array): LabelKind | null {
   const s = (i: number, sig: number[]) => sig.every((b, k) => bytes[i + k] === b);
@@ -26,11 +31,22 @@ export function validateLabelFile(bytes: Uint8Array): { kind: LabelKind } | { er
   if (bytes.length > LABEL_MAX_BYTES) return { error: "too_large" };
   const kind = detectLabelKind(bytes);
   if (!kind) return { error: "signature" };
-  if (kind === "pdf" && FORBIDDEN_PDF.test(new TextDecoder("latin1").decode(bytes))) {
-    return { error: "pdf_active_content" };
+  if (kind === "pdf") {
+    const text = new TextDecoder("latin1").decode(bytes);
+    if (FORBIDDEN_PDF.test(text)) return { error: "pdf_active_content" };
+    if (REFUSED_PDF.test(text) || HEX_ESCAPED_NAME.test(text)) return { error: "pdf_refused" };
   }
   return { kind };
 }
+
+/** Une étiquette peut être jointe à l'email du findr sauf un PDF à flux d'objets compressés (/ObjStm). */
+export function canAttachLabel(kind: LabelKind, bytes: Uint8Array): boolean {
+  if (kind !== "pdf") return true;
+  return !OBJECT_STREAM.test(new TextDecoder("latin1").decode(bytes));
+}
+
+/** Durée de validité du lien signé de téléchargement de l'étiquette (secondes). */
+export const LABEL_DOWNLOAD_TTL_SECONDS = 60;
 
 export const LABEL_EXT: Record<LabelKind, string> = { pdf: "pdf", png: "png", jpeg: "jpg" };
 export const LABEL_MIME: Record<LabelKind, string> = { pdf: "application/pdf", png: "image/png", jpeg: "image/jpeg" };

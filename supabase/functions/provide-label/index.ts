@@ -29,6 +29,7 @@ const FILE_ERRORS: Record<string, string> = {
   too_large: "Le fichier dépasse 1,5 Mo.",
   signature: "Format accepté : PDF, PNG ou JPEG.",
   pdf_active_content: "Ce PDF contient du contenu actif et ne peut pas être accepté.",
+  pdf_refused: "Ce PDF n'est pas accepté. Exporte ton étiquette en image (PNG ou JPEG) ou réimprime-la en PDF.",
 };
 
 Deno.serve(async (req) => {
