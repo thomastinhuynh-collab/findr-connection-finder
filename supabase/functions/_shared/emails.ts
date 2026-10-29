@@ -139,6 +139,8 @@ export type EmailType =
   | "tracking_review"
   | "label_ready"
   | "label_rejected"
+  | "label_reminder"
+  | "label_expired"
   | "delivered"
   | "funds_released"
   | "auto_release"
@@ -341,6 +343,32 @@ export function buildEmail(
         }),
       };
     }
+
+    case "label_reminder":
+      return {
+        subject: `Il te reste ${String(data.remaining || "peu de temps")} pour fournir l'étiquette`,
+        html: renderEmail({
+          eyebrow: "Étiquette d'expédition",
+          title: `Il te reste ${esc(String(data.remaining || "peu de temps"))} pour fournir l'étiquette`,
+          paragraphs: [`${hello} sans étiquette avant l'échéance, la vente sera annulée et tu seras intégralement remboursé.`],
+          cta: { label: "Voir la transaction", url: transactionUrl },
+        }),
+      };
+
+    case "label_expired":
+      return {
+        subject: "Vente annulée : l'étiquette n'a pas été fournie à temps",
+        html: renderEmail({
+          eyebrow: "Annulation",
+          title: "Vente annulée",
+          paragraphs: [
+            `${hello} vente annulée : l'étiquette n'a pas été fournie à temps. Tu n'as rien à faire côté envoi.`,
+            ...(data.audience === "buyr" ? ["Tu as été intégralement remboursé, frais de service compris. Le remboursement apparaît généralement sous <strong>5 à 10 jours ouvrés</strong>."] : []),
+          ],
+          facts: data.audience === "buyr" ? [{ label: "Montant remboursé (frais inclus)", value: money(data.amount) }] : undefined,
+          cta: { label: "Voir la transaction", url: transactionUrl },
+        }),
+      };
 
     case "delivered":
       return {
