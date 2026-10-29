@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseTrackingEvidence } from "../../supabase/functions/_shared/trackingEvidence";
-import { planShipmentDetection } from "../../supabase/functions/_shared/shipmentDetection";
+import { planShipmentDetection } from "../../supabase/functions/_shared/shipmentRules";
 import { receiptConfirmationError } from "../../supabase/functions/_shared/paymentStatus";
 
 const ev = (status: string, stage = status) => ({
