@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LABEL_DOWNLOAD_TTL_SECONDS, LABEL_MAX_BYTES, canAttachLabel, checkLabelEligibility, validateLabelFile } from "../../supabase/functions/_shared/labelFlow";
+import { LABEL_DOWNLOAD_TTL_SECONDS, LABEL_MAX_BYTES, canAttachLabel, checkLabelEligibility, isLabelPurgeable, validateLabelFile } from "../../supabase/functions/_shared/labelFlow";
 import { validateTrackingNumber } from "../../supabase/functions/_shared/trackingValidation";
 
 const enc = (s: string) => new TextEncoder().encode(s);
@@ -89,5 +89,36 @@ describe("email attachment rule", () => {
   });
   it("uses a short-lived download link", () => {
     expect(LABEL_DOWNLOAD_TTL_SECONDS).toBeLessThanOrEqual(300);
+  });
+});
+
+describe("label file purge", () => {
+  const NOW = Date.parse("2026-12-01T00:00:00Z");
+  const days = (n: number) => new Date(NOW - n * 86_400_000).toISOString();
+  const base = { label_path: "r/x.pdf", dispute_open: false, updated_at: days(31) };
+  it("purges 30 days after a finished, cancelled or refunded sale", () => {
+    for (const s of ["termine", "annule", "rembourse"]) {
+      expect(isLabelPurgeable({ ...base, payment_status: s }, NOW)).toBe(true);
+      expect(isLabelPurgeable({ ...base, payment_status: s, updated_at: days(29) }, NOW)).toBe(false);
+    }
+  });
+  it("uses the dispute resolution date as end of sale", () => {
+    expect(isLabelPurgeable({ ...base, payment_status: "rembourse", dispute_resolved_at: days(10) }, NOW)).toBe(false);
+  });
+  it("purges 7 days after delivery", () => {
+    expect(isLabelPurgeable({ ...base, payment_status: "livre", delivered_at: days(7) }, NOW)).toBe(true);
+    expect(isLabelPurgeable({ ...base, payment_status: "livre", delivered_at: days(6) }, NOW)).toBe(false);
+  });
+  it("never purges a sale in progress", () => {
+    for (const s of ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "versement_en_revue"]) {
+      expect(isLabelPurgeable({ ...base, payment_status: s, updated_at: days(400), delivered_at: days(400) }, NOW)).toBe(false);
+    }
+  });
+  it("never purges with an open dispute", () => {
+    expect(isLabelPurgeable({ ...base, payment_status: "termine", dispute_open: true }, NOW)).toBe(false);
+    expect(isLabelPurgeable({ ...base, payment_status: "livre", delivered_at: days(30), dispute_status: "ouvert" }, NOW)).toBe(false);
+  });
+  it("skips reservations without a file", () => {
+    expect(isLabelPurgeable({ ...base, label_path: null, payment_status: "termine" }, NOW)).toBe(false);
   });
 });

@@ -60,7 +60,9 @@ async function serveSigned(req: Request): Promise<Response> {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-  if (req.method === "GET") return serveSigned(req);
+  if (req.method === "GET") {
+    return serveSigned(req).catch(() => new Response("Erreur serveur", { status: 500, headers: { "X-Content-Type-Options": "nosniff" } }));
+  }
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
   try {
     const authHeader = req.headers.get("Authorization") ?? "";
