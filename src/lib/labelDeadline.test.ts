@@ -24,6 +24,22 @@ describe("label deadline", () => {
     expect(a).toMatchObject({ kind: "reminder", marks: ["label_reminder_48h_at"] });
     expect(formatRemaining((a as { remainingMs: number }).remainingMs)).toBe("1 jour");
   });
+  it("sends nothing in the hour just after the deadline is opened", () => {
+    const openedAt = paid + 40 * H; // délai posé 40 h après le paiement
+    const r = row({ label_deadline_at: new Date(openedAt + 72 * H).toISOString() });
+    expect(planLabelDeadline(r, openedAt + 30 * 60 * 1000)).toBeNull();
+    expect(planLabelDeadline(r, openedAt + 24 * H)).toMatchObject({ kind: "reminder", marks: ["label_reminder_24h_at"] });
+  });
+  it("counts from the deadline start, not from accepted_at", () => {
+    const r = row({ accepted_at: new Date(paid + 47 * H).toISOString() });
+    expect(planLabelDeadline(r, paid + 48 * H)).toMatchObject({ kind: "reminder", marks: ["label_reminder_48h_at"] });
+  });
+  it("does not need accepted_at", () => {
+    expect(planLabelDeadline(row({ accepted_at: null }), paid + 24 * H)).toMatchObject({
+      kind: "reminder",
+      marks: ["label_reminder_24h_at"],
+    });
+  });
   it("cancels once the deadline has passed", () => {
     expect(planLabelDeadline(row({ label_reminder_24h_at: "x", label_reminder_48h_at: "x" }), paid + 72 * H)).toEqual({ kind: "expire" });
   });
