@@ -42,13 +42,14 @@ import { normalizeTrackingNumber, validateTrackingNumber, cancellationDays, type
 import TrackingRecognition from "@/components/TrackingRecognition";
 import BuyrLabelCard, { type ShipFrom } from "@/components/BuyrLabelCard";
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
+import { FindrAwaitingLabel, FindrDropOffCard } from "@/components/FindrLabelCard";
 
 const NAVY = "#070E42";
 const GOLD = "#D9BB87";
 const CREAM = "#F5F0EA";
 
 const DAY = 24 * 60 * 60 * 1000;
-const PAID_STATUSES = ["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine"];
+const PAID_STATUSES = ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine"];
 
 const LABEL_SITES = [
   { key: "mondial_relay", label: "Mondial Relay", url: "https://www.mondialrelay.fr/envoi-de-colis/" },
@@ -85,6 +86,9 @@ interface ReservationRow {
   ship_from: ShipFrom | null;
   label_deadline_at: string | null;
   label_provided_at: string | null;
+  label_carrier: string | null;
+  label_tracking_number: string | null;
+  dropoff_declared_at: string | null;
 }
 
 interface ProposalRow {
@@ -130,7 +134,7 @@ const Transaction = () => {
     const { data: r } = await supabase
       .from("reservations")
       .select(
-        "id, search_id, findr_id, buyr_id, proposal_id, object_price, buyr_fee, findr_fee, total_buyr_amount, findr_payout_amount, payment_status, delivery_type, delivery_address, delivery_relay_point, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, accepted_at, created_at, dispute_status, ship_from, label_deadline_at, label_provided_at",
+        "id, search_id, findr_id, buyr_id, proposal_id, object_price, buyr_fee, findr_fee, total_buyr_amount, findr_payout_amount, payment_status, delivery_type, delivery_address, delivery_relay_point, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, accepted_at, created_at, dispute_status, ship_from, label_deadline_at, label_provided_at, label_carrier, label_tracking_number, dropoff_declared_at",
       )
       .eq("id", reservationId)
       .maybeSingle();
@@ -293,7 +297,7 @@ const Transaction = () => {
 
   // Annulation buyr : 5 jours sans expédition, 10 jours après expédition jamais livrée.
   const cancelUnlockAt = () => {
-    if (!["paye_attente_etiquette", "paye_en_attente_reception", "expedie", "livre"].includes(ps) && !(ps === "versement_en_revue" && reservation.tracking_review_notified_at)) return null;
+    if (!["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre"].includes(ps) && !(ps === "versement_en_revue" && reservation.tracking_review_notified_at)) return null;
     if (reservation.shipped_at) return new Date(reservation.shipped_at).getTime() + cancellationDays(reservation.tracking_recognized) * DAY;
     const since = new Date(reservation.accepted_at ?? reservation.created_at).getTime();
     return since + 5 * DAY;
@@ -317,7 +321,9 @@ const Transaction = () => {
   const countdown = cancelCountdown();
 
   const trackUrl = trackingUrl(reservation.carrier, reservation.tracking_number);
-  const showShipFlow = isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at;
+  const showShipFlow = isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at && !reservation.label_provided_at;
+  const showFindrDropOff = labelFlowEnabled && isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at && !!reservation.label_provided_at;
+  const showFindrAwaitingLabel = labelFlowEnabled && isFindr && ["paye_attente_etiquette", "etiquette_refusee"].includes(ps);
   const showFindrTracking = isFindr && shipped && !payoutDone;
   const showDeliveryPicker = isBuyr && ps === "paye_en_attente_reception" && !reservation.delivery_type && !reservation.shipped_at && !reservation.label_provided_at;
   const showLabelCard = labelFlowEnabled && isBuyr && ["paye_attente_etiquette", "etiquette_refusee"].includes(ps);
@@ -399,9 +405,26 @@ const Transaction = () => {
           })}
         </ol>
 
-        {ps === "paye_attente_etiquette" && (
+        {showFindrAwaitingLabel && (
+          <FindrAwaitingLabel status={ps} buyrFirstName={firstName(buyrName)} deadlineAt={reservation.label_deadline_at} />
+        )}
+
+        {showFindrDropOff && (
+          <FindrDropOffCard
+            reservationId={reservation.id}
+            parcelWeightKg={proposal?.parcel_weight_kg ?? null}
+            labelCarrier={reservation.label_carrier}
+            labelTrackingNumber={reservation.label_tracking_number}
+            dropoffDeclaredAt={reservation.dropoff_declared_at}
+            onChanged={load}
+          />
+        )}
+
+        {!showFindrAwaitingLabel && ["paye_attente_etiquette", "etiquette_refusee"].includes(ps) && (
           <p className="text-sm font-medium" style={{ color: NAVY }}>
-            {isFindr ? t("proposal.statusAwaitingLabelFindr") : t("proposal.statusAwaitingLabelBuyr")}
+            {ps === "etiquette_refusee"
+              ? isFindr ? t("proposal.statusLabelRejectedFindr") : t("proposal.statusLabelRejectedBuyr")
+              : isFindr ? t("proposal.statusAwaitingLabelFindr") : t("proposal.statusAwaitingLabelBuyr")}
           </p>
         )}
 
