@@ -10,8 +10,15 @@ const json = (body: unknown, status = 200) =>
 const BodySchema = z.object({ reservationId: z.string().uuid() });
 
 const enc = new TextEncoder();
+// Clé dédiée lue dans webhook_secrets (label_download_secret), jamais journalisée.
+async function signingKey(): Promise<string> {
+  const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const { data, error } = await admin.from("webhook_secrets").select("secret").eq("name", "label_download_secret").maybeSingle();
+  if (error || !data?.secret) throw new Error("label download signing key unavailable");
+  return data.secret;
+}
 async function sign(payload: string): Promise<string> {
-  const key = await crypto.subtle.importKey("raw", enc.encode(Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!),
+  const key = await crypto.subtle.importKey("raw", enc.encode(await signingKey()),
     { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
   const mac = new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(payload)));
   return Array.from(mac, (b) => b.toString(16).padStart(2, "0")).join("");
