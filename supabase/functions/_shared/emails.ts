@@ -275,7 +275,7 @@ export function buildEmail(
 
     case "label_ready":
       if (data.audience === "findr") {
-        const buyrName = esc(data.buyrFirstName || "Le buyr");
+        const buyrName = String(data.buyrFirstName || "Le buyr");
         return {
           subject: `${data.buyrFirstName || "Le buyr"} t'a envoyé l'étiquette d'expédition`,
           html: renderEmail({

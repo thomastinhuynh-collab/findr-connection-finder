@@ -11,3 +11,20 @@ describe("transaction email destinations", () => {
     });
   }
 });
+describe("label_ready email to the findr", () => {
+  const base = { audience: "findr", reservationId: "f23c8b7a-e7a2-4659-942b-7ad2b284ab19", buyrFirstName: "Olga" };
+  it("names the buyr in the subject and warns about the carrier logo", () => {
+    const { subject, html } = buildEmail("label_ready", { ...base, labelAttached: true });
+    expect(subject).toBe("Olga t'a envoyé l'étiquette d'expédition");
+    expect(html).toContain("vérifie qu'elle porte bien le logo du transporteur avant de l'imprimer");
+    expect(html).toContain("Voir la transaction");
+    expect(html).not.toContain("disponible sur ta page de transaction");
+  });
+  it("points to the transaction page when the label is not attached", () => {
+    const { html } = buildEmail("label_ready", { ...base, labelAttached: false });
+    expect(html).toContain("Ton étiquette est disponible sur ta page de transaction");
+  });
+  it("keeps the buyr version unchanged", () => {
+    expect(buildEmail("label_ready", { reservationId: base.reservationId }).subject).toBe("Tu peux créer l'étiquette d'envoi");
+  });
+});
