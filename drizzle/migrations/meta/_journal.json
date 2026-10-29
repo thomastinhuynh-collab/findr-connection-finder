@@ -120,6 +120,13 @@
       "when": 1793280287690,
       "tag": "0016_label_deadline_reminders",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1793281019937,
+      "tag": "0017_parcel_weight_add_quarter_kg",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,4 @@
-export const PARCEL_WEIGHTS = [0.5, 1, 2, 5, 10] as const;
+export const PARCEL_WEIGHTS = [0.25, 0.5, 1, 2, 5, 10] as const;
 export type ParcelWeight = (typeof PARCEL_WEIGHTS)[number];
 
 export interface ShippingRate {

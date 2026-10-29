@@ -1565,6 +1565,7 @@
     "help": "Choisis la tranche qui couvre ton colis emballé.",
     "weightLabel": "Poids du colis",
     "option": {
+      "0_25": "Jusqu'à 0,25 kg",
       "0_5": "Jusqu'à 0,5 kg",
       "1": "Jusqu'à 1 kg",
       "2": "Jusqu'à 2 kg",
@@ -1572,7 +1573,8 @@
       "10": "Jusqu'à 10 kg"
     },
     "hint": {
-      "0_5": "Un livre de poche ou quelques cartes",
+      "0_25": "Quelques cartes, un petit bijou, une lettre épaisse",
+      "0_5": "Un livre de poche",
       "1": "Deux ou trois livres",
       "2": "Un sweat épais ou cinq livres",
       "5": "Une paire de bottes",

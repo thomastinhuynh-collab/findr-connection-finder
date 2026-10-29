@@ -1,0 +1,2 @@
+ALTER TABLE public.proposals DROP CONSTRAINT IF EXISTS proposals_parcel_weight_kg_check;
+ALTER TABLE public.proposals ADD CONSTRAINT proposals_parcel_weight_kg_check CHECK (parcel_weight_kg IN (0.25, 0.5, 1, 2, 5, 10)) NOT VALID;

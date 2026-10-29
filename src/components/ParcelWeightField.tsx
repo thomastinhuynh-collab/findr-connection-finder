@@ -7,7 +7,7 @@ interface Props {
   onChange: (v: string) => void;
 }
 
-export const weightKey = (w: number) => String(w).replace(".", "_");
+export const weightKey = (w: number) => String(Number(w)).replace(".", "_");
 
 const ParcelWeightField = ({ value, onChange }: Props) => {
   const { t } = useTranslation();
