@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
 
     let reservationId: string;
     if (existing) {
-      if (["paye_attente_etiquette", "paye_en_attente_reception", "termine"].includes(existing.payment_status ?? "")) {
+      if (["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "termine"].includes(existing.payment_status ?? "")) {
         return json({ error: "Cette proposition est déjà payée." }, 400);
       }
       const { error } = await admin.from("reservations").update(amounts).eq("id", existing.id);

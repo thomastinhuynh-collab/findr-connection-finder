@@ -28,7 +28,7 @@ export async function releaseFundsForReservation(
       return { ok: false, held: true, error: "Le suivi doit être examiné avant tout versement automatique." };
     }
     if (current.payment_status === "termine") return { ok: false, error: "Versement déjà effectué." };
-    if (current.payment_status === "paye_attente_etiquette") return { ok: false, error: "L'objet n'a pas encore été expédié." };
+    if (current.payment_status === "paye_attente_etiquette" || current.payment_status === "etiquette_refusee") return { ok: false, error: "L'objet n'a pas encore été expédié." };
   }
   const { data: findrProfile } = await admin
     .from("profiles")

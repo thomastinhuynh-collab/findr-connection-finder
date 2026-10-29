@@ -146,6 +146,7 @@ export function planLabelRejection(previousCount: number, now: number) {
       tracking_first_event_at: null,
       tracking_checked_at: null,
       tracking_last_attempt_at: null,
+      dropoff_declared_at: null,
     },
   };
 }
