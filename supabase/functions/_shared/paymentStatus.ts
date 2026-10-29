@@ -3,6 +3,12 @@
 // paye_en_attente_reception : étiquette fournie (ou ancien parcours), colis à déposer.
 export const AWAITING_LABEL = "paye_attente_etiquette";
 
+/** Parcours étiquette pas encore construit : tant que false, les paiements démarrent dans l'ancien parcours. */
+export const LABEL_FLOW_ENABLED = false;
+
+/** Statut posé par le webhook Stripe à la confirmation du paiement. */
+export const INITIAL_PAID_STATUS = LABEL_FLOW_ENABLED ? AWAITING_LABEL : "paye_en_attente_reception";
+
 /** Statuts où le paiement est déjà enregistré (idempotence du webhook Stripe). */
 export const ALREADY_PAID_STATUSES = [
   AWAITING_LABEL,

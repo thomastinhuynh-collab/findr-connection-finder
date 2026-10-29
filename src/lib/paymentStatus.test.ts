@@ -3,6 +3,8 @@ import {
   ALREADY_PAID_STATUSES,
   AWAITING_LABEL,
   CANCELLABLE_STATUSES,
+  INITIAL_PAID_STATUS,
+  LABEL_FLOW_ENABLED,
   labelDeadlineAt,
 } from "../../supabase/functions/_shared/paymentStatus";
 
@@ -29,5 +31,12 @@ describe("buyr label payment status", () => {
   it("leaves the label deadline empty without a ship-from address", () => {
     expect(labelDeadlineAt(null, PAID_AT)).toBeNull();
     expect(labelDeadlineAt({}, PAID_AT)).toBeNull();
+  });
+});
+
+describe("initial paid status while the label flow is not built", () => {
+  it("starts new payments in the shipping flow", () => {
+    expect(LABEL_FLOW_ENABLED).toBe(false);
+    expect(INITIAL_PAID_STATUS).toBe("paye_en_attente_reception");
   });
 });
