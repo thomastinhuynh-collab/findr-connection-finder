@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LABEL_MAX_BYTES, checkLabelEligibility, validateLabelFile } from "../../supabase/functions/_shared/labelFlow";
+import { LABEL_DOWNLOAD_TTL_SECONDS, LABEL_MAX_BYTES, canAttachLabel, checkLabelEligibility, validateLabelFile } from "../../supabase/functions/_shared/labelFlow";
 import { validateTrackingNumber } from "../../supabase/functions/_shared/trackingValidation";
 
 const enc = (s: string) => new TextEncoder().encode(s);
@@ -60,5 +60,34 @@ describe("label eligibility", () => {
   it("accepts awaiting-label and rejected-label statuses", () => {
     expect(checkLabelEligibility(true, r, "buyr")).toBeNull();
     expect(checkLabelEligibility(true, { ...r, payment_status: "etiquette_refusee" }, "buyr")).toBeNull();
+  });
+});
+
+describe("hardened PDF checks", () => {
+  it.each(["/AA", "/URI", "/SubmitForm", "/GoToR", "/GoToE", "/RichMedia", "/XFA", "/Encrypt"])("refuses a PDF with %s", (k) => {
+    expect(validateLabelFile(enc(`%PDF-1.4\n<< ${k} 1 0 R >>`))).toEqual({ error: "pdf_refused" });
+  });
+  it("refuses a name with a hex escape", () => {
+    expect(validateLabelFile(enc("%PDF-1.4\n<< /Java#53cript (x) >>"))).toEqual({ error: "pdf_refused" });
+    expect(validateLabelFile(enc("%PDF-1.4\n<< /Type /Cat#61log >>"))).toEqual({ error: "pdf_refused" });
+  });
+  it("does not confuse similar names", () => {
+    expect(validateLabelFile(enc("%PDF-1.4\n<< /AAPL /URIx /Encrypted2 >>"))).toEqual({ kind: "pdf" });
+  });
+});
+
+describe("email attachment rule", () => {
+  it("does not attach a PDF with /ObjStm but accepts it", () => {
+    const b = enc("%PDF-1.5\n<< /Type /ObjStm /N 3 >>");
+    expect(validateLabelFile(b)).toEqual({ kind: "pdf" });
+    expect(canAttachLabel("pdf", b)).toBe(false);
+  });
+  it("attaches a PDF without /ObjStm, PNG and JPEG", () => {
+    expect(canAttachLabel("pdf", PDF)).toBe(true);
+    expect(canAttachLabel("png", PNG)).toBe(true);
+    expect(canAttachLabel("jpeg", JPEG)).toBe(true);
+  });
+  it("uses a short-lived download link", () => {
+    expect(LABEL_DOWNLOAD_TTL_SECONDS).toBeLessThanOrEqual(300);
   });
 });
