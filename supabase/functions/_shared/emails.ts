@@ -320,7 +320,7 @@ export function buildEmail(
           paragraphs: [
             `${findrName} n'a pas pu utiliser l'étiquette. Envoie-en une nouvelle sous 48 h.`,
           ],
-          facts: data.reason ? [{ label: "Motif", value: esc(String(data.reason)) }] : undefined,
+          facts: data.reason ? [{ label: "Motif", value: String(data.reason) }] : undefined,
           cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
