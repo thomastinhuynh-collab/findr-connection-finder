@@ -1,7 +1,8 @@
 // Règles du délai de l'étiquette (tâche horaire) : rappels à 24 h / 48 h et annulation à l'échéance.
-import { AWAITING_LABEL, LABEL_REJECTED } from "./paymentStatus.ts";
+import { AWAITING_LABEL, LABEL_DEADLINE_DAYS, LABEL_REJECTED } from "./paymentStatus.ts";
 
 const HOUR = 3_600_000;
+const DAY = 24 * HOUR;
 
 export type LabelDeadlineRow = {
   payment_status: string | null;
@@ -23,9 +24,9 @@ export function planLabelDeadline(r: LabelDeadlineRow, now: number): LabelDeadli
   if (!r.label_deadline_at) return null;
   const deadline = new Date(r.label_deadline_at).getTime();
   if (now >= deadline) return { kind: "expire" };
-  // Rappels : seulement pour l'étiquette initiale, à 24 h et 48 h après le paiement.
-  if (ps !== AWAITING_LABEL || !r.accepted_at) return null;
-  const elapsed = now - new Date(r.accepted_at).getTime();
+  // Rappels : seulement pour l'étiquette initiale, à 24 h et 48 h après l'ouverture du délai.
+  if (ps !== AWAITING_LABEL) return null;
+  const elapsed = now - (deadline - LABEL_DEADLINE_DAYS * DAY);
   const marks: ("label_reminder_24h_at" | "label_reminder_48h_at")[] = [];
   if (elapsed >= 48 * HOUR && !r.label_reminder_48h_at) {
     marks.push("label_reminder_48h_at");
