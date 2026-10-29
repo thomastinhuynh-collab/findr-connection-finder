@@ -45,3 +45,17 @@ export function labelDeadlineAt(shipFrom: unknown, from: number): string | null 
   if (!shipFrom || typeof shipFrom !== "object" || Object.keys(shipFrom).length === 0) return null;
   return new Date(from + LABEL_DEADLINE_DAYS * DAY).toISOString();
 }
+
+/** Le buyr ne peut confirmer la réception qu'à partir de l'expédition. */
+export const RECEIPT_CONFIRMABLE_STATUSES = ["expedie", "livre"];
+const PAID_NOT_SHIPPED = [AWAITING_LABEL, LABEL_REJECTED, "paye_en_attente_reception"];
+
+/** Message de refus de « Confirmer la réception », ou null si la confirmation est possible. */
+export function receiptConfirmationError(status: string | null): string | null {
+  const s = status ?? "";
+  if (RECEIPT_CONFIRMABLE_STATUSES.includes(s)) return null;
+  if (s === "termine") return "Le versement de cette réservation a déjà été effectué.";
+  if (PAID_NOT_SHIPPED.includes(s)) return "L'objet n'a pas encore été expédié";
+  if (s === "versement_en_revue") return "Ta réception est bien enregistrée. Le versement au findr est en cours de revue par l'équipe findr : il partira automatiquement dès validation.";
+  return `Cette réservation n'est pas en cours (statut : ${s || "aucun"}).`;
+}

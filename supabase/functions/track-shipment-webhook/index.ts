@@ -5,6 +5,7 @@ import { sendEmailToUser } from "../_shared/brevo.ts";
 import { checkTracking } from "../_shared/track17.ts";
 import { normalizeTrackingNumber, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
 import { putTrackingInReview } from "../_shared/trackingReview.ts";
+import { applyShipmentDetection, planShipmentDetection } from "../_shared/shipmentDetection.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -53,7 +54,7 @@ Deno.serve(async (req) => {
 
     const { data: reservations } = await admin
       .from("reservations")
-      .select("id, buyr_id, findr_id, payment_status, tracking_number, carrier, accepted_at, tracking_review_notified_at, delivered_at")
+      .select("id, buyr_id, findr_id, payment_status, tracking_number, carrier, accepted_at, tracking_review_notified_at, delivered_at, label_provided_at, shipped_at")
       .eq("tracking_number_key", trackingNumber);
 
     for (const reservation of reservations ?? []) {
@@ -66,6 +67,13 @@ Deno.serve(async (req) => {
       continue;
     }
     const statusCode = evidence.status;
+
+    // Parcours étiquette : le premier scan physique vaut preuve d'envoi.
+    const detection = planShipmentDetection(reservation, evidence, false, Date.now());
+    if (detection && await applyShipmentDetection(admin, reservation, detection)) {
+      reservation.payment_status = "expedie";
+      reservation.shipped_at = detection.shipped_at;
+    }
 
     const label = (statusCode && STATUS_LABELS[statusCode]) || statusCode || "En transit";
     const isDelivered = evidence.recognized && statusCode === "Delivered" && !reservation.delivered_at && !reservation.tracking_review_notified_at;

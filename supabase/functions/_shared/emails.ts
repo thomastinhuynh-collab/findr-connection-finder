@@ -135,6 +135,7 @@ export type EmailType =
   | "new_proposal"
   | "proposal_accepted"
   | "shipped"
+  | "shipment_detected"
   | "tracking_review"
   | "label_ready"
   | "label_rejected"
@@ -226,6 +227,21 @@ export function buildEmail(
             { label: "Montant net à recevoir", value: money(data.payoutAmount) },
           ],
           cta: { label: "Expédier mon objet", url: transactionUrl },
+        }),
+      };
+
+    case "shipment_detected":
+      return {
+        subject: "Colis expédié, en route",
+        html: renderEmail({
+          eyebrow: "Expédition",
+          title: "Colis expédié, en route",
+          paragraphs: [`${hello} le transporteur a scanné ton colis : il est en route vers le buyr.`],
+          facts: [
+            ...(data.trackingNumber ? [{ label: "Numéro de suivi", value: String(data.trackingNumber) }] : []),
+            ...(data.carrier ? [{ label: "Transporteur", value: String(data.carrier) }] : []),
+          ],
+          cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
 

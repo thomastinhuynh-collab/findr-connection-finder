@@ -10,8 +10,10 @@ import { isAuthorizedCron } from "../_shared/cronAuth.ts";
 import Stripe from "npm:stripe@18";
 import { releaseFundsForReservation } from "../_shared/payout.ts";
 import { recheckUnrecognizedTracking } from "../_shared/trackingVerification.ts";
+import { checkTracking } from "../_shared/track17.ts";
+import { applyShipmentDetection, planShipmentDetection } from "../_shared/shipmentDetection.ts";
 import { putTrackingInReview } from "../_shared/trackingReview.ts";
-import { canAutoReleaseShipped, cancellationDays } from "../_shared/trackingValidation.ts";
+import { canAutoReleaseShipped, cancellationDays, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
 import { AWAITING_LABEL, labelDeadlineAt, loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
 import { sendEmailToUser } from "../_shared/brevo.ts";
 
@@ -41,6 +43,22 @@ Deno.serve(async (req) => {
     const released: string[] = [];
     const failed: string[] = [];
     await recheckUnrecognizedTracking(admin, now);
+
+    // 0. Parcours étiquette : détecte le premier scan physique sans dépendre des notifications 17TRACK.
+    const { data: awaitingScan } = await admin.from("reservations")
+      .select("id, buyr_id, findr_id, payment_status, label_provided_at, shipped_at, tracking_number, carrier, accepted_at")
+      .eq("payment_status", "paye_en_attente_reception")
+      .not("label_provided_at", "is", null).is("shipped_at", null).not("tracking_number", "is", null);
+    for (const r of awaitingScan ?? []) {
+      try {
+        const evidence = await checkTracking(r.tracking_number, r.carrier ?? "");
+        const old = isOldTrackingEvent(evidence?.firstEventAt ?? null, r.accepted_at);
+        const detection = planShipmentDetection(r, evidence, old, now);
+        if (detection) await applyShipmentDetection(admin, r, detection);
+      } catch (e) {
+        console.error("shipment detection failed for", r.id, e);
+      }
+    }
 
     // 1. Libération automatique 48 h après livraison
     const { data: toRelease } = await admin

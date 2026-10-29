@@ -798,7 +798,8 @@
     "statusCancelled": "Annulée",
     "secureAwaitingFindr": "{{name}} a payé. Ton versement sera effectué après sa confirmation de réception.",
     "statusLabelRejectedFindr": "Étiquette refusée — nouvelle étiquette attendue",
-    "statusLabelRejectedBuyr": "Nouvelle étiquette à fournir"
+    "statusLabelRejectedBuyr": "Nouvelle étiquette à fournir",
+    "confirmAfterShipping": "Tu pourras confirmer la réception dès que l'objet sera expédié."
   },
   "terms": {
     "title": "Conditions Générales d'Utilisation",
@@ -1510,7 +1511,8 @@
     "payoutAfter": "Versé après la confirmation de réception du buyr.",
     "payoutDone": "Versement effectué.",
     "totalPaid": "Total payé",
-    "sendMessage": "Envoyer un message"
+    "sendMessage": "Envoyer un message",
+    "labelSentAwaitingDrop": "Étiquette envoyée. Le findr doit déposer le colis."
   },
   "trackingSafety": {
     "errors": {

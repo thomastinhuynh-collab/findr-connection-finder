@@ -65,8 +65,8 @@ describe("shipping tracking rules", () => {
     expect(needsTrackingCheck(r, start + 3 * DAY)).toBe(true);
   });
   it("requires actual events, not a delivered status alone", () => {
-    expect(parseTrackingEvidence({ latest_status: { status: "Delivered" } }).recognized).toBe(false);
-    expect(parseTrackingEvidence({ tracking: { providers: [{ events: [{ time_utc: "2026-10-27T17:00:00Z" }, { time_iso: "2026-10-27T17:00:00+01:00" }] }] } })).toMatchObject({ recognized: true, firstEventAt: "2026-10-27T16:00:00.000Z" });
+    expect(parseTrackingEvidence({ latest_status: { status: "InfoReceived" } }).recognized).toBe(false);
+    expect(parseTrackingEvidence({ tracking: { providers: [{ events: [{ time_utc: "2026-10-27T17:00:00Z", stage: "InTransit" }, { time_iso: "2026-10-27T17:00:00+01:00", stage: "InfoReceived" }] }] } })).toMatchObject({ recognized: true, firstEventAt: "2026-10-27T16:00:00.000Z" });
   });
   it("retries unavailable checks only on the next daily window", () => {
     const start = Date.parse("2026-10-01T00:00:00Z");
