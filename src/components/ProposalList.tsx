@@ -683,6 +683,7 @@ const ProposalList = ({
                       payments[proposal.id]?.payment_status ?? "",
                     ) && (
                       <>
+                        {["expedie", "livre"].includes(payments[proposal.id]?.payment_status ?? "") ? (
                         <Button
                           size="sm"
                           onClick={() => {
@@ -693,6 +694,9 @@ const ProposalList = ({
                           <Package className="w-4 h-4 mr-1" />
                           {t("proposal.confirmReceipt")}
                         </Button>
+                        ) : (
+                          <p className="text-xs text-muted-foreground">{t("proposal.confirmAfterShipping")}</p>
+                        )}
                         <button
                           type="button"
                           className="text-xs text-muted-foreground underline hover:text-destructive transition-colors"
@@ -1080,7 +1084,15 @@ const ProposalList = ({
 
             {isOwner &&
               selectedProposal &&
-              ["paye_en_attente_reception", "expedie", "livre"].includes(
+              ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception"].includes(
+                payments[selectedProposal.id]?.payment_status ?? "",
+              ) && (
+                <p className="text-sm text-muted-foreground text-center">{t("proposal.confirmAfterShipping")}</p>
+              )}
+
+            {isOwner &&
+              selectedProposal &&
+              ["expedie", "livre"].includes(
                 payments[selectedProposal.id]?.payment_status ?? "",
               ) && (
                 <Button

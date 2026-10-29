@@ -631,6 +631,14 @@ const Transaction = () => {
           />
         )}
 
+        {/* Buyr : étiquette envoyée, colis pas encore scanné */}
+        {isBuyr && ps === "paye_en_attente_reception" && !!reservation.label_provided_at && !reservation.shipped_at && (
+          <p role="status" className="text-sm font-medium" style={{ color: NAVY }}>{t("transaction.labelSentAwaitingDrop")}</p>
+        )}
+        {isBuyr && ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception"].includes(ps) && (
+          <p className="text-xs" style={{ color: "#666666" }}>{t("proposal.confirmAfterShipping")}</p>
+        )}
+
         {/* Buyr : réception */}
         {showBuyrReceipt && (
           <section

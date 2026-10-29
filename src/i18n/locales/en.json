@@ -798,7 +798,8 @@
     "statusCancelled": "Cancelled",
     "secureAwaitingFindr": "{{name}} has paid. Your payout will be made after they confirm receipt.",
     "statusLabelRejectedFindr": "Label rejected — new label expected",
-    "statusLabelRejectedBuyr": "New label to provide"
+    "statusLabelRejectedBuyr": "New label to provide",
+    "confirmAfterShipping": "You can confirm receipt once the item has shipped."
   },
   "terms": {
     "title": "Terms of Use",
@@ -1510,7 +1511,8 @@
     "payoutAfter": "Paid out after the buyr confirms receipt.",
     "payoutDone": "Payout completed.",
     "totalPaid": "Total paid",
-    "sendMessage": "Send a message"
+    "sendMessage": "Send a message",
+    "labelSentAwaitingDrop": "Label sent. The findr needs to drop off the parcel."
   },
   "trackingSafety": {
     "errors": {
