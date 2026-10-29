@@ -796,7 +796,9 @@
     "statusDelivered": "Livrée",
     "statusDone": "Terminée",
     "statusCancelled": "Annulée",
-    "secureAwaitingFindr": "{{name}} a payé. Ton versement sera effectué après sa confirmation de réception."
+    "secureAwaitingFindr": "{{name}} a payé. Ton versement sera effectué après sa confirmation de réception.",
+    "statusLabelRejectedFindr": "Étiquette refusée — nouvelle étiquette attendue",
+    "statusLabelRejectedBuyr": "Nouvelle étiquette à fournir"
   },
   "terms": {
     "title": "Conditions Générales d'Utilisation",
@@ -1245,7 +1247,8 @@
         "paye_en_attente_reception": "À expédier",
         "expedie": "Expédié — versement en attente de confirmation de réception",
         "livre": "Livré — versement en attente de confirmation de réception",
-        "versement_en_revue": "Versement en revue"
+        "versement_en_revue": "Versement en revue",
+        "etiquette_refusee": "Étiquette refusée — nouvelle étiquette attendue"
       }
     }
   },
@@ -1636,6 +1639,43 @@
       "pdf_refused": "Ce PDF n'est pas accepté. Exporte ton étiquette en image (PNG ou JPEG) ou réimprime-la en PDF.",
       "duplicate": "Ce numéro de suivi est déjà utilisé.",
       "old": "Ce numéro correspond à un envoi plus ancien."
+    }
+  },
+  "findrLabel": {
+    "awaitingTitle": "En attente de l'étiquette",
+    "awaitingText": "{{name}} doit t'envoyer l'étiquette avant le {{date}}. Nous te prévenons dès qu'elle arrive.",
+    "awaitingNoDate": "{{name}} doit t'envoyer l'étiquette. Nous te prévenons dès qu'elle arrive.",
+    "rejectedTitle": "Étiquette refusée — nouvelle étiquette attendue",
+    "rejectedText": "Tu as signalé l'étiquette comme inutilisable. {{name}} doit en envoyer une nouvelle avant le {{date}}.",
+    "countdown": "Encore {{d}} j {{h}} h {{m}} min.",
+    "dropTitle": "Dépose ton colis",
+    "step1": "Prépare le colis",
+    "step1Text": "Poids annoncé, emballage compris : {{weight}}.",
+    "step2": "Télécharge et imprime l'étiquette",
+    "download": "Télécharger l'étiquette",
+    "step3": "Dépose le colis",
+    "step3Text": "Dépose-le dans un point {{carrier}}.",
+    "trackingLabel": "Numéro de suivi :",
+    "declare": "J'ai déposé le colis",
+    "declareHelp": "Cette déclaration prévient le buyr. Le versement reste fondé sur le suivi du transporteur.",
+    "declared": "Dépôt déclaré le {{date}}.",
+    "declaredToast": "Dépôt enregistré, le buyr est prévenu.",
+    "unusable": "Étiquette inutilisable",
+    "rejectTitle": "Étiquette inutilisable",
+    "rejectDesc": "Le buyr devra en envoyer une nouvelle sous 48 h. Au deuxième refus, la vente est annulée et le buyr intégralement remboursé.",
+    "reason": "Motif",
+    "reasonHelp": "Entre 3 et 200 caractères ({{count}}/200).",
+    "rejectConfirm": "Signaler l'étiquette",
+    "rejectedToast": "Étiquette signalée, le buyr est prévenu.",
+    "refundedToast": "Vente annulée, le buyr est intégralement remboursé.",
+    "errors": {
+      "reason": "Le motif doit faire entre 3 et 200 caractères.",
+      "status": "Cette action n'est plus possible pour cette vente.",
+      "forbidden": "Tu ne peux pas agir sur cette vente.",
+      "not_found": "Réservation introuvable.",
+      "flow_disabled": "Le parcours étiquette n'est pas encore disponible.",
+      "download": "Impossible de télécharger l'étiquette. Réessaie dans un instant.",
+      "generic": "L'action a échoué. Réessaie dans un instant."
     }
   }
 }
