@@ -461,6 +461,7 @@ export type Database = {
           dispute_resolution_type: string | null
           dispute_resolved_at: string | null
           dispute_status: string | null
+          dropoff_declared_at: string | null
           expired_without_proposal: boolean
           expires_at: string | null
           findr_fee: number | null
@@ -520,6 +521,7 @@ export type Database = {
           dispute_resolution_type?: string | null
           dispute_resolved_at?: string | null
           dispute_status?: string | null
+          dropoff_declared_at?: string | null
           expired_without_proposal?: boolean
           expires_at?: string | null
           findr_fee?: number | null
@@ -579,6 +581,7 @@ export type Database = {
           dispute_resolution_type?: string | null
           dispute_resolved_at?: string | null
           dispute_status?: string | null
+          dropoff_declared_at?: string | null
           expired_without_proposal?: boolean
           expires_at?: string | null
           findr_fee?: number | null
