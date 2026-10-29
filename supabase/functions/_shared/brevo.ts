@@ -12,6 +12,8 @@ const GATEWAY_URL = "https://connector-gateway.lovable.dev/brevo/smtp/email";
 type Admin = any;
 // deno-lint-ignore no-explicit-any
 type Data = Record<string, any>;
+/** Pièce jointe Brevo : contenu en base64 et nom de fichier (extension autorisée par Brevo). */
+export type EmailAttachment = { name: string; content: string };
 
 /** Envoi brut à une adresse connue. Retourne true si Brevo a accepté l'email. */
 export async function sendEmailTo(
@@ -19,6 +21,7 @@ export async function sendEmailTo(
   type: EmailType,
   data: Data = {},
   sender: { name: string; email: string } = SENDER,
+  attachments?: EmailAttachment[],
 ): Promise<boolean> {
   const key = Deno.env.get("BREVO_API_KEY");
   if (!key) {
@@ -37,6 +40,7 @@ export async function sendEmailTo(
     subject,
     htmlContent: html,
     tags: [type],
+    ...(attachments?.length ? { attachment: attachments } : {}),
   };
 
 
@@ -81,6 +85,7 @@ export async function sendEmailToUser(
   userId: string,
   type: EmailType,
   data: Data = {},
+  attachments?: EmailAttachment[],
 ): Promise<boolean> {
   try {
     if (!userId) return false;
@@ -104,7 +109,7 @@ export async function sendEmailToUser(
         undefined;
     }
 
-    return await sendEmailTo(email, type, { ...data, firstName });
+    return await sendEmailTo(email, type, { ...data, firstName }, SENDER, attachments);
   } catch (e) {
     console.error(`[email] sendEmailToUser ${type} exception:`, e);
     return false;
