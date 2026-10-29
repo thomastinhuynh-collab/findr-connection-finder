@@ -1512,7 +1512,8 @@
     "payoutDone": "Payout completed.",
     "totalPaid": "Total paid",
     "sendMessage": "Send a message",
-    "labelSentAwaitingDrop": "Label sent. The findr needs to drop off the parcel."
+    "labelSentAwaitingDrop": "Label sent. The findr needs to drop off the parcel.",
+    "cancelBeforeLabel": "Cancel the purchase and get a full refund"
   },
   "trackingSafety": {
     "errors": {
