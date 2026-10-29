@@ -28,3 +28,15 @@ describe("label_ready email to the findr", () => {
     expect(buildEmail("label_ready", { reservationId: base.reservationId }).subject).toBe("Tu peux créer l'étiquette d'envoi");
   });
 });
+describe("shipment_detected email to the findr", () => {
+  const reservationId = "f23c8b7a-e7a2-4659-942b-7ad2b284ab19";
+  it("names the buyr when the first name is known", () => {
+    const { html } = buildEmail("shipment_detected", { reservationId, buyrFirstName: "Olga" });
+    expect(html).toContain("il est en route vers Olga.");
+    expect(html).not.toContain("il est en route vers le buyr.");
+  });
+  it("falls back to « le buyr » when the first name is unknown", () => {
+    expect(buildEmail("shipment_detected", { reservationId }).html).toContain("il est en route vers le buyr.");
+    expect(buildEmail("shipment_detected", { reservationId, buyrFirstName: "   " }).html).toContain("il est en route vers le buyr.");
+  });
+});
