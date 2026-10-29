@@ -1,7 +1,8 @@
 // Règles du délai de l'étiquette (tâche horaire) : rappels à 24 h / 48 h et annulation à l'échéance.
-import { AWAITING_LABEL, LABEL_REJECTED } from "./paymentStatus.ts";
+import { AWAITING_LABEL, LABEL_DEADLINE_DAYS, LABEL_REJECTED } from "./paymentStatus.ts";
 
 const HOUR = 3_600_000;
+const DAY = 24 * HOUR;
 
 export type LabelDeadlineRow = {
   payment_status: string | null;
