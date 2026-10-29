@@ -16,6 +16,9 @@ import { putTrackingInReview } from "../_shared/trackingReview.ts";
 import { canAutoReleaseShipped, cancellationDays, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
 import { AWAITING_LABEL, labelDeadlineAt, loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
 import { sendEmailToUser } from "../_shared/brevo.ts";
+import { LABEL_EXPIRED_MESSAGE, formatRemaining, planLabelDeadline } from "../_shared/labelDeadline.ts";
+import { refundAndCancelReservation } from "../_shared/refundReservation.ts";
+import { LABEL_REJECTED } from "../_shared/paymentStatus.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -251,7 +254,57 @@ Deno.serve(async (req) => {
       }
     }
 
+    // 5. Délai de l'étiquette : rappels au buyr à 24 h / 48 h, annulation et remboursement à l'échéance.
+    // Un remboursement en échec laisse le statut inchangé : nouvelle tentative à l'exécution suivante,
+    // et les notifications ne partent qu'après réussite (donc jamais deux fois).
+    let labelReminders = 0;
+    let labelExpired = 0;
+    const { data: labelPending } = await admin.from("reservations")
+      .select("id, buyr_id, findr_id, proposal_id, payment_status, stripe_payment_intent_id, total_buyr_amount, accepted_at, label_deadline_at, label_reminder_24h_at, label_reminder_48h_at")
+      .in("payment_status", [AWAITING_LABEL, LABEL_REJECTED]).not("label_deadline_at", "is", null);
+    for (const r of labelPending ?? []) {
+      const action = planLabelDeadline(r, Date.now());
+      if (!action) continue;
+      const link = `/transaction/${r.id}`;
+      try {
+        if (action.kind === "reminder") {
+          const stamp = new Date().toISOString();
+          const update = Object.fromEntries(action.marks.map((m) => [m, stamp]));
+          let q = admin.from("reservations").update(update).eq("id", r.id).eq("payment_status", AWAITING_LABEL);
+          for (const m of action.marks) q = q.is(m, null);
+          const { data: marked } = await q.select("id").maybeSingle();
+          if (!marked) continue;
+          const remaining = formatRemaining(action.remainingMs);
+          await admin.from("notifications").insert({
+            user_id: r.buyr_id, type: "label_reminder",
+            title: `Il te reste ${remaining} pour fournir l'étiquette`,
+            message: "Sans étiquette avant l'échéance, la vente sera annulée et tu seras intégralement remboursé.",
+            link,
+          });
+          try {
+            await sendEmailToUser(admin, r.buyr_id, "label_reminder", { reservationId: r.id, remaining });
+          } catch (e) { console.error("label reminder email failed for", r.id, (e as Error).message); }
+          labelReminders++;
+        } else {
+          await refundAndCancelReservation(admin, r, "label_deadline_expired");
+          labelExpired++;
+          await admin.from("notifications").insert([r.buyr_id, r.findr_id].map((uid) => ({
+            user_id: uid, type: "cancellation", title: "Vente annulée", message: LABEL_EXPIRED_MESSAGE, link,
+          })));
+          for (const [uid, audience] of [[r.buyr_id, "buyr"], [r.findr_id, "findr"]]) {
+            try {
+              await sendEmailToUser(admin, uid, "label_expired", { reservationId: r.id, audience, amount: r.total_buyr_amount });
+            } catch (e) { console.error("label expired email failed for", r.id, (e as Error).message); }
+          }
+        }
+      } catch (e) {
+        console.error("label deadline step failed for", r.id, (e as Error).message);
+      }
+    }
+
     return json({
+      labelReminders,
+      labelExpired,
       labelReady,
       released,
       failed,

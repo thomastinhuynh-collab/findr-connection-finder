@@ -8,6 +8,7 @@ import { refundAndCancelReservation } from "../_shared/refundReservation.ts";
 import { z } from "npm:zod@3";
 import { sendEmailToUser } from "../_shared/brevo.ts";
 import { cancellationDays } from "../_shared/trackingValidation.ts";
+import { buyrCanCancelBeforeLabel } from "../_shared/labelDeadline.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -65,7 +66,8 @@ Deno.serve(async (req) => {
 
     const shippedAt = reservation.shipped_at ? new Date(reservation.shipped_at).getTime() : null;
 
-    if (isBuyr) {
+    const beforeLabel = buyrCanCancelBeforeLabel(reservation.payment_status);
+    if (isBuyr && !beforeLabel) {
       // Le buyr peut annuler si pas d'expédition après 5 jours,
       // ou si le colis expédié n'a pas été livré après 10 jours.
       const acceptedAt = new Date(
@@ -117,7 +119,7 @@ Deno.serve(async (req) => {
       reservationId: reservation.id,
       amount: reservation.total_buyr_amount,
       reason: isBuyr
-        ? "annulation demandée faute d'expédition ou de livraison dans les délais"
+        ? (beforeLabel ? "annulation demandée avant l'envoi de l'étiquette" : "annulation demandée faute d'expédition ou de livraison dans les délais")
         : "le findr n'a finalement pas pu fournir l'objet",
     });
 
