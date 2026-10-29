@@ -1,0 +1,1 @@
+ALTER TABLE public.app_settings ADD COLUMN IF NOT EXISTS label_flow_enabled boolean NOT NULL DEFAULT false;

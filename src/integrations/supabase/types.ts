@@ -19,6 +19,7 @@ export type Database = {
           beta_open: boolean
           gamification_enabled: boolean
           id: boolean
+          label_flow_enabled: boolean
           subcategories_browse_enabled: boolean
           subcategories_post_enabled: boolean
           updated_at: string
@@ -28,6 +29,7 @@ export type Database = {
           beta_open?: boolean
           gamification_enabled?: boolean
           id?: boolean
+          label_flow_enabled?: boolean
           subcategories_browse_enabled?: boolean
           subcategories_post_enabled?: boolean
           updated_at?: string
@@ -37,6 +39,7 @@ export type Database = {
           beta_open?: boolean
           gamification_enabled?: boolean
           id?: boolean
+          label_flow_enabled?: boolean
           subcategories_browse_enabled?: boolean
           subcategories_post_enabled?: boolean
           updated_at?: string

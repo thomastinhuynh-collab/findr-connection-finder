@@ -3,8 +3,8 @@ import {
   ALREADY_PAID_STATUSES,
   AWAITING_LABEL,
   CANCELLABLE_STATUSES,
-  INITIAL_PAID_STATUS,
-  LABEL_FLOW_ENABLED,
+  initialPaidStatus,
+  loadLabelFlowEnabled,
   labelDeadlineAt,
 } from "../../supabase/functions/_shared/paymentStatus";
 
@@ -34,9 +34,21 @@ describe("buyr label payment status", () => {
   });
 });
 
-describe("initial paid status while the label flow is not built", () => {
-  it("starts new payments in the shipping flow", () => {
-    expect(LABEL_FLOW_ENABLED).toBe(false);
-    expect(INITIAL_PAID_STATUS).toBe("paye_en_attente_reception");
+describe("initial paid status follows app_settings.label_flow_enabled", () => {
+  it("starts in the shipping flow when the setting is off", () => {
+    expect(initialPaidStatus(false)).toBe("paye_en_attente_reception");
+  });
+  it("starts in the label flow when the setting is on", () => {
+    expect(initialPaidStatus(true)).toBe("paye_attente_etiquette");
+  });
+  const fake = (result: unknown) => ({
+    from: () => ({ select: () => ({ maybeSingle: async () => result }) }),
+  });
+  it("reads true from the setting", async () => {
+    expect(await loadLabelFlowEnabled(fake({ data: { label_flow_enabled: true }, error: null }))).toBe(true);
+  });
+  it("falls back to off on missing row or error", async () => {
+    expect(await loadLabelFlowEnabled(fake({ data: null, error: null }))).toBe(false);
+    expect(await loadLabelFlowEnabled(fake({ data: null, error: { message: "x" } }))).toBe(false);
   });
 });
