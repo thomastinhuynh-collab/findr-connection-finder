@@ -316,7 +316,7 @@ export function buildEmail(
         subject: `${String(data.findrFirstName || "Le findr")} n'a pas pu utiliser l'étiquette`,
         html: renderEmail({
           eyebrow: "Étiquette d'expédition",
-          title: `${findrName} n'a pas pu utiliser l'étiquette`,
+          title: `${String(data.findrFirstName || "Le findr")} n'a pas pu utiliser l'étiquette`,
           paragraphs: [
             `${findrName} n'a pas pu utiliser l'étiquette. Envoie-en une nouvelle sous 48 h.`,
           ],
