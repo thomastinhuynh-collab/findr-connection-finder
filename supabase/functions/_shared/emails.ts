@@ -313,7 +313,7 @@ export function buildEmail(
     case "label_rejected": {
       const findrName = esc(String(data.findrFirstName || "Le findr"));
       return {
-        subject: `${findrName} n'a pas pu utiliser l'étiquette`,
+        subject: `${String(data.findrFirstName || "Le findr")} n'a pas pu utiliser l'étiquette`,
         html: renderEmail({
           eyebrow: "Étiquette d'expédition",
           title: `${findrName} n'a pas pu utiliser l'étiquette`,
