@@ -1512,7 +1512,8 @@
     "payoutDone": "Versement effectué.",
     "totalPaid": "Total payé",
     "sendMessage": "Envoyer un message",
-    "labelSentAwaitingDrop": "Étiquette envoyée. Le findr doit déposer le colis."
+    "labelSentAwaitingDrop": "Étiquette envoyée. Le findr doit déposer le colis.",
+    "cancelBeforeLabel": "Annuler l'achat et être intégralement remboursé"
   },
   "trackingSafety": {
     "errors": {

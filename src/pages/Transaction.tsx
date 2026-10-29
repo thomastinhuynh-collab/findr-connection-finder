@@ -298,6 +298,7 @@ const Transaction = () => {
   // Annulation buyr : 5 jours sans expédition, 10 jours après expédition jamais livrée.
   const cancelUnlockAt = () => {
     if (!["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre"].includes(ps) && !(ps === "versement_en_revue" && reservation.tracking_review_notified_at)) return null;
+    if (["paye_attente_etiquette", "etiquette_refusee"].includes(ps)) return 0; // avant l'étiquette : annulation libre
     if (reservation.shipped_at) return new Date(reservation.shipped_at).getTime() + cancellationDays(reservation.tracking_recognized) * DAY;
     const since = new Date(reservation.accepted_at ?? reservation.created_at).getTime();
     return since + 5 * DAY;
@@ -765,7 +766,7 @@ const Transaction = () => {
               className="w-full text-destructive hover:bg-destructive hover:text-destructive-foreground"
               onClick={() => setCancelOpen(true)}
             >
-              {t("proposal.noNewsCancel")}
+              {["paye_attente_etiquette", "etiquette_refusee"].includes(ps) ? t("transaction.cancelBeforeLabel") : t("proposal.noNewsCancel")}
             </Button>
           )}
           {isBuyr && !canBuyrCancel && countdown && reservation.dispute_status !== "ouvert" && (
