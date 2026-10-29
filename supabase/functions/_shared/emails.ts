@@ -274,6 +274,27 @@ export function buildEmail(
       };
 
     case "label_ready":
+      if (data.audience === "findr") {
+        const buyrName = String(data.buyrFirstName || "Le buyr");
+        return {
+          subject: `${data.buyrFirstName || "Le buyr"} t'a envoyé l'étiquette d'expédition`,
+          html: renderEmail({
+            eyebrow: "Étiquette d'expédition",
+            title: `${buyrName} t'a envoyé l'étiquette d'expédition`,
+            paragraphs: [
+              "Étiquette fournie par l'acheteur : vérifie qu'elle porte bien le logo du transporteur avant de l'imprimer.",
+              data.labelAttached
+                ? "L'étiquette est jointe à cet email."
+                : "Ton étiquette est disponible sur ta page de transaction.",
+            ],
+            facts: [
+              ...(data.carrier ? [{ label: "Transporteur", value: String(data.carrier) }] : []),
+              ...(data.trackingNumber ? [{ label: "Suivi", value: String(data.trackingNumber) }] : []),
+            ],
+            cta: { label: "Voir la transaction", url: transactionUrl },
+          }),
+        };
+      }
       return {
         subject: "Tu peux créer l'étiquette d'envoi",
         html: renderEmail({

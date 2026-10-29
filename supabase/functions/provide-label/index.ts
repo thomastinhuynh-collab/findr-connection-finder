@@ -5,8 +5,10 @@ import { z } from "npm:zod@3";
 import { normalizeTrackingNumber, normalizeCarrier, validateTrackingNumber, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
 import { checkTracking } from "../_shared/track17.ts";
 import { loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
+import { sendEmailToUser } from "../_shared/brevo.ts";
+import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import {
-  LABEL_CARRIERS, LABEL_EXT, LABEL_MIME, LABEL_UPLOAD_STATUSES, checkLabelEligibility, validateLabelFile,
+  LABEL_CARRIERS, LABEL_EXT, canAttachLabel, LABEL_MIME, LABEL_UPLOAD_STATUSES, checkLabelEligibility, validateLabelFile,
 } from "../_shared/labelFlow.ts";
 
 const json = (body: unknown, status = 200) =>
@@ -122,6 +124,22 @@ Deno.serve(async (req) => {
       message: `Transporteur : ${carrier} — suivi n° ${trackingNumber}.`,
       link: `/transaction/${reservationId}`,
     });
+
+    // Email au findr : un échec n'annule jamais le dépôt (notification et téléchargement restent disponibles).
+    try {
+      const attach = canAttachLabel(fileCheck.kind, bytes);
+      const sent = await sendEmailToUser(admin, reservation!.findr_id, "label_ready", {
+        audience: "findr",
+        reservationId,
+        buyrFirstName: firstName,
+        carrier,
+        trackingNumber,
+        labelAttached: attach,
+      }, attach ? [{ name: `etiquette-findr.${LABEL_EXT[fileCheck.kind]}`, content: encodeBase64(bytes) }] : undefined);
+      if (!sent) console.error("provide-label: label_ready email not sent for", reservationId);
+    } catch (e) {
+      console.error("provide-label: label_ready email failed for", reservationId, (e as Error).message);
+    }
 
     return json({ success: true, tracking_recognized: evidence?.recognized ?? false });
   } catch (err) {
