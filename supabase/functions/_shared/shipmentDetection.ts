@@ -23,8 +23,10 @@ export async function applyShipmentDetection(
     { user_id: r.findr_id, type: "shipment", title: "Colis expédié, en route", message, link },
   ]);
   try {
+    const { data: buyrProfile } = await admin.from("profiles").select("full_name").eq("user_id", r.buyr_id).maybeSingle();
+    const buyrFirstName = (buyrProfile?.full_name ?? "").trim().split(/\s+/)[0];
     await sendEmailToUser(admin, r.findr_id, "shipment_detected", {
-      reservationId: r.id, trackingNumber: r.tracking_number, carrier: r.carrier,
+      reservationId: r.id, trackingNumber: r.tracking_number, carrier: r.carrier, buyrFirstName,
     });
   } catch (e) {
     console.error("shipment detection email failed for", r.id, (e as Error).message);
