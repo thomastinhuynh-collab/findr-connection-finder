@@ -1,3 +1,4 @@
+import { receiptConfirmationError } from "../_shared/paymentStatus.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import Stripe from "npm:stripe@18";
@@ -45,19 +46,8 @@ Deno.serve(async (req) => {
     if (reservation.buyr_id !== user.id) return json({ error: "Non autorisé" }, 403);
     // Le buyr peut toujours confirmer manuellement la réception, indépendamment du suivi
     // automatique 17TRACK (faux numéro, transporteur non couvert, etc.).
-    const CONFIRMABLE = ["paye_en_attente_reception", "expedie", "livre"];
-    if (!CONFIRMABLE.includes(reservation.payment_status ?? "")) {
-      const status = reservation.payment_status ?? "";
-      const error =
-        status === "termine"
-          ? "Le versement de cette réservation a déjà été effectué."
-          : status === "paye_attente_etiquette" || status === "etiquette_refusee"
-            ? "L'objet n'a pas encore été expédié : l'étiquette d'envoi est attendue."
-            : status === "versement_en_revue"
-            ? "Ta réception est bien enregistrée. Le versement au findr est en cours de revue par l'équipe findr : il partira automatiquement dès validation."
-            : `Cette réservation n'est pas en cours (statut : ${status || "aucun"}).`;
-      return json({ error }, 400);
-    }
+    const confirmError = receiptConfirmationError(reservation.payment_status);
+    if (confirmError) return json({ error: confirmError }, 400);
     if (reservation.dispute_open) {
       return json({ error: "Une réclamation est en cours sur cette transaction." }, 400);
     }
