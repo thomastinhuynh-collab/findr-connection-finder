@@ -236,7 +236,7 @@ export function buildEmail(
         html: renderEmail({
           eyebrow: "Expédition",
           title: "Colis expédié, en route",
-          paragraphs: [`${hello} le transporteur a scanné ton colis : il est en route vers le buyr.`],
+          paragraphs: [`${hello} le transporteur a scanné ton colis : il est en route vers ${esc(String(data.buyrFirstName ?? "").trim() || "le buyr")}.`],
           facts: [
             ...(data.trackingNumber ? [{ label: "Numéro de suivi", value: String(data.trackingNumber) }] : []),
             ...(data.carrier ? [{ label: "Transporteur", value: String(data.carrier) }] : []),
