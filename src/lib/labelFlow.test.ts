@@ -33,7 +33,7 @@ describe("label file", () => {
 
 describe("label tracking number", () => {
   it("rejects bad numbers per carrier", () => {
-    expect(validateTrackingNumber("1234567", "Mondial Relay")).toBe("mondial");
+    expect(validateTrackingNumber("8402917", "Mondial Relay")).toBe("mondial");
     expect(validateTrackingNumber("ABC", "Colissimo")).toBe("postal");
     expect(validateTrackingNumber("1111111111", "Chronopost")).toBe("sequence");
     expect(validateTrackingNumber("", "Colissimo")).toBe("required");
