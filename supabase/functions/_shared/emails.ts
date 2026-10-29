@@ -288,8 +288,8 @@ export function buildEmail(
                 : "Ton étiquette est disponible sur ta page de transaction.",
             ],
             facts: [
-              ...(data.carrier ? [{ label: "Transporteur", value: esc(data.carrier) }] : []),
-              ...(data.trackingNumber ? [{ label: "Suivi", value: esc(data.trackingNumber) }] : []),
+              ...(data.carrier ? [{ label: "Transporteur", value: String(data.carrier) }] : []),
+              ...(data.trackingNumber ? [{ label: "Suivi", value: String(data.trackingNumber) }] : []),
             ],
             cta: { label: "Voir la transaction", url: transactionUrl },
           }),
