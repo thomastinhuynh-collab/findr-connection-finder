@@ -2,7 +2,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import Stripe from "npm:stripe@18";
 import { isStripeAccountComplete } from "../_shared/stripeAccount.ts";
 import { sendEmailTo, sendEmailToUser } from "../_shared/brevo.ts";
-import { ALREADY_PAID_STATUSES, AWAITING_LABEL, labelDeadlineAt } from "../_shared/paymentStatus.ts";
+import { ALREADY_PAID_STATUSES, INITIAL_PAID_STATUS, LABEL_FLOW_ENABLED, labelDeadlineAt } from "../_shared/paymentStatus.ts";
 
 const ADMIN_EMAIL = "thomas@findrapp.fr";
 
@@ -121,8 +121,8 @@ Deno.serve(async (req) => {
           .from("reservations")
           .update({
             ship_from: shipFrom,
-            payment_status: AWAITING_LABEL,
-            label_deadline_at: labelDeadlineAt(shipFrom, paidAt),
+            payment_status: INITIAL_PAID_STATUS,
+            label_deadline_at: LABEL_FLOW_ENABLED ? labelDeadlineAt(shipFrom, paidAt) : null,
             accepted_at: new Date(paidAt).toISOString(),
             stripe_payment_intent_id: paymentIntentId,
           })
