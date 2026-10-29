@@ -122,3 +122,55 @@ describe("label file purge", () => {
     expect(isLabelPurgeable({ ...base, label_path: null, payment_status: "termine" }, NOW)).toBe(false);
   });
 });
+
+import {
+  MAX_LABEL_REJECTIONS,
+  checkFindrLabelEligibility,
+  normalizeRejectReason,
+  planLabelRejection,
+} from "../../supabase/functions/_shared/labelFlow";
+
+describe("findr label actions (reject-label, declare-dropoff)", () => {
+  const r = { findr_id: "findr", payment_status: "paye_en_attente_reception", label_provided_at: "2026-10-29T10:00:00Z", shipped_at: null };
+  it("accepts the findr on a received, unshipped label", () => {
+    expect(checkFindrLabelEligibility(true, r, "findr")).toBeNull();
+  });
+  it("refuses when the flow switch is off", () => {
+    expect(checkFindrLabelEligibility(false, r, "findr")).toBe("flow_disabled");
+  });
+  it("refuses another caller, including the buyr", () => {
+    expect(checkFindrLabelEligibility(true, r, "buyr")).toBe("forbidden");
+  });
+  it("refuses without a provided label, after shipping, or in another status", () => {
+    expect(checkFindrLabelEligibility(true, { ...r, label_provided_at: null }, "findr")).toBe("status");
+    expect(checkFindrLabelEligibility(true, { ...r, shipped_at: "2026-10-30T10:00:00Z" }, "findr")).toBe("status");
+    expect(checkFindrLabelEligibility(true, { ...r, payment_status: "etiquette_refusee" }, "findr")).toBe("status");
+    expect(checkFindrLabelEligibility(true, null, "findr")).toBe("not_found");
+  });
+  it("requires a 3 to 200 character reason", () => {
+    expect(normalizeRejectReason("  ab ")).toBeNull();
+    expect(normalizeRejectReason("abc")).toBe("abc");
+    expect(normalizeRejectReason("x".repeat(200))).toHaveLength(200);
+    expect(normalizeRejectReason("x".repeat(201))).toBeNull();
+    expect(normalizeRejectReason(undefined)).toBeNull();
+  });
+  it("first rejection: etiquette_refusee, count 1, deadline now + 48 h, label and tracking cleared", () => {
+    const now = Date.parse("2026-10-29T12:00:00.000Z");
+    const plan = planLabelRejection(0, now);
+    expect(plan.refund).toBe(false);
+    expect(plan.update.payment_status).toBe("etiquette_refusee");
+    expect(plan.update.label_rejection_count).toBe(1);
+    expect(plan.update.label_rejected_at).toBe("2026-10-29T12:00:00.000Z");
+    expect(plan.update.label_deadline_at).toBe("2026-10-31T12:00:00.000Z");
+    expect(plan.update.label_provided_at).toBeNull();
+    expect(plan.update.label_path).toBeNull();
+    expect(plan.update.tracking_number).toBeNull();
+    expect(plan.update.carrier).toBeNull();
+    expect(plan.update.tracking_recognized).toBe(false);
+    expect(plan.update.tracking_first_event_at).toBeNull();
+  });
+  it("second rejection triggers the full refund", () => {
+    expect(MAX_LABEL_REJECTIONS).toBe(2);
+    expect(planLabelRejection(1, Date.now()).refund).toBe(true);
+  });
+});

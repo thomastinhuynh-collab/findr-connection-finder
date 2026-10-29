@@ -2,6 +2,8 @@
 // paye_attente_etiquette : payé, étiquette attendue de la part du buyr (nouveau parcours).
 // paye_en_attente_reception : étiquette fournie (ou ancien parcours), colis à déposer.
 export const AWAITING_LABEL = "paye_attente_etiquette";
+/** Étiquette refusée par le findr : le buyr doit en fournir une nouvelle. */
+export const LABEL_REJECTED = "etiquette_refusee";
 
 /** Statut posé par le webhook Stripe à la confirmation du paiement, selon app_settings.label_flow_enabled. */
 export function initialPaidStatus(labelFlowEnabled: boolean): string {
@@ -23,6 +25,7 @@ export async function loadLabelFlowEnabled(admin: any): Promise<boolean> {
 /** Statuts où le paiement est déjà enregistré (idempotence du webhook Stripe). */
 export const ALREADY_PAID_STATUSES = [
   AWAITING_LABEL,
+  LABEL_REJECTED,
   "paye_en_attente_reception",
   "expedie",
   "livre",
@@ -32,7 +35,7 @@ export const ALREADY_PAID_STATUSES = [
 ];
 
 /** Statuts payés et encore annulables/remboursables. */
-export const CANCELLABLE_STATUSES = [AWAITING_LABEL, "paye_en_attente_reception", "expedie", "livre"];
+export const CANCELLABLE_STATUSES = [AWAITING_LABEL, LABEL_REJECTED, "paye_en_attente_reception", "expedie", "livre"];
 
 export const LABEL_DEADLINE_DAYS = 3;
 const DAY = 24 * 60 * 60 * 1000;

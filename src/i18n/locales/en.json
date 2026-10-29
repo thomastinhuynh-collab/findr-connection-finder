@@ -796,7 +796,9 @@
     "statusDelivered": "Delivered",
     "statusDone": "Completed",
     "statusCancelled": "Cancelled",
-    "secureAwaitingFindr": "{{name}} has paid. Your payout will be made after they confirm receipt."
+    "secureAwaitingFindr": "{{name}} has paid. Your payout will be made after they confirm receipt.",
+    "statusLabelRejectedFindr": "Label rejected — new label expected",
+    "statusLabelRejectedBuyr": "New label to provide"
   },
   "terms": {
     "title": "Terms of Use",
@@ -1245,7 +1247,8 @@
         "paye_en_attente_reception": "To ship",
         "expedie": "Shipped — payout awaiting confirmation of receipt",
         "livre": "Delivered — payout awaiting confirmation of receipt",
-        "versement_en_revue": "Payout under review"
+        "versement_en_revue": "Payout under review",
+        "etiquette_refusee": "Label rejected — new label expected"
       }
     }
   },
@@ -1636,6 +1639,43 @@
       "pdf_refused": "This PDF isn't accepted. Export your label as an image (PNG or JPEG) or reprint it as a PDF.",
       "duplicate": "This tracking number is already in use.",
       "old": "This number matches an older shipment."
+    }
+  },
+  "findrLabel": {
+    "awaitingTitle": "Waiting for the label",
+    "awaitingText": "{{name}} must send you the label before {{date}}. We'll let you know as soon as it arrives.",
+    "awaitingNoDate": "{{name}} must send you the label. We'll let you know as soon as it arrives.",
+    "rejectedTitle": "Label rejected — new label expected",
+    "rejectedText": "You reported the label as unusable. {{name}} must send a new one before {{date}}.",
+    "countdown": "{{d}} d {{h}} h {{m}} min left.",
+    "dropTitle": "Drop off your parcel",
+    "step1": "Prepare the parcel",
+    "step1Text": "Declared weight, packaging included: {{weight}}.",
+    "step2": "Download and print the label",
+    "download": "Download the label",
+    "step3": "Drop off the parcel",
+    "step3Text": "Drop it off at a {{carrier}} point.",
+    "trackingLabel": "Tracking number:",
+    "declare": "I've dropped off the parcel",
+    "declareHelp": "This lets the buyr know. The payout still relies on the carrier tracking.",
+    "declared": "Drop-off declared on {{date}}.",
+    "declaredToast": "Drop-off recorded, the buyr has been notified.",
+    "unusable": "Unusable label",
+    "rejectTitle": "Unusable label",
+    "rejectDesc": "The buyr will have to send a new one within 48 h. On the second rejection, the sale is cancelled and the buyr fully refunded.",
+    "reason": "Reason",
+    "reasonHelp": "Between 3 and 200 characters ({{count}}/200).",
+    "rejectConfirm": "Report the label",
+    "rejectedToast": "Label reported, the buyr has been notified.",
+    "refundedToast": "Sale cancelled, the buyr has been fully refunded.",
+    "errors": {
+      "reason": "The reason must be between 3 and 200 characters.",
+      "status": "This action is no longer possible for this sale.",
+      "forbidden": "You can't act on this sale.",
+      "not_found": "Reservation not found.",
+      "flow_disabled": "The label flow is not available yet.",
+      "download": "Couldn't download the label. Try again in a moment.",
+      "generic": "Something went wrong. Try again in a moment."
     }
   }
 }

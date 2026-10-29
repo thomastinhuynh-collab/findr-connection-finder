@@ -4,7 +4,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { CANCELLABLE_STATUSES } from "../_shared/paymentStatus.ts";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
-import Stripe from "npm:stripe@18";
+import { refundAndCancelReservation } from "../_shared/refundReservation.ts";
 import { z } from "npm:zod@3";
 import { sendEmailToUser } from "../_shared/brevo.ts";
 import { cancellationDays } from "../_shared/trackingValidation.ts";
@@ -27,8 +27,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   try {
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) return json({ error: "Stripe non configuré" }, 500);
+    if (!Deno.env.get("STRIPE_SECRET_KEY")) return json({ error: "Stripe non configuré" }, 500);
 
     const authHeader = req.headers.get("Authorization") ?? "";
     if (!authHeader) return json({ error: "Non authentifié" }, 401);
@@ -92,20 +91,7 @@ Deno.serve(async (req) => {
       return json({ error: "Aucun paiement à rembourser." }, 400);
     }
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const refund = await stripe.refunds.create({
-      payment_intent: reservation.stripe_payment_intent_id,
-      metadata: { reservation_id: reservation.id, reason: reason ?? "" },
-    });
-
-    await admin
-      .from("reservations")
-      .update({ status: "annule", payment_status: "annule", tracking_status: "Annulé" })
-      .eq("id", reservation.id);
-
-    if (reservation.proposal_id) {
-      await admin.from("proposals").update({ status: "cancelled" }).eq("id", reservation.proposal_id);
-    }
+    const refund = { id: (await refundAndCancelReservation(admin, reservation, reason ?? "")).refundId };
 
     const amount = Number(reservation.total_buyr_amount ?? 0).toFixed(2);
     await admin.from("notifications").insert([

@@ -1,8 +1,7 @@
 // Règles du parcours étiquette (buyr) : fichier, transporteur et éligibilité de la réservation.
-import { AWAITING_LABEL } from "./paymentStatus.ts";
+import { AWAITING_LABEL, LABEL_REJECTED } from "./paymentStatus.ts";
 
-/** Étiquette refusée par le findr : le buyr peut en fournir une nouvelle. */
-export const LABEL_REJECTED = "etiquette_refusee";
+export { LABEL_REJECTED };
 export const LABEL_UPLOAD_STATUSES = [AWAITING_LABEL, LABEL_REJECTED];
 
 export const LABEL_MAX_BYTES = 1.5 * 1024 * 1024;
@@ -92,4 +91,62 @@ export function isLabelPurgeable(r: LabelPurgeCandidate, now = Date.now()): bool
     return now - Date.parse(r.delivered_at) >= LABEL_PURGE_DELIVERED_DAYS * PURGE_DAY;
   }
   return false;
+}
+
+// ---- Vue findr : étiquette inutilisable et dépôt déclaré ----
+
+/** Au 2e refus, la vente est annulée et le buyr intégralement remboursé. */
+export const MAX_LABEL_REJECTIONS = 2;
+export const LABEL_REJECTION_WINDOW_HOURS = 48;
+
+export type FindrLabelError = "flow_disabled" | "not_found" | "forbidden" | "status";
+
+export interface FindrLabelReservation {
+  findr_id: string;
+  payment_status: string | null;
+  label_provided_at: string | null;
+  shipped_at: string | null;
+}
+
+/** Le findr peut agir sur une étiquette reçue (refus, dépôt) tant que le colis n'est pas expédié. */
+export function checkFindrLabelEligibility(
+  flowEnabled: boolean,
+  reservation: FindrLabelReservation | null,
+  callerId: string,
+): FindrLabelError | null {
+  if (!flowEnabled) return "flow_disabled";
+  if (!reservation) return "not_found";
+  if (reservation.findr_id !== callerId) return "forbidden";
+  if (reservation.payment_status !== "paye_en_attente_reception" || !reservation.label_provided_at || reservation.shipped_at) return "status";
+  return null;
+}
+
+/** Motif de refus : 3 à 200 caractères après suppression des espaces ; null si invalide. */
+export function normalizeRejectReason(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const r = value.trim().replace(/\s+/g, " ");
+  return r.length >= 3 && r.length <= 200 ? r : null;
+}
+
+/** Champs à poser lors d'un refus d'étiquette ; refund = vrai quand le plafond de refus est atteint. */
+export function planLabelRejection(previousCount: number, now: number) {
+  const count = (previousCount ?? 0) + 1;
+  return {
+    refund: count >= MAX_LABEL_REJECTIONS,
+    update: {
+      payment_status: LABEL_REJECTED,
+      label_rejected_at: new Date(now).toISOString(),
+      label_rejection_count: count,
+      label_deadline_at: new Date(now + LABEL_REJECTION_WINDOW_HOURS * 3_600_000).toISOString(),
+      label_provided_at: null,
+      label_path: null,
+      tracking_number: null,
+      carrier: null,
+      tracking_recognized: false,
+      tracking_first_event_at: null,
+      tracking_checked_at: null,
+      tracking_last_attempt_at: null,
+      dropoff_declared_at: null,
+    },
+  };
 }

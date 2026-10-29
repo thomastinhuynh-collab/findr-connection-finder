@@ -137,6 +137,7 @@ export type EmailType =
   | "shipped"
   | "tracking_review"
   | "label_ready"
+  | "label_rejected"
   | "delivered"
   | "funds_released"
   | "auto_release"
@@ -308,6 +309,22 @@ export function buildEmail(
           cta: { label: "Voir la transaction", url: transactionUrl },
         }),
       };
+
+    case "label_rejected": {
+      const findrName = esc(String(data.findrFirstName || "Le findr"));
+      return {
+        subject: `${String(data.findrFirstName || "Le findr")} n'a pas pu utiliser l'étiquette`,
+        html: renderEmail({
+          eyebrow: "Étiquette d'expédition",
+          title: `${String(data.findrFirstName || "Le findr")} n'a pas pu utiliser l'étiquette`,
+          paragraphs: [
+            `${findrName} n'a pas pu utiliser l'étiquette. Envoie-en une nouvelle sous 48 h.`,
+          ],
+          facts: data.reason ? [{ label: "Motif", value: String(data.reason) }] : undefined,
+          cta: { label: "Voir la transaction", url: transactionUrl },
+        }),
+      };
+    }
 
     case "delivered":
       return {

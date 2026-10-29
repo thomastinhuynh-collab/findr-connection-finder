@@ -52,3 +52,10 @@ describe("initial paid status follows app_settings.label_flow_enabled", () => {
     expect(await loadLabelFlowEnabled(fake({ data: null, error: { message: "x" } }))).toBe(false);
   });
 });
+
+describe("etiquette_refusee", () => {
+  it("is already paid (webhook idempotence) and cancellable/refundable", () => {
+    expect(ALREADY_PAID_STATUSES).toContain("etiquette_refusee");
+    expect(CANCELLABLE_STATUSES).toContain("etiquette_refusee");
+  });
+});

@@ -51,7 +51,7 @@ Deno.serve(async (req) => {
       const error =
         status === "termine"
           ? "Le versement de cette réservation a déjà été effectué."
-          : status === "paye_attente_etiquette"
+          : status === "paye_attente_etiquette" || status === "etiquette_refusee"
             ? "L'objet n'a pas encore été expédié : l'étiquette d'envoi est attendue."
             : status === "versement_en_revue"
             ? "Ta réception est bien enregistrée. Le versement au findr est en cours de revue par l'équipe findr : il partira automatiquement dès validation."
