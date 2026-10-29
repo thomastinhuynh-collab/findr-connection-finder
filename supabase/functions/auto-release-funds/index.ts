@@ -13,7 +13,7 @@ import { recheckUnrecognizedTracking } from "../_shared/trackingVerification.ts"
 import { checkTracking } from "../_shared/track17.ts";
 import { applyShipmentDetection, planShipmentDetection } from "../_shared/shipmentDetection.ts";
 import { putTrackingInReview } from "../_shared/trackingReview.ts";
-import { canAutoReleaseShipped, cancellationDays } from "../_shared/trackingValidation.ts";
+import { canAutoReleaseShipped, cancellationDays, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
 import { AWAITING_LABEL, labelDeadlineAt, loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
 import { sendEmailToUser } from "../_shared/brevo.ts";
 
