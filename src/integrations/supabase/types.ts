@@ -475,6 +475,8 @@ export type Database = {
           label_provided_at: string | null
           label_rejected_at: string | null
           label_rejection_count: number
+          label_reminder_24h_at: string | null
+          label_reminder_48h_at: string | null
           label_tracking_number: string | null
           lost_notified_at: string | null
           object_price: number | null
@@ -535,6 +537,8 @@ export type Database = {
           label_provided_at?: string | null
           label_rejected_at?: string | null
           label_rejection_count?: number
+          label_reminder_24h_at?: string | null
+          label_reminder_48h_at?: string | null
           label_tracking_number?: string | null
           lost_notified_at?: string | null
           object_price?: number | null
@@ -595,6 +599,8 @@ export type Database = {
           label_provided_at?: string | null
           label_rejected_at?: string | null
           label_rejection_count?: number
+          label_reminder_24h_at?: string | null
+          label_reminder_48h_at?: string | null
           label_tracking_number?: string | null
           lost_notified_at?: string | null
           object_price?: number | null
