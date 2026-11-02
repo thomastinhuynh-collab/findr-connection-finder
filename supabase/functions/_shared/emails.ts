@@ -214,21 +214,75 @@ export function buildEmail(
         }),
       };
 
-    case "proposal_accepted":
+    case "proposal_accepted": {
+      const ctx = saleContext(data, "findr");
+      const subject = findrAcceptedSubject(ctx);
+      const needsAddress = ctx.labelFlow && !ctx.hasShipFrom;
       return {
-        subject: "Ta proposition a été acceptée !",
+        subject,
         html: renderEmail({
           eyebrow: "Proposition acceptée",
-          title: "Ta proposition a été acceptée !",
-          paragraphs: [
-            `${hello} bonne nouvelle : le buyr a accepté ta proposition et le paiement a bien été effectué.`,
-            "Il te reste à expédier l'objet et à renseigner le numéro de suivi <strong>dans les 5 jours</strong>, sinon la transaction pourra être annulée et remboursée.",
-          ],
+          title: subject,
+          paragraphs: findrAcceptedParagraphs(ctx).map(esc),
           facts: [
             { label: "Objet", value: data.itemTitle ?? "—" },
-            { label: "Montant net à recevoir", value: money(data.payoutAmount) },
+            { label: "Montant net prévu pour le versement", value: money(data.payoutAmount) },
           ],
-          cta: { label: "Expédier mon objet", url: transactionUrl },
+          cta: needsAddress
+            ? { label: "Renseigner mon adresse", url: shipFromUrl }
+            : { label: "Voir la transaction", url: transactionUrl },
+          ...(needsAddress ? { secondary: { label: "Voir la transaction", url: transactionUrl } } : {}),
+        }),
+      };
+    }
+
+    case "payment_confirmed": {
+      const ctx = saleContext(data, "buyr");
+      const subject = buyrPaymentSubject(ctx);
+      const weight = weightLabelFr(ctx.weightKg);
+      return {
+        subject,
+        html: renderEmail({
+          eyebrow: "Paiement confirmé",
+          title: subject,
+          paragraphs: [esc(buyrPaymentText(ctx))],
+          facts: [
+            { label: "Objet", value: data.itemTitle ?? "—" },
+            { label: "Total payé", value: money(ctx.totalPaid) },
+            ...(ctx.labelFlow && weight ? [{ label: "Poids annoncé", value: weight }] : []),
+          ],
+          cta: { label: ctx.labelFlow ? "Fournir l'étiquette" : "Choisir ma livraison", url: transactionUrl },
+        }),
+      };
+    }
+
+    case "ship_from_needed": {
+      const ctx = saleContext(data, "findr");
+      return {
+        subject: "Renseigne ton adresse d'expédition",
+        html: renderEmail({
+          eyebrow: "Adresse d'expédition",
+          title: "Renseigne ton adresse d'expédition",
+          paragraphs: [esc(shipFromNeededText(ctx))],
+          facts: data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : undefined,
+          cta: { label: "Renseigner mon adresse", url: shipFromUrl },
+          secondary: { label: "Voir la transaction", url: transactionUrl },
+        }),
+      };
+    }
+
+    case "parcel_in_transit":
+      return {
+        subject: "Ton colis est en route",
+        html: renderEmail({
+          eyebrow: "Expédition",
+          title: "Ton colis est en route",
+          paragraphs: ["Le transporteur a scanné ton colis."],
+          facts: [
+            ...(data.carrier ? [{ label: "Transporteur", value: String(data.carrier) }] : []),
+            ...(data.trackingNumber ? [{ label: "Numéro de suivi", value: String(data.trackingNumber) }] : []),
+          ],
+          cta: { label: "Suivre ma transaction", url: transactionUrl },
         }),
       };
 
