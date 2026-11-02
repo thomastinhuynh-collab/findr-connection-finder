@@ -468,6 +468,7 @@ const EditSearch = () => {
                   </p>
                 </div>
               )}
+              <p className="text-xs text-muted-foreground">{t("photos.fullHint")}</p>
             </div>
 
             {/* Budget */}

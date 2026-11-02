@@ -38,6 +38,8 @@ import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { getSubcategoryLabelKey } from "@/lib/categories";
 import { hasShipFrom } from "@/lib/shipFrom";
 import { SHIP_FROM_ANCHOR } from "@/components/ShipFromCard";
+import ContainedPhoto from "@/components/ContainedPhoto";
+import PhotoLightbox from "@/components/PhotoLightbox";
 
 const CategoryLabel = ({ category, subcategory }: { category: string; subcategory?: string | null }) => {
   const { t } = useTranslation();
@@ -152,6 +154,7 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
   }, [search.image_url, search.image_urls]);
 
   const [current, setCurrent] = useState(0);
+  const [viewerOpen, setViewerOpen] = useState(false);
 
   if (allImages.length === 0) {
     return (
@@ -170,12 +173,14 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
     <div className="mb-6">
       {/* Main image */}
       <div className="relative rounded-xl overflow-hidden bg-secondary">
-        <img
-          src={allImages[current]}
-          alt={search.title}
-          className="w-full h-[260px] md:h-[420px] object-cover transition-opacity duration-200" loading="lazy"
-          key={current}
-        />
+        <button
+          type="button"
+          onClick={() => setViewerOpen(true)}
+          className="block w-full h-[260px] md:h-[420px] cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
+          aria-label={t("photos.open")}
+        >
+          <ContainedPhoto key={current} src={allImages[current]} alt={search.title} />
+        </button>
 
         {/* Counter */}
         {allImages.length > 1 && (
@@ -227,6 +232,15 @@ const SearchDetailCarousel = ({ search, activeReservation, isReserved }: {
           <span style={{ backgroundColor: 'rgba(27,42,74,0.92)', color: '#C9A84C', fontSize: '12px', fontWeight: 500, letterSpacing: '0.05em', borderRadius: '20px', padding: '6px 14px' }}><CategoryLabel category={search.category} subcategory={search.subcategory} /></span>
         </div>
       </div>
+
+      <PhotoLightbox
+        images={allImages}
+        index={current}
+        open={viewerOpen}
+        alt={search.title}
+        onOpenChange={setViewerOpen}
+        onIndexChange={setCurrent}
+      />
 
       {/* Dots */}
       {allImages.length > 1 && (

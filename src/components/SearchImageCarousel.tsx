@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import ContainedPhoto from "./ContainedPhoto";
 
 interface SearchImageCarouselProps {
   images: string[];
@@ -36,10 +37,10 @@ const SearchImageCarousel = ({ images, alt, className = "" }: SearchImageCarouse
 
   if (validImages.length === 1) {
     return (
-      <img
+      <ContainedPhoto
         src={validImages[0].src}
         alt={alt}
-        className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${className}`}
+        className={className}
         onError={() => handleImageError(validImages[0].originalIndex)}
       />
     );
@@ -62,10 +63,10 @@ const SearchImageCarousel = ({ images, alt, className = "" }: SearchImageCarouse
 
   return (
     <div className={`relative w-full h-full ${className}`}>
-      <img
+      <ContainedPhoto
+        key={validImages[safeIndex].src}
         src={validImages[safeIndex].src}
         alt={`${alt} - ${safeIndex + 1}`}
-        className="w-full h-full object-cover transition-all duration-300"
         onError={() => handleImageError(validImages[safeIndex].originalIndex)}
       />
 

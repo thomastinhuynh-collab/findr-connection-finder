@@ -1682,5 +1682,13 @@
       "download": "Impossible de télécharger l'étiquette. Réessaie dans un instant.",
       "generic": "L'action a échoué. Réessaie dans un instant."
     }
+  },
+  "photos": {
+    "fullHint": "Tes photos s'affichent en entier sur l'annonce.",
+    "open": "Agrandir la photo",
+    "viewerTitle": "Photo {{current}} sur {{total}}",
+    "close": "Fermer",
+    "previous": "Photo précédente",
+    "next": "Photo suivante"
   }
 }

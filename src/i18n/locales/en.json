@@ -1682,5 +1682,13 @@
       "download": "Couldn't download the label. Try again in a moment.",
       "generic": "Something went wrong. Try again in a moment."
     }
+  },
+  "photos": {
+    "fullHint": "Your photos are shown in full on the listing.",
+    "open": "Enlarge photo",
+    "viewerTitle": "Photo {{current}} of {{total}}",
+    "close": "Close",
+    "previous": "Previous photo",
+    "next": "Next photo"
   }
 }
