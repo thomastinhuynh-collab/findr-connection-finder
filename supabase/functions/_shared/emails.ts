@@ -173,7 +173,7 @@ export type EmailType =
 // deno-lint-ignore no-explicit-any
 type Data = Record<string, any>;
 
-const money = (v: unknown) => `${Number(v ?? 0).toFixed(2)} €`;
+const money = (v: unknown) => `${Number(v ?? 0).toFixed(2).replace(".", ",")} €`;
 
 /** Contexte de vente lu dans les données de l'email ; le prénom du destinataire vient de firstName. */
 function saleContext(data: Data, audience: "findr" | "buyr"): SaleContext {

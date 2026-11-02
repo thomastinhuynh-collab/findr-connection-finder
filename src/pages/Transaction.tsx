@@ -325,6 +325,11 @@ const Transaction = () => {
   const findrOldFlowToShip = isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at && !reservation.label_provided_at;
   // Ancien parcours : tant que le buyr n'a pas choisi sa livraison, seul un message d'attente s'affiche.
   const showFindrAwaitingDelivery = findrOldFlowToShip && !reservation.delivery_type;
+  const waitingDeliveryName = otherName || t("transaction.theBuyr");
+  const waitingDeliveryParams = {
+    name: waitingDeliveryName,
+    queName: /^[aeiouyhàâäéèêëîïôöùûü]/i.test(waitingDeliveryName) ? `qu'${waitingDeliveryName}` : `que ${waitingDeliveryName}`,
+  };
   const showShipFlow = findrOldFlowToShip && !!reservation.delivery_type;
   const showFindrDropOff = labelFlowEnabled && isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at && !!reservation.label_provided_at;
   const showFindrAwaitingLabel = labelFlowEnabled && isFindr && ["paye_attente_etiquette", "etiquette_refusee"].includes(ps);
@@ -440,7 +445,7 @@ const Transaction = () => {
             aria-live="polite"
           >
             <p className="text-sm" style={{ color: NAVY }}>
-              {t("transaction.waitingDelivery", { name: otherName || t("transaction.theBuyr") })}
+              {t("transaction.waitingDelivery", waitingDeliveryParams)}
             </p>
           </section>
         )}
@@ -499,7 +504,7 @@ const Transaction = () => {
                 </div>
               ) : (
                 <p className="text-sm" style={{ color: "#666666" }}>
-                  {t("transaction.waitingDelivery", { name: otherName || t("transaction.theBuyr") })}
+                  {t("transaction.waitingDelivery", waitingDeliveryParams)}
                 </p>
               )}
             </div>

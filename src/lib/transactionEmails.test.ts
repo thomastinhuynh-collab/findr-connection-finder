@@ -49,6 +49,19 @@ describe("sale messages after payment", () => {
   const old = { ...label, labelFlow: false, deadlineAt: null };
   const cta = (html: string) => html.match(/<a href="([^"]+)" style="display:inline-block[^>]*>([^<]+)</);
 
+  it("detail lines show amounts the French way", () => {
+    const { html } = buildEmail("payment_confirmed", { ...old, firstName: "Olga" });
+    expect(html).toContain("52,50 €");
+    expect(html).not.toContain("52.50 €");
+    expect(buildEmail("proposal_accepted", label).html).toContain("48,00 €");
+  });
+  it("findr, old flow: elides « que » before a vowel, keeps it otherwise", () => {
+    expect(findrAcceptedParagraphs({ labelFlow: false, buyrFirstName: "Paul", findrFirstName: "Marc" }).join(" "))
+      .toContain("s'ouvrira dès que Paul aura choisi sa livraison.");
+    expect(findrAcceptedParagraphs({ labelFlow: false, findrFirstName: "Marc" }).join(" "))
+      .toContain("s'ouvrira dès que le buyr aura choisi sa livraison.");
+  });
+
   it("findr, label flow: prepare the parcel, deadline and announced weight", () => {
     const { subject, html } = buildEmail("proposal_accepted", label);
     expect(subject).toBe("Ta proposition a été acceptée — prépare ton colis");
@@ -70,13 +83,13 @@ describe("sale messages after payment", () => {
   it("findr, old flow: waits for the buyr's delivery choice, no 5-day rule", () => {
     const { subject, html } = buildEmail("proposal_accepted", old);
     expect(subject).toBe("Ta proposition a été acceptée !");
-    expect(html).toContain("Olga doit maintenant choisir son mode de livraison. Nous te prévenons dès que c'est fait : tu pourras alors expédier l'objet.");
+    expect(html).toContain("Olga doit maintenant choisir son mode de livraison. Reviens sur cette page : l'étape d'expédition s'ouvrira dès qu'Olga aura choisi sa livraison.");
     expect(html).not.toContain("5 jours");
     expect(cta(html)?.[2]).toBe("Voir la transaction");
   });
   it("findr notification uses the same text as the email variant", () => {
     expect(findrAcceptedParagraphs({ labelFlow: false, buyrFirstName: "Olga", findrFirstName: "Marc" }).join(" "))
-      .toBe("Marc, bonne nouvelle : Olga a accepté ta proposition et le paiement est enregistré. Olga doit maintenant choisir son mode de livraison. Nous te prévenons dès que c'est fait : tu pourras alors expédier l'objet.");
+      .toBe("Marc, bonne nouvelle : Olga a accepté ta proposition et le paiement est enregistré. Olga doit maintenant choisir son mode de livraison. Reviens sur cette page : l'étape d'expédition s'ouvrira dès qu'Olga aura choisi sa livraison.");
   });
   it("buyr, label flow: provide the label before the deadline", () => {
     const { subject, html } = buildEmail("payment_confirmed", { ...label, firstName: "Olga" });
