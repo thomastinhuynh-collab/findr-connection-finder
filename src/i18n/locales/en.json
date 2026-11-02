@@ -1491,7 +1491,7 @@
       "L": "L — bulky item (small furniture)",
       "XL": "XL — large furniture"
     },
-    "waitingDelivery": "{{name}} hasn't chosen a delivery method yet, we'll let you know as soon as they do.",
+    "waitingDelivery": "{{name}} hasn't chosen a delivery method yet. We'll let you know as soon as they do.",
     "createLabel": "Create your label",
     "labelHint": "Pick the carrier that matches {{name}}'s delivery method.",
     "trackingStep": "Enter your tracking number",
