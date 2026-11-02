@@ -1491,7 +1491,7 @@
       "L": "L — objet volumineux (petit meuble)",
       "XL": "XL — meuble imposant"
     },
-    "waitingDelivery": "{{name}} n'a pas encore choisi sa livraison. Nous te prévenons dès que c'est fait.",
+    "waitingDelivery": "{{name}} n'a pas encore choisi sa livraison. Reviens sur cette page : l'étape d'expédition s'ouvrira dès {{queName}} aura choisi sa livraison.",
     "createLabel": "Crée ton étiquette",
     "labelHint": "Choisis le transporteur qui correspond au mode de livraison de {{name}}.",
     "trackingStep": "Renseigne ton numéro de suivi",

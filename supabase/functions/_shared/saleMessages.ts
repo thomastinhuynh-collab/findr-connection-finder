@@ -24,6 +24,9 @@ export const buyrName = (c: SaleContext) => clean(c.buyrFirstName) || "le buyr";
 /** Le prénom du findr, ou « le findr » s'il est inconnu. */
 export const findrName = (c: SaleContext) => clean(c.findrFirstName) || "le findr";
 
+/** « que Marc » / « qu'Olga » : élision devant une voyelle ou un h muet. */
+export const queFr = (name: string) => (/^[aeiouyhàâäéèêëîïôöùûü]/i.test(name) ? `qu'${name}` : `que ${name}`);
+
 /** « 5 novembre 2026 à 19:05 », heure de Paris. */
 export function formatDeadlineFr(iso: string | null | undefined): string | null {
   if (!iso) return null;
@@ -49,7 +52,7 @@ export function findrAcceptedParagraphs(c: SaleContext): string[] {
   const intro = `${first ? `${first}, bonne nouvelle` : "Bonne nouvelle"} : ${buyr} a accepté ta proposition et le paiement est enregistré.`;
   if (!c.labelFlow) {
     return [
-      `${intro} ${capitalize(buyr)} doit maintenant choisir son mode de livraison. Nous te prévenons dès que c'est fait : tu pourras alors expédier l'objet.`,
+      `${intro} ${capitalize(buyr)} doit maintenant choisir son mode de livraison. Reviens sur cette page : l'étape d'expédition s'ouvrira dès ${queFr(buyr)} aura choisi sa livraison.`,
     ];
   }
   const deadline = formatDeadlineFr(c.deadlineAt);

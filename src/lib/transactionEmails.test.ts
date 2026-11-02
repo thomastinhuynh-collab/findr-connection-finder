@@ -70,13 +70,13 @@ describe("sale messages after payment", () => {
   it("findr, old flow: waits for the buyr's delivery choice, no 5-day rule", () => {
     const { subject, html } = buildEmail("proposal_accepted", old);
     expect(subject).toBe("Ta proposition a été acceptée !");
-    expect(html).toContain("Olga doit maintenant choisir son mode de livraison. Nous te prévenons dès que c'est fait : tu pourras alors expédier l'objet.");
+    expect(html).toContain("Olga doit maintenant choisir son mode de livraison. Reviens sur cette page : l'étape d'expédition s'ouvrira dès qu'Olga aura choisi sa livraison.");
     expect(html).not.toContain("5 jours");
     expect(cta(html)?.[2]).toBe("Voir la transaction");
   });
   it("findr notification uses the same text as the email variant", () => {
     expect(findrAcceptedParagraphs({ labelFlow: false, buyrFirstName: "Olga", findrFirstName: "Marc" }).join(" "))
-      .toBe("Marc, bonne nouvelle : Olga a accepté ta proposition et le paiement est enregistré. Olga doit maintenant choisir son mode de livraison. Nous te prévenons dès que c'est fait : tu pourras alors expédier l'objet.");
+      .toBe("Marc, bonne nouvelle : Olga a accepté ta proposition et le paiement est enregistré. Olga doit maintenant choisir son mode de livraison. Reviens sur cette page : l'étape d'expédition s'ouvrira dès qu'Olga aura choisi sa livraison.");
   });
   it("buyr, label flow: provide the label before the deadline", () => {
     const { subject, html } = buildEmail("payment_confirmed", { ...label, firstName: "Olga" });
