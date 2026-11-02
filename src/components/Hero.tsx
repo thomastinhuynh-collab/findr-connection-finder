@@ -110,10 +110,9 @@ const Hero = () => {
       >
         {/* ============ ZONE 1: NAV ============ */}
         <nav
-          className="flex items-center"
+          className="flex items-center gap-3 md:gap-10"
           style={{
             padding: "20px 32px",
-            gap: 40,
             borderBottom: borderLine,
             justifyContent: "space-between",
           }}
@@ -193,15 +192,15 @@ const Hero = () => {
 
           {/* Mobile actions + burger */}
           {user && (
-            <div className="md:hidden" style={{ marginLeft: "auto", marginRight: 4 }}>
+            <div className="min-w-0 md:hidden" style={{ marginLeft: "auto", marginRight: 4 }}>
               <HeaderActions variant="gold" />
             </div>
           )}
-          <div className="md:hidden" style={{ marginRight: 6 }}>
-            <LanguageSwitcher variant="gold" />
+          <div className="min-w-0 md:hidden" style={{ marginRight: 6 }}>
+            <LanguageSwitcher variant="gold" compactOnMobile />
           </div>
           <button
-            className="md:hidden"
+            className="shrink-0 md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={t("nav.menu")}
             style={{
