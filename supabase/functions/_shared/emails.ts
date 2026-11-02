@@ -2,6 +2,16 @@
 // Aucun web font : le logo est une image PNG hébergée sur le site publié.
 
 import { trackingUrl } from "./tracking.ts";
+import {
+  buyrPaymentSubject,
+  buyrPaymentText,
+  findrAcceptedParagraphs,
+  findrAcceptedSubject,
+  type SaleContext,
+  SHIP_FROM_PATH,
+  shipFromNeededText,
+  weightLabelFr,
+} from "./saleMessages.ts";
 
 export const SITE_URL = "https://findr-connection-finder.lovable.app";
 export const LOGO_URL = `${SITE_URL}/logo-email.png`;
@@ -134,6 +144,9 @@ export type EmailType =
   | "welcome"
   | "new_proposal"
   | "proposal_accepted"
+  | "payment_confirmed"
+  | "ship_from_needed"
+  | "parcel_in_transit"
   | "shipped"
   | "shipment_detected"
   | "tracking_review"
@@ -162,6 +175,19 @@ type Data = Record<string, any>;
 
 const money = (v: unknown) => `${Number(v ?? 0).toFixed(2)} €`;
 
+/** Contexte de vente lu dans les données de l'email ; le prénom du destinataire vient de firstName. */
+function saleContext(data: Data, audience: "findr" | "buyr"): SaleContext {
+  return {
+    labelFlow: data.labelFlow === true,
+    findrFirstName: audience === "findr" ? data.firstName : data.findrFirstName,
+    buyrFirstName: audience === "buyr" ? data.firstName : data.buyrFirstName,
+    deadlineAt: data.deadlineAt ?? null,
+    weightKg: data.weightKg ?? null,
+    hasShipFrom: data.hasShipFrom === true,
+    totalPaid: data.totalPaid ?? null,
+  };
+}
+
 /** Construit sujet + HTML pour un type d'email donné. */
 export function buildEmail(
   type: EmailType,
@@ -172,6 +198,7 @@ export function buildEmail(
   const transactionUrl = data.reservationId
     ? `${SITE_URL}/transaction/${encodeURIComponent(String(data.reservationId))}`
     : `${SITE_URL}/mon-espace`;
+  const shipFromUrl = `${SITE_URL}${SHIP_FROM_PATH}`;
 
   switch (type) {
     case "welcome":
