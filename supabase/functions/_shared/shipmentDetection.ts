@@ -31,5 +31,13 @@ export async function applyShipmentDetection(
   } catch (e) {
     console.error("shipment detection email failed for", r.id, (e as Error).message);
   }
+  // Buyr : premier scan du transporteur (une seule fois, grâce à la mise à jour conditionnelle ci-dessus).
+  try {
+    await sendEmailToUser(admin, r.buyr_id, "parcel_in_transit", {
+      reservationId: r.id, trackingNumber: r.tracking_number, carrier: r.carrier,
+    });
+  } catch (e) {
+    console.error("parcel in transit email failed for", r.id, (e as Error).message);
+  }
   return true;
 }
