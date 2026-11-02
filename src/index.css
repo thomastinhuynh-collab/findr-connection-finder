@@ -138,6 +138,11 @@
     overflow-x: hidden;
   }
 
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
   }

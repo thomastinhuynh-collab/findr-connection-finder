@@ -5,9 +5,11 @@ const NAVY = "#070E42";
 
 interface Props {
   variant?: "gold" | "navy";
+  /** Smaller padding and text below the sm breakpoint (navbar on phones). */
+  compactOnMobile?: boolean;
 }
 
-const LanguageSwitcher = ({ variant = "gold" }: Props) => {
+const LanguageSwitcher = ({ variant = "gold", compactOnMobile = false }: Props) => {
   const { i18n } = useTranslation();
   const current = i18n.language?.startsWith("en") ? "en" : "fr";
   const base = variant === "gold" ? GOLD : NAVY;
@@ -36,12 +38,12 @@ const LanguageSwitcher = ({ variant = "gold" }: Props) => {
             type="button"
             onClick={() => i18n.changeLanguage(l.code)}
             aria-pressed={active}
+            className={compactOnMobile ? "px-2 py-1.5 text-[11px] sm:px-[11px] sm:py-[7px] sm:text-xs" : undefined}
             style={{
               fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: 12,
+              ...(compactOnMobile ? {} : { fontSize: 12, padding: "7px 11px" }),
               fontWeight: active ? 600 : 400,
               letterSpacing: "0.04em",
-              padding: "7px 11px",
               border: "none",
               cursor: "pointer",
               background: active

@@ -41,7 +41,7 @@ const Navbar = () => {
     <>
       <header className="findr-navigation-bg fixed inset-x-0 top-0 z-50 shadow-lg">
         <div className="mx-auto max-w-[1280px]">
-          <nav className="flex items-center justify-between gap-10 border-b border-accent/10 px-4 py-5 lg:px-8">
+          <nav className="flex items-center justify-between gap-3 border-b border-accent/10 px-4 py-5 lg:gap-10 lg:px-8">
             <Link to="/" className="shrink-0 no-underline" aria-label={t("nav.home", { defaultValue: "Accueil" })}>
               <Logo size={34} />
             </Link>
@@ -87,16 +87,16 @@ const Navbar = () => {
             </div>
 
             {user && (
-              <div className="ml-auto lg:hidden">
+              <div className="ml-auto min-w-0 lg:hidden">
                 <HeaderActions variant="gold" />
               </div>
             )}
-            <div className={`${user ? "" : "ml-auto"} lg:hidden`}>
-              <LanguageSwitcher variant="gold" />
+            <div className={`${user ? "" : "ml-auto"} min-w-0 lg:hidden`}>
+              <LanguageSwitcher variant="gold" compactOnMobile />
             </div>
             <button
               type="button"
-              className="p-1 text-[22px] leading-none text-accent lg:hidden"
+              className="shrink-0 p-1 text-[22px] leading-none text-accent lg:hidden"
               onClick={() => setIsOpen((open) => !open)}
               aria-label={t("nav.menu")}
               aria-expanded={isOpen}
