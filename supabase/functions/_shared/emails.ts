@@ -2,6 +2,16 @@
 // Aucun web font : le logo est une image PNG hébergée sur le site publié.
 
 import { trackingUrl } from "./tracking.ts";
+import {
+  buyrPaymentSubject,
+  buyrPaymentText,
+  findrAcceptedParagraphs,
+  findrAcceptedSubject,
+  type SaleContext,
+  SHIP_FROM_PATH,
+  shipFromNeededText,
+  weightLabelFr,
+} from "./saleMessages.ts";
 
 export const SITE_URL = "https://findr-connection-finder.lovable.app";
 export const LOGO_URL = `${SITE_URL}/logo-email.png`;
@@ -134,6 +144,9 @@ export type EmailType =
   | "welcome"
   | "new_proposal"
   | "proposal_accepted"
+  | "payment_confirmed"
+  | "ship_from_needed"
+  | "parcel_in_transit"
   | "shipped"
   | "shipment_detected"
   | "tracking_review"
@@ -162,6 +175,19 @@ type Data = Record<string, any>;
 
 const money = (v: unknown) => `${Number(v ?? 0).toFixed(2)} €`;
 
+/** Contexte de vente lu dans les données de l'email ; le prénom du destinataire vient de firstName. */
+function saleContext(data: Data, audience: "findr" | "buyr"): SaleContext {
+  return {
+    labelFlow: data.labelFlow === true,
+    findrFirstName: audience === "findr" ? data.firstName : data.findrFirstName,
+    buyrFirstName: audience === "buyr" ? data.firstName : data.buyrFirstName,
+    deadlineAt: data.deadlineAt ?? null,
+    weightKg: data.weightKg ?? null,
+    hasShipFrom: data.hasShipFrom === true,
+    totalPaid: data.totalPaid ?? null,
+  };
+}
+
 /** Construit sujet + HTML pour un type d'email donné. */
 export function buildEmail(
   type: EmailType,
@@ -172,6 +198,7 @@ export function buildEmail(
   const transactionUrl = data.reservationId
     ? `${SITE_URL}/transaction/${encodeURIComponent(String(data.reservationId))}`
     : `${SITE_URL}/mon-espace`;
+  const shipFromUrl = `${SITE_URL}${SHIP_FROM_PATH}`;
 
   switch (type) {
     case "welcome":
@@ -214,21 +241,75 @@ export function buildEmail(
         }),
       };
 
-    case "proposal_accepted":
+    case "proposal_accepted": {
+      const ctx = saleContext(data, "findr");
+      const subject = findrAcceptedSubject(ctx);
+      const needsAddress = ctx.labelFlow && !ctx.hasShipFrom;
       return {
-        subject: "Ta proposition a été acceptée !",
+        subject,
         html: renderEmail({
           eyebrow: "Proposition acceptée",
-          title: "Ta proposition a été acceptée !",
-          paragraphs: [
-            `${hello} bonne nouvelle : le buyr a accepté ta proposition et le paiement a bien été effectué.`,
-            "Il te reste à expédier l'objet et à renseigner le numéro de suivi <strong>dans les 5 jours</strong>, sinon la transaction pourra être annulée et remboursée.",
-          ],
+          title: subject,
+          paragraphs: findrAcceptedParagraphs(ctx).map(esc),
           facts: [
             { label: "Objet", value: data.itemTitle ?? "—" },
-            { label: "Montant net à recevoir", value: money(data.payoutAmount) },
+            { label: "Montant net prévu pour le versement", value: money(data.payoutAmount) },
           ],
-          cta: { label: "Expédier mon objet", url: transactionUrl },
+          cta: needsAddress
+            ? { label: "Renseigner mon adresse", url: shipFromUrl }
+            : { label: "Voir la transaction", url: transactionUrl },
+          ...(needsAddress ? { secondary: { label: "Voir la transaction", url: transactionUrl } } : {}),
+        }),
+      };
+    }
+
+    case "payment_confirmed": {
+      const ctx = saleContext(data, "buyr");
+      const subject = buyrPaymentSubject(ctx);
+      const weight = weightLabelFr(ctx.weightKg);
+      return {
+        subject,
+        html: renderEmail({
+          eyebrow: "Paiement confirmé",
+          title: subject,
+          paragraphs: [esc(buyrPaymentText(ctx))],
+          facts: [
+            { label: "Objet", value: data.itemTitle ?? "—" },
+            { label: "Total payé", value: money(ctx.totalPaid) },
+            ...(ctx.labelFlow && weight ? [{ label: "Poids annoncé", value: weight }] : []),
+          ],
+          cta: { label: ctx.labelFlow ? "Fournir l'étiquette" : "Choisir ma livraison", url: transactionUrl },
+        }),
+      };
+    }
+
+    case "ship_from_needed": {
+      const ctx = saleContext(data, "findr");
+      return {
+        subject: "Renseigne ton adresse d'expédition",
+        html: renderEmail({
+          eyebrow: "Adresse d'expédition",
+          title: "Renseigne ton adresse d'expédition",
+          paragraphs: [esc(shipFromNeededText(ctx))],
+          facts: data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : undefined,
+          cta: { label: "Renseigner mon adresse", url: shipFromUrl },
+          secondary: { label: "Voir la transaction", url: transactionUrl },
+        }),
+      };
+    }
+
+    case "parcel_in_transit":
+      return {
+        subject: "Ton colis est en route",
+        html: renderEmail({
+          eyebrow: "Expédition",
+          title: "Ton colis est en route",
+          paragraphs: ["Le transporteur a scanné ton colis."],
+          facts: [
+            ...(data.carrier ? [{ label: "Transporteur", value: String(data.carrier) }] : []),
+            ...(data.trackingNumber ? [{ label: "Numéro de suivi", value: String(data.trackingNumber) }] : []),
+          ],
+          cta: { label: "Suivre ma transaction", url: transactionUrl },
         }),
       };
 

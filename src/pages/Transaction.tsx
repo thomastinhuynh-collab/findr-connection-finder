@@ -322,7 +322,10 @@ const Transaction = () => {
   const countdown = cancelCountdown();
 
   const trackUrl = trackingUrl(reservation.carrier, reservation.tracking_number);
-  const showShipFlow = isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at && !reservation.label_provided_at;
+  const findrOldFlowToShip = isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at && !reservation.label_provided_at;
+  // Ancien parcours : tant que le buyr n'a pas choisi sa livraison, seul un message d'attente s'affiche.
+  const showFindrAwaitingDelivery = findrOldFlowToShip && !reservation.delivery_type;
+  const showShipFlow = findrOldFlowToShip && !!reservation.delivery_type;
   const showFindrDropOff = labelFlowEnabled && isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at && !!reservation.label_provided_at;
   const showFindrAwaitingLabel = labelFlowEnabled && isFindr && ["paye_attente_etiquette", "etiquette_refusee"].includes(ps);
   const showFindrTracking = isFindr && shipped && !payoutDone;
@@ -427,6 +430,19 @@ const Transaction = () => {
               ? isFindr ? t("proposal.statusLabelRejectedFindr") : t("proposal.statusLabelRejectedBuyr")
               : isFindr ? t("proposal.statusAwaitingLabelFindr") : t("proposal.statusAwaitingLabelBuyr")}
           </p>
+        )}
+
+        {/* Findr (ancien parcours) : le buyr n'a pas encore choisi sa livraison */}
+        {showFindrAwaitingDelivery && (
+          <section
+            className="rounded-2xl p-5"
+            style={{ border: `1px solid ${GOLD}`, backgroundColor: "#FFFFFF" }}
+            aria-live="polite"
+          >
+            <p className="text-sm" style={{ color: NAVY }}>
+              {t("transaction.waitingDelivery", { name: otherName || t("transaction.theBuyr") })}
+            </p>
+          </section>
         )}
 
         {/* Carte d'action — findr : expédition en trois sous-étapes */}
