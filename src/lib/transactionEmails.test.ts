@@ -49,6 +49,19 @@ describe("sale messages after payment", () => {
   const old = { ...label, labelFlow: false, deadlineAt: null };
   const cta = (html: string) => html.match(/<a href="([^"]+)" style="display:inline-block[^>]*>([^<]+)</);
 
+  it("detail lines show amounts the French way", () => {
+    const { html } = buildEmail("payment_confirmed", { ...old, firstName: "Olga" });
+    expect(html).toContain("52,50 €");
+    expect(html).not.toContain("52.50 €");
+    expect(buildEmail("proposal_accepted", label).html).toContain("48,00 €");
+  });
+  it("findr, old flow: elides « que » before a vowel, keeps it otherwise", () => {
+    expect(findrAcceptedParagraphs({ labelFlow: false, buyrFirstName: "Paul", findrFirstName: "Marc" }).join(" "))
+      .toContain("s'ouvrira dès que Paul aura choisi sa livraison.");
+    expect(findrAcceptedParagraphs({ labelFlow: false, findrFirstName: "Marc" }).join(" "))
+      .toContain("s'ouvrira dès que le buyr aura choisi sa livraison.");
+  });
+
   it("findr, label flow: prepare the parcel, deadline and announced weight", () => {
     const { subject, html } = buildEmail("proposal_accepted", label);
     expect(subject).toBe("Ta proposition a été acceptée — prépare ton colis");
