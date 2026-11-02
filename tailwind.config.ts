@@ -66,6 +66,7 @@ export default {
         "navy-primary": "hsl(var(--navy-primary))",
         "navy-secondary": "hsl(var(--navy-secondary))",
         cream: "hsl(var(--cream))",
+        "photo-backdrop": "hsl(var(--photo-backdrop))",
         gold: "hsl(var(--gold))",
         "warm-neutral": "hsl(var(--warm-neutral))",
         "blog-body-muted": "hsl(var(--blog-body-muted))",
