@@ -53,7 +53,7 @@ describe("sale messages after payment", () => {
     const { subject, html } = buildEmail("proposal_accepted", label);
     expect(subject).toBe("Ta proposition a été acceptée — prépare ton colis");
     expect(html).toContain("Marc, bonne nouvelle : Olga a accepté ta proposition et le paiement est enregistré.");
-    expect(html).toContain("te l&#39;envoie avant le 5 novembre 2026 à 19:05");
+    expect(html).toContain("te l'envoie avant le 5 novembre 2026 à 19:05");
     expect(html).toContain("prépare l'objet (jusqu'à 0,5 kg) et emballe-le avec soin.");
     expect(html).toContain("Montant net prévu pour le versement");
     expect(cta(html)?.[2]).toBe("Voir la transaction");
