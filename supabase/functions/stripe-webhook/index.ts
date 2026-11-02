@@ -128,12 +128,22 @@ Deno.serve(async (req) => {
             stripe_payment_intent_id: paymentIntentId,
           })
           .eq("id", reservationId)
-          .select("findr_id, search_id, findr_payout_amount")
+          // Mise à jour conditionnelle : une seule notification Stripe (même en double, simultanée)
+          // enregistre le paiement, donc emails et notifications ne partent qu'une fois par vente.
+          .or(`payment_status.is.null,payment_status.not.in.(${ALREADY_PAID_STATUSES.join(",")})`)
+          .select("findr_id, buyr_id, search_id, findr_payout_amount, total_buyr_amount, payment_status, label_deadline_at")
           .maybeSingle();
 
         if (error) {
           console.error("Reservation update failed:", error.message);
           return new Response("Database error", { status: 500 });
+        }
+        if (!reservation) {
+          console.log(`checkout.session.completed ignoré (doublon ou réservation absente) — ${reservationId}`);
+          return new Response(JSON.stringify({ received: true, ignored: true }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
         }
 
         if (proposalId) {
