@@ -2,7 +2,14 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import Stripe from "npm:stripe@18";
 import { isStripeAccountComplete } from "../_shared/stripeAccount.ts";
 import { sendEmailTo, sendEmailToUser } from "../_shared/brevo.ts";
-import { ALREADY_PAID_STATUSES, initialPaidStatus, labelDeadlineAt, loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
+import { ALREADY_PAID_STATUSES, AWAITING_LABEL, initialPaidStatus, labelDeadlineAt, loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
+import {
+  buyrPaymentText,
+  findrAcceptedParagraphs,
+  type SaleContext,
+  SHIP_FROM_PATH,
+  shipFromNeededText,
+} from "../_shared/saleMessages.ts";
 
 const ADMIN_EMAIL = "thomas@findrapp.fr";
 
@@ -203,31 +210,79 @@ Deno.serve(async (req) => {
         }
 
 
-        if (reservation?.findr_id) {
+        if (reservation.findr_id) {
+          const link = `/transaction/${reservationId}`;
+          let itemTitle: string | undefined;
+          let weightKg: number | null = null;
+          if (proposalId) {
+            const { data: proposal } = await admin
+              .from("proposals")
+              .select("title, parcel_weight_kg")
+              .eq("id", proposalId)
+              .maybeSingle();
+            itemTitle = proposal?.title ?? undefined;
+            weightKg = proposal?.parcel_weight_kg != null ? Number(proposal.parcel_weight_kg) : null;
+          }
+          const { data: names } = await admin
+            .from("profiles")
+            .select("user_id, full_name")
+            .in("user_id", [reservation.findr_id, reservation.buyr_id].filter(Boolean));
+          const firstOf = (uid: string) =>
+            ((names ?? []).find((p: { user_id: string }) => p.user_id === uid)?.full_name ?? "").trim().split(/\s+/)[0] || null;
+          const ctx: SaleContext = {
+            labelFlow: reservation.payment_status === AWAITING_LABEL,
+            findrFirstName: firstOf(reservation.findr_id),
+            buyrFirstName: reservation.buyr_id ? firstOf(reservation.buyr_id) : null,
+            deadlineAt: reservation.label_deadline_at ?? null,
+            weightKg,
+            hasShipFrom: !!shipFrom,
+            totalPaid: reservation.total_buyr_amount,
+          };
+          const emailData = { reservationId, itemTitle, payoutAmount: reservation.findr_payout_amount, ...ctx };
+          const needsShipFrom = ctx.labelFlow && !ctx.hasShipFrom;
+
+          // Findr : proposition acceptée (texte de la variante du parcours)
           await admin.from("notifications").insert({
             user_id: reservation.findr_id,
             type: "proposal_accepted",
             title: "Proposition acceptée et payée !",
-            message:
-              "Le versement au findr interviendra après la confirmation de réception de l'article.",
-            link: `/transaction/${reservationId}`,
+            message: findrAcceptedParagraphs(ctx).join(" "),
+            link,
+          });
+          await sendEmailToUser(admin, reservation.findr_id, "proposal_accepted", {
+            ...emailData,
+            firstName: ctx.findrFirstName ?? undefined,
           });
 
-          let itemTitle: string | undefined;
-          if (proposalId) {
-            const { data: proposal } = await admin
-              .from("proposals")
-              .select("title")
-              .eq("id", proposalId)
-              .maybeSingle();
-            itemTitle = proposal?.title ?? undefined;
+          // Findr sans adresse d'expédition (parcours avec étiquette)
+          if (needsShipFrom) {
+            await admin.from("notifications").insert({
+              user_id: reservation.findr_id,
+              type: "ship_from_needed",
+              title: "Renseigne ton adresse d'expédition",
+              message: shipFromNeededText(ctx),
+              link: SHIP_FROM_PATH,
+            });
+            await sendEmailToUser(admin, reservation.findr_id, "ship_from_needed", {
+              ...emailData,
+              firstName: ctx.findrFirstName ?? undefined,
+            });
           }
 
-          await sendEmailToUser(admin, reservation.findr_id, "proposal_accepted", {
-            reservationId,
-            itemTitle,
-            payoutAmount: reservation.findr_payout_amount,
-          });
+          // Buyr : paiement confirmé
+          if (reservation.buyr_id) {
+            await admin.from("notifications").insert({
+              user_id: reservation.buyr_id,
+              type: "payment_confirmed",
+              title: "Paiement confirmé",
+              message: buyrPaymentText(ctx),
+              link,
+            });
+            await sendEmailToUser(admin, reservation.buyr_id, "payment_confirmed", {
+              ...emailData,
+              firstName: ctx.buyrFirstName ?? undefined,
+            });
+          }
         }
         console.log(`checkout.session.completed -> reservation ${reservationId} paid`);
       }
