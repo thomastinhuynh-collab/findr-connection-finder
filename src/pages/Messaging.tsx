@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
+import ContainedPhoto from "@/components/ContainedPhoto";
 
 interface SearchData {
   id: string;
@@ -658,7 +659,7 @@ const Messaging = () => {
                                   <button
                                     type="button"
                                     onClick={() => openLightbox(0)}
-                                    className="block w-full rounded-[12px] overflow-hidden bg-black/5"
+                                    className="block w-full rounded-[12px] overflow-hidden bg-photo-backdrop"
                                   >
                                     <img
                                       src={msgImages[0]}
@@ -682,7 +683,7 @@ const Messaging = () => {
                                       onClick={() => openLightbox(i)}
                                       className="rounded-[12px] overflow-hidden"
                                     >
-                                      <img src={src} alt={`photo-${i}`} className="w-full h-40 object-cover" loading="lazy" />
+                                      <ContainedPhoto src={src} alt={`photo-${i}`} className="h-40" />
                                     </button>
                                   ))}
                                 </div>
@@ -698,13 +699,13 @@ const Messaging = () => {
                                     onClick={() => openLightbox(0)}
                                     className="row-span-2 rounded-[12px] overflow-hidden"
                                   >
-                                    <img src={msgImages[0]} alt="photo-0" className="w-full h-full object-cover" style={{ minHeight: 200 }} loading="lazy" />
+                                    <ContainedPhoto src={msgImages[0]} alt="photo-0" className="min-h-[200px]" />
                                   </button>
                                   <button type="button" onClick={() => openLightbox(1)} className="rounded-[12px] overflow-hidden">
-                                    <img src={msgImages[1]} alt="photo-1" className="w-full h-[98px] object-cover" loading="lazy" />
+                                    <ContainedPhoto src={msgImages[1]} alt="photo-1" className="h-[98px]" />
                                   </button>
                                   <button type="button" onClick={() => openLightbox(2)} className="rounded-[12px] overflow-hidden">
-                                    <img src={msgImages[2]} alt="photo-2" className="w-full h-[98px] object-cover" loading="lazy" />
+                                    <ContainedPhoto src={msgImages[2]} alt="photo-2" className="h-[98px]" />
                                   </button>
                                 </div>
                               );
@@ -721,7 +722,7 @@ const Messaging = () => {
                                       onClick={() => openLightbox(i)}
                                       className="rounded-[12px] overflow-hidden"
                                     >
-                                      <img src={src} alt={`photo-${i}`} className="w-full h-32 object-cover" loading="lazy" />
+                                      <ContainedPhoto src={src} alt={`photo-${i}`} className="h-32" />
                                     </button>
                                   ))}
                                 </div>
@@ -742,7 +743,7 @@ const Messaging = () => {
                                       onClick={() => openLightbox(i)}
                                       className="relative rounded-[12px] overflow-hidden"
                                     >
-                                      <img src={src} alt={`photo-${i}`} className="w-full h-24 object-cover" loading="lazy" />
+                                      <ContainedPhoto src={src} alt={`photo-${i}`} className="h-24" />
                                       {isLast && (
                                         <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
                                           <span className="text-white font-semibold text-lg">+{remaining}</span>

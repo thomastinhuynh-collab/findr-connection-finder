@@ -28,6 +28,7 @@ import { needsStripeOnboarding, shouldShowStripeActionBadge } from "@/lib/stripe
 import { shouldShowShipFromActionBadge } from "@/lib/shipFrom";
 import ShipFromCard from "@/components/ShipFromCard";
 import { useTranslation } from "react-i18next";
+import ContainedPhoto from "@/components/ContainedPhoto";
 
 type StripeSyncStatus = { complete: boolean; details_submitted: boolean; payouts_enabled: boolean; transfers: string | null };
 type TabKey = "recherches" | "propositions" | "favoris" | "gains";
@@ -1528,7 +1529,7 @@ const MySpace = () => {
                               >
                                 <div className="w-24 h-24 flex-shrink-0" style={{ backgroundColor: '#F0EBE3' }}>
                                   {p.image_urls?.[0] ? (
-                                    <img src={p.image_urls[0]} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
+                                    <ContainedPhoto src={p.image_urls[0]} alt={p.title} />
                                   ) : (
                                     <div className="w-full h-full flex items-center justify-center">
                                       <Package className="w-6 h-6" style={{ color: '#D9BB87' }} />

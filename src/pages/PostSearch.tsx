@@ -465,6 +465,7 @@ const PostSearch = () => {
                         </p>
                       </div>
                     )}
+                    <p className="text-xs text-muted-foreground">{t("photos.fullHint")}</p>
                   </div>
 
                   <div className="flex justify-between gap-3 pt-2">

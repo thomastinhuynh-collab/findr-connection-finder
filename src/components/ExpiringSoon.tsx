@@ -8,6 +8,7 @@ import FavoriteButton from "@/components/FavoriteButton";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import TranslatedContent from "@/components/TranslatedContent";
+import ContainedPhoto from "@/components/ContainedPhoto";
 
 interface SearchData {
   id: string;
@@ -139,7 +140,7 @@ const ExpiringSoon = () => {
                     <FavoriteButton searchId={search.id} />
                   </div>
                   {image ? (
-                    <img src={image} alt={search.title} className="w-full h-full object-cover object-center" loading="lazy" />
+                    <ContainedPhoto src={image} alt={search.title} />
                   ) : (
                     <div className="w-full h-full bg-[#E8E0D4] flex items-center justify-center">
                     </div>

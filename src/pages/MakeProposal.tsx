@@ -411,6 +411,7 @@ const MakeProposal = () => {
               <p className="text-xs text-muted-foreground">
                  {t("proposalForm.photosHint")}
               </p>
+              <p className="text-xs text-muted-foreground mt-1">{t("photos.fullHint")}</p>
             </div>
 
             {/* Price */}
