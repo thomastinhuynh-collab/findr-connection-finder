@@ -55,6 +55,7 @@ import { useTranslation } from "react-i18next";
 import { formatPrice, computeFees } from "@/lib/fees";
 import ShippingEstimate from "@/components/ShippingEstimate";
 import ServiceFeeLabel from "@/components/ServiceFeeLabel";
+import { isLabelFlowSale } from "@/lib/deliveryChoice";
 import TranslatedContent from "@/components/TranslatedContent";
 import DeliveryChoicePicker, {
   DeliveryAddress,
@@ -102,6 +103,7 @@ interface ReservationPayment {
   dispute_description?: string | null;
   delivery_type?: string | null;
   label_provided_at?: string | null;
+  label_deadline_at?: string | null;
   delivery_address?: DeliveryAddress | null;
   delivery_relay_point?: DeliveryRelayPoint | null;
 }
@@ -157,7 +159,7 @@ const ProposalList = ({
     if (!user) return;
     const { data } = await supabase
       .from("reservations")
-      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description, delivery_type, label_provided_at, delivery_address, delivery_relay_point")
+      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description, delivery_type, label_provided_at, label_deadline_at, delivery_address, delivery_relay_point")
       .eq("search_id", searchId);
     const map: Record<string, ReservationPayment> = {};
     (data || []).forEach((r: any) => {
@@ -625,7 +627,8 @@ const ProposalList = ({
                   {/* Buyr : choix du mode de livraison, obligatoire avant expédition */}
                   {isOwner &&
                     payments[proposal.id]?.payment_status === "paye_en_attente_reception" &&
-                    !payments[proposal.id]?.shipped_at && (
+                    !payments[proposal.id]?.shipped_at &&
+                    !isLabelFlowSale(payments[proposal.id]) && (
                       <DeliveryChoicePicker
                         reservationId={payments[proposal.id]!.id}
                         value={{
@@ -647,7 +650,7 @@ const ProposalList = ({
                     payments[proposal.id]?.payment_status === "paye_en_attente_reception" &&
                     !payments[proposal.id]?.shipped_at && (
                       <>
-                        {payments[proposal.id]?.delivery_type ? (
+                        {isLabelFlowSale(payments[proposal.id]) ? null : payments[proposal.id]?.delivery_type ? (
                           <Button
                             size="sm"
                             onClick={() => {
