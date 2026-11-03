@@ -47,13 +47,22 @@ interface Block {
   facts?: Array<{ label: string; value: string }>;
   imageUrl?: string | null;
   /** lien discret sous le CTA */
-  secondary?: { label: string; url: string };
+  secondary?: { label: string; url: string } | Array<{ label: string; url: string }>;
   /** phrase discrète affichée sous le CTA (texte brut, échappé) */
   footnote?: string;
   /** titre du document HTML quand aucun titre visible n'est affiché */
   documentTitle?: string;
 }
 
+
+/** Bouton principal « Suivre mon colis » (lien transporteur) quand un numéro est connu ; sinon « Voir la transaction ». */
+// deno-lint-ignore no-explicit-any
+function trackingButtons(data: any, transactionUrl: string): Pick<Block, "cta" | "secondary"> {
+  const url = trackingUrl(data.carrier, data.trackingNumber);
+  return url
+    ? { cta: { label: "Suivre mon colis", url }, secondary: { label: "Voir la transaction", url: transactionUrl } }
+    : { cta: { label: "Voir la transaction", url: transactionUrl } };
+}
 
 export function renderEmail(block: Block): string {
   const facts = block.facts?.length
@@ -83,11 +92,15 @@ export function renderEmail(block: Block): string {
         </td></tr></table>`
     : "";
 
-  const secondary = block.secondary
-    ? `<p style="margin:8px 0 0 0;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:12px;"><a href="${esc(
-        block.secondary.url,
-      )}" style="color:#6B7280;text-decoration:underline;">${esc(block.secondary.label)}</a></p>`
-    : "";
+  const secondaries = block.secondary ? (Array.isArray(block.secondary) ? block.secondary : [block.secondary]) : [];
+  const secondary = secondaries
+    .map(
+      (link) =>
+        `<p style="margin:8px 0 0 0;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:12px;"><a href="${esc(
+          link.url,
+        )}" style="color:#6B7280;text-decoration:underline;">${esc(link.label)}</a></p>`,
+    )
+    .join("");
 
   const eyebrow = block.eyebrow
     ? `<p style="margin:0 0 8px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:${GOLD_TEXT};font-weight:bold;">${esc(
@@ -311,7 +324,7 @@ export function buildEmail(
             ...(data.carrier ? [{ label: "Transporteur", value: String(data.carrier) }] : []),
             ...(data.trackingNumber ? [{ label: "Numéro de suivi", value: String(data.trackingNumber) }] : []),
           ],
-          cta: { label: "Suivre ma transaction", url: transactionUrl },
+          ...trackingButtons(data, transactionUrl),
         }),
       };
 
@@ -350,11 +363,7 @@ export function buildEmail(
             ...(data.carrier ? [{ label: "Transporteur", value: data.carrier }] : []),
             ...(data.itemTitle ? [{ label: "Objet", value: data.itemTitle }] : []),
           ],
-          cta: {
-            label: "Suivre mon colis",
-            url: transactionUrl,
-          },
-          secondary: { label: "Voir la transaction", url: transactionUrl },
+          ...trackingButtons(data, transactionUrl),
         }),
       };
     }
@@ -509,8 +518,18 @@ export function buildEmail(
             `${hello} le transporteur a marqué ton colis comme livré.`,
             "Confirme la réception pour déclencher le versement au findr. <strong>Sans action de ta part, le versement sera déclenché automatiquement sous 48 h.</strong>",
           ],
-          cta: { label: "Voir la transaction", url: transactionUrl },
-          secondary: { label: "Signaler un problème", url: transactionUrl },
+          ...(trackingUrl(data.carrier, data.trackingNumber)
+            ? {
+                cta: { label: "Suivre mon colis", url: trackingUrl(data.carrier, data.trackingNumber)! },
+                secondary: [
+                  { label: "Voir la transaction", url: transactionUrl },
+                  { label: "Signaler un problème", url: transactionUrl },
+                ],
+              }
+            : {
+                cta: { label: "Voir la transaction", url: transactionUrl },
+                secondary: { label: "Signaler un problème", url: transactionUrl },
+              }),
         }),
       };
 

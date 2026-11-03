@@ -13,6 +13,7 @@ import { recheckUnrecognizedTracking } from "../_shared/trackingVerification.ts"
 import { checkTracking } from "../_shared/track17.ts";
 import { applyShipmentDetection, planShipmentDetection } from "../_shared/shipmentDetection.ts";
 import { putTrackingInReview } from "../_shared/trackingReview.ts";
+import { recordTrackingEvents } from "../_shared/trackingEvents.ts";
 import { canAutoReleaseShipped, cancellationDays, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
 import { AWAITING_LABEL, labelDeadlineAt, loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
 import { sendEmailTo, sendEmailToUser } from "../_shared/brevo.ts";
@@ -58,6 +59,7 @@ Deno.serve(async (req) => {
       try {
         const evidence = await checkTracking(r.tracking_number, r.carrier ?? "");
         const old = isOldTrackingEvent(evidence?.firstEventAt ?? null, r.accepted_at);
+        if (evidence && !old) await recordTrackingEvents(admin, r.id, evidence.events);
         const detection = planShipmentDetection(r, evidence, old, now);
         if (detection) await applyShipmentDetection(admin, r, detection);
       } catch (e) {

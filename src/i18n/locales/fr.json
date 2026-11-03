@@ -1707,5 +1707,18 @@
   "firstScan": {
     "title": "En attente du premier scan du transporteur",
     "deadline": "Date limite : {{date}}. Sans scan d'ici là, la vente est annulée et le buyr intégralement remboursé."
+  },
+  "parcelTracking": {
+    "title": "Suivi du colis",
+    "carrier": "Transporteur",
+    "number": "Numéro de suivi",
+    "unknownCarrier": "Non précisé",
+    "copy": "Copier",
+    "copied": "Copié",
+    "copyLabel": "Copier le numéro de suivi {{value}}",
+    "openCarrier": "Suivre sur le site du transporteur",
+    "history": "Étapes du transporteur",
+    "noEvents": "Aucune information du transporteur pour le moment.",
+    "testEvent": "test"
   }
 }

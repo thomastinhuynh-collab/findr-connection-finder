@@ -40,6 +40,7 @@ import { computeFees, formatPrice } from "@/lib/fees";
 import { trackingUrl } from "@/lib/tracking";
 import { normalizeTrackingNumber, validateTrackingNumber, cancellationDays, type TrackingError } from "@/lib/trackingValidation";
 import TrackingRecognition from "@/components/TrackingRecognition";
+import ParcelTrackingCard from "@/components/ParcelTrackingCard";
 import BuyrLabelCard, { type ShipFrom } from "@/components/BuyrLabelCard";
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { AwaitingFirstScan, FindrAwaitingLabel, FindrDropOffCard } from "@/components/FindrLabelCard";
@@ -336,7 +337,6 @@ const Transaction = () => {
   const showShipFlow = findrOldFlowToShip && !!reservation.delivery_type;
   const showFindrDropOff = labelFlowEnabled && isFindr && ps === "paye_en_attente_reception" && !reservation.shipped_at && !!reservation.label_provided_at;
   const showFindrAwaitingLabel = labelFlowEnabled && isFindr && ["paye_attente_etiquette", "etiquette_refusee"].includes(ps);
-  const showFindrTracking = isFindr && shipped && !payoutDone;
   const showDeliveryPicker = isBuyr && ps === "paye_en_attente_reception" && !reservation.delivery_type && !reservation.shipped_at && !reservation.label_provided_at;
   const showLabelCard = labelFlowEnabled && isBuyr && ["paye_attente_etiquette", "etiquette_refusee"].includes(ps);
   const showBuyrReceipt = isBuyr && ["expedie", "livre"].includes(ps) && reservation.dispute_status !== "ouvert";
@@ -608,28 +608,15 @@ const Transaction = () => {
           </section>
         )}
 
-        {/* Findr : colis expédié → suivi */}
-        {showFindrTracking && reservation.tracking_number && (
-          <section
-            className="rounded-2xl p-5"
-            style={{ border: `1px solid ${GOLD}`, backgroundColor: "#FFFFFF" }}
-            aria-labelledby="tx-tracking-section"
+        {/* Buyr et findr : colis expédié → suivi */}
+        {shipped && reservation.tracking_number && (
+          <ParcelTrackingCard
+            reservationId={reservation.id}
+            carrier={reservation.carrier}
+            trackingNumber={reservation.tracking_number}
           >
-            <h2 id="tx-tracking-section" className="font-display font-medium text-lg mb-2" style={{ color: NAVY }}>
-              {t("transaction.shippedTracking")}
-            </h2>
-            <a
-              href={trackUrl ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold underline underline-offset-2"
-              style={{ color: NAVY }}
-            >
-              {reservation.carrier} — {reservation.tracking_number}
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-            <TrackingRecognition recognized={reservation.tracking_recognized} isFindr />
-          </section>
+            <TrackingRecognition recognized={reservation.tracking_recognized} isFindr={isFindr} />
+          </ParcelTrackingCard>
         )}
 
         {/* Buyr : fournir l'étiquette (parcours étiquette) */}
@@ -677,21 +664,6 @@ const Transaction = () => {
             <h2 id="tx-receipt" className="font-display font-medium text-lg" style={{ color: NAVY }}>
               {t("transaction.receiptTitle")}
             </h2>
-            {reservation.tracking_number && trackUrl && (
-              <div className="flex flex-wrap items-center gap-2">
-              <a
-                href={trackUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold underline underline-offset-2"
-                style={{ color: NAVY }}
-              >
-                {reservation.carrier} — {reservation.tracking_number}
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-              <TrackingRecognition recognized={reservation.tracking_recognized} isFindr={false} />
-              </div>
-            )}
             <div className="flex flex-wrap items-center gap-3">
               <Button
                 className="bg-success hover:bg-success/90 text-success-foreground"
@@ -713,7 +685,7 @@ const Transaction = () => {
         )}
 
         {reservation.tracking_review_notified_at && !payoutDone && <p role="status" className="text-sm text-muted-foreground">{t("trackingSafety.review")}</p>}
-        {isBuyr && reservation.tracking_number && !showBuyrReceipt && !payoutDone && <div className="flex flex-wrap items-center gap-2"><a href={trackUrl ?? "#"} target="_blank" rel="noopener noreferrer" className="text-sm text-primary underline">{reservation.carrier} — {reservation.tracking_number}</a><TrackingRecognition recognized={reservation.tracking_recognized} isFindr={false} /></div>}
+        {isBuyr && reservation.tracking_number && !shipped && !showBuyrReceipt && !payoutDone && <div className="flex flex-wrap items-center gap-2"><a href={trackUrl ?? "#"} target="_blank" rel="noopener noreferrer" className="text-sm text-primary underline">{reservation.carrier} — {reservation.tracking_number}</a><TrackingRecognition recognized={reservation.tracking_recognized} isFindr={false} /></div>}
         {/* Carte montants (masquée pendant l'étape étiquette du buyr pour éviter de croire à un second paiement) */}
         {!showLabelCard && <section
           className="rounded-2xl p-5 space-y-2"

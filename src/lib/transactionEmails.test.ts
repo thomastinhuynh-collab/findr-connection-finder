@@ -4,7 +4,7 @@ import { findrAcceptedParagraphs, shipFromNeededText } from "../../supabase/func
 
 describe("transaction email destinations", () => {
   const reservationId = "f23c8b7a-e7a2-4659-942b-7ad2b284ab19";
-  for (const type of ["proposal_accepted", "shipped", "tracking_review", "label_ready", "delivered", "funds_released", "auto_release", "refund", "dispute_opened", "dispute_received", "dispute_resolved_buyr", "dispute_resolved_findr", "chargeback_opened"] as EmailType[]) {
+  for (const type of ["proposal_accepted", "tracking_review", "label_ready", "funds_released", "auto_release", "refund", "dispute_opened", "dispute_received", "dispute_resolved_buyr", "dispute_resolved_findr", "chargeback_opened"] as EmailType[]) {
     it(`${type} links to its reservation instead of a general page or carrier`, () => {
       const { html } = buildEmail(type, { reservationId, carrier: "Colissimo", trackingNumber: "AB123456" });
       const cta = html.match(/<a href="([^"]+)" style="display:inline-block/);
@@ -115,6 +115,30 @@ describe("sale messages after payment", () => {
     expect(subject).toBe("Ton colis est en route");
     expect(html).toContain("Le transporteur a scanné ton colis.");
     expect(html).toContain("6A12345678901");
-    expect(cta(html)?.slice(1)).toEqual([`${SITE_URL}/transaction/${reservationId}`, "Suivre ma transaction"]);
+    expect(cta(html)?.slice(1)).toEqual(["https://www.laposte.fr/outils/suivre-vos-envois?code=6A12345678901", "Suivre mon colis"]);
+  });
+});
+
+describe("parcel tracking buttons in buyr emails", () => {
+  const reservationId = "f23c8b7a-e7a2-4659-942b-7ad2b284ab19";
+  const tx = `${SITE_URL}/transaction/${reservationId}`;
+  const links = (html: string) => [...html.matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(m => [m[1], m[2]]);
+  for (const type of ["parcel_in_transit", "delivered", "shipped"] as EmailType[]) {
+    it(`${type}: « Suivre mon colis » opens the carrier, « Voir la transaction » is secondary`, () => {
+      const { html } = buildEmail(type, { reservationId, carrier: "Colissimo", trackingNumber: "AB123456" });
+      const cta = html.match(/<a href="([^"]+)" style="display:inline-block[^>]*>([^<]+)</);
+      expect(cta?.[1]).toBe("https://www.laposte.fr/outils/suivre-vos-envois?code=AB123456");
+      expect(cta?.[2]).toBe("Suivre mon colis");
+      expect(links(html)).toContainEqual([tx, "Voir la transaction"]);
+    });
+    it(`${type}: without a tracking number the main button is the transaction`, () => {
+      const { html } = buildEmail(type, { reservationId });
+      const cta = html.match(/<a href="([^"]+)" style="display:inline-block[^>]*>([^<]+)</);
+      expect(cta?.[1]).toBe(tx);
+      expect(html).not.toContain("Suivre mon colis");
+    });
+  }
+  it("delivered keeps « Signaler un problème »", () => {
+    expect(buildEmail("delivered", { reservationId, carrier: "Mondial Relay", trackingNumber: "12345678" }).html).toContain("Signaler un problème");
   });
 });
