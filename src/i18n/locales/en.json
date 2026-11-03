@@ -1707,5 +1707,18 @@
   "firstScan": {
     "title": "Waiting for the carrier's first scan",
     "deadline": "Deadline: {{date}}. Without a scan by then, the sale is cancelled and the buyr fully refunded."
+  },
+  "parcelTracking": {
+    "title": "Parcel tracking",
+    "carrier": "Carrier",
+    "number": "Tracking number",
+    "unknownCarrier": "Not specified",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyLabel": "Copy tracking number {{value}}",
+    "openCarrier": "Track on the carrier's website",
+    "history": "Carrier updates",
+    "noEvents": "No information from the carrier yet.",
+    "testEvent": "test"
   }
 }
