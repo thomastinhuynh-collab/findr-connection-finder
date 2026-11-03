@@ -56,6 +56,8 @@ import { formatPrice, computeFees } from "@/lib/fees";
 import ShippingEstimate from "@/components/ShippingEstimate";
 import ServiceFeeLabel from "@/components/ServiceFeeLabel";
 import { isLabelFlowSale } from "@/lib/deliveryChoice";
+import { isAwaitingBuyrLabel, showConfirmAfterShipping, showTransactionLink } from "@/lib/buyrLabelAction";
+import BuyrLabelActionBox from "@/components/BuyrLabelActionBox";
 import TranslatedContent from "@/components/TranslatedContent";
 import DeliveryChoicePicker, {
   DeliveryAddress,
@@ -106,6 +108,7 @@ interface ReservationPayment {
   label_deadline_at?: string | null;
   delivery_address?: DeliveryAddress | null;
   delivery_relay_point?: DeliveryRelayPoint | null;
+  ship_from?: { street?: string | null; postal_code?: string | null; city?: string | null } | null;
 }
 
 
@@ -159,7 +162,7 @@ const ProposalList = ({
     if (!user) return;
     const { data } = await supabase
       .from("reservations")
-      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description, delivery_type, label_provided_at, label_deadline_at, delivery_address, delivery_relay_point")
+      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description, delivery_type, label_provided_at, label_deadline_at, delivery_address, delivery_relay_point, ship_from")
       .eq("search_id", searchId);
     const map: Record<string, ReservationPayment> = {};
     (data || []).forEach((r: any) => {
@@ -197,6 +200,8 @@ const ProposalList = ({
   // Le buyr peut demander l'annulation : 5 jours sans expédition,
   // ou 10 jours après une expédition jamais livrée.
   const cancelUnlockAt = (p?: ReservationPayment) => {
+    // Parcours étiquette : la règle des 5 jours ne s'applique pas (annulation libre avant l'étiquette).
+    if (isAwaitingBuyrLabel(p)) return null;
     if (!p || (!["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre"].includes(p.payment_status ?? "") && !(p.payment_status === "versement_en_revue" && p.tracking_review_notified_at))) return null;
     if (p.shipped_at) return new Date(p.shipped_at).getTime() + cancellationDays(p.tracking_recognized) * DAY;
     const since = new Date(p.accepted_at ?? p.created_at ?? Date.now()).getTime();
@@ -442,8 +447,11 @@ const ProposalList = ({
     );
   }
 
+  const findrFirstName = (proposal: Proposal) => proposal.findr_profile?.full_name?.trim().split(/\s+/)[0] ?? "";
+
   const renderProposal = (proposal: Proposal, index: number, highlight = false) => {
     const isPendingBuyr = isOwner && proposal.status === "pending";
+    const buyrLabelPending = isOwner && isAwaitingBuyrLabel(payments[proposal.id]);
     const fees = computeFees(proposal.proposed_price);
     return (
     <div key={proposal.id} style={highlight ? { border: "2px solid #D9BB87", borderRadius: 14, padding: 3, position: "relative" } : undefined}>
@@ -587,7 +595,17 @@ const ProposalList = ({
                     />
                   )}
 
+                  {/* Buyr, parcours étiquette : encadré d'action vers la page de transaction */}
+                  {buyrLabelPending && payments[proposal.id]?.dispute_status !== "ouvert" && (
+                    <BuyrLabelActionBox
+                      reservationId={payments[proposal.id]!.id}
+                      reservation={payments[proposal.id]!}
+                      findrFirstName={findrFirstName(proposal)}
+                    />
+                  )}
+
                   {payments[proposal.id]?.dispute_status !== "ouvert" &&
+                    !buyrLabelPending &&
                     ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue"].includes(
                       payments[proposal.id]?.payment_status ?? "",
                     ) && (
@@ -713,6 +731,16 @@ const ProposalList = ({
                         </button>
                       </>
                     )}
+
+                  {(isOwner || user?.id === proposal.findr_id) && showTransactionLink(payments[proposal.id]) && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => navigate(`/transaction/${payments[proposal.id]!.id}`)}
+                    >
+                      {t("transaction.viewTransaction")}
+                    </Button>
+                  )}
 
                   {isOwner && canBuyrCancel(payments[proposal.id]) && (
                     <Button
@@ -1088,9 +1116,19 @@ const ProposalList = ({
 
             {isOwner &&
               selectedProposal &&
-              ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception"].includes(
-                payments[selectedProposal.id]?.payment_status ?? "",
-              ) && (
+              isAwaitingBuyrLabel(payments[selectedProposal.id]) &&
+              payments[selectedProposal.id]?.dispute_status !== "ouvert" && (
+                <BuyrLabelActionBox
+                  reservationId={payments[selectedProposal.id]!.id}
+                  reservation={payments[selectedProposal.id]!}
+                  findrFirstName={findrFirstName(selectedProposal)}
+                  onNavigate={() => setDetailDialogOpen(false)}
+                />
+              )}
+
+            {isOwner &&
+              selectedProposal &&
+              showConfirmAfterShipping(payments[selectedProposal.id]) && (
                 <p className="text-sm text-muted-foreground text-center">{t("proposal.confirmAfterShipping")}</p>
               )}
 
