@@ -709,8 +709,8 @@ const Transaction = () => {
 
         {reservation.tracking_review_notified_at && !payoutDone && <p role="status" className="text-sm text-muted-foreground">{t("trackingSafety.review")}</p>}
         {isBuyr && reservation.tracking_number && !showBuyrReceipt && !payoutDone && <div className="flex flex-wrap items-center gap-2"><a href={trackUrl ?? "#"} target="_blank" rel="noopener noreferrer" className="text-sm text-primary underline">{reservation.carrier} — {reservation.tracking_number}</a><TrackingRecognition recognized={reservation.tracking_recognized} isFindr={false} /></div>}
-        {/* Carte montants */}
-        <section
+        {/* Carte montants (masquée pendant l'étape étiquette du buyr pour éviter de croire à un second paiement) */}
+        {!showLabelCard && <section
           className="rounded-2xl p-5 space-y-2"
           style={{ border: "1px solid #E5E0D6", backgroundColor: "#FFFFFF" }}
           aria-labelledby="tx-money"
@@ -757,7 +757,7 @@ const Transaction = () => {
               <ShippingEstimate weightKg={proposal?.parcel_weight_kg} className="pt-1 text-muted-foreground" />
             </>
           )}
-        </section>
+        </section>}
 
         {/* Actions communes */}
         <section className="space-y-3">
