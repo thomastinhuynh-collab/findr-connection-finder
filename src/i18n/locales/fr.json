@@ -702,6 +702,7 @@
     "saleBought": "{{name}} a acheté ton objet. Prochaine étape : l'expédier.",
     "saleWaitingDelivery": "{{name}} n'a pas encore choisi sa livraison. Nous te prévenons dès que c'est fait.",
     "saleWaitingDeliveryOldFlow": "{{name}} n'a pas encore choisi sa livraison. Reviens sur cette page : l'étape d'expédition s'ouvrira dès {{queName}} aura choisi sa livraison.",
+    "saleLabelArrived": "L'étiquette est arrivée : dépose ton colis, puis suis l'envoi sur la page de la transaction.",
     "shipItem": "Expédier l'objet",
     "saleShipped": "Colis expédié, en route vers {{name}}.",
     "saleDone": "Vente terminée."
