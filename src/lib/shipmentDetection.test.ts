@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseTrackingEvidence } from "../../supabase/functions/_shared/trackingEvidence";
-import { planShipmentDetection } from "../../supabase/functions/_shared/shipmentRules";
+import { planShipmentDetection, simulatedScanEvidence } from "../../supabase/functions/_shared/shipmentRules";
 import { receiptConfirmationError } from "../../supabase/functions/_shared/paymentStatus";
 
 const ev = (status: string, stage = status) => ({
@@ -54,5 +54,24 @@ describe("receipt confirmation", () => {
   it("is accepted from expedie or livre", () => {
     expect(receiptConfirmationError("expedie")).toBeNull();
     expect(receiptConfirmationError("livre")).toBeNull();
+  });
+});
+
+describe("admin simulated first scan", () => {
+  it("sets the same fields as a real detection, keeping carrier and tracking number untouched", () => {
+    const plan = planShipmentDetection(awaiting, simulatedScanEvidence(NOW), false, NOW);
+    expect(plan).toEqual({
+      payment_status: "expedie",
+      shipped_at: "2026-10-29T09:00:00.000Z",
+      tracking_recognized: true,
+      tracking_first_event_at: "2026-10-29T09:00:00.000Z",
+      tracking_checked_at: "2026-10-29T09:00:00.000Z",
+      tracking_status: "En transit",
+    });
+    expect(plan).not.toHaveProperty("carrier");
+    expect(plan).not.toHaveProperty("tracking_number");
+  });
+  it("does nothing for an old-flow sale without a provided label", () => {
+    expect(planShipmentDetection({ ...awaiting, label_provided_at: null }, simulatedScanEvidence(NOW), false, NOW)).toBeNull();
   });
 });

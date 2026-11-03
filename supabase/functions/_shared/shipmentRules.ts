@@ -30,3 +30,9 @@ export function planShipmentDetection(
   };
 }
 
+
+/** Preuve de scan simulée (outil admin « Simuler le premier scan ») : colis reconnu, premier événement = maintenant. */
+export function simulatedScanEvidence(now: number): TrackingEvidence & { checkedAt: string } {
+  const at = new Date(now).toISOString();
+  return { recognized: true, firstEventAt: at, status: "InTransit", checkedAt: at };
+}

@@ -14,6 +14,7 @@ interface Row {
   status: string;
   created_at: string;
   object_price: number | null;
+  label_provided_at: string | null;
   proposals?: { title: string | null } | null;
 }
 
@@ -45,7 +46,7 @@ const AdminForceShipped = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("reservations")
-      .select("id, payment_status, status, created_at, object_price, proposals(title)")
+      .select("id, payment_status, status, created_at, object_price, label_provided_at, proposals(title)")
       .is("shipped_at", null)
       .order("created_at", { ascending: false })
       .limit(25);
@@ -61,23 +62,29 @@ const AdminForceShipped = () => {
     fetchRows();
   }, [fetchRows]);
 
-  const force = async (id: string) => {
+  const force = async (id: string, labelFlow: boolean) => {
     setProcessing(id);
     try {
       const { data, error } = await supabase.functions.invoke("admin-force-shipped", {
-        body: {
-          reservationId: id,
-          trackingNumber: tracking[id]?.trim() || undefined,
-          carrier: carriers[id] || undefined,
-        },
+        body: labelFlow
+          ? { reservationId: id }
+          : {
+            reservationId: id,
+            trackingNumber: tracking[id]?.trim() || undefined,
+            carrier: carriers[id] || undefined,
+          },
       });
       if (error || (data as { error?: string })?.error) {
         throw new Error((data as { error?: string })?.error ?? error?.message);
       }
-      toast({
-        title: "Réservation forcée en expédiée",
-        description: `Suivi factice : ${(data as { trackingNumber: string }).trackingNumber}`,
-      });
+      toast(
+        (data as { simulatedScan?: boolean })?.simulatedScan
+          ? { title: "Premier scan simulé", description: "La vente est passée en « Expédiée »." }
+          : {
+            title: "Réservation forcée en expédiée",
+            description: `Suivi factice : ${(data as { trackingNumber: string }).trackingNumber}`,
+          },
+      );
       fetchRows();
     } catch (e: unknown) {
       toast({
@@ -123,6 +130,7 @@ const AdminForceShipped = () => {
                 </span>
               </div>
               <div className="flex flex-wrap items-end gap-2">
+                {!r.label_provided_at && (<>
                 <div className="flex-1 min-w-[200px] space-y-1">
                   <Label htmlFor={`trk-${r.id}`} className="text-xs">
                     Numéro de suivi factice (optionnel)
@@ -156,18 +164,19 @@ const AdminForceShipped = () => {
                     ))}
                   </select>
                 </div>
+                </>)}
                 <Button
                   size="sm"
                   variant="outline"
                   disabled={processing === r.id}
-                  onClick={() => force(r.id)}
+                  onClick={() => force(r.id, !!r.label_provided_at)}
                 >
                   {processing === r.id ? (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   ) : (
                     <Truck className="w-4 h-4 mr-2" />
                   )}
-                  Forcer « expédiée »
+                  {r.label_provided_at ? "Simuler le premier scan" : "Forcer « expédiée »"}
                 </Button>
               </div>
             </div>
