@@ -42,7 +42,8 @@ import { normalizeTrackingNumber, validateTrackingNumber, cancellationDays, type
 import TrackingRecognition from "@/components/TrackingRecognition";
 import BuyrLabelCard, { type ShipFrom } from "@/components/BuyrLabelCard";
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
-import { FindrAwaitingLabel, FindrDropOffCard } from "@/components/FindrLabelCard";
+import { AwaitingFirstScan, FindrAwaitingLabel, FindrDropOffCard } from "@/components/FindrLabelCard";
+import { isAwaitingFirstScan, scanCancelUnlockAt } from "@/lib/scanDeadline";
 
 const NAVY = "#070E42";
 const GOLD = "#D9BB87";
@@ -88,7 +89,6 @@ interface ReservationRow {
   label_provided_at: string | null;
   label_carrier: string | null;
   label_tracking_number: string | null;
-  dropoff_declared_at: string | null;
 }
 
 interface ProposalRow {
@@ -134,7 +134,7 @@ const Transaction = () => {
     const { data: r } = await supabase
       .from("reservations")
       .select(
-        "id, search_id, findr_id, buyr_id, proposal_id, object_price, buyr_fee, findr_fee, total_buyr_amount, findr_payout_amount, payment_status, delivery_type, delivery_address, delivery_relay_point, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, accepted_at, created_at, dispute_status, ship_from, label_deadline_at, label_provided_at, label_carrier, label_tracking_number, dropoff_declared_at",
+        "id, search_id, findr_id, buyr_id, proposal_id, object_price, buyr_fee, findr_fee, total_buyr_amount, findr_payout_amount, payment_status, delivery_type, delivery_address, delivery_relay_point, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, accepted_at, created_at, dispute_status, ship_from, label_deadline_at, label_provided_at, label_carrier, label_tracking_number",
       )
       .eq("id", reservationId)
       .maybeSingle();
@@ -300,6 +300,7 @@ const Transaction = () => {
   const cancelUnlockAt = () => {
     if (!["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre"].includes(ps) && !(ps === "versement_en_revue" && reservation.tracking_review_notified_at)) return null;
     if (["paye_attente_etiquette", "etiquette_refusee"].includes(ps)) return 0; // avant l'étiquette : annulation libre
+    if (isAwaitingFirstScan(reservation)) return scanCancelUnlockAt(reservation); // étiquette fournie, aucun scan : 5 jours
     if (reservation.shipped_at) return new Date(reservation.shipped_at).getTime() + cancellationDays(reservation.tracking_recognized) * DAY;
     const since = new Date(reservation.accepted_at ?? reservation.created_at).getTime();
     return since + 5 * DAY;
@@ -316,6 +317,7 @@ const Transaction = () => {
       days > 0
         ? `${t("proposal.delayDays", { count: days })}${hours > 0 ? t("proposal.delayAndHours", { hours }) : ""}`
         : t("proposal.delayHours", { count: Math.max(hours, 1) });
+    if (isAwaitingFirstScan(reservation)) return t("proposal.countdownNoScan", { delay });
     return reservation.shipped_at
       ? t("proposal.countdownShipped", { delay })
       : t("proposal.countdownNotShipped", { delay });
@@ -425,7 +427,7 @@ const Transaction = () => {
             parcelWeightKg={proposal?.parcel_weight_kg ?? null}
             labelCarrier={reservation.label_carrier}
             labelTrackingNumber={reservation.label_tracking_number}
-            dropoffDeclaredAt={reservation.dropoff_declared_at}
+            labelProvidedAt={reservation.label_provided_at}
             onChanged={load}
           />
         )}
@@ -656,7 +658,10 @@ const Transaction = () => {
 
         {/* Buyr : étiquette envoyée, colis pas encore scanné */}
         {isBuyr && ps === "paye_en_attente_reception" && !!reservation.label_provided_at && !reservation.shipped_at && (
-          <p role="status" className="text-sm font-medium" style={{ color: NAVY }}>{t("transaction.labelSentAwaitingDrop")}</p>
+          <>
+            <p className="text-sm font-medium" style={{ color: NAVY }}>{t("transaction.labelSentAwaitingDrop")}</p>
+            <AwaitingFirstScan labelProvidedAt={reservation.label_provided_at} />
+          </>
         )}
         {isBuyr && ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception"].includes(ps) && (
           <p className="text-xs" style={{ color: "#666666" }}>{t("proposal.confirmAfterShipping")}</p>
