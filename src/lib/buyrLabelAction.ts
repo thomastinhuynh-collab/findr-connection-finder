@@ -43,7 +43,7 @@ export const showTransactionLink = (r?: BuyrLabelRow | null): boolean =>
 
 /** « Tu pourras confirmer la réception dès que l'objet sera expédié » (fenêtre de détail). */
 export const showConfirmAfterShipping = (r?: BuyrLabelRow | null): boolean =>
-  !!r && r.payment_status === "paye_en_attente_reception" && !r.shipped_at;
+  !!r && r.payment_status === "paye_en_attente_reception";
 
 /** Compte à rebours en jours et heures jusqu'à la date limite. */
 export const labelCountdown = (deadline: string | null | undefined, now = Date.now()) => {
