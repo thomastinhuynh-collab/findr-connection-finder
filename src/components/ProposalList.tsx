@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { trackingUrl } from "@/lib/tracking";
 import { normalizeTrackingNumber, validateTrackingNumber, cancellationDays, type TrackingError } from "@/lib/trackingValidation";
+import { isAwaitingFirstScan, scanCancelUnlockAt } from "@/lib/scanDeadline";
 import TrackingRecognition from "@/components/TrackingRecognition";
 
 import { Input } from "@/components/ui/input";
