@@ -287,7 +287,8 @@ const Transaction = () => {
   // Frise d'avancement en six étapes
   const paid = PAID_STATUSES.includes(ps);
   const shipped = paid && (!!reservation.shipped_at || ["expedie", "livre", "versement_en_revue", "termine"].includes(ps));
-  const deliveryChosen = paid && (!!reservation.delivery_type || shipped);
+  // Parcours étiquette : le buyr a choisi sa livraison chez le transporteur en achetant l'étiquette.
+  const deliveryChosen = paid && (!!reservation.delivery_type || !!reservation.label_provided_at || shipped);
   const arrived = !!reservation.delivered_at || ["livre", "termine"].includes(ps);
   const received = ps === "termine" || (ps === "versement_en_revue" && !reservation.tracking_review_notified_at);
   const payoutDone = ps === "termine";

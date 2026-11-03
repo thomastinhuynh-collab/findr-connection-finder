@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
     const admin = createClient(supabaseUrl, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
     const { data: reservation } = await admin
       .from("reservations")
-      .select("id, buyr_id, findr_id, payment_status, shipped_at, delivery_type, accepted_at")
+      .select("id, buyr_id, findr_id, payment_status, shipped_at, delivery_type, accepted_at, label_provided_at")
       .eq("id", reservationId)
       .maybeSingle();
 
@@ -60,6 +60,10 @@ Deno.serve(async (req) => {
       return json({ error: "Cette réservation n'est pas au stade de l'expédition." }, 400);
     }
     if (reservation.shipped_at) return json({ error: "Colis déjà marqué comme expédié." }, 400);
+    // Parcours étiquette : pas de choix de livraison, l'envoi est détecté par le suivi du transporteur.
+    if (reservation.label_provided_at) {
+      return json({ error: "L'envoi de cette vente est détecté automatiquement par le suivi du transporteur." }, 400);
+    }
     if (!reservation.delivery_type) {
       return json(
         { error: "Le buyr n'a pas encore indiqué son mode de livraison." },

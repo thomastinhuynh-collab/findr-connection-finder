@@ -4,12 +4,13 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { awaitsDeliveryChoice } from "@/lib/deliveryChoice";
 
 const PAGE_SIZE = 20;
 const PENDING_STATUSES = ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue"] as const;
 
 interface PaidRow { id: string; amount: number; created_at: string; title: string | null }
-interface PendingRow { id: string; amount: number; status: string; delivery_type: string | null; search_id: string; title: string | null }
+interface PendingRow { id: string; amount: number; status: string; delivery_type: string | null; label_provided_at: string | null; search_id: string; title: string | null }
 
 interface Props { userId: string; paymentsConfigured: boolean }
 
@@ -67,7 +68,7 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
         supabase.from("transactions").select("amount").eq("findr_id", userId),
         supabase
           .from("reservations")
-          .select("id, findr_payout_amount, payment_status, delivery_type, search_id, proposal_id")
+          .select("id, findr_payout_amount, payment_status, delivery_type, label_provided_at, search_id, proposal_id")
           .eq("findr_id", userId)
           .in("payment_status", [...PENDING_STATUSES]),
       ]);
@@ -79,6 +80,7 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
           amount: Number(r.findr_payout_amount || 0),
           status: r.payment_status as string,
           delivery_type: r.delivery_type,
+          label_provided_at: r.label_provided_at,
           search_id: r.search_id,
           title: r.proposal_id ? titles[r.proposal_id] ?? null : null,
         })),
@@ -146,7 +148,7 @@ const EarningsPanel = ({ userId, paymentsConfigured }: Props) => {
                   <Link to={`/recherche/${r.search_id}`} className="font-medium hover:underline underline-offset-4 truncate block" style={{ color: "#070E42" }}>
                     {r.title || t("mySpace.earnings.untitled")}
                   </Link>
-                  <span style={{ color: "#4B5563" }}>{t(`mySpace.earnings.step.${r.status === "paye_en_attente_reception" && !r.delivery_type ? "awaitingDeliveryChoice" : r.status}`)}</span>
+                  <span style={{ color: "#4B5563" }}>{t(`mySpace.earnings.step.${awaitsDeliveryChoice({ payment_status: r.status, delivery_type: r.delivery_type, label_provided_at: r.label_provided_at }) ? "awaitingDeliveryChoice" : r.status}`)}</span>
                   <Link to={`/transaction/${r.id}`} className="text-xs font-medium hover:underline underline-offset-4 block mt-0.5" style={{ color: "#070E42" }}>
                     {t("transaction.viewTransaction")} →
                   </Link>

@@ -26,6 +26,7 @@ import TranslatedContent from "@/components/TranslatedContent";
 import { isComingSoonCategory } from "@/lib/categories";
 import { needsStripeOnboarding, shouldShowStripeActionBadge } from "@/lib/stripeOnboarding";
 import { shouldShowShipFromActionBadge } from "@/lib/shipFrom";
+import { awaitsDeliveryChoice } from "@/lib/deliveryChoice";
 import ShipFromCard from "@/components/ShipFromCard";
 import { useTranslation } from "react-i18next";
 import ContainedPhoto from "@/components/ContainedPhoto";
@@ -492,7 +493,7 @@ const MySpace = () => {
           const { data: allReservations } = await supabase
             .from("reservations")
             .select(
-              "id, created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason, delivery_type, dispute_open, label_deadline_at"
+              "id, created_at, updated_at, status, payment_status, findr_id, object_price, total_buyr_amount, dispute_reason, delivery_type, dispute_open, label_deadline_at, label_provided_at"
             )
             .eq("search_id", search.id)
             .order("updated_at", { ascending: false });
@@ -505,7 +506,7 @@ const MySpace = () => {
 
           const receiptPending = allRes.some((r) => (r.payment_status === "expedie" || r.payment_status === "livre") && !r.dispute_open);
           const deliveryChoicePending = allRes.some(
-            (r) => r.payment_status === "paye_en_attente_reception" && !r.delivery_type
+            (r) => awaitsDeliveryChoice(r)
           );
           const labelPending = allRes.some((r) => (r.payment_status === "paye_attente_etiquette" || r.payment_status === "etiquette_refusee") && !!r.label_deadline_at);
           const urgent_reason: "reservation_pending" | "payment_pending" | "receipt_pending" | "delivery_choice" | "label_pending" | null =

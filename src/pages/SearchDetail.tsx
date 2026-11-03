@@ -37,6 +37,7 @@ import TranslationNotice from "@/components/TranslationNotice";
 import { useFeatureFlags } from "@/hooks/useFeatureFlags";
 import { getSubcategoryLabelKey } from "@/lib/categories";
 import { hasShipFrom } from "@/lib/shipFrom";
+import { isLabelFlowSale } from "@/lib/deliveryChoice";
 import { SHIP_FROM_ANCHOR } from "@/components/ShipFromCard";
 import ContainedPhoto from "@/components/ContainedPhoto";
 import PhotoLightbox from "@/components/PhotoLightbox";
@@ -298,7 +299,7 @@ const SearchDetail = () => {
   const { t, i18n } = useTranslation();
   const [search, setSearch] = useState<SearchWithProfile | null>(null);
   const [proposals, setProposals] = useState<Proposal[]>([]);
-  const [salePayments, setSalePayments] = useState<Record<string, { id: string; payment_status: string | null; shipped_at: string | null; delivery_type: string | null; label_provided_at?: string | null }>>({});
+  const [salePayments, setSalePayments] = useState<Record<string, { id: string; payment_status: string | null; shipped_at: string | null; delivery_type: string | null; label_provided_at?: string | null; label_deadline_at?: string | null }>>({});
   const [shipRequest, setShipRequest] = useState(0);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -808,8 +809,23 @@ const SearchDetail = () => {
     ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre", "termine"].includes(
       myPayment.payment_status ?? "",
     );
+  // Parcours étiquette : delivery_type n'existe jamais, aucun choix de livraison n'est attendu.
+  const saleLabelFlow = !saleDone && !saleShipped && isLabelFlowSale(myPayment);
   const saleWaitingDelivery =
-    !saleDone && !saleShipped && salePaid && !myPayment?.delivery_type;
+    !saleDone && !saleShipped && salePaid && !myPayment?.delivery_type && !saleLabelFlow;
+  const labelDeadline = myPayment?.label_deadline_at
+    ? new Date(myPayment.label_deadline_at).toLocaleString(i18n.language?.startsWith("en") ? "en-GB" : "fr-FR", { dateStyle: "long", timeStyle: "short" })
+    : null;
+  const labelBuyrName = buyrFirstName || t("transaction.theBuyr");
+  const saleLabelText = !saleLabelFlow
+    ? null
+    : myPayment?.payment_status === "paye_en_attente_reception"
+      ? t("searchDetail.saleLabelArrived")
+      : !labelDeadline
+        ? t("findrLabel.awaitingNoDate", { name: labelBuyrName })
+        : myPayment?.payment_status === "etiquette_refusee"
+          ? t("findrLabel.rejectedText", { name: labelBuyrName, date: labelDeadline })
+          : t("findrLabel.awaitingText", { name: labelBuyrName, date: labelDeadline });
   // Ancien parcours : vente à expédier sans étiquette fournie par le buyr.
   const saleWaitingDeliveryOldFlow =
     saleWaitingDelivery && myPayment?.payment_status === "paye_en_attente_reception" && !myPayment?.label_provided_at;
@@ -825,6 +841,8 @@ const SearchDetail = () => {
           ? t("searchDetail.saleDone")
           : saleShipped
             ? t("searchDetail.saleShipped", { name: buyrFirstName })
+            : saleLabelText
+              ? saleLabelText
             : saleWaitingDeliveryOldFlow
               ? t("searchDetail.saleWaitingDeliveryOldFlow", {
                   name: waitingBuyrName,
