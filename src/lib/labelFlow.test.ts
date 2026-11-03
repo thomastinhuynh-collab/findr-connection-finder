@@ -130,7 +130,7 @@ import {
   planLabelRejection,
 } from "../../supabase/functions/_shared/labelFlow";
 
-describe("findr label actions (reject-label, declare-dropoff)", () => {
+describe("findr label actions (reject-label)", () => {
   const r = { findr_id: "findr", payment_status: "paye_en_attente_reception", label_provided_at: "2026-10-29T10:00:00Z", shipped_at: null };
   it("accepts the findr on a received, unshipped label", () => {
     expect(checkFindrLabelEligibility(true, r, "findr")).toBeNull();
