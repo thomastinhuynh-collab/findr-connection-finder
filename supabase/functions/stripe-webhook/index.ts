@@ -5,6 +5,7 @@ import { sendEmailTo, sendEmailToUser } from "../_shared/brevo.ts";
 import { ALREADY_PAID_STATUSES, AWAITING_LABEL, initialPaidStatus, labelDeadlineAt, loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
 import {
   buyrPaymentText,
+  moneyFr,
   findrAcceptedParagraphs,
   type SaleContext,
   SHIP_FROM_PATH,
