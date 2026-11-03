@@ -485,6 +485,8 @@ export type Database = {
           renewal_count: number
           renewal_requested: boolean
           requested_duration_days: number
+          scan_reminder_2d_at: string | null
+          scan_reminder_5d_at: string | null
           search_id: string
           ship_from: Json | null
           shipped_at: string | null
@@ -547,6 +549,8 @@ export type Database = {
           renewal_count?: number
           renewal_requested?: boolean
           requested_duration_days?: number
+          scan_reminder_2d_at?: string | null
+          scan_reminder_5d_at?: string | null
           search_id: string
           ship_from?: Json | null
           shipped_at?: string | null
@@ -609,6 +613,8 @@ export type Database = {
           renewal_count?: number
           renewal_requested?: boolean
           requested_duration_days?: number
+          scan_reminder_2d_at?: string | null
+          scan_reminder_5d_at?: string | null
           search_id?: string
           ship_from?: Json | null
           shipped_at?: string | null
