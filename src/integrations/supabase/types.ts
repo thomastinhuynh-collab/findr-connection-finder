@@ -778,6 +778,47 @@ export type Database = {
         }
         Relationships: []
       }
+      tracking_events: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_test: boolean
+          location: string | null
+          occurred_at: string
+          reservation_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_test?: boolean
+          location?: string | null
+          occurred_at: string
+          reservation_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_test?: boolean
+          location?: string | null
+          occurred_at?: string
+          reservation_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tracking_events_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transactions: {
         Row: {
           amount: number
