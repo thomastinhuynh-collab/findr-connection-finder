@@ -298,7 +298,7 @@ const SearchDetail = () => {
   const { t, i18n } = useTranslation();
   const [search, setSearch] = useState<SearchWithProfile | null>(null);
   const [proposals, setProposals] = useState<Proposal[]>([]);
-  const [salePayments, setSalePayments] = useState<Record<string, { id: string; payment_status: string | null; shipped_at: string | null; delivery_type: string | null }>>({});
+  const [salePayments, setSalePayments] = useState<Record<string, { id: string; payment_status: string | null; shipped_at: string | null; delivery_type: string | null; label_provided_at?: string | null }>>({});
   const [shipRequest, setShipRequest] = useState(0);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -810,6 +810,10 @@ const SearchDetail = () => {
     );
   const saleWaitingDelivery =
     !saleDone && !saleShipped && salePaid && !myPayment?.delivery_type;
+  // Ancien parcours : vente à expédier sans étiquette fournie par le buyr.
+  const saleWaitingDeliveryOldFlow =
+    saleWaitingDelivery && myPayment?.payment_status === "paye_en_attente_reception" && !myPayment?.label_provided_at;
+  const waitingBuyrName = buyrFirstName || t("transaction.theBuyr");
   const canShip =
     myPayment?.payment_status === "paye_en_attente_reception" && !myPayment?.shipped_at && !!myPayment?.delivery_type;
 
@@ -821,7 +825,12 @@ const SearchDetail = () => {
           ? t("searchDetail.saleDone")
           : saleShipped
             ? t("searchDetail.saleShipped", { name: buyrFirstName })
-            : saleWaitingDelivery
+            : saleWaitingDeliveryOldFlow
+              ? t("searchDetail.saleWaitingDeliveryOldFlow", {
+                  name: waitingBuyrName,
+                  queName: /^[aeiouyhàâäéèêëîïôöùûü]/i.test(waitingBuyrName) ? `qu'${waitingBuyrName}` : `que ${waitingBuyrName}`,
+                })
+              : saleWaitingDelivery
               ? t("searchDetail.saleWaitingDelivery", { name: buyrFirstName })
               : t("searchDetail.saleBought", { name: buyrFirstName })}
       </p>

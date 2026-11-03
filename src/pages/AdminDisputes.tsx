@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { AlertTriangle, Loader2, MessageCircle, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { formatPrice } from "@/lib/fees";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -214,15 +215,15 @@ const AdminDisputes = () => {
                     </p>
                     <p>
                       <span className="text-muted-foreground">Prix objet :</span>{" "}
-                      {Number(d.object_price ?? 0).toFixed(2)} €
+                      {formatPrice(Number(d.object_price ?? 0), "fr-FR")}
                     </p>
                     <p>
                       <span className="text-muted-foreground">Payé par le buyr :</span>{" "}
-                      {Number(d.total_buyr_amount ?? 0).toFixed(2)} €
+                      {formatPrice(Number(d.total_buyr_amount ?? 0), "fr-FR")}
                     </p>
                     <p>
                       <span className="text-muted-foreground">Versement findr prévu :</span>{" "}
-                      {Number(d.findr_payout_amount ?? 0).toFixed(2)} €
+                      {formatPrice(Number(d.findr_payout_amount ?? 0), "fr-FR")}
                     </p>
                   </div>
 

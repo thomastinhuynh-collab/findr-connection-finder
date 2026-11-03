@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { formatPrice } from "@/lib/fees";
 
 const REASON_LABELS: Record<string, string> = {
   chargeback: "Contestation bancaire",
@@ -72,7 +73,7 @@ const NegativeBalanceBanner = ({ userId, negativeBalance }: Props) => {
       >
         <Info className="w-5 h-5 flex-shrink-0" style={{ color: "#070E42" }} />
         <p className="text-sm flex-1 min-w-[220px]" style={{ color: "#070E42" }}>
-          <strong>Montant à régulariser : {negativeBalance.toFixed(2)} €.</strong>{" "}
+          <strong>Montant à régulariser : {formatPrice(negativeBalance, "fr-FR")}.</strong>{" "}
           Ce montant sera automatiquement déduit de tes prochains versements.
         </p>
         <Button
@@ -107,7 +108,7 @@ const NegativeBalanceBanner = ({ userId, negativeBalance }: Props) => {
               {debits.map((d) => (
                 <div key={d.id} className="p-3 flex flex-wrap items-center justify-between gap-2 text-sm">
                   <span className="text-primary">{REASON_LABELS[d.reason] ?? d.reason}</span>
-                  <span className="font-medium">{Number(d.amount).toFixed(2)} €</span>
+                  <span className="font-medium">{formatPrice(Number(d.amount), "fr-FR")}</span>
                   <Badge variant="outline">{STATUS_LABELS[d.status] ?? d.status}</Badge>
                   <span className="text-xs text-muted-foreground">
                     {new Date(d.created_at).toLocaleDateString("fr-FR")}

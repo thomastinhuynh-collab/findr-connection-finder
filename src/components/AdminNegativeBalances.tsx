@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, PauseCircle, PlayCircle, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { formatPrice } from "@/lib/fees";
 import { toast } from "@/hooks/use-toast";
 
 const REASON_LABELS: Record<string, string> = {
@@ -184,7 +185,7 @@ const AdminNegativeBalances = () => {
                       )}
                       {Number(f.negative_balance) > 0 ? (
                         <Badge variant="secondary">
-                          {Number(f.negative_balance).toFixed(2)} € à recouvrer
+                          {formatPrice(Number(f.negative_balance), "fr-FR")} à recouvrer
                         </Badge>
                       ) : (
                         <Badge variant="outline">À jour</Badge>
@@ -205,7 +206,7 @@ const AdminNegativeBalances = () => {
                           <span className="text-primary">
                             {REASON_LABELS[d.reason] ?? d.reason}
                           </span>
-                          <span className="font-medium">{Number(d.amount).toFixed(2)} €</span>
+                          <span className="font-medium">{formatPrice(Number(d.amount), "fr-FR")}</span>
                           <Badge variant="outline">{STATUS_LABELS[d.status] ?? d.status}</Badge>
                           <span className="text-xs text-muted-foreground">
                             {new Date(d.created_at).toLocaleDateString("fr-FR")}
