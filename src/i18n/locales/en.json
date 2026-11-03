@@ -701,6 +701,7 @@
     "saleInProgress": "Sale in progress",
     "saleBought": "{{name}} bought your item. Next step: ship it.",
     "saleWaitingDelivery": "{{name}} hasn't chosen a delivery method yet. We'll let you know as soon as they do.",
+    "saleWaitingDeliveryOldFlow": "{{name}} hasn't chosen a delivery method yet. Come back to this page: the shipping step will open as soon as {{name}} has chosen their delivery.",
     "shipItem": "Ship the item",
     "saleShipped": "Parcel shipped, on its way to {{name}}.",
     "saleDone": "Sale completed."

@@ -101,6 +101,7 @@ interface ReservationPayment {
   dispute_reason?: string | null;
   dispute_description?: string | null;
   delivery_type?: string | null;
+  label_provided_at?: string | null;
   delivery_address?: DeliveryAddress | null;
   delivery_relay_point?: DeliveryRelayPoint | null;
 }
@@ -156,7 +157,7 @@ const ProposalList = ({
     if (!user) return;
     const { data } = await supabase
       .from("reservations")
-      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description, delivery_type, delivery_address, delivery_relay_point")
+      .select("id, proposal_id, payment_status, object_price, buyr_fee, total_buyr_amount, findr_payout_amount, tracking_number, tracking_recognized, tracking_review_notified_at, carrier, shipped_at, delivered_at, tracking_status, accepted_at, created_at, dispute_status, dispute_reason, dispute_description, delivery_type, label_provided_at, delivery_address, delivery_relay_point")
       .eq("search_id", searchId);
     const map: Record<string, ReservationPayment> = {};
     (data || []).forEach((r: any) => {
