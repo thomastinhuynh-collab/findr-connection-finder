@@ -4,6 +4,8 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
 import { sendEmailToUser } from "../_shared/brevo.ts";
+import { applyShipmentDetection, planShipmentDetection } from "../_shared/shipmentDetection.ts";
+import { simulatedScanEvidence } from "../_shared/shipmentRules.ts";
 
 
 const json = (body: unknown, status = 200) =>
@@ -50,7 +52,7 @@ Deno.serve(async (req) => {
 
     const { data: reservation } = await admin
       .from("reservations")
-      .select("id, buyr_id, payment_status, shipped_at")
+      .select("id, buyr_id, findr_id, payment_status, shipped_at, label_provided_at, tracking_number, carrier")
       .eq("id", reservationId)
       .maybeSingle();
     if (!reservation) return json({ error: "Réservation introuvable" }, 404);
@@ -62,6 +64,17 @@ Deno.serve(async (req) => {
         },
         400,
       );
+    }
+
+    // Vente avec étiquette fournie : même chemin que la vraie détection, avec un scan simulé.
+    // Transporteur et numéro de suivi de l'étiquette sont conservés.
+    if (reservation.label_provided_at) {
+      const now = Date.now();
+      const update = planShipmentDetection(reservation, simulatedScanEvidence(now), false, now);
+      if (!update) return json({ error: "Cette vente n'attend pas de premier scan." }, 400);
+      const applied = await applyShipmentDetection(admin, reservation, update);
+      if (!applied) return json({ error: "Déjà marquée comme expédiée." }, 400);
+      return json({ success: true, simulatedScan: true, trackingNumber: reservation.tracking_number, carrier: reservation.carrier });
     }
 
     const { error: upErr } = await admin
