@@ -115,7 +115,7 @@ describe("sale messages after payment", () => {
     expect(subject).toBe("Ton colis est en route");
     expect(html).toContain("Le transporteur a scanné ton colis.");
     expect(html).toContain("6A12345678901");
-    expect(cta(html)?.slice(1)).toEqual([`${SITE_URL}/transaction/${reservationId}`, "Suivre ma transaction"]);
+    expect(cta(html)?.slice(1)).toEqual(["https://www.laposte.fr/outils/suivre-vos-envois?code=6A12345678901", "Suivre mon colis"]);
   });
 });
 
