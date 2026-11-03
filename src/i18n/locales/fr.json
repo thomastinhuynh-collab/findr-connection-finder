@@ -801,7 +801,8 @@
     "secureAwaitingFindr": "{{name}} a payé. Ton versement sera effectué après sa confirmation de réception.",
     "statusLabelRejectedFindr": "Étiquette refusée — nouvelle étiquette attendue",
     "statusLabelRejectedBuyr": "Nouvelle étiquette à fournir",
-    "confirmAfterShipping": "Tu pourras confirmer la réception dès que l'objet sera expédié."
+    "confirmAfterShipping": "Tu pourras confirmer la réception dès que l'objet sera expédié.",
+    "countdownNoScan": "Aucun scan du transporteur ? Tu pourras demander l'annulation et le remboursement intégral dans {{delay}}."
   },
   "terms": {
     "title": "Conditions Générales d'Utilisation",
@@ -1663,10 +1664,6 @@
     "step3": "Dépose le colis",
     "step3Text": "Dépose-le dans un point {{carrier}}.",
     "trackingLabel": "Numéro de suivi :",
-    "declare": "J'ai déposé le colis",
-    "declareHelp": "Cette déclaration prévient le buyr. Le versement reste fondé sur le suivi du transporteur.",
-    "declared": "Dépôt déclaré le {{date}}.",
-    "declaredToast": "Dépôt enregistré, le buyr est prévenu.",
     "unusable": "Étiquette inutilisable",
     "rejectTitle": "Étiquette inutilisable",
     "rejectDesc": "Le buyr devra en envoyer une nouvelle sous 48 h. Au deuxième refus, la vente est annulée et le buyr intégralement remboursé.",
@@ -1683,7 +1680,8 @@
       "flow_disabled": "Le parcours étiquette n'est pas encore disponible.",
       "download": "Impossible de télécharger l'étiquette. Réessaie dans un instant.",
       "generic": "L'action a échoué. Réessaie dans un instant."
-    }
+    },
+    "scanHelp": "Une fois ton colis déposé, le transporteur le scanne et la vente passe automatiquement en « Expédiée ». Garde ton reçu de dépôt."
   },
   "photos": {
     "fullHint": "Tes photos s'affichent en entier sur l'annonce.",
@@ -1705,5 +1703,9 @@
     "countdown": "Encore {{d}} j {{h}} h.",
     "cancelInfo": "Tu peux annuler et être intégralement remboursé tant que tu n'as pas fourni l'étiquette.",
     "theFindr": "Le findr"
+  },
+  "firstScan": {
+    "title": "En attente du premier scan du transporteur",
+    "deadline": "Date limite : {{date}}. Sans scan d'ici là, la vente est annulée et le buyr intégralement remboursé."
   }
 }

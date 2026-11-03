@@ -801,7 +801,8 @@
     "secureAwaitingFindr": "{{name}} has paid. Your payout will be made after they confirm receipt.",
     "statusLabelRejectedFindr": "Label rejected — new label expected",
     "statusLabelRejectedBuyr": "New label to provide",
-    "confirmAfterShipping": "You can confirm receipt once the item has shipped."
+    "confirmAfterShipping": "You can confirm receipt once the item has shipped.",
+    "countdownNoScan": "No carrier scan? You will be able to request cancellation and a full refund in {{delay}}."
   },
   "terms": {
     "title": "Terms of Use",
@@ -1663,10 +1664,6 @@
     "step3": "Drop off the parcel",
     "step3Text": "Drop it off at a {{carrier}} point.",
     "trackingLabel": "Tracking number:",
-    "declare": "I've dropped off the parcel",
-    "declareHelp": "This lets the buyr know. The payout still relies on the carrier tracking.",
-    "declared": "Drop-off declared on {{date}}.",
-    "declaredToast": "Drop-off recorded, the buyr has been notified.",
     "unusable": "Unusable label",
     "rejectTitle": "Unusable label",
     "rejectDesc": "The buyr will have to send a new one within 48 h. On the second rejection, the sale is cancelled and the buyr fully refunded.",
@@ -1683,7 +1680,8 @@
       "flow_disabled": "The label flow is not available yet.",
       "download": "Couldn't download the label. Try again in a moment.",
       "generic": "Something went wrong. Try again in a moment."
-    }
+    },
+    "scanHelp": "Once you've dropped off your parcel, the carrier scans it and the sale automatically moves to \"Shipped\". Keep your drop-off receipt."
   },
   "photos": {
     "fullHint": "Your photos are shown in full on the listing.",
@@ -1705,5 +1703,9 @@
     "countdown": "{{d}} d {{h}} h left.",
     "cancelInfo": "You can cancel and get a full refund as long as you haven't provided the label.",
     "theFindr": "The findr"
+  },
+  "firstScan": {
+    "title": "Waiting for the carrier's first scan",
+    "deadline": "Deadline: {{date}}. Without a scan by then, the sale is cancelled and the buyr fully refunded."
   }
 }
