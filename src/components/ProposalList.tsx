@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { trackingUrl } from "@/lib/tracking";
 import { normalizeTrackingNumber, validateTrackingNumber, cancellationDays, type TrackingError } from "@/lib/trackingValidation";
+import { isAwaitingFirstScan, scanCancelUnlockAt } from "@/lib/scanDeadline";
 import TrackingRecognition from "@/components/TrackingRecognition";
 
 import { Input } from "@/components/ui/input";
@@ -202,6 +203,8 @@ const ProposalList = ({
   const cancelUnlockAt = (p?: ReservationPayment) => {
     // Parcours étiquette : la règle des 5 jours ne s'applique pas (annulation libre avant l'étiquette).
     if (isAwaitingBuyrLabel(p)) return null;
+    // Étiquette fournie, aucun scan : droit d'annuler 5 jours après l'étiquette.
+    if (isAwaitingFirstScan(p)) return scanCancelUnlockAt(p);
     if (!p || (!["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre"].includes(p.payment_status ?? "") && !(p.payment_status === "versement_en_revue" && p.tracking_review_notified_at))) return null;
     if (p.shipped_at) return new Date(p.shipped_at).getTime() + cancellationDays(p.tracking_recognized) * DAY;
     const since = new Date(p.accepted_at ?? p.created_at ?? Date.now()).getTime();
@@ -224,6 +227,7 @@ const ProposalList = ({
     const delay = days > 0
       ? `${t("proposal.delayDays", { count: days })}${hours > 0 ? t("proposal.delayAndHours", { hours }) : ""}`
       : t("proposal.delayHours", { count: Math.max(hours, 1) });
+    if (isAwaitingFirstScan(p)) return t("proposal.countdownNoScan", { delay });
     return p?.shipped_at
       ? t("proposal.countdownShipped", { delay })
       : t("proposal.countdownNotShipped", { delay });

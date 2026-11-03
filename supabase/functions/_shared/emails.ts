@@ -154,6 +154,8 @@ export type EmailType =
   | "label_rejected"
   | "label_reminder"
   | "label_expired"
+  | "scan_reminder"
+  | "scan_expired"
   | "delivered"
   | "funds_released"
   | "auto_release"
@@ -446,6 +448,52 @@ export function buildEmail(
             `${hello} vente annulée : l'étiquette n'a pas été fournie à temps. Tu n'as rien à faire côté envoi.`,
             ...(data.audience === "buyr" ? ["Tu as été intégralement remboursé, frais de service compris. Le remboursement apparaît généralement sous <strong>5 à 10 jours ouvrés</strong>."] : []),
           ],
+          facts: data.audience === "buyr" ? [{ label: "Montant remboursé (frais inclus)", value: money(data.amount) }] : undefined,
+          cta: { label: "Voir la transaction", url: transactionUrl },
+        }),
+      };
+
+    case "scan_reminder":
+      if (data.role === "team") {
+        return {
+          subject: "Colis non scanné depuis 5 jours",
+          html: renderEmail({
+            eyebrow: "Alerte interne",
+            title: "Colis non scanné depuis 5 jours",
+            paragraphs: [
+              `La transaction ${esc(data.reservationId)} : l'étiquette a été fournie il y a 5 jours et le transporteur n'a encore scanné aucun colis.`,
+              `Sans scan, la vente sera annulée automatiquement et le buyr intégralement remboursé dans ${esc(String(data.remaining || "peu de temps"))}.`,
+            ],
+            cta: { label: "Voir la transaction", url: transactionUrl },
+          }),
+        };
+      }
+      return {
+        subject: `Pense à déposer ton colis : il te reste ${String(data.remaining || "peu de temps")} avant l'annulation de la vente`,
+        html: renderEmail({
+          eyebrow: "Dépôt du colis",
+          title: `Pense à déposer ton colis : il te reste ${esc(String(data.remaining || "peu de temps"))} avant l'annulation de la vente`,
+          paragraphs: [
+            `${hello} le transporteur n'a encore scanné aucun colis pour cette vente. Dépose-le avant l'échéance : sans scan, la vente sera annulée et le buyr intégralement remboursé.`,
+          ],
+          cta: { label: "Voir la transaction", url: transactionUrl },
+        }),
+      };
+
+    case "scan_expired":
+      return {
+        subject: data.audience === "buyr"
+          ? "Vente annulée : le colis n'a pas été scanné dans le délai"
+          : "Vente annulée : aucun scan du transporteur dans les 7 jours",
+        html: renderEmail({
+          eyebrow: "Annulation",
+          title: "Vente annulée",
+          paragraphs: data.audience === "buyr"
+            ? [
+              `${hello} vente annulée : le colis n'a pas été scanné par le transporteur dans le délai. Tu es intégralement remboursé.`,
+              "Le remboursement, frais de service compris, apparaît généralement sous <strong>5 à 10 jours ouvrés</strong>.",
+            ]
+            : [`${hello} vente annulée : aucun scan du transporteur dans les 7 jours.`],
           facts: data.audience === "buyr" ? [{ label: "Montant remboursé (frais inclus)", value: money(data.amount) }] : undefined,
           cta: { label: "Voir la transaction", url: transactionUrl },
         }),

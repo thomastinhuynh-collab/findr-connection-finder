@@ -127,6 +127,13 @@
       "when": 1793281019937,
       "tag": "0017_parcel_weight_add_quarter_kg",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1793715849834,
+      "tag": "0018_scan_deadline_reminders",
+      "breakpoints": true
     }
   ]
 }

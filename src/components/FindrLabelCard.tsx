@@ -1,4 +1,4 @@
-// Parcours étiquette — vue findr : attente de l'étiquette, puis dépôt du colis.
+// Parcours étiquette — vue findr : attente de l'étiquette, puis dépôt du colis (envoi détecté par le scan du transporteur).
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
@@ -17,12 +17,28 @@ import {
 } from "@/components/ui/dialog";
 import { weightKey } from "@/components/ParcelWeightField";
 import { useCountdown } from "@/components/BuyrLabelCard";
+import { scanDeadlineAt } from "@/lib/scanDeadline";
 
 const NAVY = "#070E42";
 const GOLD = "#D9BB87";
 const CREAM = "#F5F0EA";
 
 const locale = (lang?: string) => (lang?.startsWith("en") ? "en-GB" : "fr-FR");
+
+/** Avant le premier scan du transporteur : statut et date limite (vues buyr et findr). */
+export const AwaitingFirstScan = ({ labelProvidedAt }: { labelProvidedAt: string | null }) => {
+  const { t, i18n } = useTranslation();
+  const deadline = scanDeadlineAt({ payment_status: "paye_en_attente_reception", label_provided_at: labelProvidedAt, shipped_at: null });
+  const date = deadline !== null
+    ? new Date(deadline).toLocaleString(locale(i18n.language), { dateStyle: "long", timeStyle: "short" })
+    : null;
+  return (
+    <div role="status" className="rounded-lg p-3 space-y-1" style={{ backgroundColor: CREAM }}>
+      <p className="text-sm font-semibold" style={{ color: NAVY }}>{t("firstScan.title")}</p>
+      {date && <p className="text-xs" style={{ color: "#44403A" }}>{t("firstScan.deadline", { date })}</p>}
+    </div>
+  );
+};
 
 /** Le findr attend l'étiquette du buyr (paye_attente_etiquette ou etiquette_refusee). */
 export const FindrAwaitingLabel = ({
@@ -70,7 +86,7 @@ interface DropOffProps {
   parcelWeightKg: number | null;
   labelCarrier: string | null;
   labelTrackingNumber: string | null;
-  dropoffDeclaredAt: string | null;
+  labelProvidedAt: string | null;
   onChanged: () => void;
 }
 
@@ -80,12 +96,11 @@ export const FindrDropOffCard = ({
   parcelWeightKg,
   labelCarrier,
   labelTrackingNumber,
-  dropoffDeclaredAt,
+  labelProvidedAt,
   onChanged,
 }: DropOffProps) => {
   const { t, i18n } = useTranslation();
   const [downloading, setDownloading] = useState(false);
-  const [declaring, setDeclaring] = useState(false);
   const [copied, setCopied] = useState(false);
   const [rejectOpen, setRejectOpen] = useState(false);
   const [reason, setReason] = useState("");
@@ -134,22 +149,6 @@ export const FindrDropOffCard = ({
     }
   };
 
-  const declare = async () => {
-    setDeclaring(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("declare-dropoff", { body: { reservationId } });
-      const msg = await errorText(error, data);
-      if (msg) {
-        toast({ title: t("common.error"), description: msg, variant: "destructive" });
-        return;
-      }
-      toast({ title: t("findrLabel.declaredToast") });
-      onChanged();
-    } finally {
-      setDeclaring(false);
-    }
-  };
-
   const trimmed = reason.trim();
   const reasonValid = trimmed.length >= 3 && trimmed.length <= 200;
 
@@ -175,10 +174,6 @@ export const FindrDropOffCard = ({
       setRejecting(false);
     }
   };
-
-  const declaredDate = dropoffDeclaredAt
-    ? new Date(dropoffDeclaredAt).toLocaleString(locale(i18n.language), { dateStyle: "long", timeStyle: "short" })
-    : null;
 
   return (
     <section className="rounded-2xl p-5 space-y-5" style={{ border: `1px solid ${GOLD}`, backgroundColor: "#FFFFFF" }} aria-labelledby="tx-dropoff">
@@ -212,27 +207,17 @@ export const FindrDropOffCard = ({
               <span aria-live="polite" className="sr-only">{copied ? t("labelFlow.copied") : ""}</span>
             </div>
           )}
+          <p className="text-xs" style={{ color: "#666666" }}>{t("findrLabel.scanHelp")}</p>
         </li>
       </ol>
 
-      {declaredDate ? (
-        <p role="status" className="text-sm font-medium" style={{ color: NAVY }}>
-          {t("findrLabel.declared", { date: declaredDate })}
-        </p>
-      ) : null}
+      <AwaitingFirstScan labelProvidedAt={labelProvidedAt} />
 
       <div className="flex flex-wrap gap-3">
-        {!dropoffDeclaredAt && (
-          <Button type="button" onClick={declare} disabled={declaring} style={{ backgroundColor: NAVY, color: CREAM }}>
-            {declaring && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {t("findrLabel.declare")}
-          </Button>
-        )}
         <Button type="button" variant="outline" onClick={() => { setRejectError(null); setRejectOpen(true); }}>
           {t("findrLabel.unusable")}
         </Button>
       </div>
-      {!dropoffDeclaredAt && <p className="text-xs" style={{ color: "#666666" }}>{t("findrLabel.declareHelp")}</p>}
 
       <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
         <DialogContent>

@@ -15,8 +15,10 @@ import { applyShipmentDetection, planShipmentDetection } from "../_shared/shipme
 import { putTrackingInReview } from "../_shared/trackingReview.ts";
 import { canAutoReleaseShipped, cancellationDays, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
 import { AWAITING_LABEL, labelDeadlineAt, loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
-import { sendEmailToUser } from "../_shared/brevo.ts";
+import { sendEmailTo, sendEmailToUser } from "../_shared/brevo.ts";
+import { CONTACT_EMAIL } from "../_shared/emails.ts";
 import { LABEL_EXPIRED_MESSAGE, formatRemaining, planLabelDeadline } from "../_shared/labelDeadline.ts";
+import { SCAN_EXPIRED_BUYR_MESSAGE, SCAN_EXPIRED_FINDR_MESSAGE, planScanDeadline, scanReminderTitle } from "../_shared/scanDeadline.ts";
 import { refundAndCancelReservation } from "../_shared/refundReservation.ts";
 import { LABEL_REJECTED } from "../_shared/paymentStatus.ts";
 
@@ -302,9 +304,74 @@ Deno.serve(async (req) => {
       }
     }
 
+    // 6. Premier scan du transporteur : rappels au findr à 2 et 5 jours (alerte équipe à 5 jours),
+    // annulation et remboursement intégral à 7 jours. Lu après l'étape 0, donc un scan détecté
+    // pendant cette exécution exclut déjà la vente. Messages seulement après un remboursement réussi.
+    let scanReminders = 0;
+    let scanExpired = 0;
+    const { data: scanPending } = await admin.from("reservations")
+      .select("id, buyr_id, findr_id, proposal_id, payment_status, stripe_payment_intent_id, total_buyr_amount, label_provided_at, shipped_at, scan_reminder_2d_at, scan_reminder_5d_at")
+      .eq("payment_status", "paye_en_attente_reception")
+      .not("label_provided_at", "is", null).is("shipped_at", null);
+    for (const r of scanPending ?? []) {
+      const action = planScanDeadline(r, Date.now());
+      if (!action) continue;
+      const link = `/transaction/${r.id}`;
+      try {
+        if (action.kind === "reminder") {
+          const stamp = new Date().toISOString();
+          const update = Object.fromEntries(action.marks.map((m) => [m, stamp]));
+          let q = admin.from("reservations").update(update).eq("id", r.id)
+            .eq("payment_status", "paye_en_attente_reception").is("shipped_at", null);
+          for (const m of action.marks) q = q.is(m, null);
+          const { data: marked } = await q.select("id").maybeSingle();
+          if (!marked) continue;
+          const remaining = formatRemaining(action.remainingMs);
+          await admin.from("notifications").insert({
+            user_id: r.findr_id, type: "scan_reminder", title: scanReminderTitle(remaining),
+            message: "Sans scan du transporteur avant l'échéance, la vente sera annulée et le buyr intégralement remboursé.",
+            link,
+          });
+          try {
+            await sendEmailToUser(admin, r.findr_id, "scan_reminder", { reservationId: r.id, remaining });
+          } catch (e) { console.error("scan reminder email failed for", r.id, (e as Error).message); }
+          if (action.teamAlert) {
+            const { data: admins } = await admin.from("user_roles").select("user_id").eq("role", "admin");
+            if (admins?.length) {
+              await admin.from("notifications").insert(admins.map((a: { user_id: string }) => ({
+                user_id: a.user_id, type: "scan_alert_admin", title: "Colis non scanné depuis 5 jours",
+                message: `Transaction ${r.id} : aucun scan du transporteur 5 jours après l'étiquette. Annulation automatique dans ${remaining}.`,
+                link: "/admin/litiges",
+              })));
+            }
+            try {
+              await sendEmailTo(CONTACT_EMAIL, "scan_reminder", { reservationId: r.id, role: "team", remaining });
+            } catch (e) { console.error("scan team alert email failed for", r.id, (e as Error).message); }
+          }
+          scanReminders++;
+        } else {
+          await refundAndCancelReservation(admin, r, "first_scan_deadline_expired");
+          scanExpired++;
+          await admin.from("notifications").insert([
+            { user_id: r.buyr_id, type: "cancellation", title: "Vente annulée", message: SCAN_EXPIRED_BUYR_MESSAGE, link },
+            { user_id: r.findr_id, type: "cancellation", title: "Vente annulée", message: SCAN_EXPIRED_FINDR_MESSAGE, link },
+          ]);
+          for (const [uid, audience] of [[r.buyr_id, "buyr"], [r.findr_id, "findr"]]) {
+            try {
+              await sendEmailToUser(admin, uid, "scan_expired", { reservationId: r.id, audience, amount: r.total_buyr_amount });
+            } catch (e) { console.error("scan expired email failed for", r.id, (e as Error).message); }
+          }
+        }
+      } catch (e) {
+        console.error("first scan deadline step failed for", r.id, (e as Error).message);
+      }
+    }
+
     return json({
       labelReminders,
       labelExpired,
+      scanReminders,
+      scanExpired,
       labelReady,
       released,
       failed,

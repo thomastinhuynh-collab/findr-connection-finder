@@ -9,6 +9,7 @@ import { z } from "npm:zod@3";
 import { sendEmailToUser } from "../_shared/brevo.ts";
 import { cancellationDays } from "../_shared/trackingValidation.ts";
 import { buyrCanCancelBeforeLabel } from "../_shared/labelDeadline.ts";
+import { isAwaitingFirstScan, scanCancelUnlockAt } from "../_shared/scanDeadline.ts";
 import { moneyFr } from "../_shared/saleMessages.ts";
 
 const json = (body: unknown, status = 200) =>
@@ -68,7 +69,14 @@ Deno.serve(async (req) => {
     const shippedAt = reservation.shipped_at ? new Date(reservation.shipped_at).getTime() : null;
 
     const beforeLabel = buyrCanCancelBeforeLabel(reservation.payment_status);
-    if (isBuyr && !beforeLabel) {
+    const awaitingScan = isAwaitingFirstScan(reservation);
+    if (isBuyr && awaitingScan) {
+      // Parcours étiquette : sans scan du transporteur, le droit d'annuler s'ouvre 5 jours après l'étiquette.
+      const unlock = scanCancelUnlockAt(reservation)!;
+      if (Date.now() < unlock) {
+        return json({ error: "L'annulation est possible 5 jours après l'envoi de l'étiquette si le transporteur n'a scanné aucun colis." }, 400);
+      }
+    } else if (isBuyr && !beforeLabel) {
       // Le buyr peut annuler si pas d'expédition après 5 jours,
       // ou si le colis expédié n'a pas été livré après 10 jours.
       const acceptedAt = new Date(
