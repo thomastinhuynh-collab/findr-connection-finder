@@ -6,6 +6,7 @@ import Stripe from "npm:stripe@18";
 import { z } from "npm:zod@3";
 import { releaseFundsForReservation } from "../_shared/payout.ts";
 import { sendEmailToUser } from "../_shared/brevo.ts";
+import { moneyFr } from "../_shared/saleMessages.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -164,13 +165,13 @@ Deno.serve(async (req) => {
         .eq("id", reservation.proposal_id);
     }
 
-    const amount = Number(reservation.total_buyr_amount ?? 0).toFixed(2);
+    const amount = moneyFr(reservation.total_buyr_amount);
     await admin.from("notifications").insert([
       {
         user_id: reservation.buyr_id,
         type: "dispute_resolved",
         title: "Litige résolu — remboursement",
-        message: `Ta réclamation a été acceptée : ${amount} € (frais inclus) te seront recrédités sous quelques jours.`,
+        message: `Ta réclamation a été acceptée : ${amount} (frais inclus) te seront recrédités sous quelques jours.`,
         link: `/transaction/${reservation.id}`,
       },
       {

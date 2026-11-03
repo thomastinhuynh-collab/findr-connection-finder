@@ -373,7 +373,7 @@ Deno.serve(async (req) => {
               user_id: reservation.findr_id,
               type: "chargeback_opened",
               title: "Contestation bancaire sur une transaction réglée",
-              message: `${disputeAmount.toFixed(2)} € seront déduits de tes prochains versements.`,
+              message: `${moneyFr(disputeAmount)} seront déduits de tes prochains versements.`,
               link: `/transaction/${reservation.id}`,
             });
 
@@ -432,7 +432,7 @@ Deno.serve(async (req) => {
             user_id: debit.findr_id,
             type: "chargeback_closed",
             title: "Contestation bancaire rejetée",
-            message: `Le débit de ${Number(debit.amount).toFixed(2)} € a été annulé. Ton montant à régulariser est de ${newBalance.toFixed(2)} €.`,
+            message: `Le débit de ${moneyFr(debit.amount)} a été annulé. Ton montant à régulariser est de ${moneyFr(newBalance)}.`,
             link: `/transaction/${reservation.id}`,
           });
           console.log(`dispute.closed(won) -> débit ${debit.id} annulé`);

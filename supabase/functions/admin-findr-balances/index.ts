@@ -5,6 +5,7 @@ import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { z } from "npm:zod@3";
 import Stripe from "npm:stripe@18";
 import { releaseFundsForReservation } from "../_shared/payout.ts";
+import { moneyFr } from "../_shared/saleMessages.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -83,7 +84,7 @@ Deno.serve(async (req) => {
         user_id: body.findrId,
         type: "balance_settled",
         title: "Montant à régulariser réglé",
-        message: `Ton montant à régulariser (${settled.toFixed(2)} €) a été marqué comme réglé par l'équipe findr.`,
+        message: `Ton montant à régulariser (${moneyFr(settled)}) a été marqué comme réglé par l'équipe findr.`,
         link: "/mon-espace",
       });
 

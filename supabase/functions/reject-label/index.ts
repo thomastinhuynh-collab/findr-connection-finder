@@ -6,6 +6,7 @@ import { loadLabelFlowEnabled } from "../_shared/paymentStatus.ts";
 import { sendEmailToUser } from "../_shared/brevo.ts";
 import { checkFindrLabelEligibility, normalizeRejectReason, planLabelRejection } from "../_shared/labelFlow.ts";
 import { refundAndCancelReservation } from "../_shared/refundReservation.ts";
+import { moneyFr } from "../_shared/saleMessages.ts";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -73,7 +74,7 @@ Deno.serve(async (req) => {
     if (plan.refund) {
       // 2e refus : annulation et remboursement intégral du buyr, frais de service compris.
       await refundAndCancelReservation(admin, r, "label_rejected_twice");
-      const amount = Number(r.total_buyr_amount ?? 0).toFixed(2);
+      const amount = moneyFr(r.total_buyr_amount);
       await admin.from("notifications").insert([
         {
           user_id: r.findr_id,
@@ -86,7 +87,7 @@ Deno.serve(async (req) => {
           user_id: r.buyr_id,
           type: "cancellation",
           title: "Remboursement en cours",
-          message: `${findrFirst} n'a pas pu utiliser l'étiquette une deuxième fois. ${amount} € (frais inclus) te seront recrédités sous quelques jours.`,
+          message: `${findrFirst} n'a pas pu utiliser l'étiquette une deuxième fois. ${amount} (frais inclus) te seront recrédités sous quelques jours.`,
           link,
         },
       ]);

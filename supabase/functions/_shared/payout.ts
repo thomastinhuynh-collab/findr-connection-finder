@@ -3,6 +3,7 @@
 import Stripe from "npm:stripe@18";
 import { sendEmailToUser } from "./brevo.ts";
 import { blocksAutomaticTrackingPayout } from "./trackingValidation.ts";
+import { moneyFr } from "./saleMessages.ts";
 
 // deno-lint-ignore no-explicit-any
 type Admin = any;
@@ -110,7 +111,7 @@ export async function releaseFundsForReservation(
       user_id: reservation.findr_id,
       type: "balance_compensated",
       title: "Montant régularisé sur ton versement",
-      message: `${compensated.toFixed(2)} € ont été déduits de ce versement au titre de ton montant à régulariser. Reste à régulariser : ${remaining.toFixed(2)} €.`,
+      message: `${moneyFr(compensated)} ont été déduits de ce versement au titre de ton montant à régulariser. Reste à régulariser : ${moneyFr(remaining)}.`,
       link: `/transaction/${reservation.id}`,
     });
   }
@@ -136,7 +137,7 @@ export async function releaseFundsForReservation(
       user_id: reservation.findr_id,
       type: "payout_released",
       title: auto ? "Versement déclenché automatiquement" : "Versement effectué",
-      message: `Un versement de ${netAmount.toFixed(2)} € a été effectué par Stripe.`,
+      message: `Un versement de ${moneyFr(netAmount)} a été effectué par Stripe.`,
       link: `/transaction/${reservation.id}`,
     },
   ];
