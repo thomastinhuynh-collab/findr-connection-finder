@@ -1692,5 +1692,18 @@
     "close": "Close",
     "previous": "Previous photo",
     "next": "Next photo"
+  },
+  "buyrLabelCard": {
+    "title": "To do: provide the shipping label",
+    "deadline": "Provide it before {{date}} ({{d}} d {{h}} h left).",
+    "deadlinePassed": "The deadline of {{date}} has passed.",
+    "text": "You buy the label on the website of the carrier of your choice, choose your delivery there (home or pickup point), then send it here.",
+    "cta": "Provide the label",
+    "noShipFrom": "{{name}} first needs to enter their shipping address. We'll let you know as soon as they do.",
+    "rejected": "{{name}} couldn't use the label. Send a new one before {{date}}.",
+    "rejectedNoDate": "{{name}} couldn't use the label. Send a new one.",
+    "countdown": "{{d}} d {{h}} h left.",
+    "cancelInfo": "You can cancel and get a full refund as long as you haven't provided the label.",
+    "theFindr": "The findr"
   }
 }

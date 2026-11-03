@@ -1692,5 +1692,18 @@
     "close": "Fermer",
     "previous": "Photo précédente",
     "next": "Photo suivante"
+  },
+  "buyrLabelCard": {
+    "title": "À faire : fournis l'étiquette d'expédition",
+    "deadline": "À fournir avant le {{date}} (encore {{d}} j {{h}} h).",
+    "deadlinePassed": "La date limite du {{date}} est dépassée.",
+    "text": "Tu achètes l'étiquette sur le site du transporteur de ton choix, tu y choisis ta livraison (à domicile ou en point relais), puis tu l'envoies ici.",
+    "cta": "Fournir l'étiquette",
+    "noShipFrom": "{{name}} doit d'abord renseigner son adresse d'expédition. Nous te prévenons dès que c'est fait.",
+    "rejected": "{{name}} n'a pas pu utiliser l'étiquette. Envoie-en une nouvelle avant le {{date}}.",
+    "rejectedNoDate": "{{name}} n'a pas pu utiliser l'étiquette. Envoie-en une nouvelle.",
+    "countdown": "Encore {{d}} j {{h}} h.",
+    "cancelInfo": "Tu peux annuler et être intégralement remboursé tant que tu n'as pas fourni l'étiquette.",
+    "theFindr": "Le findr"
   }
 }
