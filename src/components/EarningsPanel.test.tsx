@@ -51,6 +51,19 @@ describe("EarningsPanel", () => {
     expect(screen.getAllByText(steps.paye_en_attente_reception)).toHaveLength(2);
   });
 
+  it.each(["fr", "en"])("never shows a delivery choice wait for label-flow sales in %s", async (language) => {
+    mocks.language = language;
+    mocks.reservations = [
+      { id: "a", delivery_type: null, label_provided_at: "2026-11-01T10:00:00Z", payment_status: "paye_en_attente_reception", findr_payout_amount: 10, search_id: "s", proposal_id: null },
+      { id: "b", delivery_type: null, label_provided_at: null, payment_status: "paye_attente_etiquette", findr_payout_amount: 10, search_id: "s", proposal_id: null },
+    ];
+    render(<MemoryRouter><EarningsPanel userId="findr" paymentsConfigured /></MemoryRouter>);
+    const steps = (language === "fr" ? fr : en).mySpace.earnings.step;
+    expect(await screen.findByText(steps.paye_en_attente_reception)).toBeInTheDocument();
+    expect(screen.getByText(steps.paye_attente_etiquette)).toBeInTheDocument();
+    expect(screen.queryByText(steps.awaitingDeliveryChoice)).toBeNull();
+  });
+
   it("severs the opener before navigating to Stripe", async () => {
     mocks.reservations = [{ id: "sale", delivery_type: "home", payment_status: "expedie", search_id: "search" }];
     const events: string[] = [];
