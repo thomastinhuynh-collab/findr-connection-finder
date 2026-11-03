@@ -6,6 +6,8 @@ import { z } from "npm:zod@3";
 import { sendEmailToUser } from "../_shared/brevo.ts";
 import { applyShipmentDetection, planShipmentDetection } from "../_shared/shipmentDetection.ts";
 import { simulatedScanEvidence } from "../_shared/shipmentRules.ts";
+import { simulatedTrackingEvent } from "../_shared/trackingEvidence.ts";
+import { recordTrackingEvents } from "../_shared/trackingEvents.ts";
 
 
 const json = (body: unknown, status = 200) =>
@@ -74,6 +76,7 @@ Deno.serve(async (req) => {
       if (!update) return json({ error: "Cette vente n'attend pas de premier scan." }, 400);
       const applied = await applyShipmentDetection(admin, reservation, update);
       if (!applied) return json({ error: "Déjà marquée comme expédiée." }, 400);
+      await recordTrackingEvents(admin, reservation.id, [simulatedTrackingEvent(now)]);
       return json({ success: true, simulatedScan: true, trackingNumber: reservation.tracking_number, carrier: reservation.carrier });
     }
 

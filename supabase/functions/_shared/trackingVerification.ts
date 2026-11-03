@@ -1,6 +1,7 @@
 import { checkTracking } from "./track17.ts";
 import { DAY, isOldTrackingEvent, needsTrackingCheck } from "./trackingValidation.ts";
 import { putTrackingInReview } from "./trackingReview.ts";
+import { recordTrackingEvents } from "./trackingEvents.ts";
 
 // The existing hourly lifecycle job invokes this; each parcel is queried at
 // 24 h, 48 h, then once daily, without adding another polling job.
@@ -23,6 +24,7 @@ export async function recheckUnrecognizedTracking(admin: any, now = Date.now()) 
       const evidence = await checkTracking(row.tracking_number, row.carrier ?? "", true);
       if (evidence) {
         const old = isOldTrackingEvent(evidence.firstEventAt, row.accepted_at);
+        if (!old) await recordTrackingEvents(admin, row.id, evidence.events);
         recognized = evidence.recognized && !old;
         const { error: updateError } = await admin.from("reservations").update({
           tracking_recognized: recognized,

@@ -1,12 +1,12 @@
 import { normalizeTrackingNumber, normalizeCarrier } from "./trackingValidation.ts";
-import { parseTrackingEvidence, type TrackingEvidence } from "./trackingEvidence.ts";
+import { parseTrackingEvents, parseTrackingEvidence, type TrackingEventRow, type TrackingEvidence } from "./trackingEvidence.ts";
 
 type RecordValue = Record<string, unknown>;
 const record = (v: unknown): RecordValue => v && typeof v === "object" && !Array.isArray(v) ? v as RecordValue : {};
 const records = (v: unknown): RecordValue[] => Array.isArray(v) ? v.map(record) : [];
 // Known v2 carrier keys; unknown carriers retain 17TRACK auto-detection.
 const CARRIERS: Record<string, number> = { ups: 100002, colissimo: 6051, chronopost: 100273, "mondial relay": 100304 };
-export async function checkTracking(number: string, carrier: string, register = false): Promise<(TrackingEvidence & { checkedAt: string }) | null> {
+export async function checkTracking(number: string, carrier: string, register = false): Promise<(TrackingEvidence & { checkedAt: string; events: TrackingEventRow[] }) | null> {
   const key = Deno.env.get("TRACK17_API_KEY");
   if (!key) return null;
   const carrierId = CARRIERS[normalizeCarrier(carrier)];
@@ -26,7 +26,7 @@ export async function checkTracking(number: string, carrier: string, register = 
     const data = await request("gettrackinfo");
     const item = records(data.accepted).find(v => v.number === entry.number && (!carrierId || v.carrier === carrierId));
     if (!item) return null; // Rejected or unavailable is not a completed check.
-    return { ...parseTrackingEvidence(item), checkedAt: new Date().toISOString() };
+    return { ...parseTrackingEvidence(item), events: parseTrackingEvents(item), checkedAt: new Date().toISOString() };
   } catch (error) {
     console.error("17TRACK check unavailable", error instanceof Error ? error.message : "unknown");
     return null;

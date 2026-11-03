@@ -5,6 +5,7 @@ import { sendEmailToUser } from "../_shared/brevo.ts";
 import { checkTracking } from "../_shared/track17.ts";
 import { normalizeTrackingNumber, isOldTrackingEvent } from "../_shared/trackingValidation.ts";
 import { putTrackingInReview } from "../_shared/trackingReview.ts";
+import { recordTrackingEvents } from "../_shared/trackingEvents.ts";
 import { applyShipmentDetection, planShipmentDetection } from "../_shared/shipmentDetection.ts";
 
 const json = (body: unknown, status = 200) =>
@@ -66,6 +67,7 @@ Deno.serve(async (req) => {
       await putTrackingInReview(admin, reservation, "old");
       continue;
     }
+    await recordTrackingEvents(admin, reservation.id, evidence.events);
     const statusCode = evidence.status;
 
     // Parcours étiquette : le premier scan physique vaut preuve d'envoi.
@@ -112,7 +114,8 @@ Deno.serve(async (req) => {
       ]);
 
       await sendEmailToUser(admin, reservation.buyr_id, "delivered", {
-      reservationId: reservation.id,});
+        reservationId: reservation.id, trackingNumber: reservation.tracking_number, carrier: reservation.carrier,
+      });
     }
     }
 
