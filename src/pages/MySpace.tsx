@@ -1011,27 +1011,6 @@ const MySpace = () => {
               </div>
 
               <div className="relative" style={{ padding: 32, paddingTop: 24 }}>
-              {/* Decorative watermark letter — centered behind name/bio block */}
-              <span
-                aria-hidden
-                style={{
-                  position: "absolute",
-                  top: -30,
-                  right: 24,
-                  fontFamily: "'Playfair Display', Georgia, serif",
-                  fontStyle: "italic",
-                  fontWeight: 700,
-                  fontSize: 110,
-                  lineHeight: 1,
-                  color: "rgba(10,22,40,0.035)",
-                  pointerEvents: "none",
-                  userSelect: "none",
-                  zIndex: 0,
-                }}
-              >
-                {firstLetter}
-              </span>
-
               <div className="relative flex flex-col md:flex-row items-start gap-6" style={{ zIndex: 1 }}>
               {/* Hidden file input */}
               <input
