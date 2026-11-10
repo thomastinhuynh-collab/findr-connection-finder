@@ -1,3 +1,4 @@
+import ContainedPhoto from "@/components/ContainedPhoto";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -311,11 +312,7 @@ const PublicProfile = () => {
                     >
                       <div className="h-32 bg-secondary overflow-hidden">
                         {search.image_url ? (
-                          <img
-                            src={search.image_url}
-                            alt={search.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                          />
+                          <ContainedPhoto src={search.image_url} alt={search.title} />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                           </div>

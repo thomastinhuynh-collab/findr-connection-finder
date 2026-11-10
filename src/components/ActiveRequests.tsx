@@ -5,6 +5,7 @@ import { Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import ContainedPhoto from "@/components/ContainedPhoto";
 import FavoriteButton from "@/components/FavoriteButton";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
@@ -51,12 +52,7 @@ const CardImageCarousel = ({ images, alt }: { images: string[]; alt: string }) =
 
   return (
     <div className="relative w-full h-full">
-      <img
-        src={images[current]}
-        alt={alt}
-        className="w-full h-full object-cover object-center transition-opacity duration-300"
-        loading="lazy"
-      />
+      <ContainedPhoto src={images[current]} alt={alt} />
       {images.length > 1 && (
         <>
           <button
