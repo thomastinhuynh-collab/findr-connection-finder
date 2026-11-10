@@ -18,9 +18,9 @@ export const LOGO_URL = `${SITE_URL}/logo-email.png`;
 /** Nom de la pièce jointe inline : `<img src="cid:LOGO_CID">` (standard CID). */
 export const LOGO_CID = "findr-logo.png";
 export const CONTACT_EMAIL = "contact@findrapp.fr";
-export const SENDER = { name: "Findr", email: "notifications@findrapp.fr" };
+export const SENDER = { name: "findr", email: "notifications@findrapp.fr" };
 /** Expéditeur utilisé pour les emails relationnels (liste d'attente / beta). */
-export const CONTACT_SENDER = { name: "Findr", email: "contact@findrapp.fr" };
+export const CONTACT_SENDER = { name: "findr", email: "contact@findrapp.fr" };
 
 const NAVY = "#070E42";
 const HEADER_NAVY = "#070E42";
