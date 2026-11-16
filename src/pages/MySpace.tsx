@@ -33,6 +33,8 @@ import TodoNowBlock from "@/components/TodoNowBlock";
 import OngoingSalesBlock from "@/components/OngoingSalesBlock";
 import { useTranslation } from "react-i18next";
 import ContainedPhoto from "@/components/ContainedPhoto";
+import BuyrSearchesPanel from "@/components/BuyrSearchesPanel";
+import { classifySearchTab } from "@/lib/buyrSearchRows";
 
 type StripeSyncStatus = { complete: boolean; details_submitted: boolean; payouts_enabled: boolean; transfers: string | null };
 type TabKey = "recherches" | "propositions" | "favoris" | "gains";
@@ -479,7 +481,7 @@ const MySpace = () => {
         data.map(async (search) => {
           const { data: props } = await supabase
             .from("proposals")
-            .select("status, updated_at")
+            .select("id, status, updated_at")
             .eq("search_id", search.id);
 
           const proposals = props || [];
@@ -532,11 +534,7 @@ const MySpace = () => {
           );
           const ps = paid?.payment_status ?? null;
 
-          let tab_status: "active" | "ongoing" | "done" | "cancelled" = "active";
-          if (ps === "termine") tab_status = "done";
-          else if (ps === "annule") tab_status = "cancelled";
-          else if (ps) tab_status = "ongoing";
-          else if (paymentPending || acceptedCount > 0) tab_status = "ongoing";
+          const tab_status = classifySearchTab(ps);
 
           let findr_name: string | null = null;
           if (paid?.findr_id && (tab_status === "done" || tab_status === "cancelled")) {
@@ -563,6 +561,12 @@ const MySpace = () => {
             finalized_at: paid?.updated_at || null,
             cancel_reason: paid?.dispute_reason || null,
             has_invoice: tab_status === "done",
+            paid_status: ps,
+            payment_pending: paymentPending,
+            pay_proposal_id: proposals.find((p) => p.status === "accepted_pending")?.id ?? null,
+            recent_reservation: hasRecentReservation,
+            label_pending: labelPending,
+            receipt_pending: receiptPending,
           };
         })
       );
@@ -1704,76 +1708,7 @@ const MySpace = () => {
                     </Button>
                   </div>
                 ) : (
-                  <>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {([
-                        { key: "active" },
-                        { key: "ongoing" },
-                        { key: "done" },
-                        { key: "cancelled" },
-                      ] as const).map((tab) => {
-                        const count = searches.filter(
-                          (s) => (s.tab_status ?? "active") === tab.key
-                        ).length;
-                        const isActive = searchTab === tab.key;
-                        const todo = searchTodoByTab[tab.key];
-                        return (
-                          <button
-                            key={tab.key}
-                            type="button"
-                            onClick={() => setSearchTab(tab.key)}
-                            style={{
-                              borderRadius: 999,
-                              padding: "7px 14px",
-                              fontSize: 13,
-                              fontWeight: isActive ? 600 : 500,
-                              cursor: "pointer",
-                              backgroundColor: isActive ? "#070E42" : "transparent",
-                              color: isActive ? "#F5F0EA" : "var(--personal-space-inactive-text)",
-                              border: `1px solid ${isActive ? "#070E42" : "rgba(7,14,66,0.15)"}`,
-                            }}
-                          >
-                            {t(`mySpace.searchTabs.${tab.key}`)}
-                            <span style={{ marginLeft: 6, opacity: 0.75 }}>{count}</span>
-                            {todo > 0 && (
-                              <span
-                                role="img"
-                                aria-label={t("mySpace.searchTabs.todo", { count: todo })}
-                                className="ml-1.5 inline-flex items-center justify-center rounded-full align-middle"
-                                style={{ backgroundColor: "#D9BB87", color: "#070E42", fontSize: 11, fontWeight: 600, minWidth: 18, height: 18, padding: "0 5px", lineHeight: 1 }}
-                              >
-                                {todo > 9 ? "9+" : todo}
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {(() => {
-                      const filtered = searches.filter(
-                        (s) => (s.tab_status ?? "active") === searchTab
-                      );
-                      if (filtered.length === 0) {
-                        return (
-                          <div className="py-12 text-center" style={{ color: "#6B7280", fontSize: 14 }}>
-                            {t("mySpace.ui.noSearchesInTab")}
-                          </div>
-                        );
-                      }
-                      return (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          {filtered.map((search) => (
-                            <SearchCardAccordion
-                              key={search.id}
-                              search={search}
-                              onDataChange={fetchSearches}
-                            />
-                          ))}
-                        </div>
-                      );
-                    })()}
-                  </>
+                  <BuyrSearchesPanel searches={searches as any} tab={searchTab} onTabChange={setSearchTab} />
                 )}
               </div>
             )}
