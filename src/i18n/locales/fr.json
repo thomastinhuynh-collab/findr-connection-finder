@@ -1720,5 +1720,65 @@
     "history": "Étapes du transporteur",
     "noEvents": "Aucune information du transporteur pour le moment.",
     "testEvent": "test"
+  },
+  "todoNow": {
+    "count_one": "1 chose t'attend.",
+    "count_other": "{{count}} choses t'attendent.",
+    "emptyTitle": "Tout est à jour.",
+    "emptyText": "Rien ne t'attend pour le moment. Tu peux chercher un objet ou proposer le tien.",
+    "post": "Poster une recherche",
+    "browse": "Voir les recherches des buyrs",
+    "more_one": "Voir mon autre action →",
+    "more_other": "Voir mes {{count}} autres actions →",
+    "objectFallback": "Ton objet",
+    "findrFallback": "ton findr",
+    "someoneFallback": "ton contact",
+    "dueToday": "dernier jour aujourd'hui",
+    "daysLeft_one": "encore 1 jour",
+    "daysLeft_other": "encore {{count}} jours",
+    "label": {
+      "title": "Fournis l'étiquette d'expédition",
+      "button": "Fournir l'étiquette"
+    },
+    "receipt": {
+      "title": "Confirme la réception de ton colis",
+      "button": "Confirmer la réception",
+      "deliveredToday": "livré aujourd'hui",
+      "deliveredYesterday": "livré hier",
+      "deliveredAgo": "livré il y a {{count}} jours",
+      "shippedToday": "expédié aujourd'hui",
+      "shippedYesterday": "expédié hier",
+      "shippedAgo": "expédié il y a {{count}} jours"
+    },
+    "pay": {
+      "title": "Finalise ton paiement",
+      "context": "proposition de {{name}}",
+      "button": "Payer"
+    },
+    "review": {
+      "title": "Nouvelle proposition à examiner",
+      "button": "Voir la proposition"
+    },
+    "dropoff": {
+      "title": "Dépose ton colis chez le transporteur",
+      "context": "avant le {{date}}",
+      "button": "Voir l'étiquette"
+    },
+    "message": {
+      "title": "Réponds à {{name}}",
+      "context_one": "1 message non lu",
+      "context_other": "{{count}} messages non lus",
+      "button": "Ouvrir le message"
+    },
+    "shipFrom": {
+      "title": "Renseigne ton adresse d'expédition",
+      "context": "Pour que l'étiquette de tes ventes puisse être créée",
+      "button": "Renseigner mon adresse"
+    },
+    "stripe": {
+      "title": "Termine ton inscription Stripe",
+      "context": "Pour recevoir l'argent de tes ventes",
+      "button": "Terminer mon inscription"
+    }
   }
 }

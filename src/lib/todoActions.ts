@@ -18,6 +18,7 @@ export interface TodoItem {
   deadline: number | null;
   /** Date de référence pour le contexte (livraison, expédition). */
   at?: string | null;
+  status?: string | null;
   objectTitle?: string;
   name?: string;
   count?: number;

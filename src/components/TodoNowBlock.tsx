@@ -66,7 +66,7 @@ async function loadTodos(userId: string, profile: any): Promise<TodoItem[]> {
     if (buyrMustProvideLabel(r)) {
       items.push({ key: `label-${r.id}`, kind: "label", deadline: r.label_deadline_at ? new Date(r.label_deadline_at).getTime() : null, objectTitle: title, href: `/transaction/${r.id}` });
     } else if ((r.payment_status === "expedie" || r.payment_status === "livre") && !r.dispute_open) {
-      items.push({ key: `receipt-${r.id}`, kind: "receipt", deadline: null, at: r.payment_status === "livre" ? r.delivered_at : r.shipped_at, objectTitle: title, href: `/transaction/${r.id}` });
+      items.push({ key: `receipt-${r.id}`, kind: "receipt", deadline: null, at: r.payment_status === "livre" ? r.delivered_at : r.shipped_at, status: r.payment_status, objectTitle: title, href: `/transaction/${r.id}` });
     }
   }
   for (const r of (findRes || []) as any[]) {
@@ -125,7 +125,9 @@ const TodoNowBlock = ({ userId, profile, refreshKey = 0, onStripe, onShipFrom }:
       case "receipt": {
         if (!it.at) return obj;
         const d = daysAgo(it.at);
-        return `${obj} · ${t(`todoNow.${profileDelivered(it)}`, { count: d, context: d === 0 ? "today" : d === 1 ? "yesterday" : undefined })}`;
+        const base = it.status === "livre" ? "delivered" : "shipped";
+        const when = d === 0 ? "Today" : d === 1 ? "Yesterday" : "Ago";
+        return `${obj} · ${t(`todoNow.receipt.${base}${when}`, { count: d })}`;
       }
       case "pay": return `${obj} · ${t("todoNow.pay.context", { name: it.name || t("todoNow.findrFallback") })}`;
       case "review": return obj;
@@ -134,7 +136,6 @@ const TodoNowBlock = ({ userId, profile, refreshKey = 0, onStripe, onShipFrom }:
       default: return t(`todoNow.${it.kind}.context`);
     }
   };
-  const profileDelivered = (it: TodoItem) => (it.key.startsWith("receipt-") && it.at ? "receiptAgo" : "receiptAgo");
 
   const title = (it: TodoItem) =>
     it.kind === "message" ? t("todoNow.message.title", { name: it.name || t("todoNow.someoneFallback") }) : t(`todoNow.${it.kind}.title`);
