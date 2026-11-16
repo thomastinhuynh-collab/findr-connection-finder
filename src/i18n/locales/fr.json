@@ -1298,6 +1298,48 @@
       "mobileAccount": "Compte",
       "bottomNav": "Navigation de Mon espace",
       "post": "Poster une recherche"
+    },
+    "findrProposals": {
+      "browse": "Voir les recherches des buyrs",
+      "filterGroup": "Filtrer mes propositions",
+      "tabs": {
+        "pending": "En attente",
+        "ongoing": "Ventes en cours",
+        "done": "Finalisées"
+      },
+      "help": {
+        "pending": "Tes propositions qui attendent la réponse du buyr, ou son paiement après acceptation.",
+        "ongoing": "Les ventes où ta proposition est acceptée et payée. Tu y gères l'étiquette, le dépôt du colis et le versement.",
+        "done": "Tes ventes terminées, avec l'historique de tes propositions refusées ou annulées."
+      },
+      "final": {
+        "sold": "Vendue",
+        "rejected": "Refusée",
+        "cancelled": "Annulée"
+      },
+      "proposedPrice": "Prix proposé : {{amount}}",
+      "willReceive": "Tu recevras {{amount}}",
+      "received": "Tu as reçu {{amount}}",
+      "buyer": "acheteur/acheteuse : {{name}}",
+      "step": "Étape {{n}} sur {{total}} : {{name}}",
+      "state": {
+        "labelReceived": "Étiquette reçue · dépose ton colis",
+        "awaitingLabel": "En attente de son étiquette",
+        "awaitingLabelLeft": "En attente de son étiquette · encore {{d}} j {{h}} h",
+        "labelRefused": "Étiquette refusée · en attente d'une nouvelle",
+        "awaitingDelivery": "En attente de son choix de livraison",
+        "toShip": "Livraison choisie · expédie ton colis",
+        "shipped": "Colis expédié · en route",
+        "delivered": "Colis livré · en attente de confirmation",
+        "payoutReview": "Versement en cours de vérification",
+        "dispute": "Litige en cours"
+      },
+      "actions": {
+        "viewLabel": "Voir l'étiquette",
+        "viewSale": "Voir la vente",
+        "viewSearch": "Voir la recherche"
+      },
+      "empty": "Aucune proposition ici pour l'instant."
     }
   },
   "blog": {
