@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Upload, Euro, Tag, Sparkles, Save, ImagePlus, Loader2, Crown, Link as LinkIcon, X } from "lucide-react";
+import { ArrowLeft, Upload, Euro, Tag, Sparkles, Save, ImagePlus, Loader2, Crown, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
