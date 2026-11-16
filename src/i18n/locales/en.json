@@ -1340,6 +1340,30 @@
         "viewSearch": "View the search"
       },
       "empty": "No proposals here yet."
+    },
+    "account": {
+      "aboutTitle": "About you",
+      "noBio": "You haven't written a description yet.",
+      "completion": "Profile {{n}}% complete",
+      "editBio": "Edit my description",
+      "paymentsTitle": "Payments and payouts",
+      "stripeDone": "Stripe registration complete",
+      "stripeTodo": "To finish",
+      "stripeFinish": "Finish my Stripe registration",
+      "stripeReview": "Stripe is reviewing your registration…",
+      "pendingTitle": "Money on the way",
+      "pendingText": "What you'll receive for your ongoing sales, once the buyer confirms receipt.",
+      "finalizedTitle": "Completed sales",
+      "finalizedEmpty": "No completed sales yet.",
+      "finalizedOn": "Completed on {{date}}",
+      "youReceive": "What you receive",
+      "bankDelay": "The money may take a few business days to appear in your bank account. For your very first payout, Stripe may take up to 14 days.",
+      "debitLine1": "{{amount}} will be deducted from your next payouts.",
+      "debitLine2": "The buyer disputed their payment with their bank, after your payout.",
+      "debitLink": "See details →",
+      "shipToFill": "To fill in",
+      "shipSave": "Save my address",
+      "favTitle": "Favourites and alerts"
     }
   },
   "blog": {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { classifyProposalTab, finalBadge, findrNeedsAction, proposalState, sortProposalRows, netAmount, remainingParts } from "./findrProposalRows";
+import { pendingProposalCount, classifyProposalTab, finalBadge, findrNeedsAction, proposalState, sortProposalRows, netAmount, remainingParts } from "./findrProposalRows";
 
 const base = { created_at: "2026-01-01T00:00:00Z", proposalStatus: "pending" };
 
@@ -37,5 +37,15 @@ describe("findrProposalRows", () => {
     const now = Date.parse("2026-01-01T00:00:00Z");
     expect(remainingParts("2026-01-03T23:30:00Z", now)).toEqual({ d: 2, h: 23 });
     expect(remainingParts("2025-12-31T00:00:00Z", now)).toBeNull();
+  });
+  it("le chiffre de la navigation = lignes du filtre En attente, acceptée non payée comprise", () => {
+    const rows = [base, { ...base, proposalStatus: "accepted_pending" }, { ...base, proposalStatus: "accepted_pending", payment_status: "expedie" }, { ...base, proposalStatus: "rejected" }];
+    expect(pendingProposalCount(rows)).toBe(2);
+  });
+  it("cancelled ou expired : Finalisées avec la pastille Annulée", () => {
+    for (const st of ["cancelled", "expired"]) {
+      expect(classifyProposalTab({ ...base, proposalStatus: st })).toBe("done");
+      expect(finalBadge({ ...base, proposalStatus: st })).toBe("cancelled");
+    }
   });
 });
