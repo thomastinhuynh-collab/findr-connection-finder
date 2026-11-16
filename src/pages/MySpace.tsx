@@ -18,7 +18,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import EarningsPanel from "@/components/EarningsPanel";
-import SearchCardAccordion from "@/components/SearchCardAccordion";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
 import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
@@ -819,10 +818,6 @@ const MySpace = () => {
     gains: shouldShowStripeActionBadge(profile, hasProposals) || shouldShowShipFromActionBadge(profile, hasProposals) ? 1 : 0,
   };
 
-  const searchTodoByTab = { active: 0, ongoing: 0, done: 0, cancelled: 0 } as Record<"active" | "ongoing" | "done" | "cancelled", number>;
-  for (const s of searches as any[]) {
-    if ((s.unread_count || 0) > 0 || s.urgent_reason) searchTodoByTab[(s.tab_status ?? "active") as keyof typeof searchTodoByTab]++;
-  }
 
   const averageRating = evaluations.length > 0
     ? (evaluations.reduce((acc, e) => acc + e.rating, 0) / evaluations.length).toFixed(1)

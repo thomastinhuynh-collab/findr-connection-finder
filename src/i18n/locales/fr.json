@@ -1172,9 +1172,9 @@
       "rejected": "Refusée"
     },
     "searchTabs": {
-      "active": "Actives",
-      "ongoing": "En cours",
-      "done": "Terminées",
+      "active": "En recherche",
+      "ongoing": "Achats en cours",
+      "done": "Finalisées",
       "cancelled": "Annulées",
       "todo_one": "{{count}} recherche à traiter",
       "todo_other": "{{count}} recherches à traiter"
@@ -1252,6 +1252,38 @@
         "versement_en_revue": "Versement en revue",
         "etiquette_refusee": "Étiquette refusée — nouvelle étiquette attendue"
       }
+    },
+    "buyrSearches": {
+      "filterGroup": "Filtrer mes recherches",
+      "actionDot": "Une action t'attend",
+      "sortNote": "Classement : ce qui demande une action d'abord",
+      "firstHeading": "À faire d'abord",
+      "restHeading": "Le reste, des plus récentes aux plus anciennes",
+      "helpLabel": "Explication du filtre {{name}}",
+      "help": {
+        "active": "Tes recherches qui attendent une proposition, ou dont une proposition acceptée attend encore ton paiement.",
+        "ongoing": "Les recherches où une proposition est acceptée et payée. Tu y suis l'étiquette, l'expédition et la réception.",
+        "done": "Les achats finalisés : tu as confirmé la réception et la vente est clôturée.",
+        "cancelled": "Les achats annulés, avec remboursement."
+      },
+      "actions": {
+        "pay": "Payer",
+        "proposals": "Voir les propositions",
+        "label": "Fournir l'étiquette",
+        "receipt": "Confirmer la réception",
+        "transaction": "Voir la transaction",
+        "edit": "Modifier"
+      },
+      "newProposals_one": "{{count}} nouvelle proposition",
+      "newProposals_other": "{{count}} nouvelles propositions",
+      "more": "Plus d'actions pour {{title}}",
+      "menu": {
+        "view": "Voir la recherche"
+      },
+      "labelBanner": "Une vente attend ton étiquette",
+      "budgetRange": "Budget : {{min}} à {{max}}",
+      "budgetFrom": "Budget : dès {{min}}",
+      "published": "Publiée {{when}}"
     }
   },
   "blog": {
