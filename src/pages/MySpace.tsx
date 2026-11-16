@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import CategoryGlyph from "@/components/CategoryGlyph";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useNavigate, Link, useSearchParams, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { User, Star, Search, Plus, Crown, Wallet, Package, Heart, Clock, Euro, MapPin, Pencil, CreditCard, CheckCircle2, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -28,7 +28,8 @@ import { shouldShowShipFromActionBadge } from "@/lib/shipFrom";
 import { buyrMustProvideLabel } from "@/lib/buyrLabelAction";
 import { awaitsDeliveryChoice } from "@/lib/deliveryChoice";
 import ShipFromCard from "@/components/ShipFromCard";
-import TodoNowBlock from "@/components/TodoNowBlock";
+import TodoNowBlock, { useTodoItems, ACCOUNT_TODO_KINDS } from "@/components/TodoNowBlock";
+import { resolveMySpaceLocation, MY_SPACE_SECTIONS, type MySpaceSection } from "@/lib/mySpaceSections";
 import OngoingSalesBlock from "@/components/OngoingSalesBlock";
 import { useTranslation } from "react-i18next";
 import ContainedPhoto from "@/components/ContainedPhoto";
@@ -169,40 +170,30 @@ const MySpace = () => {
   const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
   const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const rawTab = searchParams.get("onglet") as TabKey | null;
-  const activeTab: TabKey = rawTab && ALL_TABS.includes(rawTab) ? rawTab : "recherches";
-  const tabListRef = useRef<HTMLDivElement>(null);
-  const tabRefs = useRef<Partial<Record<TabKey, HTMLButtonElement | null>>>({});
+  const [pendingProposalCount, setPendingProposalCount] = useState(0);
+  const location = useLocation();
+  const resolvedLocation = resolveMySpaceLocation(location.search, location.hash);
+  const activeSection: MySpaceSection = resolvedLocation.section;
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
-  const selectTab = (key: TabKey, focus = false) => {
-    const next = new URLSearchParams(searchParams);
-    next.delete("stripe");
-    next.set("onglet", key);
-    setSearchParams(next, { replace: true });
-    const el = tabRefs.current[key];
-    if (el) {
-      if (focus) el.focus();
-    }
-  };
-  const handleTabKeyDown = (e: React.KeyboardEvent) => {
-    const i = ALL_TABS.indexOf(activeTab);
-    let n = -1;
-    if (e.key === "ArrowRight") n = (i + 1) % ALL_TABS.length;
-    else if (e.key === "ArrowLeft") n = (i - 1 + ALL_TABS.length) % ALL_TABS.length;
-    else if (e.key === "Home") n = 0;
-    else if (e.key === "End") n = ALL_TABS.length - 1;
-    if (n >= 0) {
-      e.preventDefault();
-      selectTab(ALL_TABS[n], true);
-    }
+  useEffect(() => {
+    if (!resolvedLocation.redirect) return;
+    navigate(
+      { pathname: "/mon-espace", search: `?${resolvedLocation.search}`, hash: resolvedLocation.hash ? `#${resolvedLocation.hash}` : "" },
+      { replace: true },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, location.hash]);
+  const selectSection = (key: MySpaceSection, hash?: string) => {
+    navigate(`/mon-espace?section=${key}${hash ? `#${hash}` : ""}`);
+    if (hash) setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
   };
   useEffect(() => {
-    const el = tabRefs.current[activeTab];
-    const bar = tabListRef.current;
-    if (!el || !bar) return;
-    const left = el.getBoundingClientRect().left - bar.getBoundingClientRect().left + bar.scrollLeft;
-    bar.scrollTo({ left: Math.max(0, left - (bar.clientWidth - el.offsetWidth) / 2) });
-  }, [activeTab, !!profile]);
+    const id = resolvedLocation.redirect ? "" : resolvedLocation.hash;
+    if (!id || !profile) return;
+    const timer = setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.hash, activeSection, !!profile]);
 
   const openEditProfile = () => {
     setEditForm({
@@ -451,6 +442,12 @@ const MySpace = () => {
       .select("*", { count: "exact", head: true })
       .eq("findr_id", user.id);
     setHasProposals((propCount || 0) > 0);
+    const { count: pendCount } = await supabase
+      .from("proposals")
+      .select("*", { count: "exact", head: true })
+      .eq("findr_id", user.id)
+      .eq("status", "pending");
+    setPendingProposalCount(pendCount || 0);
     const { count: comCount } = await supabase
       .from("proposals")
       .select("*", { count: "exact", head: true })
@@ -799,6 +796,8 @@ const MySpace = () => {
     toast({ title: t("mySpace.bannerRemoved") });
   };
 
+  const todoItems = useTodoItems(user?.id, profile);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
@@ -811,13 +810,12 @@ const MySpace = () => {
     return null;
   }
 
-  const badgeCounts: Record<TabKey, number> = {
-    recherches: searches.filter((s: any) => (s.unread_count || 0) > 0 || !!s.urgent_reason).length,
-    propositions: findrActionCount,
-    favoris: 0,
-    gains: shouldShowStripeActionBadge(profile, hasProposals) || shouldShowShipFromActionBadge(profile, hasProposals) ? 1 : 0,
+  const sectionCounts: Record<MySpaceSection, { n: number; gold: boolean }> = {
+    aujourdhui: { n: todoItems?.length ?? 0, gold: true },
+    recherches: { n: searches.filter((x: any) => classifySearchTab(x.paid_status ?? null) === "active").length, gold: false },
+    propositions: { n: pendingProposalCount, gold: false },
+    compte: { n: (todoItems || []).filter((it) => ACCOUNT_TODO_KINDS.includes(it.kind)).length, gold: true },
   };
-
 
   const averageRating = evaluations.length > 0
     ? (evaluations.reduce((acc, e) => acc + e.rating, 0) / evaluations.length).toFixed(1)
@@ -833,7 +831,7 @@ const MySpace = () => {
             <div role="status" className="mb-6 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 border border-success/40 bg-success/10">
               <p className="text-sm font-medium text-success">{t("mySpace.stripeCompleteBanner")}</p>
               <div className="flex items-center gap-4">
-                <button type="button" className="text-sm font-semibold underline text-success" onClick={() => selectTab("gains")}>
+                <button type="button" className="text-sm font-semibold underline text-success" onClick={() => selectSection("compte", "paiements")}>
                   {t("mySpace.stripeCompleteLink")}
                 </button>
                 <button type="button" aria-label={t("mySpace.stripeCompleteClose")} className="text-lg leading-none text-success" onClick={dismissStripeBanner}>
@@ -864,153 +862,6 @@ const MySpace = () => {
                 overflow: "hidden",
               }}
             >
-              {/* Hidden banner input */}
-              <input
-                ref={bannerInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleBannerChange}
-              />
-
-              {/* Repositionnement de la bannière avant validation */}
-              <Dialog open={bannerEditorOpen} onOpenChange={(o) => { if (!o) closeBannerEditor(); }}>
-                <DialogContent className="sm:max-w-[680px]">
-                  <DialogHeader>
-                    <DialogTitle style={{ color: "#070E42" }}>{t("mySpace.ui.bannerTitle")}</DialogTitle>
-                  </DialogHeader>
-                  <p style={{ fontSize: 13, color: "#666666" }}>
-                    {t("mySpace.ui.bannerHint")}
-                  </p>
-                  <div className="flex justify-center">
-                    <div
-                      ref={bannerFrameRef}
-                      onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); startBannerDrag(e.clientX, e.clientY); }}
-                      onPointerMove={(e) => moveBannerDrag(e.clientX, e.clientY)}
-                      onPointerUp={endBannerDrag}
-                      onPointerCancel={endBannerDrag}
-                      style={{
-                        position: "relative",
-                        width: bannerFrame.w,
-                        height: bannerFrame.h,
-                        maxWidth: "100%",
-                        overflow: "hidden",
-                        borderRadius: 8,
-                        border: "1px solid rgba(10,22,40,0.12)",
-                        backgroundColor: "#F5F1E8",
-                        cursor: "grab",
-                        touchAction: "none",
-                      }}
-                    >
-                      {bannerPreviewUrl && (
-                        <img
-                          src={bannerPreviewUrl}
-                          alt={t("mySpace.ui.bannerPreviewAlt")}
-                          draggable={false}
-                          onLoad={handleBannerImageLoaded}
-                          style={{
-                            position: "absolute",
-                            left: bannerOffset.x,
-                            top: bannerOffset.y,
-                            width: bannerNatural ? bannerNatural.w * bannerCoverScale() : "100%",
-                            height: bannerNatural ? bannerNatural.h * bannerCoverScale() : "auto",
-                            userSelect: "none",
-                            pointerEvents: "none",
-                          }}
-                        />
-                      )}
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={closeBannerEditor} disabled={uploadingBanner}>
-                      {t("mySpace.payments.cancel")}
-                    </Button>
-                    <Button
-                      onClick={handleBannerConfirm}
-                      disabled={uploadingBanner || !bannerNatural}
-                      style={{ backgroundColor: "#D9BB87", color: "#070E42" }}
-                    >
-                      {uploadingBanner ? t("mySpace.ui.uploading") : t("mySpace.ui.bannerConfirm")}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-
-
-              {/* Banner area — slim, default brand gradient */}
-              <div
-                ref={bannerAreaRef}
-                className="relative w-full group/banner"
-                style={{
-                  height: 90,
-                  background: profile.banner_url
-                    ? undefined
-                    : "linear-gradient(120deg, #070E42 0%, #132a4d 100%)",
-                }}
-              >
-                {profile.banner_url && (
-                  <img
-                    src={profile.banner_url}
-                    alt={t("mySpace.ui.bannerAlt")}
-                    className="absolute inset-0 w-full h-full object-cover" loading="lazy"
-                  />
-                )}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background: profile.banner_url
-                      ? "linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(10,22,40,0.35) 100%)"
-                      : "radial-gradient(ellipse at top right, rgba(217,187,135,0.14), transparent 60%)",
-                  }}
-                />
-                <div className="absolute flex gap-2" style={{ top: 10, right: 12, zIndex: 3 }}>
-                  <button
-                    type="button"
-                    onClick={() => bannerInputRef.current?.click()}
-                    disabled={uploadingBanner}
-                    className="inline-flex items-center gap-1.5 transition-all"
-                    style={{
-                      backgroundColor: "rgba(255,255,255,0.92)",
-                      color: "#070E42",
-                      border: "1px solid rgba(10,22,40,0.1)",
-                      fontSize: 12,
-                      padding: "5px 11px",
-                      borderRadius: 999,
-                      fontWeight: 500,
-                      cursor: "pointer",
-                      backdropFilter: "blur(4px)",
-                    }}
-                  >
-                    <Pencil className="w-3 h-3" />
-                    {uploadingBanner
-                      ? t("mySpace.ui.uploading")
-                      : profile.banner_url
-                      ? t("mySpace.ui.bannerChange")
-                      : t("mySpace.ui.bannerAdd")}
-                  </button>
-                  {profile.banner_url && (
-                    <button
-                      type="button"
-                      onClick={handleRemoveBanner}
-                      className="transition-all"
-                      style={{
-                        backgroundColor: "rgba(255,255,255,0.92)",
-                        color: "#8B3A2E",
-                        border: "1px solid rgba(10,22,40,0.1)",
-                        fontSize: 12,
-                        padding: "5px 11px",
-                        borderRadius: 999,
-                        fontWeight: 500,
-                        cursor: "pointer",
-                        backdropFilter: "blur(4px)",
-                      }}
-                    >
-                      {t("mySpace.ui.remove")}
-                    </button>
-                  )}
-                </div>
-              </div>
-
               <div className="relative" style={{ padding: 32, paddingTop: 24 }}>
               <div className="relative flex flex-col md:flex-row items-start gap-6" style={{ zIndex: 1 }}>
               {/* Hidden file input */}
@@ -1029,7 +880,7 @@ const MySpace = () => {
                 disabled={uploadingAvatar}
                 title={t("mySpace.ui.changePhoto")} aria-label={t("mySpace.ui.changePhoto")}
                 className="group relative flex-shrink-0 rounded-full overflow-hidden"
-                style={{ width: 108, height: 108, marginTop: -76 }}
+                style={{ width: 108, height: 108 }}
               >
                 <Avatar className="w-[108px] h-[108px]" style={{ border: '4px solid #FFFFFF', boxShadow: '0 0 0 3px #D9BB87' }}>
                   <AvatarImage src={profile.avatar_url || undefined} className="object-cover" />
@@ -1063,15 +914,6 @@ const MySpace = () => {
                   <h1 className="text-2xl font-display font-bold" style={{ color: '#1B2A4A' }}>
                     {profile.full_name || t("mySpace.ui.defaultUser")}
                   </h1>
-                  {profile.is_premium && (
-                    <Badge style={{ backgroundColor: '#D9BB87', color: '#070E42' }}>
-                      <Crown className="w-3 h-3 mr-1" />
-                      Premium
-                    </Badge>
-                  )}
-                  {profile.is_findr && (
-                    <Badge style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>findr</Badge>
-                  )}
                   {(user as any)?.email_confirmed_at && (
                     <span
                       style={{
@@ -1127,7 +969,8 @@ const MySpace = () => {
                   </Link>
                 </div>
 
-                {/* c. À propos — bio */}
+                {/* c. À propos — bio (rubrique « Aujourd'hui » seulement) */}
+                {activeSection === "aujourdhui" && (
                 <div className="mt-5">
                   <h3
                     className="text-xs font-semibold uppercase tracking-wider mb-2"
@@ -1177,110 +1020,7 @@ const MySpace = () => {
                   )}
                 </div>
 
-                {/* d. Dominant category tag */}
-                {(() => {
-                  const activeSearches = searches.filter(s => !isComingSoonCategory(s.category));
-                  if (activeSearches.length === 0) return null;
-                  const counts: Record<string, number> = {};
-                  for (const s of activeSearches) counts[s.category] = (counts[s.category] || 0) + 1;
-                  const dominant = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
-                  if (!dominant) return null;
-                  return (
-                    <div className="mt-3">
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 6,
-                          fontSize: 11,
-                          color: '#070E42',
-                          backgroundColor: '#F5F1E8',
-                          border: '1px solid #E5DFD1',
-                          padding: '4px 12px',
-                          borderRadius: 999,
-                          fontWeight: 500,
-                        }}
-                      >
-                        <span style={{ color: '#D9BB87' }}>◆</span>
-                        {t("mySpace.ui.favoriteCategory", { category: dominant })}
-                      </span>
-                    </div>
-                  );
-                })()}
-
-                {/* e. Secondary metadata line */}
-                {(() => {
-                  const memberSince = (profile as any).created_at
-                    ? new Date((profile as any).created_at).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' })
-                    : null;
-                  return (
-                    <div
-                      className="mt-4 flex flex-wrap items-center text-sm"
-                      style={{ gap: 16, color: '#6B6259' }}
-                    >
-                      <span style={{ fontSize: 13 }}>
-                        <span style={{ fontWeight: 600, color: '#070E42' }}>{searches.length}</span>
-                        <span style={{ color: '#9A8570', marginLeft: 4 }}>
-                          {t("mySpace.ui.activeSearches", { count: searches.length })}
-                        </span>
-                      </span>
-                      {profile.city && (
-                        <span className="flex items-center gap-1.5" style={{ fontSize: 13 }}>
-                          <MapPin className="w-3.5 h-3.5" style={{ color: '#D9BB87' }} />
-                          {profile.city}
-                        </span>
-                      )}
-                      {memberSince && (
-                        <span style={{ fontSize: 12, color: '#9A8570' }}>
-                          {t("mySpace.ui.memberSince")} <span style={{ color: '#6B6259', fontWeight: 500 }}>{memberSince}</span>
-                        </span>
-                      )}
-                      {gamificationEnabled && (
-                        <span className="flex items-center gap-1.5" style={{ fontSize: 13 }}>
-                          <Clock className="w-3.5 h-3.5" style={{ color: '#D9BB87' }} />
-                          {t("mySpace.ui.level", { level: profile.level, xp: profile.xp_points })}
-                        </span>
-                      )}
-                    </div>
-                  );
-                })()}
-
-                {/* Profile completion (kept, hidden at 100%) */}
-                {gamificationEnabled ? (
-                  <div className="mt-3" style={{ maxWidth: 340 }}>
-                    <div style={{ width: '100%', height: 6, borderRadius: 3, backgroundColor: '#E8E2D9', overflow: 'hidden' }}>
-                      <div style={{ width: `${progressPct}%`, height: '100%', background: 'linear-gradient(90deg, #D9BB87, #c9a876)', transition: 'width 0.3s ease' }} />
-                    </div>
-                    <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 4 }}>
-                      {t("mySpace.ui.xpProgress", { current: xpInLevel, total: xpPerLevel, level: profile.level + 1 })}
-                    </p>
-                  </div>
-                ) : (() => {
-                  const fields = [profile.avatar_url, profile.bio, profile.city, profile.full_name];
-                  const filled = fields.filter(Boolean).length;
-                  const pct = Math.round((filled / fields.length) * 100);
-                  const missing: string[] = [];
-                  if (!profile.avatar_url) missing.push(t("mySpace.ui.missingPhoto"));
-                  if (!profile.bio) missing.push(t("mySpace.ui.missingBio"));
-                  if (pct >= 100) return null;
-                  return (
-                    <div className="mt-3" style={{ maxWidth: 340 }}>
-                      <div className="flex items-center justify-between" style={{ marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, color: '#070E42', fontWeight: 600 }}>
-                          {t("mySpace.ui.profileCompletion", { pct })}
-                        </span>
-                      </div>
-                      <div style={{ width: '100%', height: 6, borderRadius: 3, backgroundColor: '#E8E2D9', overflow: 'hidden' }}>
-                        <div style={{ width: `${pct}%`, height: '100%', background: 'linear-gradient(90deg, #D9BB87, #c9a876)', transition: 'width 0.3s ease' }} />
-                      </div>
-                      {missing.length > 0 && (
-                        <p style={{ fontSize: 11, color: '#9A8F84', marginTop: 6 }}>
-                          {t("mySpace.ui.missingHint", { items: missing.join(" + ") })}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })()}
+                )}
 
                 {/* f. Edit profile button — bottom */}
                 <button
@@ -1313,17 +1053,17 @@ const MySpace = () => {
             {/* Separator */}
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
+            {activeSection === "aujourdhui" && (<>
             <TodoNowBlock
-              userId={user.id}
-              profile={profile}
+              items={todoItems}
               onStripe={() => setStripeModalOpen(true)}
               onShipFrom={() => {
-                selectTab("gains");
-                setTimeout(() => document.getElementById("ship-from-card")?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+                selectSection("compte", "adresse");
               }}
             />
 
             <OngoingSalesBlock userId={user.id} />
+            </>)}
 
             {/* Modale d'information avant redirection Stripe */}
             <Dialog open={stripeModalOpen} onOpenChange={setStripeModalOpen}>
@@ -1359,73 +1099,127 @@ const MySpace = () => {
               </DialogContent>
             </Dialog>
 
-            {/* Navigation par onglets groupés par rôle */}
-            <div
-              ref={tabListRef}
-              role="tablist"
-              aria-label={t("mySpace.tabs.ariaLabel")}
-              onKeyDown={handleTabKeyDown}
-              className="mb-6 flex items-end gap-6 overflow-x-auto whitespace-nowrap border-b"
-              style={{ borderColor: "#E5E1D8", scrollbarWidth: "none" }}
-            >
-              {TAB_GROUPS.map((group, gi) => (
-                <div key={group.key} className="flex items-end gap-6 flex-shrink-0">
-                  {gi > 0 && <div aria-hidden="true" className="self-stretch my-1" style={{ width: 1, backgroundColor: "#E5E1D8" }} />}
-                  <div className="flex flex-col">
-                    <span
-                      className="uppercase"
-                      style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#756B58", fontWeight: 600, marginBottom: 4 }}
-                    >
-                      {t(`mySpace.tabs.groups.${group.key}`)}
-                    </span>
-                    <div className="flex gap-5">
-                      {group.tabs.map((key) => {
-                        const selected = activeTab === key;
-                        return (
-                          <button
-                            key={key}
-                            id={`tab-${key}`}
-                            ref={(el) => (tabRefs.current[key] = el)}
-                            type="button"
-                            role="tab"
-                            aria-selected={selected}
-                            aria-label={badgeCounts[key] > 0 ? t("mySpace.tabs.badgeLabel", { tab: t(`mySpace.tabs.${key}`), count: badgeCounts[key] }) : undefined}
-                            aria-controls={`tabpanel-${key}`}
-                            tabIndex={selected ? 0 : -1}
-                            onClick={() => selectTab(key)}
-                            className="pb-2.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm"
-                            style={{
-                              color: selected ? "#070E42" : "var(--personal-space-inactive-text)",
-                              fontWeight: selected ? 600 : 500,
-                              borderBottom: `2px solid ${selected ? "#D9BB87" : "transparent"}`,
-                              marginBottom: -1,
-                            }}
+            {/* Navigation entre les rubriques */}
+            <nav aria-label={t("mySpace.sections.nav")} className="mb-6 border-b" style={{ borderColor: "#E5E1D8" }}>
+              <ul className="flex gap-1 overflow-x-auto whitespace-nowrap sm:gap-4" style={{ scrollbarWidth: "none" }}>
+                {MY_SPACE_SECTIONS.map((key) => {
+                  const selected = activeSection === key;
+                  const { n, gold } = sectionCounts[key];
+                  const label = t(`mySpace.sections.${{ aujourdhui: "today", recherches: "searches", propositions: "proposals", compte: "account" }[key]}`);
+                  return (
+                    <li key={key} className="shrink-0">
+                      <Link
+                        to={`/mon-espace?section=${key}`}
+                        aria-current={selected ? "page" : undefined}
+                        className="inline-flex min-h-[44px] items-center gap-2 px-2 text-sm rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                        style={{
+                          color: "#070E42",
+                          fontWeight: selected ? 600 : 500,
+                          borderBottom: `2px solid ${selected ? "#D9BB87" : "transparent"}`,
+                          marginBottom: -1,
+                          outlineColor: "#070E42",
+                        }}
+                      >
+                        {label}
+                        {n > 0 && (
+                          <span
+                            aria-label={t(gold ? "mySpace.sections.actionCount" : "mySpace.sections.plainCount", { count: n })}
+                            className="inline-flex items-center justify-center rounded-full"
+                            style={gold
+                              ? { backgroundColor: "#D9BB87", color: "#070E42", fontSize: 12, fontWeight: 600, minWidth: 20, height: 20, padding: "0 6px" }
+                              : { color: "#4B5563", fontSize: 13, fontWeight: 500 }}
                           >
-                            {t(`mySpace.tabs.${key}`)}
-                            {badgeCounts[key] > 0 && (
-                              <span
-                                aria-hidden="true"
-                                className="ml-1.5 inline-flex items-center justify-center rounded-full align-middle"
-                                style={{ backgroundColor: "#D9BB87", color: "#070E42", fontSize: 11, fontWeight: 600, minWidth: 18, height: 18, padding: "0 5px", lineHeight: 1 }}
-                              >
-                                {badgeCounts[key] > 9 ? "9+" : badgeCounts[key]}
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                            {n > 99 ? "99+" : n}
+                          </span>
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
 
-            <div role="tabpanel" id={`tabpanel-${activeTab}`} aria-labelledby={`tab-${activeTab}`} tabIndex={0} className="focus-visible:outline-none">
-            {activeTab === "gains" && (
-              <div className="space-y-5">
+            <div>
+            {activeSection === "compte" && (
+              <div className="space-y-10">
+              <div id="favoris" className="space-y-8 scroll-mt-28">
+                <section aria-labelledby="fav-heading">
+                  <h3 id="fav-heading" className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>
+                    {t("mySpace.tabs.favoritesTitle")}
+                  </h3>
+                  {favorites.length === 0 ? (
+                    <FindrEmptyState text={t("mySpace.tabs.empty.favorites")} />
+                  ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {favorites.map((search) => (
+                            <div
+                              key={search.id}
+                              className="flex rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow bg-white border"
+                              style={{ borderColor: '#E5E1D8' }}
+                              onClick={() => navigate(`/recherche/${search.id}`)}
+                            >
+                              {search.image_url && (
+                                <div className="w-28 h-28 flex-shrink-0">
+                                  <img
+                                    src={search.image_url}
+                                    alt={search.title}
+                                    className="w-full h-full object-cover" loading="lazy"
+                                  />
+                                </div>
+                              )}
+                              <div className="p-3 flex-1">
+                                <span className="text-xs font-medium px-2 py-0.5 rounded-full inline-flex items-center gap-1" style={{ backgroundColor: '#F0EBE3', color: '#8B7355' }}>
+                                  <CategoryGlyph slug={search.category} size={14} />
+                                  {search.category}
+                                </span>
+                                 <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>
+                                   {({ title, description }) => <>
+                                     <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>{title}</h3>
+                                     {description && <p className="text-xs line-clamp-1 mt-0.5" style={{ color: '#6B7280' }}>{description}</p>}
+                                   </>}
+                                 </TranslatedContent>
+                                <div className="flex items-center gap-3 text-xs mt-2" style={{ color: '#9CA3AF' }}>
+                                  <span className="flex items-center gap-1">
+                                    <Euro className="w-3 h-3" />
+                                    {search.budget_min && search.budget_max
+                                      ? `${search.budget_min}€ – ${search.budget_max}€`
+                                      : t("mySpace.ui.budgetUndefined")}
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <MapPin className="w-3 h-3" />
+                                    {search.city}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          {hasMoreFavorites && (
+                            <div className="md:col-span-2 flex justify-center pt-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={loadingMoreFavorites}
+                                onClick={() => fetchFavorites(favorites.length, true)}
+                              >
+                                {loadingMoreFavorites ? t("common.loading") : t("mySpace.loadMore")}
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      )
+                  }
+                </section>
+                <section aria-labelledby="alerts-heading" className="pt-6 border-t" style={{ borderColor: "#E5E1D8" }}>
+                  <h3 id="alerts-heading" className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>
+                    {t("keywordAlerts.title")}
+                  </h3>
+                  <KeywordAlertsPanel />
+                </section>
+              </div>
+                          <div id="paiements" className="space-y-5 scroll-mt-28">
             {/* Paiements — Stripe Connect (uniquement si une action est requise) */}
             {needsStripeOnboarding(profile) && (
-              <div id="payments-card" className="mb-6 scroll-mt-28 rounded-xl p-5 bg-white" style={{ border: "1px solid #E5E1D8" }}>
+              <div className="mb-6 rounded-xl p-5 bg-white" style={{ border: "1px solid #E5E1D8" }}>
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#FBF3E2" }}>
@@ -1461,7 +1255,7 @@ const MySpace = () => {
             )}
 
             {/* Adresse d'expédition du findr (expéditeur des étiquettes) */}
-            <div id="ship-from-card" className="scroll-mt-28"><ShipFromCard key={profile.ship_from_updated_at ?? "new"} profile={profile} onSaved={fetchProfile} /></div>
+            <div id="adresse" className="scroll-mt-28"><ShipFromCard key={profile.ship_from_updated_at ?? "new"} profile={profile} onSaved={fetchProfile} /></div>
                 {profile.stripe_onboarding_complete && (
                   <p className="text-sm font-medium" style={{ color: "#1F6B47" }}>
                     ✓ {t("mySpace.tabs.paymentsConfigured")}
@@ -1480,9 +1274,10 @@ const MySpace = () => {
                         )}
                       </div>
               </div>
+              </div>
             )}
 
-            {activeTab === "propositions" && (
+            {activeSection === "propositions" && (
               <>
                 {myProposals.length > 0 && (
                   <div className="grid grid-cols-3 gap-3 mb-5">
@@ -1585,84 +1380,7 @@ const MySpace = () => {
               </>
             )}
 
-            {activeTab === "favoris" && (
-              <div className="space-y-8">
-                <section aria-labelledby="fav-heading">
-                  <h3 id="fav-heading" className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>
-                    {t("mySpace.tabs.favoritesTitle")}
-                  </h3>
-                  {favorites.length === 0 ? (
-                    <FindrEmptyState text={t("mySpace.tabs.empty.favorites")} />
-                  ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {favorites.map((search) => (
-                            <div
-                              key={search.id}
-                              className="flex rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow bg-white border"
-                              style={{ borderColor: '#E5E1D8' }}
-                              onClick={() => navigate(`/recherche/${search.id}`)}
-                            >
-                              {search.image_url && (
-                                <div className="w-28 h-28 flex-shrink-0">
-                                  <img
-                                    src={search.image_url}
-                                    alt={search.title}
-                                    className="w-full h-full object-cover" loading="lazy"
-                                  />
-                                </div>
-                              )}
-                              <div className="p-3 flex-1">
-                                <span className="text-xs font-medium px-2 py-0.5 rounded-full inline-flex items-center gap-1" style={{ backgroundColor: '#F0EBE3', color: '#8B7355' }}>
-                                  <CategoryGlyph slug={search.category} size={14} />
-                                  {search.category}
-                                </span>
-                                 <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>
-                                   {({ title, description }) => <>
-                                     <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>{title}</h3>
-                                     {description && <p className="text-xs line-clamp-1 mt-0.5" style={{ color: '#6B7280' }}>{description}</p>}
-                                   </>}
-                                 </TranslatedContent>
-                                <div className="flex items-center gap-3 text-xs mt-2" style={{ color: '#9CA3AF' }}>
-                                  <span className="flex items-center gap-1">
-                                    <Euro className="w-3 h-3" />
-                                    {search.budget_min && search.budget_max
-                                      ? `${search.budget_min}€ – ${search.budget_max}€`
-                                      : t("mySpace.ui.budgetUndefined")}
-                                  </span>
-                                  <span className="flex items-center gap-1">
-                                    <MapPin className="w-3 h-3" />
-                                    {search.city}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                          {hasMoreFavorites && (
-                            <div className="md:col-span-2 flex justify-center pt-1">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={loadingMoreFavorites}
-                                onClick={() => fetchFavorites(favorites.length, true)}
-                              >
-                                {loadingMoreFavorites ? t("common.loading") : t("mySpace.loadMore")}
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      )
-                  }
-                </section>
-                <section aria-labelledby="alerts-heading" className="pt-6 border-t" style={{ borderColor: "#E5E1D8" }}>
-                  <h3 id="alerts-heading" className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>
-                    {t("keywordAlerts.title")}
-                  </h3>
-                  <KeywordAlertsPanel />
-                </section>
-              </div>
-            )}
-
-            {activeTab === "recherches" && (
+            {activeSection === "recherches" && (
               <div>
                 <div className="flex justify-between items-start mb-4">
                   <div>
