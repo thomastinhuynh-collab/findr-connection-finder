@@ -83,7 +83,7 @@ const BuyrSearchesPanel = ({ searches, tab, onTabChange }: { searches: BuyrSearc
   const rest = rows.filter((r) => searchRank(r) !== 1);
 
   const budget = (s: BuyrSearchRow) => {
-    const fmt = (n: number) => `${formatPrice(n, i18n.language)} €`;
+    const fmt = (n: number) => formatPrice(n, i18n.language);
     if (s.budget_min != null && s.budget_max != null) return t("mySpace.buyrSearches.budgetRange", { min: fmt(s.budget_min), max: fmt(s.budget_max) });
     if (s.budget_min != null) return t("mySpace.buyrSearches.budgetFrom", { min: fmt(s.budget_min) });
     return null;
