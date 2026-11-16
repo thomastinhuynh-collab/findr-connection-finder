@@ -1172,8 +1172,8 @@
       "rejected": "Declined"
     },
     "searchTabs": {
-      "active": "Active",
-      "ongoing": "In progress",
+      "active": "Searching",
+      "ongoing": "Purchases in progress",
       "done": "Completed",
       "cancelled": "Cancelled",
       "todo_one": "{{count}} search to handle",
@@ -1252,6 +1252,38 @@
         "versement_en_revue": "Payout under review",
         "etiquette_refusee": "Label rejected — new label expected"
       }
+    },
+    "buyrSearches": {
+      "filterGroup": "Filter my searches",
+      "actionDot": "An action is waiting for you",
+      "sortNote": "Order: what needs an action first",
+      "firstHeading": "To do first",
+      "restHeading": "The rest, newest to oldest",
+      "helpLabel": "Explanation of the {{name}} filter",
+      "help": {
+        "active": "Your searches waiting for a proposal, or whose accepted proposal is still waiting for your payment.",
+        "ongoing": "Searches where a proposal is accepted and paid. Follow the label, shipping and receipt here.",
+        "done": "Completed purchases: you confirmed receipt and the sale is closed.",
+        "cancelled": "Cancelled purchases, with refund."
+      },
+      "actions": {
+        "pay": "Pay",
+        "proposals": "See proposals",
+        "label": "Provide the label",
+        "receipt": "Confirm receipt",
+        "transaction": "See the transaction",
+        "edit": "Edit"
+      },
+      "newProposals_one": "{{count}} new proposal",
+      "newProposals_other": "{{count}} new proposals",
+      "more": "More actions for {{title}}",
+      "menu": {
+        "view": "View the search"
+      },
+      "labelBanner": "A sale is waiting for your label",
+      "budgetRange": "Budget: {{min}} to {{max}}",
+      "budgetFrom": "Budget: from {{min}}",
+      "published": "Posted {{when}}"
     }
   },
   "blog": {

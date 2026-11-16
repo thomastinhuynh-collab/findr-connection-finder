@@ -10,7 +10,7 @@ interface Row {
   shipped_at: string | null; delivered_at: string | null; tracking_review_notified_at: string | null; updated_at: string;
 }
 
-const COLS = "id, buyr_id, findr_id, payment_status, delivery_type, label_provided_at, shipped_at, delivered_at, tracking_review_notified_at, updated_at, searches(title)";
+const COLS = "id, buyr_id, findr_id, payment_status, delivery_type, label_provided_at, shipped_at, delivered_at, tracking_review_notified_at, updated_at, proposal_id, searches(title)";
 
 const OngoingSalesBlock = ({ userId }: { userId: string }) => {
   const { t } = useTranslation();
@@ -22,10 +22,16 @@ const OngoingSalesBlock = ({ userId }: { userId: string }) => {
       .or(`buyr_id.eq.${userId},findr_id.eq.${userId}`)
       .in("payment_status", PAID_STATUSES.filter((s) => s !== "termine"))
       .order("updated_at", { ascending: false })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
+        const list = ((data as any[]) || []).filter(isOngoingSale);
+        const ids = list.map((r) => r.proposal_id).filter(Boolean);
+        const { data: props } = ids.length
+          ? await supabase.from("proposals").select("id, title").in("id", ids)
+          : { data: [] as any[] };
         if (!alive) return;
-        setRows(((data as any[]) || []).filter(isOngoingSale).map((r) => ({
-          ...r, role: r.buyr_id === userId ? "buyr" : "findr", title: r.searches?.title ?? "",
+        const propTitle = new Map((props || []).map((p: any) => [p.id, p.title]));
+        setRows(list.map((r) => ({
+          ...r, role: r.buyr_id === userId ? "buyr" : "findr", title: propTitle.get(r.proposal_id) || r.searches?.title || "",
         })));
       });
     return () => { alive = false; };
