@@ -1340,6 +1340,30 @@
         "viewSearch": "Voir la recherche"
       },
       "empty": "Aucune proposition ici pour l'instant."
+    },
+    "account": {
+      "aboutTitle": "À propos de toi",
+      "noBio": "Tu n'as pas encore écrit de description.",
+      "completion": "Profil complété à {{n}} %",
+      "editBio": "Modifier ma description",
+      "paymentsTitle": "Paiements et versements",
+      "stripeDone": "Inscription Stripe terminée",
+      "stripeTodo": "À terminer",
+      "stripeFinish": "Terminer mon inscription Stripe",
+      "stripeReview": "Stripe vérifie ton inscription…",
+      "pendingTitle": "Argent en attente",
+      "pendingText": "Ce que tu recevras pour tes ventes en cours, une fois la réception confirmée par l'acheteur.",
+      "finalizedTitle": "Ventes finalisées",
+      "finalizedEmpty": "Aucune vente finalisée pour l'instant.",
+      "finalizedOn": "Finalisée le {{date}}",
+      "youReceive": "Ce que tu reçois",
+      "bankDelay": "L'argent peut apparaître sur ton compte bancaire sous quelques jours ouvrés. Pour ton tout premier versement, Stripe peut demander jusqu'à 14 jours.",
+      "debitLine1": "{{amount}} seront déduits de tes prochains versements.",
+      "debitLine2": "L'acheteur a contesté son paiement auprès de sa banque, après ton versement.",
+      "debitLink": "Voir le détail →",
+      "shipToFill": "À renseigner",
+      "shipSave": "Enregistrer mon adresse",
+      "favTitle": "Favoris et alertes"
     }
   },
   "blog": {

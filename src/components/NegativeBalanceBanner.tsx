@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { formatPrice } from "@/lib/fees";
+import { useTranslation } from "react-i18next";
 
 const REASON_LABELS: Record<string, string> = {
   chargeback: "Contestation bancaire",
@@ -40,6 +41,7 @@ interface Props {
 }
 
 const NegativeBalanceBanner = ({ userId, negativeBalance }: Props) => {
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [debits, setDebits] = useState<Debit[]>([]);
   const [loading, setLoading] = useState(false);
@@ -68,22 +70,18 @@ const NegativeBalanceBanner = ({ userId, negativeBalance }: Props) => {
   return (
     <>
       <div
-        className="rounded-xl p-4 flex flex-wrap items-center gap-3"
+        role="status"
+        className="rounded-xl p-4 flex items-start gap-3"
         style={{ backgroundColor: "#F5F0EA", border: "1px solid #D9BB87" }}
       >
-        <Info className="w-5 h-5 flex-shrink-0" style={{ color: "#070E42" }} />
-        <p className="text-sm flex-1 min-w-[220px]" style={{ color: "#070E42" }}>
-          <strong>Montant à régulariser : {formatPrice(negativeBalance, "fr-FR")}.</strong>{" "}
-          Ce montant sera automatiquement déduit de tes prochains versements.
-        </p>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setOpen(true)}
-          style={{ borderColor: "#070E42", color: "#070E42" }}
-        >
-          Voir le détail
-        </Button>
+        <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#070E42" }} aria-hidden="true" />
+        <div className="text-sm space-y-1" style={{ color: "#070E42" }}>
+          <p className="font-semibold">{t("mySpace.account.debitLine1", { amount: formatPrice(negativeBalance, i18n.language) })}</p>
+          <p>{t("mySpace.account.debitLine2")}</p>
+          <button type="button" onClick={() => setOpen(true)} className="font-semibold underline min-h-[44px]">
+            {t("mySpace.account.debitLink")}
+          </button>
+        </div>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>

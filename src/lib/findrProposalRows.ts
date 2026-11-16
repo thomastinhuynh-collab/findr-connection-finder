@@ -22,13 +22,20 @@ export const classifyProposalTab = (p: FindrProposalFlags): ProposalTab => {
   const ps = p.payment_status ?? "";
   if (ps === "termine" || ps === "annule") return "done";
   if (BUYR_ONGOING_STATUSES.includes(ps)) return "ongoing";
-  if (p.proposalStatus === "rejected" || p.proposalStatus === "completed") return "done";
+  if (FINAL_PROPOSAL_STATUSES.includes(p.proposalStatus)) return "done";
   return "pending";
 };
 
+/** Statuts de proposition qui la sortent définitivement de « En attente ». */
+const FINAL_PROPOSAL_STATUSES = ["rejected", "completed", "cancelled", "expired"];
+
+/** Chiffre gris de « Mes propositions » : exactement les lignes du filtre « En attente ». */
+export const pendingProposalCount = (rows: FindrProposalFlags[]): number =>
+  rows.filter((p) => classifyProposalTab(p) === "pending").length;
+
 export const finalBadge = (p: FindrProposalFlags): FinalBadge | null => {
   if (classifyProposalTab(p) !== "done") return null;
-  if (p.payment_status === "annule") return "cancelled";
+  if (p.payment_status === "annule" || p.proposalStatus === "cancelled" || p.proposalStatus === "expired") return "cancelled";
   if (p.proposalStatus === "rejected") return "rejected";
   return "sold";
 };
