@@ -120,7 +120,7 @@ const ShipFromCard = ({ profile, onSaved }: { profile: Profile; onSaved: () => v
               </p>
             ) : (
               <>
-                <span className="inline-block mt-1 rounded-full px-2.5 py-0.5 text-xs font-semibold" style={{ backgroundColor: "#FBF3E2", color: "#6B4F12", border: "1px solid #D9BB87" }}>{t("mySpace.account.shipToFill")}</span>
+                {!saved && <span className="inline-block mt-1 rounded-full px-2.5 py-0.5 text-xs font-semibold" style={{ backgroundColor: "#FBF3E2", color: "#6B4F12", border: "1px solid #D9BB87" }}>{t("mySpace.account.shipToFill")}</span>}
                 <p className="text-sm mt-1" style={{ color: "#4B5563" }}>{t("shipFrom.info")}</p>
               </>
             )}

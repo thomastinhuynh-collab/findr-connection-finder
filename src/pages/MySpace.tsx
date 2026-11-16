@@ -17,7 +17,9 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import EarningsPanel from "@/components/EarningsPanel";
+import { pendingProposalCount } from "@/lib/findrProposalRows";
+import { pendingEarnings, finalizedSales, profileCompletion } from "@/lib/accountMoney";
+import { formatPrice } from "@/lib/fees";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
 import NegativeBalanceBanner from "@/components/NegativeBalanceBanner";
 import KeywordAlertsPanel from "@/components/KeywordAlertsPanel";
@@ -167,7 +169,6 @@ const MySpace = () => {
   const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
   const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [pendingProposalCount, setPendingProposalCount] = useState(0);
   const location = useLocation();
   const resolvedLocation = resolveMySpaceLocation(location.search, location.hash);
   const activeSection: MySpaceSection = resolvedLocation.section;
@@ -358,7 +359,7 @@ const MySpace = () => {
         label_provided_at: r?.label_provided_at ?? null, label_deadline_at: r?.label_deadline_at ?? null,
         shipped_at: r?.shipped_at ?? null, delivered_at: r?.delivered_at ?? null,
         tracking_review_notified_at: r?.tracking_review_notified_at ?? null, dispute_open: r?.dispute_open ?? false,
-        object_price: r?.object_price ?? null, findr_fee: r?.findr_fee ?? null,
+        object_price: r?.object_price ?? null, findr_fee: r?.findr_fee ?? null, reservation_updated_at: r?.updated_at ?? null,
       };
     }));
     setLoadingProposals(false);
@@ -460,12 +461,6 @@ const MySpace = () => {
       .select("*", { count: "exact", head: true })
       .eq("findr_id", user.id);
     setHasProposals((propCount || 0) > 0);
-    const { count: pendCount } = await supabase
-      .from("proposals")
-      .select("*", { count: "exact", head: true })
-      .eq("findr_id", user.id)
-      .eq("status", "pending");
-    setPendingProposalCount(pendCount || 0);
     const { count: comCount } = await supabase
       .from("proposals")
       .select("*", { count: "exact", head: true })
@@ -831,7 +826,7 @@ const MySpace = () => {
   const sectionCounts: Record<MySpaceSection, { n: number; gold: boolean }> = {
     aujourdhui: { n: todoItems?.length ?? 0, gold: true },
     recherches: { n: searches.filter((x: any) => classifySearchTab(x.paid_status ?? null) === "active").length, gold: false },
-    propositions: { n: pendingProposalCount, gold: false },
+    propositions: { n: pendingProposalCount(myProposals), gold: false },
     compte: { n: (todoItems || []).filter((it) => ACCOUNT_TODO_KINDS.includes(it.kind)).length, gold: true },
   };
 
@@ -1158,142 +1153,125 @@ const MySpace = () => {
             </nav>
 
             <div>
-            {activeSection === "compte" && (
-              <div className="space-y-10">
-              <div id="favoris" className="space-y-8 scroll-mt-28">
-                <section aria-labelledby="fav-heading">
-                  <h3 id="fav-heading" className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>
-                    {t("mySpace.tabs.favoritesTitle")}
-                  </h3>
+            {activeSection === "compte" && (() => {
+              const completion = profileCompletion(profile);
+              const finalized = finalizedSales(myProposals);
+              const pill = (text: string, done: boolean) => (
+                <span className="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold" style={done ? { backgroundColor: "#E7F3EC", color: "#1F6B47", border: "1px solid #B7D9C5" } : { backgroundColor: "#FBF3E2", color: "#6B4F12", border: "1px solid #D9BB87" }}>{text}</span>
+              );
+              const card = "rounded-xl p-5 bg-white scroll-mt-28";
+              const cardStyle = { border: "1px solid #E5E1D8" };
+              const h2 = { fontSize: 17, fontWeight: 600, color: "#070E42" } as const;
+              return (
+              <div className="w-full space-y-6">
+                <section aria-labelledby="about-heading" className={card} style={cardStyle}>
+                  <h2 id="about-heading" className="mb-3" style={h2}>{t("mySpace.account.aboutTitle")}</h2>
+                  <p className="text-sm leading-relaxed" style={{ color: profile.bio ? "#374151" : "#6B7280" }}>{profile.bio || t("mySpace.account.noBio")}</p>
+                  <div className="mt-4">
+                    <p className="text-xs mb-1.5" style={{ color: "#4B5563" }}>{t("mySpace.account.completion", { n: completion })}</p>
+                    <div role="progressbar" aria-valuenow={completion} aria-valuemin={0} aria-valuemax={100} aria-label={t("mySpace.account.completion", { n: completion })} className="h-2 w-full rounded-full overflow-hidden" style={{ backgroundColor: "#ECE6DA" }}>
+                      <div className="h-full rounded-full" style={{ width: `${completion}%`, backgroundColor: "#070E42" }} />
+                    </div>
+                  </div>
+                  <button type="button" onClick={openEditProfile} className="mt-3 min-h-[44px] text-sm font-semibold underline" style={{ color: "#070E42" }}>
+                    {t("mySpace.account.editBio")}
+                  </button>
+                </section>
+
+                <section id="paiements" aria-labelledby="payments-heading" className={card} style={cardStyle}>
+                  <h2 id="payments-heading" className="mb-1" style={h2}>{t("mySpace.account.paymentsTitle")}</h2>
+                  <p className="text-sm mb-3" style={{ color: "#4B5563" }}>{t("mySpace.payments.description")}</p>
+                  <div className="flex flex-wrap items-center gap-3" role="status">
+                    {profile.stripe_onboarding_complete ? pill(t("mySpace.account.stripeDone"), true)
+                      : stripeVerifying ? (
+                        <span className="text-sm inline-flex items-center" style={{ color: "#4B5563" }}><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.verifying")}</span>
+                      ) : profile.stripe_account_id && stripeStatus?.details_submitted ? (<>
+                        {pill(t("mySpace.account.stripeReview"), false)}
+                        <Button variant="outline" onClick={() => runStripeVerification(false)}>{t("mySpace.payments.checkAgain")}</Button>
+                      </>) : (<>
+                        {pill(t("mySpace.account.stripeTodo"), false)}
+                        <Button onClick={() => setStripeModalOpen(true)} disabled={stripeLoading} style={{ backgroundColor: "#070E42", color: "#F5F0EA" }}>
+                          {stripeLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.redirecting")}</> : t("mySpace.account.stripeFinish")}
+                        </Button>
+                      </>)}
+                  </div>
+
+                  <div className="mt-5 space-y-3">
+                    {user && <NegativeBalanceBanner userId={user.id} negativeBalance={Number(profile?.negative_balance ?? 0)} />}
+                    <div className="rounded-xl p-4" style={{ backgroundColor: "#FAF7F2", border: "1px solid #ECE6DA" }}>
+                      <h3 className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#4B5563" }}>{t("mySpace.account.pendingTitle")}</h3>
+                      <p className="mt-1" style={{ fontSize: 22, fontWeight: 700, color: "#070E42" }}>{formatPrice(pendingEarnings(myProposals), i18n.language)}</p>
+                      <p className="text-xs mt-1" style={{ color: "#4B5563" }}>{t("mySpace.account.pendingText")}</p>
+                    </div>
+                  </div>
+
+                  <h3 className="mt-6 mb-2" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>{t("mySpace.account.finalizedTitle")}</h3>
+                  {finalized.length === 0 ? (
+                    <p className="text-sm" style={{ color: "#6B7280" }}>{t("mySpace.account.finalizedEmpty")}</p>
+                  ) : (
+                    <ul className="divide-y rounded-lg border" style={{ borderColor: "#E5E1D8" }}>
+                      {finalized.map((f) => (
+                        <li key={f.id} className="flex items-center justify-between gap-3 p-3">
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium truncate" style={{ color: "#070E42" }}>{f.title}</p>
+                            {f.finalizedAt && <p className="text-xs" style={{ color: "#4B5563" }}>{t("mySpace.account.finalizedOn", { date: new Date(f.finalizedAt).toLocaleDateString(i18n.language) })}</p>}
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="text-xs" style={{ color: "#4B5563" }}>{t("mySpace.account.youReceive")}</p>
+                            <p className="text-sm font-semibold" style={{ color: "#070E42" }}>{f.net == null ? "—" : formatPrice(f.net, i18n.language)}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <p className="text-xs mt-4" style={{ color: "#4B5563" }}>{t("mySpace.account.bankDelay")}</p>
+                </section>
+
+                <section id="adresse" className="scroll-mt-28">
+                  <ShipFromCard key={profile.ship_from_updated_at ?? "new"} profile={profile} onSaved={fetchProfile} />
+                </section>
+
+                <section id="favoris" aria-labelledby="fav-section-heading" className={card} style={cardStyle}>
+                  <h2 id="fav-section-heading" className="mb-4" style={h2}>{t("mySpace.account.favTitle")}</h2>
+                  <h3 className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>{t("mySpace.tabs.favoritesTitle")}</h3>
                   {favorites.length === 0 ? (
                     <FindrEmptyState text={t("mySpace.tabs.empty.favorites")} />
                   ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {favorites.map((search) => (
-                            <div
-                              key={search.id}
-                              className="flex rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow bg-white border"
-                              style={{ borderColor: '#E5E1D8' }}
-                              onClick={() => navigate(`/recherche/${search.id}`)}
-                            >
-                              {search.image_url && (
-                                <div className="w-28 h-28 flex-shrink-0">
-                                  <img
-                                    src={search.image_url}
-                                    alt={search.title}
-                                    className="w-full h-full object-cover" loading="lazy"
-                                  />
-                                </div>
-                              )}
-                              <div className="p-3 flex-1">
-                                <span className="text-xs font-medium px-2 py-0.5 rounded-full inline-flex items-center gap-1" style={{ backgroundColor: '#F0EBE3', color: '#8B7355' }}>
-                                  <CategoryGlyph slug={search.category} size={14} />
-                                  {search.category}
-                                </span>
-                                 <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>
-                                   {({ title, description }) => <>
-                                     <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>{title}</h3>
-                                     {description && <p className="text-xs line-clamp-1 mt-0.5" style={{ color: '#6B7280' }}>{description}</p>}
-                                   </>}
-                                 </TranslatedContent>
-                                <div className="flex items-center gap-3 text-xs mt-2" style={{ color: '#9CA3AF' }}>
-                                  <span className="flex items-center gap-1">
-                                    <Euro className="w-3 h-3" />
-                                    {search.budget_min && search.budget_max
-                                      ? `${search.budget_min}€ – ${search.budget_max}€`
-                                      : t("mySpace.ui.budgetUndefined")}
-                                  </span>
-                                  <span className="flex items-center gap-1">
-                                    <MapPin className="w-3 h-3" />
-                                    {search.city}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                          {hasMoreFavorites && (
-                            <div className="md:col-span-2 flex justify-center pt-1">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={loadingMoreFavorites}
-                                onClick={() => fetchFavorites(favorites.length, true)}
-                              >
-                                {loadingMoreFavorites ? t("common.loading") : t("mySpace.loadMore")}
-                              </Button>
-                            </div>
-                          )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {favorites.map((search) => (
+                        <Link key={search.id} to={`/recherche/${search.id}`} className="flex items-center gap-3 rounded-lg p-2 bg-white border hover:shadow-md transition-shadow min-h-[44px]" style={{ borderColor: "#E5E1D8" }}>
+                          <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden" style={{ backgroundColor: "#F5F0EA" }}>
+                            {search.image_url && <img src={search.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />}
+                          </div>
+                          <div className="min-w-0">
+                            <TranslatedContent type="search" id={search.id} title={search.title} description={search.description} sourceLang={search.source_lang}>
+                              {({ title }) => <p className="font-semibold text-sm line-clamp-2" style={{ color: "#070E42" }}>{title}</p>}
+                            </TranslatedContent>
+                            <p className="text-xs mt-0.5" style={{ color: "#4B5563" }}>
+                              {search.budget_min != null && search.budget_max != null
+                                ? `${formatPrice(Number(search.budget_min), i18n.language)} – ${formatPrice(Number(search.budget_max), i18n.language)}`
+                                : t("mySpace.ui.budgetUndefined")}
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                      {hasMoreFavorites && (
+                        <div className="md:col-span-2 flex justify-center pt-1">
+                          <Button variant="outline" size="sm" disabled={loadingMoreFavorites} onClick={() => fetchFavorites(favorites.length, true)}>
+                            {loadingMoreFavorites ? t("common.loading") : t("mySpace.loadMore")}
+                          </Button>
                         </div>
-                      )
-                  }
-                </section>
-                <section aria-labelledby="alerts-heading" className="pt-6 border-t" style={{ borderColor: "#E5E1D8" }}>
-                  <h3 id="alerts-heading" className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>
-                    {t("keywordAlerts.title")}
-                  </h3>
-                  <KeywordAlertsPanel />
-                </section>
-              </div>
-                          <div id="paiements" className="space-y-5 scroll-mt-28">
-            {/* Paiements — Stripe Connect (uniquement si une action est requise) */}
-            {needsStripeOnboarding(profile) && (
-              <div className="mb-6 rounded-xl p-5 bg-white" style={{ border: "1px solid #E5E1D8" }}>
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#FBF3E2" }}>
-                      <CreditCard className="w-5 h-5" style={{ color: "#8B6B1F" }} />
+                      )}
                     </div>
-                    <div>
-                      <h3 className="font-semibold" style={{ color: "#070E42" }}>{t("mySpace.payments.title")}</h3>
-                      <p className="text-sm" style={{ color: "#4B5563" }}>{t("mySpace.payments.description")}</p>
-                    </div>
-                  </div>
-                  {stripeVerifying ? (
-                    <p className="text-sm flex items-center" style={{ color: "#4B5563" }} role="status">
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.verifying")}
-                    </p>
-                  ) : profile.stripe_account_id && stripeStatus?.details_submitted ? (
-                    <div className="flex flex-wrap items-center gap-3">
-                      <p className="text-sm" style={{ color: "#4B5563" }} role="status">{t("mySpace.payments.underReview")}</p>
-                      <Button variant="outline" onClick={() => runStripeVerification(false)}>
-                        {t("mySpace.payments.checkAgain")}
-                      </Button>
-                    </div>
-                  ) : (
-                  <Button onClick={() => setStripeModalOpen(true)} disabled={stripeLoading} style={{ backgroundColor: "#070E42", color: "#F5F0EA" }}>
-                    {stripeLoading ? (
-                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.redirecting")}</>
-                    ) : (
-                      <><CreditCard className="w-4 h-4 mr-2" />{t(profile.stripe_account_id ? "mySpace.payments.resume" : "mySpace.payments.setup")}</>
-                    )}
-                  </Button>
                   )}
-                </div>
+                  <div className="pt-6 mt-6 border-t" style={{ borderColor: "#E5E1D8" }}>
+                    <h3 className="mb-3" style={{ fontSize: 15, fontWeight: 600, color: "#070E42" }}>{t("keywordAlerts.title")}</h3>
+                    <KeywordAlertsPanel />
+                  </div>
+                </section>
               </div>
-            )}
-
-            {/* Adresse d'expédition du findr (expéditeur des étiquettes) */}
-            <div id="adresse" className="scroll-mt-28"><ShipFromCard key={profile.ship_from_updated_at ?? "new"} profile={profile} onSaved={fetchProfile} /></div>
-                {profile.stripe_onboarding_complete && (
-                  <p className="text-sm font-medium" style={{ color: "#1F6B47" }}>
-                    ✓ {t("mySpace.tabs.paymentsConfigured")}
-                  </p>
-                )}
-                {!hasProposals && !profile.is_findr && <FindrEmptyState text={t("mySpace.tabs.empty.gains")} />}
-                      <div className="space-y-5">
-                        {user && (
-                          <NegativeBalanceBanner
-                            userId={user.id}
-                            negativeBalance={Number(profile?.negative_balance ?? 0)}
-                          />
-                        )}
-                        {user && (
-                          <EarningsPanel userId={user.id} paymentsConfigured={!!profile.stripe_onboarding_complete} />
-                        )}
-                      </div>
-              </div>
-              </div>
-            )}
+              );
+            })()}
 
             {activeSection === "propositions" && (
               loadingProposals ? (
