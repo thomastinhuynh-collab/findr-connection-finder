@@ -9,7 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { CATEGORIES } from "@/lib/categories";
 import { formatPrice } from "@/lib/fees";
 import {
-  classifySearchTab, ongoingNeedsAction, primaryAction, searchRank, sortSearchRows,
+  classifySearchTab, ongoingNeedsAction, primaryAction, searchRank, showsSearcherBadge, sortSearchRows,
   type BuyrSearchFlags, type SearchTab,
 } from "@/lib/buyrSearchRows";
 
@@ -106,6 +106,7 @@ const BuyrSearchesPanel = ({ searches, tab, onTabChange }: { searches: BuyrSearc
     const href: Record<string, string> = {
       pay: `/recherche/${s.id}?payer=${s.pay_proposal_id ?? ""}`,
       proposals: `/recherche/${s.id}`,
+      view: `/recherche/${s.id}`,
       label: `/transaction/${s.transaction_id}`,
       receipt: `/transaction/${s.transaction_id}`,
       transaction: `/transaction/${s.transaction_id}`,
@@ -125,6 +126,11 @@ const BuyrSearchesPanel = ({ searches, tab, onTabChange }: { searches: BuyrSearc
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px]" style={{ color: "#5C5648" }}>
             <span className="rounded-full px-2 py-0.5 text-xs font-medium" style={{ backgroundColor: "#F5F1E8", color: NAVY }}>{categoryName(s.category)}</span>
             {b && <span>{b}</span>}
+            {showsSearcherBadge(r) && (
+              <span className="rounded-full px-2 py-0.5 text-xs font-medium" style={{ backgroundColor: "#EDEDED", color: "#374151" }}>
+                {t("mySpace.buyrSearches.searcherBadge")}
+              </span>
+            )}
             <span>{published(s.created_at)}</span>
           </div>
         </div>

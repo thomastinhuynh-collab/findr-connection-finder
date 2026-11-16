@@ -1272,7 +1272,8 @@
         "label": "Fournir l'étiquette",
         "receipt": "Confirmer la réception",
         "transaction": "Voir la transaction",
-        "edit": "Modifier"
+        "edit": "Modifier",
+        "view": "Voir la recherche"
       },
       "newProposals_one": "{{count}} nouvelle proposition",
       "newProposals_other": "{{count}} nouvelles propositions",
@@ -1283,7 +1284,17 @@
       "labelBanner": "Une vente attend ton étiquette",
       "budgetRange": "Budget : {{min}} à {{max}}",
       "budgetFrom": "Budget : dès {{min}}",
-      "published": "Publiée {{when}}"
+      "published": "Publiée {{when}}",
+      "searcherBadge": "Un findr cherche ton objet"
+    },
+    "sections": {
+      "nav": "Rubriques de Mon espace",
+      "today": "Aujourd'hui",
+      "searches": "Mes recherches",
+      "proposals": "Mes propositions",
+      "account": "Mon compte",
+      "actionCount": "{{count}} action(s) à faire",
+      "plainCount": "{{count}} élément(s)"
     }
   },
   "blog": {

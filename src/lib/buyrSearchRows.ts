@@ -1,6 +1,6 @@
 // Classement, tri et action principale des lignes de l'onglet « Mes recherches » (buyr).
 export type SearchTab = "active" | "ongoing" | "done" | "cancelled";
-export type PrimaryAction = "pay" | "proposals" | "label" | "receipt" | "transaction" | "edit";
+export type PrimaryAction = "pay" | "proposals" | "view" | "label" | "receipt" | "transaction" | "edit";
 
 /** Statuts d'une vente acceptée ET payée, pas encore finalisée → « Achats en cours ». */
 export const BUYR_ONGOING_STATUSES = [
@@ -53,7 +53,9 @@ export const primaryAction = (s: BuyrSearchFlags): PrimaryAction => {
   const tab = classifySearchTab(s.paidStatus);
   if (tab === "active") {
     if (s.paymentPending) return "pay";
-    if (s.unreadCount > 0 || s.recentReservation) return "proposals";
+    if (s.unreadCount > 0) return "proposals";
+    // Seul motif : un findr a réservé depuis moins de 48 h, aucune proposition n'attend.
+    if (s.recentReservation) return "view";
     return "edit";
   }
   if (tab === "ongoing") {
@@ -66,3 +68,6 @@ export const primaryAction = (s: BuyrSearchFlags): PrimaryAction => {
 /** Point doré sur « Achats en cours » : au moins une vente demande une action du buyr. */
 export const ongoingNeedsAction = (rows: BuyrSearchFlags[]): boolean =>
   rows.some((s) => classifySearchTab(s.paidStatus) === "ongoing" && (s.labelPending || s.receiptPending));
+
+/** Pastille grise « Un findr cherche ton objet » : la réservation récente est le seul motif d'action. */
+export const showsSearcherBadge = (s: BuyrSearchFlags): boolean => primaryAction(s) === "view";
