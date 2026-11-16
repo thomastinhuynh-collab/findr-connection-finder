@@ -101,7 +101,7 @@ const KeywordAlertsPanel = () => {
                 type="button"
                 onClick={() => handleRemove(a.id)}
                 aria-label={t("keywordAlerts.remove", { keyword: a.keyword })}
-                className="leading-none hover:opacity-70"
+                className="leading-none hover:opacity-70 inline-flex items-center justify-center min-w-[32px] min-h-[32px] -my-1.5 -mr-2"
                 style={{ color: "#6B7280", fontSize: 16 }}
               >
                 ×
