@@ -731,7 +731,7 @@ export function buildEmail(
             label: "Faire ma proposition",
             url: `${SITE_URL}/proposition/${esc(data.searchId ?? "")}`,
           },
-          secondary: { label: "Renouveler ma réservation", url: `${SITE_URL}/mon-espace` },
+          secondary: { label: "Renouveler ma réservation", url: `${SITE_URL}/recherche/${esc(data.searchId ?? "")}` },
         }),
       };
 

@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
         type: "balance_settled",
         title: "Montant à régulariser réglé",
         message: `Ton montant à régulariser (${moneyFr(settled)}) a été marqué comme réglé par l'équipe findr.`,
-        link: "/mon-espace",
+        link: "/mon-espace?section=compte#paiements",
       });
 
       console.log(`admin ${user.id} a réglé manuellement ${settled}€ pour findr ${body.findrId}`);

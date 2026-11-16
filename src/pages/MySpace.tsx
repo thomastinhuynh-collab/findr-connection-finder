@@ -30,6 +30,7 @@ import { awaitsDeliveryChoice } from "@/lib/deliveryChoice";
 import ShipFromCard from "@/components/ShipFromCard";
 import TodoNowBlock, { useTodoItems, ACCOUNT_TODO_KINDS } from "@/components/TodoNowBlock";
 import { resolveMySpaceLocation, MY_SPACE_SECTIONS, type MySpaceSection } from "@/lib/mySpaceSections";
+import MySpaceBottomBar from "@/components/MySpaceBottomBar";
 import OngoingSalesBlock from "@/components/OngoingSalesBlock";
 import { useTranslation } from "react-i18next";
 import ContainedPhoto from "@/components/ContainedPhoto";
@@ -815,7 +816,7 @@ const MySpace = () => {
     : "N/A";
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F5F1E8' }}>
+    <div className="min-h-screen max-[640px]:pb-[calc(72px+16px+68px+env(safe-area-inset-bottom))]" style={{ backgroundColor: '#F5F1E8' }}>
       <Navbar />
       
       <main className="pt-24 pb-16">
@@ -1093,7 +1094,7 @@ const MySpace = () => {
             </Dialog>
 
             {/* Navigation entre les rubriques */}
-            <nav aria-label={t("mySpace.sections.nav")} className="mb-6 border-b" style={{ borderColor: "#E5E1D8" }}>
+            <nav aria-label={t("mySpace.sections.nav")} className="mb-6 border-b max-[640px]:hidden" style={{ borderColor: "#E5E1D8" }}>
               <ul className="flex gap-1 overflow-x-auto whitespace-nowrap sm:gap-4" style={{ scrollbarWidth: "none" }}>
                 {MY_SPACE_SECTIONS.map((key) => {
                   const selected = activeSection === key;
@@ -1426,6 +1427,10 @@ const MySpace = () => {
       </main>
 
       <Footer />
+      <MySpaceBottomBar
+        active={activeSection}
+        actionCounts={{ aujourdhui: sectionCounts.aujourdhui.n, compte: sectionCounts.compte.n }}
+      />
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="sm:max-w-md">

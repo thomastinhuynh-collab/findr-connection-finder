@@ -1294,7 +1294,10 @@
       "proposals": "Mes propositions",
       "account": "Mon compte",
       "actionCount": "{{count}} action(s) à faire",
-      "plainCount": "{{count}} élément(s)"
+      "plainCount": "{{count}} élément(s)",
+      "mobileAccount": "Compte",
+      "bottomNav": "Navigation de Mon espace",
+      "post": "Poster une recherche"
     }
   },
   "blog": {
