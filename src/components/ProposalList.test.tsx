@@ -17,7 +17,7 @@ vi.mock("react-i18next", () => ({
         mocks.language === "fr" ? fr : en);
       if (typeof value !== "string") return key;
       return options
-        ? Object.entries(options).reduce((text, [k, v]) => text.replaceAll(`{{${k}}}`, String(v)), value)
+        ? Object.entries(options).reduce((text, [k, v]) => text.split(`{{${k}}}`).join(String(v)), value)
         : value;
     },
   }),
