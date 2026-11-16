@@ -37,13 +37,6 @@ import BuyrSearchesPanel from "@/components/BuyrSearchesPanel";
 import { classifySearchTab } from "@/lib/buyrSearchRows";
 
 type StripeSyncStatus = { complete: boolean; details_submitted: boolean; payouts_enabled: boolean; transfers: string | null };
-type TabKey = "recherches" | "propositions" | "favoris" | "gains";
-const TAB_GROUPS: { key: "seeker" | "finder"; tabs: TabKey[] }[] = [
-  { key: "seeker", tabs: ["recherches"] },
-  { key: "finder", tabs: ["propositions", "favoris", "gains"] },
-];
-const ALL_TABS: TabKey[] = TAB_GROUPS.flatMap((g) => g.tabs);
-
 const FindrEmptyState = ({ text }: { text: string }) => {
   const { t } = useTranslation();
   return (
