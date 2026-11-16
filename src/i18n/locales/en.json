@@ -1298,6 +1298,47 @@
       "mobileAccount": "Account",
       "bottomNav": "My account navigation",
       "post": "Post a search"
+    },
+    "findrProposals": {
+      "browse": "See buyrs' searches",
+      "filterGroup": "Filter my proposals",
+      "tabs": {
+        "pending": "Pending",
+        "ongoing": "Ongoing sales",
+        "done": "Finalised"
+      },
+      "help": {
+        "pending": "Your proposals awaiting the buyr's answer, or their payment after acceptance.",
+        "ongoing": "Sales where your proposal is accepted and paid. Manage the label, parcel drop-off and payout here.",
+        "done": "Your completed sales, with the history of your declined or cancelled proposals."
+      },
+      "final": {
+        "sold": "Sold",
+        "rejected": "Declined",
+        "cancelled": "Cancelled"
+      },
+      "proposedPrice": "Proposed price: {{amount}}",
+      "willReceive": "You will receive {{amount}}",
+      "received": "You received {{amount}}",
+      "buyer": "buyer: {{name}}",
+      "step": "Step {{n}} of {{total}}: {{name}}",
+      "state": {
+        "labelReceived": "Label received · drop off your parcel",
+        "awaitingLabel": "Waiting for their label",
+        "awaitingLabelLeft": "Waiting for their label · {{d}} d {{h}} h left",
+        "labelRefused": "Label declined · waiting for a new one",
+        "awaitingDelivery": "Waiting for their delivery choice",
+        "toShip": "Delivery chosen · ship your parcel",
+        "shipped": "Parcel shipped · on its way",
+        "delivered": "Parcel delivered · awaiting confirmation",
+        "payoutReview": "Payout under review",
+        "dispute": "Dispute in progress"
+      },
+      "actions": {
+        "viewLabel": "View the label",
+        "viewSale": "View the sale"
+      },
+      "empty": "No proposals here yet."
     }
   },
   "blog": {
