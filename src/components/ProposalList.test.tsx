@@ -3,6 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import fr from "@/i18n/locales/fr.json";
 import en from "@/i18n/locales/en.json";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import ProposalList from "./ProposalList";
 
 const mocks = vi.hoisted(() => ({ language: "fr" }));
@@ -72,6 +73,7 @@ describe("ProposalList product link", () => {
     mocks.language = language;
     render(
       <MemoryRouter>
+        <TooltipProvider>
         <ProposalList
           proposals={[proposalWithLink]}
           isOwner
@@ -80,6 +82,7 @@ describe("ProposalList product link", () => {
           isPremium={false}
           onProposalUpdate={() => {}}
         />
+        </TooltipProvider>
       </MemoryRouter>,
     );
     expect(screen.queryByRole("link", { name: /annonce|listing/i })).toBeNull();
