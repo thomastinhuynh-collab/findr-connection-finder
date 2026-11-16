@@ -68,7 +68,6 @@ const EditProposal = () => {
   const [brand, setBrand] = useState("");
   const [condition, setCondition] = useState("");
   const [description, setDescription] = useState("");
-  const [productLink, setProductLink] = useState("");
   const [parcelWeight, setParcelWeight] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [proposal, setProposal] = useState<ProposalData | null>(null);
@@ -140,7 +139,6 @@ const EditProposal = () => {
     setExistingImageUrls(proposalData.image_urls || []);
     setPrice(proposalData.proposed_price.toString());
     setDescription(proposalData.description || "");
-    setProductLink(proposalData.product_link || "");
     setParcelWeight((proposalData as any).parcel_weight_kg != null ? String(Number((proposalData as any).parcel_weight_kg)) : "");
     
     // Parse brand and condition from title if possible
@@ -286,7 +284,6 @@ const EditProposal = () => {
           description: description || null,
           proposed_price: parsedPrice,
           image_urls: allImageUrls,
-          product_link: productLink || null,
           parcel_weight_kg: Number(parcelWeight),
         } as any)
         .eq("id", id);
@@ -522,24 +519,6 @@ const EditProposal = () => {
             </div>
 
             <ParcelWeightField value={parcelWeight} onChange={setParcelWeight} />
-
-            {/* Product Link (optional) */}
-            <div className="bg-card border border-border rounded-2xl p-6">
-              <Label htmlFor="productLink" className="text-lg font-semibold text-primary flex items-center gap-2 mb-4">
-                <LinkIcon className="w-5 h-5 text-accent" />
-                 {t("proposalForm.productLink")}
-              </Label>
-              <Input
-                id="productLink"
-                type="url"
-                placeholder="https://..."
-                value={productLink}
-                onChange={(e) => setProductLink(e.target.value)}
-              />
-              <p className="text-xs text-muted-foreground mt-2">
-                 {t("proposalForm.productLinkHint")}
-              </p>
-            </div>
 
             {/* Description (optional) */}
             <div className="bg-card border border-border rounded-2xl p-6">
