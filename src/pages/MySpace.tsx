@@ -29,6 +29,7 @@ import { shouldShowShipFromActionBadge } from "@/lib/shipFrom";
 import { buyrMustProvideLabel } from "@/lib/buyrLabelAction";
 import { awaitsDeliveryChoice } from "@/lib/deliveryChoice";
 import ShipFromCard from "@/components/ShipFromCard";
+import TodoNowBlock from "@/components/TodoNowBlock";
 import { useTranslation } from "react-i18next";
 import ContainedPhoto from "@/components/ContainedPhoto";
 
@@ -1312,45 +1313,15 @@ const MySpace = () => {
             {/* Separator */}
             <div className="border-b mb-6" style={{ borderColor: '#E5E1D8' }} />
 
-            {/* Paiements — Stripe Connect (uniquement si une action est requise) */}
-            {needsStripeOnboarding(profile) && (
-              <div className="mb-6 rounded-xl p-5 bg-white" style={{ border: "1px solid #E5E1D8" }}>
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#FBF3E2" }}>
-                      <CreditCard className="w-5 h-5" style={{ color: "#8B6B1F" }} />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold" style={{ color: "#070E42" }}>{t("mySpace.payments.title")}</h3>
-                      <p className="text-sm" style={{ color: "#4B5563" }}>{t("mySpace.payments.description")}</p>
-                    </div>
-                  </div>
-                  {stripeVerifying ? (
-                    <p className="text-sm flex items-center" style={{ color: "#4B5563" }} role="status">
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.verifying")}
-                    </p>
-                  ) : profile.stripe_account_id && stripeStatus?.details_submitted ? (
-                    <div className="flex flex-wrap items-center gap-3">
-                      <p className="text-sm" style={{ color: "#4B5563" }} role="status">{t("mySpace.payments.underReview")}</p>
-                      <Button variant="outline" onClick={() => runStripeVerification(false)}>
-                        {t("mySpace.payments.checkAgain")}
-                      </Button>
-                    </div>
-                  ) : (
-                  <Button onClick={() => setStripeModalOpen(true)} disabled={stripeLoading} style={{ backgroundColor: "#070E42", color: "#F5F0EA" }}>
-                    {stripeLoading ? (
-                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.redirecting")}</>
-                    ) : (
-                      <><CreditCard className="w-4 h-4 mr-2" />{t(profile.stripe_account_id ? "mySpace.payments.resume" : "mySpace.payments.setup")}</>
-                    )}
-                  </Button>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Adresse d'expédition du findr (expéditeur des étiquettes) */}
-            <ShipFromCard key={profile.ship_from_updated_at ?? "new"} profile={profile} onSaved={fetchProfile} />
+            <TodoNowBlock
+              userId={user.id}
+              profile={profile}
+              onStripe={() => setStripeModalOpen(true)}
+              onShipFrom={() => {
+                selectTab("gains");
+                setTimeout(() => document.getElementById("ship-from-card")?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+              }}
+            />
 
             {/* Modale d'information avant redirection Stripe */}
             <Dialog open={stripeModalOpen} onOpenChange={setStripeModalOpen}>
@@ -1450,6 +1421,45 @@ const MySpace = () => {
             <div role="tabpanel" id={`tabpanel-${activeTab}`} aria-labelledby={`tab-${activeTab}`} tabIndex={0} className="focus-visible:outline-none">
             {activeTab === "gains" && (
               <div className="space-y-5">
+            {/* Paiements — Stripe Connect (uniquement si une action est requise) */}
+            {needsStripeOnboarding(profile) && (
+              <div id="payments-card" className="mb-6 scroll-mt-28 rounded-xl p-5 bg-white" style={{ border: "1px solid #E5E1D8" }}>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#FBF3E2" }}>
+                      <CreditCard className="w-5 h-5" style={{ color: "#8B6B1F" }} />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold" style={{ color: "#070E42" }}>{t("mySpace.payments.title")}</h3>
+                      <p className="text-sm" style={{ color: "#4B5563" }}>{t("mySpace.payments.description")}</p>
+                    </div>
+                  </div>
+                  {stripeVerifying ? (
+                    <p className="text-sm flex items-center" style={{ color: "#4B5563" }} role="status">
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.verifying")}
+                    </p>
+                  ) : profile.stripe_account_id && stripeStatus?.details_submitted ? (
+                    <div className="flex flex-wrap items-center gap-3">
+                      <p className="text-sm" style={{ color: "#4B5563" }} role="status">{t("mySpace.payments.underReview")}</p>
+                      <Button variant="outline" onClick={() => runStripeVerification(false)}>
+                        {t("mySpace.payments.checkAgain")}
+                      </Button>
+                    </div>
+                  ) : (
+                  <Button onClick={() => setStripeModalOpen(true)} disabled={stripeLoading} style={{ backgroundColor: "#070E42", color: "#F5F0EA" }}>
+                    {stripeLoading ? (
+                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" />{t("mySpace.payments.redirecting")}</>
+                    ) : (
+                      <><CreditCard className="w-4 h-4 mr-2" />{t(profile.stripe_account_id ? "mySpace.payments.resume" : "mySpace.payments.setup")}</>
+                    )}
+                  </Button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Adresse d'expédition du findr (expéditeur des étiquettes) */}
+            <div id="ship-from-card" className="scroll-mt-28"><ShipFromCard key={profile.ship_from_updated_at ?? "new"} profile={profile} onSaved={fetchProfile} /></div>
                 {profile.stripe_onboarding_complete && (
                   <p className="text-sm font-medium" style={{ color: "#1F6B47" }}>
                     ✓ {t("mySpace.tabs.paymentsConfigured")}
