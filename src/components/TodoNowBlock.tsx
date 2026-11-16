@@ -11,16 +11,14 @@ import { splitTodos, daysLeft, daysAgo, type TodoItem } from "@/lib/todoActions"
 const PAID = ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine"];
 
 interface Props {
-  userId: string;
-  profile: any;
-  refreshKey?: number;
+  items: TodoItem[] | null;
   onStripe: () => void;
   onShipFrom: () => void;
 }
 
 const firstName = (n?: string | null) => (n || "").trim().split(" ")[0] || "";
 
-async function loadTodos(userId: string, profile: any): Promise<TodoItem[]> {
+export async function loadTodos(userId: string, profile: any): Promise<TodoItem[]> {
   const items: TodoItem[] = [];
   const [{ data: buyRes }, { data: findRes }, { data: mySearches }, { data: msgs }, { count: findrSales }] = await Promise.all([
     supabase.from("reservations")
@@ -97,18 +95,26 @@ async function loadTodos(userId: string, profile: any): Promise<TodoItem[]> {
   return items;
 }
 
-const TodoNowBlock = ({ userId, profile, refreshKey = 0, onStripe, onShipFrom }: Props) => {
-  const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
+/** Actions « À faire maintenant » ; partagé par le bloc et les chiffres de la navigation. */
+export function useTodoItems(userId: string | undefined, profile: any, refreshKey = 0) {
   const [items, setItems] = useState<TodoItem[] | null>(null);
-  const [expanded, setExpanded] = useState(false);
-
   useEffect(() => {
+    if (!userId || !profile) return;
     let alive = true;
     loadTodos(userId, profile).then((r) => alive && setItems(r)).catch(() => alive && setItems([]));
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, refreshKey, profile?.stripe_onboarding_complete, profile?.ship_from_updated_at]);
+  }, [userId, !!profile, refreshKey, profile?.stripe_onboarding_complete, profile?.ship_from_updated_at]);
+  return items;
+}
+
+/** Actions du compte (adresse d'expédition, inscription Stripe). */
+export const ACCOUNT_TODO_KINDS = ["shipFrom", "stripe"];
+
+const TodoNowBlock = ({ items, onStripe, onShipFrom }: Props) => {
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const [expanded, setExpanded] = useState(false);
 
   if (!items) return null;
   const { visible, hiddenCount, total } = splitTodos(items, expanded);
