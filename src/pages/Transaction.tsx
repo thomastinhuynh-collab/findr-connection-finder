@@ -1,5 +1,6 @@
 // Page de transaction : une page par achat/vente, visible uniquement
 // par le buyr et le findr de la réservation (RLS côté serveur).
+import { computeSaleSteps } from "@/lib/saleSteps";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -285,17 +286,15 @@ const Transaction = () => {
     .filter(Boolean)
     .join(" ");
 
-  // Frise d'avancement en six étapes
-  const paid = PAID_STATUSES.includes(ps);
+  // Frise d'avancement : 5 étapes (parcours étiquette) ou 6 (ancien parcours), module partagé.
+  const saleSteps = computeSaleSteps(reservation);
+  const paid = saleSteps.done[0];
+  const stepDone = saleSteps.done;
+  const currentStep = saleSteps.current;
+  const STEP_KEYS = saleSteps.keys;
   const shipped = paid && (!!reservation.shipped_at || ["expedie", "livre", "versement_en_revue", "termine"].includes(ps));
-  // Parcours étiquette : le buyr a choisi sa livraison chez le transporteur en achetant l'étiquette.
-  const deliveryChosen = paid && (!!reservation.delivery_type || !!reservation.label_provided_at || shipped);
-  const arrived = !!reservation.delivered_at || ["livre", "termine"].includes(ps);
-  const received = ps === "termine" || (ps === "versement_en_revue" && !reservation.tracking_review_notified_at);
   const payoutDone = ps === "termine";
-  const stepDone = [paid, deliveryChosen, shipped, arrived, received, payoutDone];
-  const currentStep = stepDone.findIndex((d) => !d);
-  const STEP_KEYS = ["paid", "deliveryChosen", "toShip", "enRoute", "received", "payout"] as const;
+  const stepPrefix = saleSteps.labelFlow ? "saleSteps.label" : "transaction.steps";
 
   // Annulation buyr : 5 jours sans expédition, 10 jours après expédition jamais livrée.
   const cancelUnlockAt = () => {
@@ -381,7 +380,7 @@ const Transaction = () => {
         </header>
 
         {/* Frise d'avancement */}
-        <ol className="grid grid-cols-3 sm:grid-cols-6 gap-y-4" aria-label={t("transaction.title")}>
+        <ol className={`grid grid-cols-3 ${saleSteps.labelFlow ? "sm:grid-cols-5" : "sm:grid-cols-6"} gap-y-4`} aria-label={t("transaction.title")}>
           {STEP_KEYS.map((key, i) => {
             const done = stepDone[i];
             const current = i === currentStep;
@@ -410,7 +409,7 @@ const Transaction = () => {
                     color: done || current ? NAVY : "#9A9284",
                   }}
                 >
-                  {t(`transaction.steps.${key}`)}
+                  {t(`${stepPrefix}.${key}`)}
                 </span>
               </li>
             );

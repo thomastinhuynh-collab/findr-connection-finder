@@ -1778,5 +1778,29 @@
       "context": "Pour recevoir l'argent de tes ventes",
       "button": "Terminer mon inscription"
     }
+  },
+  "saleSteps": {
+    "label": {
+      "payment": "Paiement",
+      "label": "Étiquette",
+      "shipping": "Expédition",
+      "reception": "Réception",
+      "payout": "Versement"
+    },
+    "legacy": {
+      "paid": "Payé",
+      "deliveryChosen": "Livraison choisie",
+      "toShip": "À expédier",
+      "enRoute": "En route",
+      "received": "Reçu",
+      "payout": "Versement"
+    }
+  },
+  "ongoingSales": {
+    "title": "Achats et ventes en cours",
+    "buying": "Tu achètes",
+    "selling": "Tu vends",
+    "step": "étape {{n}} sur {{total}} : {{name}}",
+    "open": "Ouvrir"
   }
 }

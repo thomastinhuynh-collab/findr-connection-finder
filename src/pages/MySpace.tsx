@@ -30,6 +30,7 @@ import { buyrMustProvideLabel } from "@/lib/buyrLabelAction";
 import { awaitsDeliveryChoice } from "@/lib/deliveryChoice";
 import ShipFromCard from "@/components/ShipFromCard";
 import TodoNowBlock from "@/components/TodoNowBlock";
+import OngoingSalesBlock from "@/components/OngoingSalesBlock";
 import { useTranslation } from "react-i18next";
 import ContainedPhoto from "@/components/ContainedPhoto";
 
@@ -1322,6 +1323,8 @@ const MySpace = () => {
                 setTimeout(() => document.getElementById("ship-from-card")?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
               }}
             />
+
+            <OngoingSalesBlock userId={user.id} />
 
             {/* Modale d'information avant redirection Stripe */}
             <Dialog open={stripeModalOpen} onOpenChange={setStripeModalOpen}>

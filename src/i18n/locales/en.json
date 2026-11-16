@@ -1778,5 +1778,29 @@
       "context": "To receive the money from your sales",
       "button": "Finish my sign-up"
     }
+  },
+  "saleSteps": {
+    "label": {
+      "payment": "Payment",
+      "label": "Label",
+      "shipping": "Shipping",
+      "reception": "Receipt",
+      "payout": "Payout"
+    },
+    "legacy": {
+      "paid": "Paid",
+      "deliveryChosen": "Delivery chosen",
+      "toShip": "To ship",
+      "enRoute": "On its way",
+      "received": "Received",
+      "payout": "Payout"
+    }
+  },
+  "ongoingSales": {
+    "title": "Purchases and sales in progress",
+    "buying": "You're buying",
+    "selling": "You're selling",
+    "step": "step {{n}} of {{total}}: {{name}}",
+    "open": "Open"
   }
 }
