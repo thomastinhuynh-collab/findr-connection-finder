@@ -786,18 +786,6 @@ const ProposalList = ({
 
 
 
-                  {proposal.product_link && (
-                    <a
-                      href={proposal.product_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-accent hover:underline flex items-center gap-1"
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                      Voir l'annonce
-                    </a>
-                  )}
-
                   {/* Edit button for findr */}
                   {user?.id === proposal.findr_id && proposal.status === "pending" && (
                     <Button
@@ -1072,19 +1060,6 @@ const ProposalList = ({
                      {({ description }) => <p className="text-muted-foreground whitespace-pre-wrap">{description}</p>}
                    </TranslatedContent>
                 </div>
-              )}
-
-              {/* Product Link */}
-              {selectedProposal.product_link && (
-                <a
-                  href={selectedProposal.product_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-accent hover:underline bg-accent/10 rounded-lg p-3"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Voir l'annonce originale
-                </a>
               )}
 
               {/* Price Breakdown Preview */}
