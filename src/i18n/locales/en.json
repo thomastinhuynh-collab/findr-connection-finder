@@ -1720,5 +1720,65 @@
     "history": "Carrier updates",
     "noEvents": "No information from the carrier yet.",
     "testEvent": "test"
+  },
+  "todoNow": {
+    "count_one": "1 thing is waiting for you.",
+    "count_other": "{{count}} things are waiting for you.",
+    "emptyTitle": "You're all caught up.",
+    "emptyText": "Nothing is waiting for you right now. You can look for an item or offer yours.",
+    "post": "Post a search",
+    "browse": "See buyrs' searches",
+    "more_one": "See my other action →",
+    "more_other": "See my {{count}} other actions →",
+    "objectFallback": "Your item",
+    "findrFallback": "your findr",
+    "someoneFallback": "your contact",
+    "dueToday": "last day today",
+    "daysLeft_one": "1 day left",
+    "daysLeft_other": "{{count}} days left",
+    "label": {
+      "title": "Provide the shipping label",
+      "button": "Provide the label"
+    },
+    "receipt": {
+      "title": "Confirm you received your parcel",
+      "button": "Confirm receipt",
+      "deliveredToday": "delivered today",
+      "deliveredYesterday": "delivered yesterday",
+      "deliveredAgo": "delivered {{count}} days ago",
+      "shippedToday": "shipped today",
+      "shippedYesterday": "shipped yesterday",
+      "shippedAgo": "shipped {{count}} days ago"
+    },
+    "pay": {
+      "title": "Complete your payment",
+      "context": "offer from {{name}}",
+      "button": "Pay"
+    },
+    "review": {
+      "title": "New offer to review",
+      "button": "See the offer"
+    },
+    "dropoff": {
+      "title": "Drop off your parcel with the carrier",
+      "context": "before {{date}}",
+      "button": "See the label"
+    },
+    "message": {
+      "title": "Reply to {{name}}",
+      "context_one": "1 unread message",
+      "context_other": "{{count}} unread messages",
+      "button": "Open the message"
+    },
+    "shipFrom": {
+      "title": "Add your shipping address",
+      "context": "So the label for your sales can be created",
+      "button": "Add my address"
+    },
+    "stripe": {
+      "title": "Finish your Stripe sign-up",
+      "context": "To receive the money from your sales",
+      "button": "Finish my sign-up"
+    }
   }
 }
