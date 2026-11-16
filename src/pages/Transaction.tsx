@@ -292,6 +292,8 @@ const Transaction = () => {
   const stepDone = saleSteps.done;
   const currentStep = saleSteps.current;
   const STEP_KEYS = saleSteps.keys;
+  const shipped = paid && (!!reservation.shipped_at || ["expedie", "livre", "versement_en_revue", "termine"].includes(ps));
+  const payoutDone = ps === "termine";
   const stepPrefix = saleSteps.labelFlow ? "saleSteps.label" : "transaction.steps";
 
   // Annulation buyr : 5 jours sans expédition, 10 jours après expédition jamais livrée.
@@ -378,7 +380,7 @@ const Transaction = () => {
         </header>
 
         {/* Frise d'avancement */}
-        <ol className="`grid grid-cols-3 ${saleSteps.labelFlow ? "sm:grid-cols-5" : "sm:grid-cols-6"} gap-y-4`} aria-label={t("transaction.title")}>
+        <ol className={`grid grid-cols-3 ${saleSteps.labelFlow ? "sm:grid-cols-5" : "sm:grid-cols-6"} gap-y-4`} aria-label={t("transaction.title")}>
           {STEP_KEYS.map((key, i) => {
             const done = stepDone[i];
             const current = i === currentStep;
