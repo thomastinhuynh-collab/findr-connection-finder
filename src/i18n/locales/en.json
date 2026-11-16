@@ -1336,7 +1336,8 @@
       },
       "actions": {
         "viewLabel": "View the label",
-        "viewSale": "View the sale"
+        "viewSale": "View the sale",
+        "viewSearch": "View the search"
       },
       "empty": "No proposals here yet."
     }

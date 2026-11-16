@@ -35,6 +35,8 @@ import OngoingSalesBlock from "@/components/OngoingSalesBlock";
 import { useTranslation } from "react-i18next";
 import ContainedPhoto from "@/components/ContainedPhoto";
 import BuyrSearchesPanel from "@/components/BuyrSearchesPanel";
+import FindrProposalsPanel from "@/components/FindrProposalsPanel";
+import type { ProposalTab } from "@/lib/findrProposalRows";
 import { classifySearchTab } from "@/lib/buyrSearchRows";
 
 type StripeSyncStatus = { complete: boolean; details_submitted: boolean; payouts_enabled: boolean; transfers: string | null };
@@ -157,6 +159,7 @@ const MySpace = () => {
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
   const [savingProfile, setSavingProfile] = useState(false);
   const [myProposals, setMyProposals] = useState<any[]>([]);
+  const [proposalTab, setProposalTab] = useState<ProposalTab>("pending");
   const [loadingProposals, setLoadingProposals] = useState(false);
   const PANEL_PAGE_SIZE = 20;
   const [hasMoreProposals, setHasMoreProposals] = useState(false);
@@ -331,12 +334,33 @@ const MySpace = () => {
       .select("id, title, description, proposed_price, image_urls, status, created_at, search_id, source_lang")
       .eq("findr_id", user.id)
       .order("created_at", { ascending: false })
-      .range(from, from + PANEL_PAGE_SIZE - 1);
-
+      .limit(500);
     const rows = data || [];
-    setHasMoreProposals(rows.length === PANEL_PAGE_SIZE);
+    setHasMoreProposals(false);
     const withSearch = await enrichProposals(rows);
-    setMyProposals((prev) => (append ? [...prev, ...withSearch] : withSearch));
+    const ids = rows.map((r) => r.id);
+    const { data: resRows } = ids.length
+      ? await supabase.from("reservations")
+          .select("id, proposal_id, payment_status, delivery_type, label_provided_at, label_deadline_at, shipped_at, delivered_at, tracking_review_notified_at, dispute_open, object_price, findr_fee, updated_at")
+          .eq("findr_id", user.id).in("proposal_id", ids).order("updated_at", { ascending: false })
+      : { data: [] as any[] };
+    const resByProposal = new Map<string, any>();
+    for (const r of resRows || []) {
+      const prev = resByProposal.get(r.proposal_id);
+      if (!prev || (prev.payment_status === "annule" && r.payment_status !== "annule")) resByProposal.set(r.proposal_id, r);
+    }
+    setMyProposals(withSearch.map((p: any) => {
+      const r = resByProposal.get(p.id);
+      return {
+        ...p, proposalStatus: p.status, image_url: p.image_urls?.[0] ?? null, category: p.search?.category ?? null,
+        buyr_first_name: p.search?.owner_name ? String(p.search.owner_name).trim().split(/\s+/)[0] : null,
+        reservation_id: r?.id ?? null, payment_status: r?.payment_status ?? null, delivery_type: r?.delivery_type ?? null,
+        label_provided_at: r?.label_provided_at ?? null, label_deadline_at: r?.label_deadline_at ?? null,
+        shipped_at: r?.shipped_at ?? null, delivered_at: r?.delivered_at ?? null,
+        tracking_review_notified_at: r?.tracking_review_notified_at ?? null, dispute_open: r?.dispute_open ?? false,
+        object_price: r?.object_price ?? null, findr_fee: r?.findr_fee ?? null,
+      };
+    }));
     setLoadingProposals(false);
     setLoadingMoreProposals(false);
   };
@@ -344,7 +368,7 @@ const MySpace = () => {
   const enrichProposals = async (rows: any[]) => {
     const searchIds = [...new Set(rows.map((p) => p.search_id))];
     const { data: searchRows } = searchIds.length
-      ? await supabase.from("searches").select("id, title, description, source_lang, user_id").in("id", searchIds)
+      ? await supabase.from("searches").select("id, title, description, source_lang, user_id, category").in("id", searchIds)
       : { data: [] as any[] };
     const ownerIds = [...new Set((searchRows || []).map((r: any) => r.user_id))];
     const { data: ownerRows } = ownerIds.length
@@ -1272,106 +1296,13 @@ const MySpace = () => {
             )}
 
             {activeSection === "propositions" && (
-              <>
-                {myProposals.length > 0 && (
-                  <div className="grid grid-cols-3 gap-3 mb-5">
-                    {([
-                      ["pending", myProposals.filter((p) => p.status === "pending").length],
-                      ["accepted", myProposals.filter((p) => p.status === "accepted_pending" || p.status === "completed").length],
-                      ["rejected", myProposals.filter((p) => p.status === "rejected").length],
-                    ] as const).map(([k, n]) => (
-                      <div key={k} className="rounded-lg p-3 text-center bg-white" style={{ border: "1px solid #E5E1D8" }}>
-                        <p className="text-xl font-bold" style={{ color: "#070E42" }}>{n}</p>
-                        <p className="text-xs" style={{ color: "#6B7280" }}>{t(`mySpace.tabs.stats.${k}`)}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {loadingProposals ? (
-                  <div className="py-12 text-center" style={{ color: '#6B7280' }}>{t("common.loading")}</div>
-                ) : myProposals.length === 0 && actionProposals.length === 0 ? (
-                  <FindrEmptyState text={t("mySpace.tabs.empty.propositions")} />
-                ) : (
-
-                        <div className="space-y-3">
-                          {[...actionProposals, ...myProposals.filter((p) => !actionProposals.some((a) => a.id === p.id))].map((p) => {
-                            const statusMap: Record<string, { label: string; bg: string; color: string }> = {
-                              pending: { label: t("mySpace.proposalStatus.pending"), bg: "#FBF3E2", color: "#8B6B1F" },
-                              accepted_pending: { label: t("mySpace.proposalStatus.accepted_pending"), bg: "#E8F1EC", color: "#1F6B47" },
-                              completed: { label: t("mySpace.proposalStatus.completed"), bg: "#EDEDED", color: "#4B5563" },
-                              rejected: { label: t("mySpace.proposalStatus.rejected"), bg: "#FEF1EA", color: "#993C1D" },
-                            };
-                            const st = statusMap[p.status] || { label: p.status, bg: "#F0EBE3", color: "#6B7280" };
-                            return (
-                              <div
-                                key={p.id}
-                                className="flex gap-3 bg-white rounded-lg border overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-                                style={{ borderColor: '#E5E1D8' }}
-                                onClick={() => p.search && navigate(`/recherche/${p.search.id}`)}
-                              >
-                                <div className="w-24 h-24 flex-shrink-0" style={{ backgroundColor: '#F0EBE3' }}>
-                                  {p.image_urls?.[0] ? (
-                                    <ContainedPhoto src={p.image_urls[0]} alt={p.title} />
-                                  ) : (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                      <Package className="w-6 h-6" style={{ color: '#D9BB87' }} />
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="flex-1 py-3 pr-3 min-w-0">
-                                  <div className="flex items-start justify-between gap-2">
-                                    <span
-                                      className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-                                      style={{ backgroundColor: st.bg, color: st.color }}
-                                    >
-                                      {st.label}
-                                    </span>
-                                    {findrActionByProposal[p.id] && (
-                                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: "#D9BB87", color: "#070E42" }}>
-                                        {t(`mySpace.tabs.action.${findrActionByProposal[p.id]}`)}
-                                      </span>
-                                    )}
-                                    <span className="flex items-center gap-1 font-bold text-sm" style={{ color: '#070E42' }}>
-                                      <Euro className="w-3.5 h-3.5" />
-                                      {p.proposed_price}
-                                    </span>
-                                  </div>
-                                   <TranslatedContent type="proposal" id={p.id} title={p.title} description={p.description} sourceLang={p.source_lang}>
-                                     {({ title }) => <h3 className="font-semibold text-sm mt-1 line-clamp-1" style={{ color: '#070E42' }}>{title}</h3>}
-                                   </TranslatedContent>
-                                  {p.search && (
-                                    <p className="text-xs mt-0.5 line-clamp-1" style={{ color: '#6B7280' }}>
-                                      {t("mySpace.forSearch", { title: p.search.title })}
-                                    </p>
-                                  )}
-                                  {p.search?.owner_name && (
-                                    <p className="text-xs mt-0.5" style={{ color: '#6B7280' }}>
-                                      {t("mySpace.requestedBy", { name: p.search.owner_name })}
-                                    </p>
-                                  )}
-                                  <p className="text-[11px] mt-1" style={{ color: '#9CA3AF' }}>
-                                    {new Date(p.created_at).toLocaleDateString(i18n.language)}
-                                  </p>
-                                </div>
-                              </div>
-                            );
-                          })}
-                          {hasMoreProposals && (
-                            <div className="flex justify-center pt-1">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                disabled={loadingMoreProposals}
-                                onClick={() => fetchMyProposals(myProposals.length, true)}
-                              >
-                                {loadingMoreProposals ? t("common.loading") : t("mySpace.loadMore")}
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      )
-                }
-              </>
+              loadingProposals ? (
+                <div className="py-12 text-center" style={{ color: '#6B7280' }}>{t("common.loading")}</div>
+              ) : myProposals.length === 0 ? (
+                <FindrEmptyState text={t("mySpace.tabs.empty.propositions")} />
+              ) : (
+                <FindrProposalsPanel proposals={myProposals} tab={proposalTab} onTabChange={setProposalTab} />
+              )
             )}
 
             {activeSection === "recherches" && (

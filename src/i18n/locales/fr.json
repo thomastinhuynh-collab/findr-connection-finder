@@ -1336,7 +1336,8 @@
       },
       "actions": {
         "viewLabel": "Voir l'étiquette",
-        "viewSale": "Voir la vente"
+        "viewSale": "Voir la vente",
+        "viewSearch": "Voir la recherche"
       },
       "empty": "Aucune proposition ici pour l'instant."
     }

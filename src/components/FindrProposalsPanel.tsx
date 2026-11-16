@@ -88,7 +88,7 @@ const FindrProposalsPanel = ({ proposals, tab, onTabChange }: { proposals: Findr
     const idx = steps ? (steps.current === -1 ? steps.keys.length - 1 : steps.current) : 0;
     const left = state === "awaitingLabel" ? remainingParts(p.label_deadline_at) : null;
     const href = p.reservation_id && kind !== "pending" ? `/transaction/${p.reservation_id}` : `/recherche/${p.search_id}`;
-    const btnKey = urgent && p.label_provided_at ? "viewLabel" : "viewSale";
+    const btnKey = urgent && p.label_provided_at ? "viewLabel" : href.startsWith("/transaction") ? "viewSale" : "viewSearch";
     const cat = categoryName(p.category);
     return (
       <li key={p.id} className="flex flex-col gap-3 rounded-xl bg-white p-3 sm:flex-row sm:items-center sm:gap-4"
