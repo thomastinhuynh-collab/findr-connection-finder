@@ -46,7 +46,7 @@ import TrackingRecognition from "@/components/TrackingRecognition";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -189,6 +189,21 @@ const ProposalList = ({
     setShipDialogOpen(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shipRequest]);
+
+  // Ouverture de la fenêtre de paiement demandée depuis « À faire maintenant » (?payer=<proposition>)
+  const [payParams, setPayParams] = useSearchParams();
+  const payRequest = payParams.get("payer");
+  useEffect(() => {
+    if (!payRequest || !user || !isOwner) return;
+    const target = proposals.find((p) => p.id === payRequest && p.status === "accepted_pending");
+    if (!target) return;
+    setSelectedProposal(target);
+    setPaymentDialogOpen(true);
+    const next = new URLSearchParams(payParams);
+    next.delete("payer");
+    setPayParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payRequest, proposals, user, isOwner]);
 
   const handleAccept = async (proposal: Proposal) => {
     setSelectedProposal(proposal);
