@@ -60,3 +60,20 @@ describe("ongoingNeedsAction", () => {
     expect(ongoingNeedsAction([base({ paidStatus: "expedie", receiptPending: true })])).toBe(true);
   });
 });
+
+describe("réservation récente sans proposition en attente", () => {
+  const flags = (o: Partial<import("./buyrSearchRows").BuyrSearchFlags>) => ({
+    created_at: "2026-01-01T00:00:00Z", paidStatus: null, paymentPending: false, recentReservation: false,
+    unreadCount: 0, labelPending: false, receiptPending: false, hasTransaction: false, ...o,
+  });
+  it("affiche « Voir la recherche » et la pastille grise", async () => {
+    const { primaryAction, showsSearcherBadge } = await import("./buyrSearchRows");
+    expect(primaryAction(flags({ recentReservation: true }))).toBe("view");
+    expect(showsSearcherBadge(flags({ recentReservation: true }))).toBe(true);
+  });
+  it("garde « Voir les propositions » quand des propositions attendent", async () => {
+    const { primaryAction, showsSearcherBadge } = await import("./buyrSearchRows");
+    expect(primaryAction(flags({ recentReservation: true, unreadCount: 2 }))).toBe("proposals");
+    expect(showsSearcherBadge(flags({ recentReservation: true, unreadCount: 2 }))).toBe(false);
+  });
+});

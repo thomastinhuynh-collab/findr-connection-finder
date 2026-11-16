@@ -1272,7 +1272,8 @@
         "label": "Provide the label",
         "receipt": "Confirm receipt",
         "transaction": "See the transaction",
-        "edit": "Edit"
+        "edit": "Edit",
+        "view": "View the search"
       },
       "newProposals_one": "{{count}} new proposal",
       "newProposals_other": "{{count}} new proposals",
@@ -1283,7 +1284,17 @@
       "labelBanner": "A sale is waiting for your label",
       "budgetRange": "Budget: {{min}} to {{max}}",
       "budgetFrom": "Budget: from {{min}}",
-      "published": "Posted {{when}}"
+      "published": "Posted {{when}}",
+      "searcherBadge": "A findr is looking for your item"
+    },
+    "sections": {
+      "nav": "My account sections",
+      "today": "Today",
+      "searches": "My searches",
+      "proposals": "My proposals",
+      "account": "My account",
+      "actionCount": "{{count}} action(s) to do",
+      "plainCount": "{{count}} item(s)"
     }
   },
   "blog": {
