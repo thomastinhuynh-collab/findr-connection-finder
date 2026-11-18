@@ -60,12 +60,14 @@ const KeywordAlertsPanel = () => {
           onChange={(e) => setValue(e.target.value)}
           placeholder={t("keywordAlerts.placeholder")}
           maxLength={60}
+          className="h-11"
           disabled={limitReached}
           style={{ borderColor: "#E5E1D8" }}
         />
         <Button
           type="submit"
           size="sm"
+          className="min-h-11"
           disabled={limitReached || saving || value.trim().length < 2}
           style={{ backgroundColor: GOLD, color: NAVY }}
         >

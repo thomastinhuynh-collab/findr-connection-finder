@@ -48,7 +48,7 @@ const FindrEmptyState = ({ text }: { text: string }) => {
   return (
     <div className="py-12 text-center rounded-xl" style={{ border: "1px dashed #D4CCBC", backgroundColor: "#FAF7F2" }}>
       <p className="mb-4 text-sm max-w-md mx-auto" style={{ color: "#374151" }}>{text}</p>
-      <Link to="/je-deviens-findr" className="text-sm font-semibold underline-offset-4 hover:underline" style={{ color: "#070E42" }}>
+      <Link to="/je-deviens-findr" className="inline-flex items-center min-h-11 text-sm font-semibold underline-offset-4 hover:underline" style={{ color: "#070E42" }}>
         {t("mySpace.tabs.empty.cta")} →
       </Link>
     </div>
@@ -942,7 +942,7 @@ const MySpace = () => {
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: 4,
-                        fontSize: 11,
+                        fontSize: 12,
                         color: '#1B7A4A',
                         backgroundColor: 'rgba(27,122,74,0.08)',
                         border: '1px solid rgba(27,122,74,0.25)',
@@ -959,7 +959,7 @@ const MySpace = () => {
                 {/* b. Rating line */}
                 <div className="flex items-center gap-2 mt-2">
                   {evaluations.length === 0 ? (
-                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>{t("mySpace.ui.noReviews")}</span>
+                    <span style={{ fontSize: 12, color: '#6B7280' }}>{t("mySpace.ui.noReviews")}</span>
                   ) : (
                     <>
                       <div className="flex">
@@ -984,7 +984,7 @@ const MySpace = () => {
                   )}
                   <Link
                     to={`/profil/${user?.id}/evaluations`}
-                    className="text-xs underline-offset-4 hover:underline"
+                    className="text-xs underline-offset-4 hover:underline inline-flex items-center min-h-11"
                     style={{ color: '#070E42', fontWeight: 500 }}
                   >
                     {t("mySpace.tabs.seeReviews")} →
@@ -996,7 +996,7 @@ const MySpace = () => {
                 <div className="mt-5">
                   <h3
                     className="text-xs font-semibold uppercase tracking-wider mb-2"
-                    style={{ color: '#D9BB87', letterSpacing: '0.08em' }}
+                    style={{ color: '#6B4F12', letterSpacing: '0.08em' }}
                   >
                     {t("mySpace.ui.about")}
                   </h3>
@@ -1024,7 +1024,7 @@ const MySpace = () => {
                       <button
                         type="button"
                         onClick={openEditProfile}
-                        className="mt-3 transition-colors"
+                        className="mt-3 transition-colors min-h-11"
                         style={{
                           backgroundColor: '#D9BB87',
                           border: '1.5px solid #D9BB87',
@@ -1048,7 +1048,7 @@ const MySpace = () => {
                 <button
                   type="button"
                   onClick={openEditProfile}
-                  className="mt-5 inline-flex items-center gap-1.5 transition-colors"
+                  className="mt-5 inline-flex items-center gap-1.5 transition-colors min-h-11"
                   style={{
                     border: '1.5px solid #070E42',
                     color: '#070E42',
@@ -1224,7 +1224,7 @@ const MySpace = () => {
                       {finalized.map((f) => (
                         <li key={f.id} className="flex items-center justify-between gap-3 p-3">
                           <div className="min-w-0">
-                            <p className="text-sm font-medium truncate" style={{ color: "#070E42" }}>{f.title}</p>
+                            <p className="text-sm font-medium break-words" style={{ color: "#070E42" }}>{f.title}</p>
                             {f.finalizedAt && <p className="text-xs" style={{ color: "#4B5563" }}>{t("mySpace.account.finalizedOn", { date: new Date(f.finalizedAt).toLocaleDateString(i18n.language) })}</p>}
                           </div>
                           <div className="text-right shrink-0">
@@ -1309,7 +1309,7 @@ const MySpace = () => {
                   <div className="flex gap-2">
                     <Link
                       to="/poster"
-                      className="inline-flex items-center transition-colors"
+                      className="inline-flex items-center transition-colors min-h-11"
                       style={{
                         backgroundColor: "#1B2A4A",
                         color: "#FFFFFF",

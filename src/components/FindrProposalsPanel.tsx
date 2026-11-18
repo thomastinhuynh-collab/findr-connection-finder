@@ -42,7 +42,7 @@ const FilterHelp = ({ tab }: { tab: ProposalTab }) => {
         className="absolute -top-2 -right-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1"
         style={{ outlineColor: NAVY }}
       >
-        <span aria-hidden="true" className="inline-flex h-[15px] w-[15px] items-center justify-center rounded-full bg-white text-[10px] font-semibold leading-none"
+        <span aria-hidden="true" className="inline-flex h-[18px] w-[18px] items-center justify-center rounded-full bg-white text-[12px] font-semibold leading-none"
           style={{ border: `1px solid ${NAVY}`, color: NAVY }}>?</span>
       </PopoverTrigger>
       <PopoverContent side={isMobile ? "top" : "bottom"} align={isMobile ? "center" : "end"} collisionPadding={8}
@@ -157,7 +157,7 @@ const FindrProposalsPanel = ({ proposals, tab, onTabChange }: { proposals: Findr
           const active = tab === key;
           return (
             <div key={key} ref={(el) => (tabRefs.current[key] = el)} className="relative shrink-0 basis-[42%] sm:basis-auto">
-              <button type="button" aria-pressed={active} onClick={() => onTabChange(key)}
+              <button type="button" aria-pressed={active} aria-current={active ? "true" : undefined} onClick={() => onTabChange(key)}
                 className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-full py-2 pl-4 pr-6 text-[13px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                 style={{ fontWeight: active ? 600 : 500, backgroundColor: active ? NAVY : "#FFFFFF", color: active ? "#FFFFFF" : NAVY, border: `1px solid ${active ? NAVY : "rgba(7,14,66,0.2)"}`, outlineColor: NAVY }}>
                 {t(`mySpace.findrProposals.tabs.${key}`)}

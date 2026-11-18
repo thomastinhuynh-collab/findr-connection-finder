@@ -106,7 +106,7 @@ const ShipFromCard = ({ profile, onSaved }: { profile: Profile; onSaved: () => v
                   <button
                     type="button"
                     aria-label={t("shipFrom.info")}
-                    className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-muted-foreground/50 text-[10px] font-semibold leading-none text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-muted-foreground/50 text-[12px] font-semibold leading-none text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     ?
                   </button>
@@ -127,7 +127,7 @@ const ShipFromCard = ({ profile, onSaved }: { profile: Profile; onSaved: () => v
           </div>
         </div>
         {saved && !editing && (
-          <Button variant="outline" onClick={() => { setFields(fromProfile(profile)); setEditing(true); }}>
+          <Button variant="outline" className="min-h-11" onClick={() => { setFields(fromProfile(profile)); setEditing(true); }}>
             {t("shipFrom.edit")}
           </Button>
         )}
