@@ -1364,6 +1364,33 @@
       "shipToFill": "À renseigner",
       "shipSave": "Enregistrer mon adresse",
       "favTitle": "Favoris et alertes"
+    },
+    "debitDetail": {
+      "title": "Détail des montants à déduire",
+      "description": "Chaque ligne est un montant retiré de tes prochains versements.",
+      "empty": "Aucun détail disponible.",
+      "reasons": {
+        "chargeback": "Paiement contesté par l'acheteur",
+        "reversal": "Paiement annulé par la banque",
+        "remboursement_tardif": "Remboursement après ton versement",
+        "ajustement_admin": "Ajustement de l'équipe Findr"
+      },
+      "statuses": {
+        "en_attente": "À déduire",
+        "compense": "Déduit d'un versement",
+        "rembourse_manuellement": "Réglé",
+        "annule": "Annulé"
+      }
+    },
+    "states": {
+      "loadError": "Impossible de charger tes informations.",
+      "retry": "Réessayer",
+      "emptyFilter": "Rien ici pour le moment.",
+      "noSearchesTitle": "Tu n'as pas encore de recherche",
+      "noSearchesText": "Décris l'objet que tu cherches : photos, budget, état souhaité. Les findrs te proposent des objets qui correspondent.",
+      "noSearchesCta": "Poster ma première recherche",
+      "noProposalsTitle": "Tu n'as pas encore fait de proposition.",
+      "noProposalsText": "Trouve une recherche à laquelle répondre."
     }
   },
   "blog": {
@@ -1889,7 +1916,8 @@
       "title": "Termine ton inscription Stripe",
       "context": "Pour recevoir l'argent de tes ventes",
       "button": "Terminer mon inscription"
-    }
+    },
+    "heading": "À faire maintenant"
   },
   "saleSteps": {
     "label": {

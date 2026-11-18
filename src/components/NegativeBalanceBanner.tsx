@@ -13,19 +13,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatPrice } from "@/lib/fees";
 import { useTranslation } from "react-i18next";
 
-const REASON_LABELS: Record<string, string> = {
-  chargeback: "Contestation bancaire",
-  reversal: "Reversal bancaire",
-  remboursement_tardif: "Remboursement tardif",
-  ajustement_admin: "Ajustement",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  en_attente: "À déduire",
-  compense: "Déduit d'un versement",
-  rembourse_manuellement: "Réglé",
-  annule: "Annulé",
-};
+export const DEBIT_REASONS = ["chargeback", "reversal", "remboursement_tardif", "ajustement_admin"];
+export const DEBIT_STATUSES = ["en_attente", "compense", "rembourse_manuellement", "annule"];
 
 interface Debit {
   id: string;
@@ -87,9 +76,9 @@ const NegativeBalanceBanner = ({ userId, negativeBalance }: Props) => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Détail du montant à régulariser</DialogTitle>
+            <DialogTitle>{t("mySpace.debitDetail.title")}</DialogTitle>
             <DialogDescription>
-              Chaque ligne correspond à un montant à déduire de tes versements.
+              {t("mySpace.debitDetail.description")}
             </DialogDescription>
           </DialogHeader>
 
@@ -99,17 +88,17 @@ const NegativeBalanceBanner = ({ userId, negativeBalance }: Props) => {
             </div>
           ) : debits.length === 0 ? (
             <p className="py-6 text-center text-sm text-muted-foreground">
-              Aucun détail disponible.
+              {t("mySpace.debitDetail.empty")}
             </p>
           ) : (
             <div className="divide-y rounded-lg border">
               {debits.map((d) => (
                 <div key={d.id} className="p-3 flex flex-wrap items-center justify-between gap-2 text-sm">
-                  <span className="text-primary">{REASON_LABELS[d.reason] ?? d.reason}</span>
-                  <span className="font-medium">{formatPrice(Number(d.amount), "fr-FR")}</span>
-                  <Badge variant="outline">{STATUS_LABELS[d.status] ?? d.status}</Badge>
+                  <span className="text-primary">{DEBIT_REASONS.includes(d.reason) ? t(`mySpace.debitDetail.reasons.${d.reason}`) : d.reason}</span>
+                  <span className="font-medium">{formatPrice(Number(d.amount), i18n.language)}</span>
+                  <Badge variant="outline">{DEBIT_STATUSES.includes(d.status) ? t(`mySpace.debitDetail.statuses.${d.status}`) : d.status}</Badge>
                   <span className="text-xs text-muted-foreground">
-                    {new Date(d.created_at).toLocaleDateString("fr-FR")}
+                    {new Date(d.created_at).toLocaleDateString(i18n.language?.startsWith("en") ? "en-GB" : "fr-FR")}
                   </span>
                 </div>
               ))}

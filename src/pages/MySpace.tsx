@@ -30,6 +30,7 @@ import { shouldShowShipFromActionBadge } from "@/lib/shipFrom";
 import { buyrMustProvideLabel } from "@/lib/buyrLabelAction";
 import { awaitsDeliveryChoice } from "@/lib/deliveryChoice";
 import ShipFromCard from "@/components/ShipFromCard";
+import { EmptySection, LoadError, RowSkeletons } from "@/components/MySpaceStates";
 import TodoNowBlock, { useTodoItems, ACCOUNT_TODO_KINDS } from "@/components/TodoNowBlock";
 import { resolveMySpaceLocation, MY_SPACE_SECTIONS, type MySpaceSection } from "@/lib/mySpaceSections";
 import MySpaceBottomBar from "@/components/MySpaceBottomBar";
@@ -135,6 +136,9 @@ const MySpace = () => {
   const stripeAutoSynced = useRef(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [searches, setSearches] = useState<SearchItem[]>([]);
+  const [loadingSearches, setLoadingSearches] = useState(true);
+  const [searchesError, setSearchesError] = useState(false);
+  const [proposalsError, setProposalsError] = useState(false);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [favorites, setFavorites] = useState<any[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -330,12 +334,14 @@ const MySpace = () => {
     if (!user) return;
     if (append) setLoadingMoreProposals(true);
     else setLoadingProposals(true);
-    const { data } = await supabase
+    setProposalsError(false);
+    const { data, error: propError } = await supabase
       .from("proposals")
       .select("id, title, description, proposed_price, image_urls, status, created_at, search_id, source_lang")
       .eq("findr_id", user.id)
       .order("created_at", { ascending: false })
       .limit(500);
+    if (propError) { setProposalsError(true); setLoadingProposals(false); setLoadingMoreProposals(false); return; }
     const rows = data || [];
     setHasMoreProposals(false);
     const withSearch = await enrichProposals(rows);
@@ -478,11 +484,13 @@ const MySpace = () => {
 
   const fetchSearches = async () => {
     if (!user) return;
-    const { data } = await supabase
+    setSearchesError(false);
+    const { data, error } = await supabase
       .from("searches")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
+    if (error) { setSearchesError(true); setLoadingSearches(false); return; }
 
     if (data) {
       const now = Date.now();
@@ -590,6 +598,7 @@ const MySpace = () => {
 
       setSearches(searchesWithCounts);
     }
+    setLoadingSearches(false);
   };
 
   const fetchEvaluations = async () => {
@@ -809,7 +818,7 @@ const MySpace = () => {
     toast({ title: t("mySpace.bannerRemoved") });
   };
 
-  const todoItems = useTodoItems(user?.id, profile);
+  const { items: todoItems, error: todoError, retry: retryTodos } = useTodoItems(user?.id, profile);
 
   if (loading) {
     return (
@@ -1069,6 +1078,8 @@ const MySpace = () => {
             {activeSection === "aujourdhui" && (<>
             <TodoNowBlock
               items={todoItems}
+              error={todoError}
+              onRetry={retryTodos}
               onStripe={() => setStripeModalOpen(true)}
               onShipFrom={() => {
                 selectSection("compte", "adresse");
@@ -1274,10 +1285,12 @@ const MySpace = () => {
             })()}
 
             {activeSection === "propositions" && (
-              loadingProposals ? (
-                <div className="py-12 text-center" style={{ color: '#6B7280' }}>{t("common.loading")}</div>
+              proposalsError ? (
+                <LoadError onRetry={() => fetchMyProposals()} />
+              ) : loadingProposals ? (
+                <RowSkeletons />
               ) : myProposals.length === 0 ? (
-                <FindrEmptyState text={t("mySpace.tabs.empty.propositions")} />
+                <EmptySection title={t("mySpace.states.noProposalsTitle")} text={t("mySpace.states.noProposalsText")} to="/recherches" cta={t("mySpace.findrProposals.browse")} />
               ) : (
                 <FindrProposalsPanel proposals={myProposals} tab={proposalTab} onTabChange={setProposalTab} />
               )
@@ -1315,14 +1328,12 @@ const MySpace = () => {
                   </div>
                 </div>
 
-                {searches.length === 0 ? (
-                  <div className="py-16 text-center">
-                    <Search className="w-12 h-12 mx-auto mb-4" style={{ color: '#D9BB87' }} />
-                    <p style={{ color: '#6B7280' }}>{t("mySpace.ui.noSearches")}</p>
-                    <Button asChild className="mt-4" size="sm" style={{ backgroundColor: '#070E42', color: '#F5F0EA' }}>
-                      <Link to="/poster">{t("mySpace.ui.firstSearch")}</Link>
-                    </Button>
-                  </div>
+                {searchesError ? (
+                  <LoadError onRetry={() => { setLoadingSearches(true); fetchSearches(); }} />
+                ) : loadingSearches ? (
+                  <RowSkeletons />
+                ) : searches.length === 0 ? (
+                  <EmptySection title={t("mySpace.states.noSearchesTitle")} text={t("mySpace.states.noSearchesText")} to="/poster" cta={t("mySpace.states.noSearchesCta")} />
                 ) : (
                   <BuyrSearchesPanel searches={searches as any} tab={searchTab} onTabChange={setSearchTab} />
                 )}

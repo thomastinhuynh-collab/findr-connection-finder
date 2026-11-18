@@ -14,6 +14,13 @@ describe("accountMoney", () => {
     ];
     expect(pendingEarnings(rows)).toBe(58.08);
   });
+  it("argent en attente exclut les ventes avec un litige ouvert", () => {
+    const rows = [
+      { ...b, id: "1", payment_status: "expedie", object_price: 50, findr_fee: 2 },
+      { ...b, id: "2", payment_status: "livre", dispute_open: true, object_price: 100, findr_fee: 4 },
+    ];
+    expect(pendingEarnings(rows)).toBe(48);
+  });
   it("ventes finalisées : seulement terminées, montant net enregistré, plus récente d'abord", () => {
     const rows = [
       { ...b, id: "a", title: "A", reservation_id: "ra", payment_status: "termine", reservation_updated_at: "2026-02-01T00:00:00Z", object_price: 50, findr_fee: 2 },

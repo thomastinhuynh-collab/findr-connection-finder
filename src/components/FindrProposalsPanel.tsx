@@ -1,3 +1,4 @@
+import { EmptyFilter } from "@/components/MySpaceStates";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -172,7 +173,7 @@ const FindrProposalsPanel = ({ proposals, tab, onTabChange }: { proposals: Findr
       </div>
 
       {rows.length === 0 ? (
-        <div className="py-12 text-center text-sm" style={{ color: MUTED }}>{t("mySpace.findrProposals.empty")}</div>
+        <EmptyFilter filter={t(`mySpace.findrProposals.tabs.${tab}`)} />
       ) : (
         <div className="space-y-5">
           {first.length > 0 && (

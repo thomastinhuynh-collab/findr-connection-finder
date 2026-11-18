@@ -1364,6 +1364,33 @@
       "shipToFill": "To fill in",
       "shipSave": "Save my address",
       "favTitle": "Favourites and alerts"
+    },
+    "debitDetail": {
+      "title": "Details of amounts to deduct",
+      "description": "Each line is an amount taken from your next payouts.",
+      "empty": "No details available.",
+      "reasons": {
+        "chargeback": "Payment disputed by the buyer",
+        "reversal": "Payment reversed by the bank",
+        "remboursement_tardif": "Refund after your payout",
+        "ajustement_admin": "Adjustment by the Findr team"
+      },
+      "statuses": {
+        "en_attente": "To deduct",
+        "compense": "Deducted from a payout",
+        "rembourse_manuellement": "Settled",
+        "annule": "Cancelled"
+      }
+    },
+    "states": {
+      "loadError": "We couldn't load your information.",
+      "retry": "Try again",
+      "emptyFilter": "Nothing here yet.",
+      "noSearchesTitle": "You don't have any searches yet",
+      "noSearchesText": "Describe the item you're looking for: photos, budget, desired condition. findrs offer you items that match.",
+      "noSearchesCta": "Post my first search",
+      "noProposalsTitle": "You haven't made any proposals yet.",
+      "noProposalsText": "Find a search to answer."
     }
   },
   "blog": {
@@ -1889,7 +1916,8 @@
       "title": "Finish your Stripe sign-up",
       "context": "To receive the money from your sales",
       "button": "Finish my sign-up"
-    }
+    },
+    "heading": "To do now"
   },
   "saleSteps": {
     "label": {

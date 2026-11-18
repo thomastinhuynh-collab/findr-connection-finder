@@ -12,9 +12,9 @@ export interface AccountSaleRow extends FindrProposalFlags {
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
-/** « Argent en attente » : somme des nets enregistrés des ventes payées non finalisées. */
+/** « Argent en attente » : somme des nets enregistrés des ventes payées non finalisées, hors litige ouvert. */
 export const pendingEarnings = (rows: AccountSaleRow[]): number =>
-  round(rows.filter((r) => classifyProposalTab(r) === "ongoing")
+  round(rows.filter((r) => classifyProposalTab(r) === "ongoing" && !r.dispute_open)
     .reduce((s, r) => s + (netAmount(r.object_price, r.findr_fee) ?? 0), 0));
 
 /** « Ventes finalisées » : ventes terminées, de la plus récente à la plus ancienne. */

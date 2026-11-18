@@ -1,3 +1,4 @@
+import { EmptyFilter } from "@/components/MySpaceStates";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -202,7 +203,7 @@ const BuyrSearchesPanel = ({ searches, tab, onTabChange }: { searches: BuyrSearc
       </div>
 
       {rows.length === 0 ? (
-        <div className="py-12 text-center text-sm" style={{ color: "#5C5648" }}>{t("mySpace.ui.noSearchesInTab")}</div>
+        <EmptyFilter filter={t(`mySpace.searchTabs.${tab}`)} />
       ) : (
         <div className="space-y-5">
           {first.length > 0 && (

@@ -6,12 +6,15 @@ import { buyrMustProvideLabel } from "@/lib/buyrLabelAction";
 import { isAwaitingFirstScan, scanDeadlineAt } from "@/lib/scanDeadline";
 import { hasShipFrom } from "@/lib/shipFrom";
 import { needsStripeOnboarding } from "@/lib/stripeOnboarding";
+import { LoadError, RowSkeletons } from "@/components/MySpaceStates";
 import { splitTodos, daysLeft, daysAgo, type TodoItem } from "@/lib/todoActions";
 
 const PAID = ["paye_attente_etiquette", "etiquette_refusee", "paye_en_attente_reception", "expedie", "livre", "versement_en_revue", "termine"];
 
 interface Props {
   items: TodoItem[] | null;
+  error?: boolean;
+  onRetry?: () => void;
   onStripe: () => void;
   onShipFrom: () => void;
 }
@@ -20,7 +23,7 @@ const firstName = (n?: string | null) => (n || "").trim().split(" ")[0] || "";
 
 export async function loadTodos(userId: string, profile: any): Promise<TodoItem[]> {
   const items: TodoItem[] = [];
-  const [{ data: buyRes }, { data: findRes }, { data: mySearches }, { data: msgs }, { count: findrSales }] = await Promise.all([
+  const first = await Promise.all([
     supabase.from("reservations")
       .select("id, payment_status, label_deadline_at, label_provided_at, ship_from, shipped_at, delivered_at, dispute_open, proposal_id, search_id")
       .eq("buyr_id", userId).in("payment_status", ["paye_attente_etiquette", "etiquette_refusee", "expedie", "livre"]),
@@ -31,6 +34,8 @@ export async function loadTodos(userId: string, profile: any): Promise<TodoItem[
     supabase.from("messages").select("search_id, sender_id, receiver_id, is_read").eq("receiver_id", userId).eq("is_read", false).limit(200),
     supabase.from("proposals").select("id", { count: "exact", head: true }).eq("findr_id", userId).in("status", ["accepted_pending", "completed"]),
   ]);
+  if (first.some((r) => r.error)) throw new Error("todo_load_failed");
+  const [{ data: buyRes }, { data: findRes }, { data: mySearches }, { data: msgs }, { count: findrSales }] = first;
 
   const searchIds = (mySearches || []).map((s: any) => s.id);
   const { data: myProps } = searchIds.length
@@ -98,25 +103,37 @@ export async function loadTodos(userId: string, profile: any): Promise<TodoItem[
 /** Actions « À faire maintenant » ; partagé par le bloc et les chiffres de la navigation. */
 export function useTodoItems(userId: string | undefined, profile: any, refreshKey = 0) {
   const [items, setItems] = useState<TodoItem[] | null>(null);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     if (!userId || !profile) return;
     let alive = true;
-    loadTodos(userId, profile).then((r) => alive && setItems(r)).catch(() => alive && setItems([]));
+    setError(false);
+    loadTodos(userId, profile)
+      .then((r) => { if (alive) setItems(r); })
+      .catch(() => { if (alive) { setItems(null); setError(true); } });
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, !!profile, refreshKey, profile?.stripe_onboarding_complete, profile?.ship_from_updated_at]);
-  return items;
+  }, [userId, !!profile, refreshKey, attempt, profile?.stripe_onboarding_complete, profile?.ship_from_updated_at]);
+  return { items, error, retry: () => { setItems(null); setAttempt((n) => n + 1); } };
 }
 
 /** Actions du compte (adresse d'expédition, inscription Stripe). */
 export const ACCOUNT_TODO_KINDS = ["shipFrom", "stripe"];
 
-const TodoNowBlock = ({ items, onStripe, onShipFrom }: Props) => {
+const TodoNowBlock = ({ items, error, onRetry, onStripe, onShipFrom }: Props) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
 
-  if (!items) return null;
+  if (!items) {
+    return (
+      <section aria-labelledby="todo-now-title" className="mb-8 rounded-xl bg-white p-5 md:p-6" style={{ border: "1px solid #E5E1D8" }}>
+        <h2 id="todo-now-title" className="sr-only">{t("todoNow.heading")}</h2>
+        {error ? <LoadError onRetry={() => onRetry?.()} /> : <RowSkeletons count={2} />}
+      </section>
+    );
+  }
   const { visible, hiddenCount, total } = splitTodos(items, expanded);
   const fmtDate = (ms: number) => new Date(ms).toLocaleDateString(i18n.language?.startsWith("en") ? "en-GB" : "fr-FR", { day: "numeric", month: "long" });
 
