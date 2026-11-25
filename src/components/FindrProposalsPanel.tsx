@@ -76,7 +76,7 @@ const FindrProposalsPanel = ({ proposals, tab, onTabChange }: { proposals: Findr
   };
   const actionBtn = "inline-flex min-h-[44px] items-center justify-center rounded-full px-4 text-sm font-semibold no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
   const badgeStyle: Record<string, { bg: string; color: string }> = {
-    sold: { bg: "#E8F1EC", color: "#1F6B47" }, rejected: { bg: "#FEF1EA", color: "#993C1D" }, cancelled: { bg: "#EDEDED", color: "#374151" },
+    sold: { bg: "#E8F1EC", color: "#1F6B47" }, rejected: { bg: "#FEF1EA", color: "#993C1D" }, cancelled: { bg: "#EDEDED", color: "#374151" }, withdrawn: { bg: "#EDEDED", color: "#374151" },
   };
 
   const renderRow = (p: FindrProposalRow) => {

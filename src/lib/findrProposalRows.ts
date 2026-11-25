@@ -3,7 +3,7 @@ import { BUYR_ONGOING_STATUSES } from "./buyrSearchRows";
 import { isLabelFlowRow } from "./saleSteps";
 
 export type ProposalTab = "pending" | "ongoing" | "done";
-export type FinalBadge = "sold" | "rejected" | "cancelled";
+export type FinalBadge = "sold" | "rejected" | "cancelled" | "withdrawn";
 export type ProposalState =
   | "labelReceived" | "awaitingLabel" | "labelRefused" | "awaitingDelivery" | "toShip"
   | "shipped" | "delivered" | "payoutReview" | "dispute";
@@ -27,7 +27,7 @@ export const classifyProposalTab = (p: FindrProposalFlags): ProposalTab => {
 };
 
 /** Statuts de proposition qui la sortent définitivement de « En attente ». */
-const FINAL_PROPOSAL_STATUSES = ["rejected", "completed", "cancelled", "expired"];
+const FINAL_PROPOSAL_STATUSES = ["rejected", "completed", "cancelled", "expired", "withdrawn"];
 
 /** Chiffre gris de « Mes propositions » : exactement les lignes du filtre « En attente ». */
 export const pendingProposalCount = (rows: FindrProposalFlags[]): number =>
@@ -37,6 +37,7 @@ export const finalBadge = (p: FindrProposalFlags): FinalBadge | null => {
   if (classifyProposalTab(p) !== "done") return null;
   if (p.payment_status === "annule" || p.proposalStatus === "cancelled" || p.proposalStatus === "expired") return "cancelled";
   if (p.proposalStatus === "rejected") return "rejected";
+  if (p.proposalStatus === "withdrawn") return "withdrawn";
   return "sold";
 };
 

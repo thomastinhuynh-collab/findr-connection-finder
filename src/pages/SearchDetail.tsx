@@ -420,6 +420,7 @@ const SearchDetail = () => {
       .from("proposals")
       .select("*")
       .eq("search_id", id)
+      .neq("status", "withdrawn")
       .order("created_at", { ascending: false });
 
     if (error) {

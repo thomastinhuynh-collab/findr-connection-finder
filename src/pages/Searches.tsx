@@ -315,7 +315,7 @@ const Searches = () => {
       const searchIds = filtered.map(s => s.id);
       const [profilesRes, proposalsRes] = await Promise.all([
         supabase.from("profiles").select("user_id, full_name, avatar_url").in("user_id", userIds),
-        supabase.from("proposals").select("search_id").in("search_id", searchIds),
+        supabase.from("proposals").select("search_id").in("search_id", searchIds).neq("status", "withdrawn"),
       ]);
 
       if (requestId !== requestRef.current) return;

@@ -71,3 +71,7 @@ export const ongoingNeedsAction = (rows: BuyrSearchFlags[]): boolean =>
 
 /** Pastille grise « Un findr cherche ton objet » : la réservation récente est le seul motif d'action. */
 export const showsSearcherBadge = (s: BuyrSearchFlags): boolean => primaryAction(s) === "view";
+
+/** Une proposition annulée par son findr ne compte plus côté buyr (liste, « N propositions », « à examiner »). */
+export const excludeWithdrawn = <T extends { status: string | null }>(rows: T[]): T[] =>
+  rows.filter((p) => p.status !== "withdrawn");

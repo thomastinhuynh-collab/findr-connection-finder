@@ -1316,7 +1316,8 @@
       "final": {
         "sold": "Sold",
         "rejected": "Declined",
-        "cancelled": "Cancelled"
+        "cancelled": "Cancelled",
+        "withdrawn": "Cancelled by you"
       },
       "proposedPrice": "Proposed price: {{amount}}",
       "willReceive": "You will receive {{amount}}",
@@ -1990,14 +1991,16 @@
       "reservationExpired": "Reservation expired",
       "proposalAccepted": "Offer accepted · {{amount}}",
       "acceptedAwaitingPayment": "accepted · awaiting their payment",
-      "dispute": "Dispute in progress"
+      "dispute": "Dispute in progress",
+      "proposalWithdrawn": "Offer cancelled"
     },
     "backToList": "← Messages",
     "envelopeAria_zero": "Messages",
     "envelopeAria_one": "Messages, {{count}} conversation with unread messages",
     "envelopeAria_other": "Messages, {{count}} conversations with unread messages",
     "selectHint": "Pick a conversation from the list.",
-    "bottomLabel": "Messages"
+    "bottomLabel": "Messages",
+    "previewWithdrawn": "Offer cancelled"
   },
   "exchangeCard": {
     "aria": "Exchange summary",
@@ -2021,6 +2024,18 @@
       "viewProposal": "See the offer",
       "editProposal": "Edit my offer"
     },
-    "yourTurn": "Your turn to answer"
+    "yourTurn": "Your turn to answer",
+    "withdrawnState": "Offer cancelled",
+    "withdraw": {
+      "button": "Cancel my offer",
+      "title": "Cancel your offer?",
+      "text": "{{name}} will be notified. You can make a new one if you wish.",
+      "confirm": "Cancel my offer",
+      "keep": "Keep my offer",
+      "success": "Offer cancelled. {{name}} has been notified.",
+      "errorCheckout": "{{name}} is paying right now: you can no longer cancel. Message them if needed.",
+      "errorNotPending": "This offer can no longer be cancelled.",
+      "errorGeneric": "The cancellation didn't go through. Try again in a moment."
+    }
   }
 }

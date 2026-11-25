@@ -40,7 +40,7 @@ import ContainedPhoto from "@/components/ContainedPhoto";
 import BuyrSearchesPanel from "@/components/BuyrSearchesPanel";
 import FindrProposalsPanel from "@/components/FindrProposalsPanel";
 import type { ProposalTab } from "@/lib/findrProposalRows";
-import { classifySearchTab } from "@/lib/buyrSearchRows";
+import { classifySearchTab, excludeWithdrawn } from "@/lib/buyrSearchRows";
 
 type StripeSyncStatus = { complete: boolean; details_submitted: boolean; payouts_enabled: boolean; transfers: string | null };
 const FindrEmptyState = ({ text }: { text: string }) => {
@@ -499,9 +499,10 @@ const MySpace = () => {
           const { data: props } = await supabase
             .from("proposals")
             .select("id, status, updated_at")
-            .eq("search_id", search.id);
+            .eq("search_id", search.id)
+            .neq("status", "withdrawn");
 
-          const proposals = props || [];
+          const proposals = excludeWithdrawn(props || []);
           const proposalCount = proposals.length;
           const unreadCount = proposals.filter((p) => p.status === "pending").length;
           const acceptedCount = proposals.filter(

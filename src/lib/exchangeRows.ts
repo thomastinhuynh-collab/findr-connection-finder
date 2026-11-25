@@ -55,6 +55,7 @@ export function exchangeBadges(r: ExchangeRow, formatAmount: (n: number) => stri
     case "proposition": {
       const ps = st.replace(/^proposition_/, "");
       if (ps === "rejected") return [{ key: "proposalRejected" }];
+      if (ps === "withdrawn") return [{ key: "proposalWithdrawn" }];
       if (ps === "completed") return [{ key: "saleDone" }];
       if (ps === "cancelled" || ps === "expired") return [{ key: "saleCancelled" }];
       if (ps === "accepted_pending") {
@@ -88,6 +89,7 @@ export function exchangePreview(r: ExchangeRow): { text: string } | { key: strin
     return txt ? { text: txt.slice(0, 80) } : { key: "previewPhoto" };
   }
   if (r.kind === "reservation") return { key: "previewReservation" };
+  if (r.kind === "proposition" && r.state === "proposition_withdrawn") return { key: "previewWithdrawn" };
   return { key: "previewProposal" };
 }
 

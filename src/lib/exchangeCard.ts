@@ -21,6 +21,10 @@ export interface ExchangeCardState {
   action: { key: CardActionKey; href: string } | null;
   /** Plusieurs propositions du même findr : lien « Voir les propositions ». */
   multipleProposals: boolean;
+  /** Proposition annulée par le findr (statut withdrawn) : aucune action. */
+  withdrawn?: boolean;
+  /** findr, proposition en attente : peut l'annuler (withdraw_proposal). */
+  withdrawableId?: string | null;
 }
 
 const SALE_STATUSES = [...PAID_STATUSES, "annule", "rembourse"];
@@ -67,7 +71,9 @@ export function exchangeCardState(input: {
     let action: ExchangeCardState["action"] = { key: "viewProposal", href: `/recherche/${searchId}` };
     if (iAmBuyr && st === "accepted_pending") action = { key: "pay", href: `/recherche/${searchId}?payer=${latest.id}` };
     else if (!iAmBuyr && st === "pending") action = { key: "editProposal", href: `/modifier-proposition/${latest.id}` };
-    return { kind: "proposition", price: latest.proposed_price, payout: null, action, multipleProposals };
+    if (st === "withdrawn") return { kind: "proposition", price: latest.proposed_price, payout: null, action: null, multipleProposals, withdrawn: true };
+    return { kind: "proposition", price: latest.proposed_price, payout: null, action, multipleProposals,
+      withdrawableId: !iAmBuyr && st === "pending" ? latest.id : null };
   }
 
   const resa = [...input.reservations].filter((r) => !SALE_STATUSES.includes(r.payment_status ?? ""))
@@ -76,6 +82,14 @@ export function exchangeCardState(input: {
     return { kind: "reservation", price: null, payout: null, reservedUntil: resa.expires_at ?? null, action: null, multipleProposals: false };
   }
   return null;
+}
+
+/** Message d'erreur (clé i18n sous exchangeCard.withdraw) pour un refus de withdraw_proposal. */
+export function withdrawErrorKey(message: string | null | undefined): "errorCheckout" | "errorNotPending" | "errorGeneric" {
+  const m = message ?? "";
+  if (m.includes("checkout_in_progress")) return "errorCheckout";
+  if (m.includes("not_pending")) return "errorNotPending";
+  return "errorGeneric";
 }
 
 /** Bannière « Proposition envoyée » : paramètre d'adresse lu une seule fois. */

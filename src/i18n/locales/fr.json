@@ -1316,7 +1316,8 @@
       "final": {
         "sold": "Vendue",
         "rejected": "Refusée",
-        "cancelled": "Annulée"
+        "cancelled": "Annulée",
+        "withdrawn": "Annulée par toi"
       },
       "proposedPrice": "Prix proposé : {{amount}}",
       "willReceive": "Tu recevras {{amount}}",
@@ -1990,14 +1991,16 @@
       "reservationExpired": "Réservation expirée",
       "proposalAccepted": "Proposition acceptée · {{amount}}",
       "acceptedAwaitingPayment": "acceptée · en attente de son paiement",
-      "dispute": "Litige en cours"
+      "dispute": "Litige en cours",
+      "proposalWithdrawn": "Proposition annulée"
     },
     "backToList": "← Messagerie",
     "envelopeAria_zero": "Messagerie",
     "envelopeAria_one": "Messagerie, {{count}} conversation avec des messages non lus",
     "envelopeAria_other": "Messagerie, {{count}} conversations avec des messages non lus",
     "selectHint": "Choisis une conversation dans la liste.",
-    "bottomLabel": "Messagerie"
+    "bottomLabel": "Messagerie",
+    "previewWithdrawn": "Proposition annulée"
   },
   "exchangeCard": {
     "aria": "Résumé de l'échange",
@@ -2021,6 +2024,18 @@
       "viewProposal": "Voir la proposition",
       "editProposal": "Modifier ma proposition"
     },
-    "yourTurn": "À toi de répondre"
+    "yourTurn": "À toi de répondre",
+    "withdrawnState": "Proposition annulée",
+    "withdraw": {
+      "button": "Annuler ma proposition",
+      "title": "Annuler ta proposition ?",
+      "text": "{{name}} sera prévenu(e). Tu pourras en faire une nouvelle si tu le souhaites.",
+      "confirm": "Annuler ma proposition",
+      "keep": "Garder ma proposition",
+      "success": "Proposition annulée. {{name}} a été prévenu(e).",
+      "errorCheckout": "{{name}} est en train de payer : tu ne peux plus annuler. Écris-lui si besoin.",
+      "errorNotPending": "Cette proposition ne peut plus être annulée.",
+      "errorGeneric": "L'annulation n'a pas abouti. Réessaie dans un instant."
+    }
   }
 }

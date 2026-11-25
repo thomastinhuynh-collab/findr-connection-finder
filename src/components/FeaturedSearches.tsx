@@ -67,7 +67,7 @@ const FeaturedSearches = () => {
 
       // Fetch proposal counts and profiles in parallel
       const [proposalsRes, profilesRes] = await Promise.all([
-        supabase.from("proposals").select("search_id").in("search_id", searchIds),
+        supabase.from("proposals").select("search_id").in("search_id", searchIds).neq("status", "withdrawn"),
         supabase.from("profiles").select("user_id, city").in("user_id", userIds),
       ]);
 
