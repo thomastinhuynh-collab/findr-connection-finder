@@ -1942,5 +1942,51 @@
     "selling": "You're selling",
     "step": "step {{n}} of {{total}}: {{name}}",
     "open": "Open"
+  },
+  "messagingList": {
+    "title": "Messages",
+    "intro": "Your messages, offers and reservations, in one place. Unread ones come first.",
+    "filterGroup": "Filter my messages",
+    "filterCount_one": "{{count}} conversation",
+    "filterCount_other": "{{count}} conversations",
+    "filters": {
+      "all": "All",
+      "unread": "Unread",
+      "pending": "Pending",
+      "ongoing": "Ongoing sales",
+      "done": "Completed"
+    },
+    "empty": "No conversations yet.",
+    "emptyPost": "Post a search",
+    "emptyBrowse": "Browse buyrs' searches",
+    "error": "Couldn't load your messages.",
+    "retry": "Try again",
+    "more": "Show more",
+    "yesterday": "Yesterday",
+    "someone": "User",
+    "previewPhoto": "Photo",
+    "previewProposal": "Offer sent",
+    "previewReservation": "Reservation of their search",
+    "ariaRow": "Conversation with {{name}}, {{role}}, about {{title}}",
+    "ariaUnread_one": "{{count}} unread message",
+    "ariaUnread_other": "{{count}} unread messages",
+    "badge": {
+      "message": "Message",
+      "proposalMine": "Your offer · {{amount}}",
+      "pending": "pending",
+      "proposalReceived": "Offer received · {{amount}}",
+      "toReview": "to review",
+      "reservedByMe": "You reserved it · {{days}} d left",
+      "reservedBy": "Reserved by {{name}} · {{days}} d left",
+      "saleOngoing": "Sale in progress",
+      "actionLabel": "Label to provide",
+      "actionDropoff": "Parcel to drop off",
+      "actionReceipt": "Receipt to confirm",
+      "actionPay": "Payment to complete",
+      "saleDone": "Sale completed",
+      "proposalRejected": "Offer declined",
+      "saleCancelled": "Sale cancelled",
+      "reservationExpired": "Reservation expired"
+    }
   }
 }

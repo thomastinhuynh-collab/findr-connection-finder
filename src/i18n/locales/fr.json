@@ -1942,5 +1942,51 @@
     "selling": "Tu vends",
     "step": "étape {{n}} sur {{total}} : {{name}}",
     "open": "Ouvrir"
+  },
+  "messagingList": {
+    "title": "Messagerie",
+    "intro": "Tes messages, propositions et réservations, au même endroit. Les non lus passent en premier.",
+    "filterGroup": "Filtrer ma messagerie",
+    "filterCount_one": "{{count}} échange",
+    "filterCount_other": "{{count}} échanges",
+    "filters": {
+      "all": "Toutes",
+      "unread": "Non lus",
+      "pending": "En attente",
+      "ongoing": "Ventes en cours",
+      "done": "Finalisées"
+    },
+    "empty": "Aucune conversation pour le moment.",
+    "emptyPost": "Poster une recherche",
+    "emptyBrowse": "Voir les recherches des buyrs",
+    "error": "Impossible de charger ta messagerie.",
+    "retry": "Réessayer",
+    "more": "Voir plus",
+    "yesterday": "Hier",
+    "someone": "Utilisateur",
+    "previewPhoto": "Photo",
+    "previewProposal": "Proposition envoyée",
+    "previewReservation": "Réservation de sa recherche",
+    "ariaRow": "Conversation avec {{name}}, {{role}}, à propos de {{title}}",
+    "ariaUnread_one": "{{count}} message non lu",
+    "ariaUnread_other": "{{count}} messages non lus",
+    "badge": {
+      "message": "Message",
+      "proposalMine": "Ta proposition · {{amount}}",
+      "pending": "en attente",
+      "proposalReceived": "Proposition reçue · {{amount}}",
+      "toReview": "à examiner",
+      "reservedByMe": "Tu l'as réservée · {{days}} j restants",
+      "reservedBy": "Réservée par {{name}} · {{days}} j restants",
+      "saleOngoing": "Vente en cours",
+      "actionLabel": "Étiquette à fournir",
+      "actionDropoff": "Colis à déposer",
+      "actionReceipt": "Réception à confirmer",
+      "actionPay": "Paiement à finaliser",
+      "saleDone": "Vente finalisée",
+      "proposalRejected": "Proposition refusée",
+      "saleCancelled": "Vente annulée",
+      "reservationExpired": "Réservation expirée"
+    }
   }
 }

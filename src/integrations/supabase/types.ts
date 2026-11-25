@@ -1025,6 +1025,13 @@ export type Database = {
         }
         Returns: string
       }
+      exchange_filter_counts: {
+        Args: never
+        Returns: {
+          filter: string
+          total: number
+        }[]
+      }
       get_my_profile: {
         Args: never
         Returns: {
