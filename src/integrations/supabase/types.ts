@@ -1069,10 +1069,31 @@ export type Database = {
         }
         Returns: boolean
       }
+      list_my_exchanges: {
+        Args: { _before?: string; _filter?: string; _limit?: number }
+        Returns: {
+          amount: number
+          expires_at: string
+          kind: string
+          last_activity_at: string
+          last_message_at: string
+          last_message_preview: string
+          needs_action: boolean
+          partner_avatar_url: string
+          partner_id: string
+          partner_name: string
+          partner_role: string
+          search_id: string
+          search_title: string
+          state: string
+          unread_count: number
+        }[]
+      }
       purge_reservation_ship_from: { Args: never; Returns: number }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       tracking_carrier_key: { Args: { value: string }; Returns: string }
+      unread_exchanges_count: { Args: never; Returns: number }
       update_ship_from: {
         Args: {
           _city: string

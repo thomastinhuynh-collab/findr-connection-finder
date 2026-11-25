@@ -148,6 +148,20 @@
       "when": 1795622931960,
       "tag": "0020_guard_messages_update",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1795623721306,
+      "tag": "0021_messaging_exchanges",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1795623734855,
+      "tag": "0022_messaging_exchanges_resa_fix",
+      "breakpoints": true
     }
   ]
 }
