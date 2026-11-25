@@ -162,6 +162,13 @@
       "when": 1795623734855,
       "tag": "0022_messaging_exchanges_resa_fix",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1795624204965,
+      "tag": "0023_messaging_exchanges_cursor",
+      "breakpoints": true
     }
   ]
 }

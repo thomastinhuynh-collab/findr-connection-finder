@@ -1070,7 +1070,12 @@ export type Database = {
         Returns: boolean
       }
       list_my_exchanges: {
-        Args: { _before?: string; _filter?: string; _limit?: number }
+        Args: {
+          _before?: string
+          _before_unread?: boolean
+          _filter?: string
+          _limit?: number
+        }
         Returns: {
           amount: number
           expires_at: string

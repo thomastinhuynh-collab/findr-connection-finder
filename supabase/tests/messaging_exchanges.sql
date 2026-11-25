@@ -60,3 +60,55 @@ BEGIN
 
   RAISE EXCEPTION 'TESTS_OK';
 END $$;
+
+-- Pagination par curseur (non lus d'abord, puis date) et priorité proposition après vente annulée.
+DO $$
+DECLARE
+  b uuid := gen_random_uuid(); fc uuid := gen_random_uuid(); s uuid; s2 uuid; p uuid;
+  f uuid[] := ARRAY[]::uuid[]; i int; page int := 0;
+  cur_at timestamptz; cur_unread boolean; got uuid[] := ARRAY[]::uuid[]; expected uuid[] := ARRAY[]::uuid[];
+  r record; n int;
+BEGIN
+  INSERT INTO public.searches (user_id, title, category, budget_min, budget_max, status)
+    VALUES (b, 'zz test pagination', 'autre', 0, 100, 'closed') RETURNING id INTO s;
+  FOR i IN 1..35 LOOP
+    f := f || gen_random_uuid();
+    INSERT INTO public.messages (search_id, sender_id, receiver_id, content, is_read, created_at)
+      VALUES (s, f[i], b, 'm' || i, NOT (i IN (3,10,17,25,33)), now() - i * interval '1 minute');
+  END LOOP;
+  FOREACH i IN ARRAY ARRAY[3,10,17,25,33] LOOP expected := expected || f[i]; END LOOP;
+  FOR i IN 1..35 LOOP IF i NOT IN (3,10,17,25,33) THEN expected := expected || f[i]; END IF; END LOOP;
+
+  PERFORM set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  PERFORM set_config('role', 'authenticated', true);
+  LOOP
+    n := 0;
+    FOR r IN SELECT * FROM public.list_my_exchanges('toutes', 10, cur_at, cur_unread) LOOP
+      got := got || r.partner_id; cur_at := r.last_activity_at; cur_unread := r.unread_count > 0; n := n + 1;
+    END LOOP;
+    page := page + 1;
+    EXIT WHEN n < 10 OR page > 10;
+  END LOOP;
+  IF page <> 4 THEN RAISE EXCEPTION 'ÉCHEC : % pages au lieu de 4', page; END IF;
+  IF got IS DISTINCT FROM expected THEN RAISE EXCEPTION 'ÉCHEC : ordre ou doublons dans la pagination (% reçus)', cardinality(got); END IF;
+  -- appel à trois paramètres toujours valide
+  PERFORM * FROM public.list_my_exchanges('toutes', 10, NULL);
+
+  -- vente annulée puis nouvelle proposition en attente
+  PERFORM set_config('role', 'postgres', true);
+  INSERT INTO public.searches (user_id, title, category, budget_min, budget_max, status)
+    VALUES (b, 'zz test reprise', 'autre', 0, 100, 'active') RETURNING id INTO s2;
+  INSERT INTO public.proposals (search_id, findr_id, title, proposed_price, status, created_at)
+    VALUES (s2, fc, 'ancienne', 30, 'rejected', now() - interval '3 hours') RETURNING id INTO p;
+  INSERT INTO public.reservations (search_id, findr_id, buyr_id, justification, requested_duration_days, status, proposal_id, object_price, payment_status, created_at)
+    VALUES (s2, fc, b, 'achat', 1, 'approved', p, 30, 'annule', now() - interval '2 hours');
+  INSERT INTO public.proposals (search_id, findr_id, title, proposed_price, status) VALUES (s2, fc, 'nouvelle', 35, 'pending');
+  PERFORM set_config('role', 'authenticated', true);
+  SELECT * INTO r FROM public.list_my_exchanges('en_attente', 100) e WHERE e.search_id = s2;
+  IF r.kind IS DISTINCT FROM 'proposition' OR r.state <> 'proposition_pending' OR r.amount <> 35 THEN
+    RAISE EXCEPTION 'ÉCHEC : reprise après vente annulée (%)', row_to_json(r); END IF;
+  SELECT count(*) INTO n FROM public.list_my_exchanges('finalisees', 100) e WHERE e.search_id = s2;
+  IF n <> 0 THEN RAISE EXCEPTION 'ÉCHEC : reprise encore dans Finalisées'; END IF;
+
+  RAISE EXCEPTION 'TESTS_OK';
+END $$;
