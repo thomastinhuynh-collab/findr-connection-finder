@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Send, Loader2, CheckCheck, Check, Info, Paperclip, X, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { unreadIdsFromPartner } from "@/lib/messageRead";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -47,6 +48,8 @@ const Messaging = () => {
   const [urlParams] = useSearchParams();
   const withUserId = urlParams.get("with");
   const [partnerId, setPartnerId] = useState<string | null>(null);
+  const partnerIdRef = useRef<string | null>(null);
+  partnerIdRef.current = partnerId;
   const [partnerProfile, setPartnerProfile] = useState<{ full_name: string | null; avatar_url: string | null } | null>(null);
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
@@ -107,7 +110,7 @@ const Messaging = () => {
             return [...prev, newMessage];
           });
           
-          if (newMessage.receiver_id === user.id) {
+          if (newMessage.receiver_id === user.id && newMessage.sender_id === partnerIdRef.current) {
             markAsRead(newMessage.id);
           }
         }
@@ -196,13 +199,23 @@ const Messaging = () => {
     setLoading(false);
   };
 
+  // Marque comme lus uniquement les messages de l'interlocuteur affiché, une fois
+  // celui-ci connu (évite d'effacer les non lus d'un autre interlocuteur).
+  useEffect(() => {
+    if (!partnerId) return;
+    markBatchAsRead(messages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [partnerId, messages]);
+
   const markBatchAsRead = async (batch: Message[]) => {
-    if (!user) return;
-    const unreadIds = batch
-      .filter((m) => m.receiver_id === user.id && !m.is_read)
-      .map((m) => m.id);
+    if (!user || !partnerIdRef.current) return;
+    const unreadIds = unreadIdsFromPartner(batch, user.id, partnerIdRef.current);
     if (unreadIds.length > 0) {
-      await supabase.from("messages").update({ is_read: true }).in("id", unreadIds);
+      const { error } = await supabase.from("messages").update({ is_read: true }).in("id", unreadIds);
+      if (!error) {
+        const ids = new Set(unreadIds);
+        setMessages((prev) => prev.map((m) => (ids.has(m.id) ? { ...m, is_read: true } : m)));
+      }
     }
   };
 
@@ -222,7 +235,6 @@ const Messaging = () => {
     const batch = (data || []).slice().reverse();
     setMessages(batch);
     setHasMoreMessages((data || []).length === PAGE_SIZE);
-    await markBatchAsRead(batch);
   };
 
   const loadOlderMessages = async () => {
@@ -257,7 +269,6 @@ const Messaging = () => {
       return [...older.filter((m) => !existing.has(m.id)), ...prev];
     });
     setHasMoreMessages((data || []).length === PAGE_SIZE);
-    await markBatchAsRead(older);
     setLoadingOlder(false);
   };
 
