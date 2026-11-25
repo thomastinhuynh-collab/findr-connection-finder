@@ -32,7 +32,7 @@ const LABEL: Record<BottomBarItem, string> = {
 };
 
 interface Props {
-  /** Élément actif ; une rubrique de Mon espace absente de la barre (propositions) n'en active aucun. */
+  /** Élément actif ; une rubrique de Mon espace absente de la barre n'en active aucun. */
   active: MySpaceSection | "messagerie";
   /** Chiffres dorés uniquement (actions à faire). */
   actionCounts: Partial<Record<MySpaceSection, number>>;

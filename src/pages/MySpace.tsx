@@ -17,7 +17,6 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { pendingProposalCount } from "@/lib/findrProposalRows";
 import { pendingEarnings, finalizedSales, profileCompletion } from "@/lib/accountMoney";
 import { formatPrice } from "@/lib/fees";
 import { useStripeConnect } from "@/hooks/useStripeConnect";
@@ -38,8 +37,8 @@ import OngoingSalesBlock from "@/components/OngoingSalesBlock";
 import { useTranslation } from "react-i18next";
 import ContainedPhoto from "@/components/ContainedPhoto";
 import BuyrSearchesPanel from "@/components/BuyrSearchesPanel";
-import FindrProposalsPanel from "@/components/FindrProposalsPanel";
-import type { ProposalTab } from "@/lib/findrProposalRows";
+import { useUnreadExchanges } from "@/hooks/useUnreadExchanges";
+import { todoNavCount } from "@/lib/todoActions";
 import { classifySearchTab, excludeWithdrawn } from "@/lib/buyrSearchRows";
 
 type StripeSyncStatus = { complete: boolean; details_submitted: boolean; payouts_enabled: boolean; transfers: string | null };
@@ -165,7 +164,6 @@ const MySpace = () => {
   const [editForm, setEditForm] = useState({ full_name: "", bio: "", city: "" });
   const [savingProfile, setSavingProfile] = useState(false);
   const [myProposals, setMyProposals] = useState<any[]>([]);
-  const [proposalTab, setProposalTab] = useState<ProposalTab>("pending");
   const [loadingProposals, setLoadingProposals] = useState(false);
   const PANEL_PAGE_SIZE = 20;
   const [hasMoreProposals, setHasMoreProposals] = useState(false);
@@ -173,12 +171,14 @@ const MySpace = () => {
   const [hasMoreFavorites, setHasMoreFavorites] = useState(false);
   const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const unreadExchanges = useUnreadExchanges();
   const location = useLocation();
   const resolvedLocation = resolveMySpaceLocation(location.search, location.hash);
   const activeSection: MySpaceSection = resolvedLocation.section;
   const [searchTab, setSearchTab] = useState<"active" | "ongoing" | "done" | "cancelled">("active");
   useEffect(() => {
     if (!resolvedLocation.redirect) return;
+    if (resolvedLocation.external) { navigate(resolvedLocation.external, { replace: true }); return; }
     navigate(
       { pathname: "/mon-espace", search: `?${resolvedLocation.search}`, hash: resolvedLocation.hash ? `#${resolvedLocation.hash}` : "" },
       { replace: true },
@@ -834,9 +834,8 @@ const MySpace = () => {
   }
 
   const sectionCounts: Record<MySpaceSection, { n: number; gold: boolean }> = {
-    aujourdhui: { n: todoItems?.length ?? 0, gold: true },
+    aujourdhui: { n: todoNavCount(todoItems, unreadExchanges), gold: true },
     recherches: { n: searches.filter((x: any) => classifySearchTab(x.paid_status ?? null) === "active").length, gold: false },
-    propositions: { n: pendingProposalCount(myProposals), gold: false },
     compte: { n: (todoItems || []).filter((it) => ACCOUNT_TODO_KINDS.includes(it.kind)).length, gold: true },
   };
 
@@ -1130,7 +1129,7 @@ const MySpace = () => {
                 {MY_SPACE_SECTIONS.map((key) => {
                   const selected = activeSection === key;
                   const { n, gold } = sectionCounts[key];
-                  const label = t(`mySpace.sections.${{ aujourdhui: "today", recherches: "searches", propositions: "proposals", compte: "account" }[key]}`);
+                  const label = t(`mySpace.sections.${{ aujourdhui: "today", recherches: "searches", compte: "account" }[key]}`);
                   return (
                     <li key={key} className="shrink-0">
                       <Link
@@ -1284,18 +1283,6 @@ const MySpace = () => {
               </div>
               );
             })()}
-
-            {activeSection === "propositions" && (
-              proposalsError ? (
-                <LoadError onRetry={() => fetchMyProposals()} />
-              ) : loadingProposals ? (
-                <RowSkeletons />
-              ) : myProposals.length === 0 ? (
-                <EmptySection title={t("mySpace.states.noProposalsTitle")} text={t("mySpace.states.noProposalsText")} to="/recherches" cta={t("mySpace.findrProposals.browse")} />
-              ) : (
-                <FindrProposalsPanel proposals={myProposals} tab={proposalTab} onTabChange={setProposalTab} />
-              )
-            )}
 
             {activeSection === "recherches" && (
               <div>

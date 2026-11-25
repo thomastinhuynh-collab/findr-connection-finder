@@ -72,7 +72,7 @@ const App = () => (
               <Route path="/messagerie/:id" element={<ProtectedRoute><MessagingList /></ProtectedRoute>} />
               <Route path="/proposition/:id" element={<ProtectedRoute><MakeProposal /></ProtectedRoute>} />
               <Route path="/modifier-proposition/:id" element={<ProtectedRoute><EditProposal /></ProtectedRoute>} />
-              <Route path="/mes-propositions" element={<Navigate to="/mon-espace?section=propositions" replace />} />
+              <Route path="/mes-propositions" element={<Navigate to="/messagerie?filtre=en_attente" replace />} />
               <Route path="/poster" element={<ProtectedRoute><PostSearch /></ProtectedRoute>} />
               <Route path="/mon-espace" element={<ProtectedRoute><MySpace /></ProtectedRoute>} />
               <Route path="/profil/:userId" element={<PublicProfile />} />

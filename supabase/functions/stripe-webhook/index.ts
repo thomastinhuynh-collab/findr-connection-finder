@@ -182,7 +182,7 @@ Deno.serve(async (req) => {
               type: "proposal_rejected",
               title: "Proposition non retenue",
               message: "Une autre proposition a été acceptée pour cette recherche.",
-              link: "/mon-espace?onglet=propositions",
+              link: "/messagerie?filtre=en_attente",
             });
           }
 

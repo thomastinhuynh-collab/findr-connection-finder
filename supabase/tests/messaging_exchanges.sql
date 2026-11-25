@@ -128,3 +128,22 @@ BEGIN
   IF r.kind IS DISTINCT FROM 'vente' OR r.state <> 'litige' OR r.needs_action THEN RAISE EXCEPTION 'ÉCHEC : litige (%)', row_to_json(r); END IF;
   RAISE EXCEPTION 'TESTS_OK';
 END $$;
+
+-- Proposition annulée par son findr (withdrawn) : dans « Finalisées », pas dans « En attente ».
+DO $$
+DECLARE b uuid := gen_random_uuid(); f uuid := gen_random_uuid(); s uuid; r record; n int;
+BEGIN
+  INSERT INTO public.searches (user_id, title, category, budget_min, budget_max, status)
+    VALUES (b, 'zz test annulee', 'autre', 0, 100, 'active') RETURNING id INTO s;
+  INSERT INTO public.proposals (search_id, findr_id, title, proposed_price, status) VALUES (s, f, 'objet', 40, 'withdrawn');
+  PERFORM set_config('request.jwt.claims', json_build_object('sub', f, 'role', 'authenticated')::text, true);
+  PERFORM set_config('role', 'authenticated', true);
+  SELECT count(*) INTO n FROM public.list_my_exchanges('finalisees', 100) e WHERE e.search_id = s;
+  IF n <> 1 THEN RAISE EXCEPTION 'ÉCHEC : annulée absente de Finalisées (findr)'; END IF;
+  SELECT count(*) INTO n FROM public.list_my_exchanges('en_attente', 100) e WHERE e.search_id = s;
+  IF n <> 0 THEN RAISE EXCEPTION 'ÉCHEC : annulée dans En attente (findr)'; END IF;
+  PERFORM set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  SELECT count(*) INTO n FROM public.list_my_exchanges('en_attente', 100) e WHERE e.search_id = s;
+  IF n <> 0 THEN RAISE EXCEPTION 'ÉCHEC : annulée dans En attente (buyr)'; END IF;
+  RAISE EXCEPTION 'TESTS_OK';
+END $$;

@@ -1,11 +1,12 @@
 // Rubriques de Mon espace et redirection des anciens liens (?onglet=…, #adresse-expedition).
-export type MySpaceSection = "aujourdhui" | "recherches" | "propositions" | "compte";
-export const MY_SPACE_SECTIONS: MySpaceSection[] = ["aujourdhui", "recherches", "propositions", "compte"];
+export type MySpaceSection = "aujourdhui" | "recherches" | "compte";
+export const MY_SPACE_SECTIONS: MySpaceSection[] = ["aujourdhui", "recherches", "compte"];
+/** L'ancienne rubrique « Mes propositions » est remplacée par la Messagerie, filtre « En attente ». */
+export const PROPOSALS_REDIRECT = "/messagerie?filtre=en_attente";
 export const DEFAULT_SECTION: MySpaceSection = "aujourdhui";
 
 const LEGACY_TABS: Record<string, { section: MySpaceSection; hash?: string }> = {
   recherches: { section: "recherches" },
-  propositions: { section: "propositions" },
   favoris: { section: "compte", hash: "favoris" },
   gains: { section: "compte", hash: "paiements" },
 };
@@ -20,12 +21,17 @@ export interface MySpaceLocation {
   hash: string;
   /** Vrai si l'adresse reçue doit être remplacée par l'adresse canonique. */
   redirect: boolean;
+  /** Adresse hors de Mon espace vers laquelle rediriger (ancienne rubrique « Mes propositions »). */
+  external?: string;
 }
 
 export function resolveMySpaceLocation(search: string, hash: string): MySpaceLocation {
   const params = new URLSearchParams(search.replace(/^\?/, ""));
   let h = hash.replace(/^#/, "");
   const raw = params.get("section");
+  if ((raw === "propositions" || params.get("onglet") === "propositions")) {
+    return { section: DEFAULT_SECTION, search: "", hash: "", redirect: true, external: PROPOSALS_REDIRECT };
+  }
   let section: MySpaceSection | null = raw && (MY_SPACE_SECTIONS as string[]).includes(raw) ? (raw as MySpaceSection) : null;
 
   const legacy = params.get("onglet");

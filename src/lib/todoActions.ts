@@ -60,3 +60,12 @@ export function daysAgo(at: string, now = Date.now()): number {
   const start = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
   return Math.max(0, Math.round((start(n) - start(d)) / 86_400_000));
 }
+
+/**
+ * Chiffre doré d'« Aujourd'hui » : les actions hors messages, plus le nombre
+ * d'échanges non lus donné par unread_exchanges_count (une ligne « Réponds à… » par échange).
+ */
+export function todoNavCount(items: TodoItem[] | null | undefined, unreadExchanges: number): number {
+  if (!items) return 0;
+  return items.filter((it) => it.kind !== "message").length + Math.max(0, unreadExchanges || 0);
+}
