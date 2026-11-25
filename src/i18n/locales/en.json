@@ -1998,5 +1998,29 @@
     "envelopeAria_other": "Messages, {{count}} conversations with unread messages",
     "selectHint": "Pick a conversation from the list.",
     "bottomLabel": "Messages"
+  },
+  "exchangeCard": {
+    "aria": "Exchange summary",
+    "step": "Step {{index}} of {{total}}: {{name}}",
+    "saleClosed": "Sale closed",
+    "awaiting": "Waiting for {{name}}'s answer",
+    "reservedUntil": "Reserved until {{date}}",
+    "youWillReceive": "you'll receive {{amount}}",
+    "viewProposals": "See the offers",
+    "sentBanner": "Offer sent. {{name}} has been notified.",
+    "closeBanner": "Close message",
+    "suggestAvailable": "The item is available right away",
+    "suggestPhotos": "I can send more photos",
+    "placeholder": "Write a note to {{name}}…",
+    "actions": {
+      "pay": "Pay",
+      "provideLabel": "Provide the label",
+      "confirmReceipt": "Confirm receipt",
+      "viewLabel": "See the label",
+      "viewSale": "See the sale",
+      "viewProposal": "See the offer",
+      "editProposal": "Edit my offer"
+    },
+    "yourTurn": "Your turn to answer"
   }
 }

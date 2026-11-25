@@ -1,4 +1,7 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import ExchangeCard from "@/components/ExchangeCard";
+import type { ExchangeCardState } from "@/lib/exchangeCard";
+import { PROPOSAL_SENT_PARAM, PROPOSAL_SENT_VALUE } from "@/lib/exchangeCard";
 import { motion } from "framer-motion";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Footer from "@/components/Footer";
@@ -17,6 +20,8 @@ interface SearchData {
   id: string;
   title: string;
   user_id: string;
+  image_url?: string | null;
+  image_urls?: string[] | null;
   profiles: {
     full_name: string | null;
     avatar_url: string | null;
@@ -53,6 +58,18 @@ interface ConversationViewProps {
 /** Contenu d'une conversation : messages, pagination, suggestions, photos, saisie. */
 const ConversationView = ({ searchId, withUserId, embedded = false }: ConversationViewProps) => {
   const id = searchId;
+  const [cardState, setCardState] = useState<ExchangeCardState | null>(null);
+  // Bandeau « Proposition envoyée » : lu une fois dans l'adresse puis retiré.
+  const [urlParams, setUrlParams] = useSearchParams();
+  const [justSent] = useState(() => urlParams.get(PROPOSAL_SENT_PARAM) === PROPOSAL_SENT_VALUE);
+  const [sentBannerOpen, setSentBannerOpen] = useState(justSent);
+  useEffect(() => {
+    if (!justSent) return;
+    const next = new URLSearchParams(urlParams);
+    next.delete(PROPOSAL_SENT_PARAM);
+    setUrlParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [partnerId, setPartnerId] = useState<string | null>(null);
   const partnerIdRef = useRef<string | null>(null);
   partnerIdRef.current = partnerId;
@@ -155,7 +172,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
   const fetchSearch = async () => {
     const { data: searchData, error: searchError } = await supabase
       .from("searches")
-      .select("id, title, user_id")
+      .select("id, title, user_id, image_url, image_urls")
       .eq("id", id)
       .maybeSingle();
 
@@ -457,6 +474,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
 
   const remainingChars = MAX_CHARS - message.length;
   const firstName = search?.profiles?.full_name?.split(" ")[0] || "l'utilisateur";
+  const findrWithProposal = !!user && !!search && user.id !== search.user_id && cardState?.kind === "proposition";
 
   if (authLoading || loading) {
     return (
@@ -561,6 +579,26 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
               </button>
             </div>
 
+            {user && partnerId && (
+              <ExchangeCard
+                searchId={search.id}
+                searchTitle={search.title}
+                searchImage={search.image_urls?.[0] ?? search.image_url ?? null}
+                buyrId={search.user_id}
+                findrId={user.id === search.user_id ? partnerId : user.id}
+                iAmBuyr={user.id === search.user_id}
+                partnerFirstName={firstName}
+                onState={setCardState}
+              />
+            )}
+            {sentBannerOpen && (
+              <div role="status" className="flex items-center gap-3 border-b px-4 py-3 text-sm" style={{ borderColor: "#BFDCC8", backgroundColor: "#E6F4EA", color: "#14532D" }}>
+                <span className="flex-1">{t("exchangeCard.sentBanner", { name: firstName })}</span>
+                <button type="button" onClick={() => setSentBannerOpen(false)} aria-label={t("exchangeCard.closeBanner")}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2" style={{ outlineColor: "#14532D" }}>×</button>
+              </div>
+            )}
+
             {/* Messages Area */}
             <div
               ref={messagesContainerRef}
@@ -602,7 +640,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
 
                   {/* Quick suggestions */}
                   <div className="flex flex-wrap justify-center gap-2 mt-6 max-w-md">
-                    {QUICK_SUGGESTIONS.map((s) => (
+                    {(findrWithProposal ? [t("exchangeCard.suggestAvailable"), t("exchangeCard.suggestPhotos")] : QUICK_SUGGESTIONS).map((s) => (
                       <button
                         key={s}
                         onClick={() => handleSuggestion(s)}
@@ -898,7 +936,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                       if (e.target.value.length <= MAX_CHARS) setMessage(e.target.value);
                     }}
                     onKeyDown={handleKeyPress}
-                    placeholder={`Écris un message à ${firstName}...`}
+                    placeholder={findrWithProposal ? t("exchangeCard.placeholder", { name: firstName }) : `Écris un message à ${firstName}...`}
                     className="resize-none min-h-[48px] pr-14 rounded-2xl border bg-white"
                     style={{ borderColor: "#D9D2C2" }}
                     rows={1}

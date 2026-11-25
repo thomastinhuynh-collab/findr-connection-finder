@@ -1,3 +1,4 @@
+import { proposalSentUrl } from "@/lib/exchangeCard";
 import { FINDR_RATE, parsePrice, hasTooManyDecimals, formatPrice } from "@/lib/fees";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -279,12 +280,8 @@ const MakeProposal = () => {
 
 
       
-      toast({
-        title: t("proposalForm.sentTitle"),
-        description: `Ta proposition a été envoyée à ${search.profiles?.full_name || "l'utilisateur"}. Tu recevras une notification à sa réponse.`,
-      });
-      
-      navigate(`/recherche/${id}`);
+      // La conversation s'ouvre sur l'échange, avec le bandeau « Proposition envoyée ».
+      navigate(proposalSentUrl(id!, search.user_id), { replace: true });
     } catch (error) {
       console.error("Error submitting proposal:", error);
       toast({

@@ -1998,5 +1998,29 @@
     "envelopeAria_other": "Messagerie, {{count}} conversations avec des messages non lus",
     "selectHint": "Choisis une conversation dans la liste.",
     "bottomLabel": "Messagerie"
+  },
+  "exchangeCard": {
+    "aria": "Résumé de l'échange",
+    "step": "Étape {{index}} sur {{total}} : {{name}}",
+    "saleClosed": "Vente close",
+    "awaiting": "En attente de la réponse de {{name}}",
+    "reservedUntil": "Réservée jusqu'au {{date}}",
+    "youWillReceive": "tu recevras {{amount}}",
+    "viewProposals": "Voir les propositions",
+    "sentBanner": "Proposition envoyée. {{name}} a été prévenu(e).",
+    "closeBanner": "Fermer le message",
+    "suggestAvailable": "L'objet est disponible tout de suite",
+    "suggestPhotos": "Je peux envoyer plus de photos",
+    "placeholder": "Écris un mot à {{name}}…",
+    "actions": {
+      "pay": "Payer",
+      "provideLabel": "Fournir l'étiquette",
+      "confirmReceipt": "Confirmer la réception",
+      "viewLabel": "Voir l'étiquette",
+      "viewSale": "Voir la vente",
+      "viewProposal": "Voir la proposition",
+      "editProposal": "Modifier ma proposition"
+    },
+    "yourTurn": "À toi de répondre"
   }
 }
