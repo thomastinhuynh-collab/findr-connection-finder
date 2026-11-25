@@ -1117,6 +1117,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      withdraw_proposal: { Args: { _proposal_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

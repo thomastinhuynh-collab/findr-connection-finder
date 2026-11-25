@@ -39,10 +39,11 @@ Deno.serve(async (req) => {
 
     const { data: proposal, error: pErr } = await admin
       .from("proposals")
-      .select("id, search_id, findr_id, title, proposed_price")
+      .select("id, search_id, findr_id, title, proposed_price, status")
       .eq("id", proposalId)
       .maybeSingle();
     if (pErr || !proposal) return json({ error: "Proposition introuvable" }, 404);
+    if (proposal.status !== "pending") return json({ error: "Proposition indisponible" }, 409);
 
     const { data: search } = await admin
       .from("searches")

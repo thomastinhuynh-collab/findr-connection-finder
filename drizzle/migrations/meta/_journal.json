@@ -183,6 +183,13 @@
       "when": 1795624863237,
       "tag": "0025_exchanges_dispute_state",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1795627957748,
+      "tag": "0026_guard_proposals_and_withdraw",
+      "breakpoints": true
     }
   ]
 }
