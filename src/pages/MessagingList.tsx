@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import ConversationView from "@/components/ConversationView";
+import MySpaceBottomBar from "@/components/MySpaceBottomBar";
+import { useTodoItems, ACCOUNT_TODO_KINDS } from "@/components/TodoNowBlock";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { formatPrice } from "@/lib/fees";
 import {
   EXCHANGE_FILTERS, EXCHANGE_PAGE_SIZE, type ExchangeFilter, type ExchangeRow,
-  exchangeBadges, exchangeKey, exchangePreview, firstName, formatExchangeTime, mergePages, nextCursor, parseExchangeFilter,
+  exchangeBadges, exchangeKey, firstUnreadExchange, exchangePreview, firstName, formatExchangeTime, mergePages, nextCursor, parseExchangeFilter,
 } from "@/lib/exchangeRows";
 
 const NAVY = "#070E42";
@@ -22,8 +25,31 @@ const FILTER_KEYS: Record<ExchangeFilter, string> = {
 
 type Counts = Partial<Record<ExchangeFilter, number>>;
 
-const MessagingList = () => {
+const WIDE_QUERY = "(min-width: 901px)";
+export function useWideMessaging() {
+  const [wide, setWide] = useState(() => typeof window !== "undefined" && window.matchMedia(WIDE_QUERY).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(WIDE_QUERY);
+    const on = () => setWide(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return wide;
+}
+
+/** /messagerie et /messagerie/:id : liste + volet (ordinateur) ou conversation plein écran (téléphone). */
+const MessagingHub = () => {
+  const { id } = useParams();
+  const [params] = useSearchParams();
+  const wide = useWideMessaging();
+  const withUserId = params.get("with");
+  if (id && !wide) return <ConversationView key={`${id}:${withUserId ?? ""}`} searchId={id} withUserId={withUserId} />;
+  return <MessagingList wide={wide} selectedId={id ?? null} selectedWith={withUserId} />;
+};
+
+const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; selectedId: string | null; selectedWith: string | null }) => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const uid = user?.id;
   const [params, setParams] = useSearchParams();
@@ -65,6 +91,24 @@ const MessagingList = () => {
   }, [fetchPage, filter, loadCounts]);
 
   useEffect(() => { if (uid) loadFirst(); }, [uid, loadFirst]);
+
+  // Ordinateur : à l'arrivée sans sélection, ouvrir le premier échange non lu.
+  const autoSelected = useRef(false);
+  useEffect(() => {
+    if (!wide || selectedId || loading || autoSelected.current) return;
+    autoSelected.current = true;
+    const first = firstUnreadExchange(rows);
+    if (first) navigate(rowHref(first), { replace: true });
+  }, [wide, selectedId, loading, rows]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Chiffres dorés de la barre du bas : mêmes règles que Mon espace.
+  const [profile, setProfile] = useState<unknown>(null);
+  useEffect(() => {
+    if (!uid || wide) return;
+    supabase.rpc("get_my_profile").then(({ data }) => setProfile(data ?? null));
+  }, [uid, wide]);
+  const todo = useTodoItems(!wide && profile ? uid : undefined, profile);
+  const todoItems = todo.items ?? [];
 
   const loadMore = async () => {
     setLoadingMore(true);
@@ -109,9 +153,17 @@ const MessagingList = () => {
   };
 
   const fmt = (n: number) => formatPrice(n, i18n.language);
+  function rowHref(r: ExchangeRow) {
+    const q = new URLSearchParams({ with: r.partner_id });
+    if (filter !== "toutes") q.set("filtre", filter);
+    return `/messagerie/${r.search_id}?${q.toString()}`;
+  }
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 pb-16 pt-24 sm:px-6">
+    <>
+    <main className={wide ? "mx-auto grid w-full max-w-7xl gap-6 px-6 pb-8 pt-24" : "mx-auto w-full max-w-3xl px-4 pt-24 sm:px-6 pb-[calc(88px+env(safe-area-inset-bottom))] min-[641px]:pb-16"}
+      style={wide ? { gridTemplateColumns: "420px minmax(0,1fr)", height: "100vh" } : undefined}>
+     <div className={wide ? "flex min-h-0 flex-col" : undefined}>
       <h1 className="text-3xl" style={{ fontFamily: "'Playfair Display', serif", color: NAVY }}>{t("messagingList.title")}</h1>
       <p className="mt-2 text-sm" style={{ color: MUTED }}>{t("messagingList.intro")}</p>
 
@@ -132,7 +184,7 @@ const MessagingList = () => {
         })}
       </div>
 
-      <section className="mt-4" aria-live="polite">
+      <section className={wide ? "mt-4 min-h-0 flex-1 overflow-y-auto" : "mt-4"} aria-live="polite">
         {loading ? (
           <div role="status" aria-busy="true">
             <span className="sr-only">{t("common.loading")}</span>
@@ -170,6 +222,7 @@ const MessagingList = () => {
             <ul className="divide-y overflow-hidden rounded-xl bg-white" style={{ border: "1px solid #E5E1D8" }}>
               {rows.map((r) => {
                 const unread = r.unread_count > 0;
+                const selected = wide && r.search_id === selectedId && r.partner_id === selectedWith;
                 const name = r.partner_name?.trim() || t("messagingList.someone");
                 const preview = exchangePreview(r);
                 const previewText = "text" in preview ? preview.text : t(`messagingList.${preview.key}`);
@@ -181,9 +234,9 @@ const MessagingList = () => {
                 ].filter(Boolean).join(", ");
                 return (
                   <li key={exchangeKey(r)}>
-                    <Link to={`/messagerie/${r.search_id}?with=${r.partner_id}`} aria-label={aria}
+                    <Link to={rowHref(r)} aria-label={aria} aria-current={selected ? "true" : undefined}
                       className="flex w-full items-start gap-3 px-4 py-3 transition-colors hover:bg-[#FAF7F2] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2"
-                      style={{ minHeight: ROW_MIN, outlineColor: NAVY, backgroundColor: unread ? "#FBF7EE" : undefined }}>
+                      style={{ minHeight: ROW_MIN, outlineColor: NAVY, backgroundColor: selected ? "#F5F1E8" : unread ? "#FBF7EE" : undefined, boxShadow: selected ? `inset 3px 0 0 ${GOLD}` : undefined }}>
                       <span aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full text-lg font-semibold"
                         style={{ backgroundColor: "#F5F1E8", color: NAVY }}>
                         {r.partner_avatar_url ? <img src={r.partner_avatar_url} alt="" className="h-full w-full object-cover" /> : (firstName(name).charAt(0).toUpperCase() || "?")}
@@ -228,8 +281,25 @@ const MessagingList = () => {
           </>
         )}
       </section>
+     </div>
+      {wide && (
+        <section className="min-h-0 overflow-hidden rounded-xl" style={{ border: "1px solid #E5E1D8" }}>
+          {selectedId ? (
+            <ConversationView key={`${selectedId}:${selectedWith ?? ""}`} searchId={selectedId} withUserId={selectedWith} embedded />
+          ) : (
+            <div className="flex h-full items-center justify-center p-8 text-sm" style={{ color: MUTED, backgroundColor: "#FAF7F2" }}>
+              {t("messagingList.selectHint")}
+            </div>
+          )}
+        </section>
+      )}
     </main>
+    {!wide && (
+      <MySpaceBottomBar active="messagerie"
+        actionCounts={{ aujourdhui: todoItems.length, compte: todoItems.filter((i) => ACCOUNT_TODO_KINDS.includes(i.kind)).length }} />
+    )}
+    </>
   );
 };
 
-export default MessagingList;
+export default MessagingHub;

@@ -18,7 +18,6 @@ const Searches = lazy(() => import("./pages/Searches"));
 const PostSearch = lazy(() => import("./pages/PostSearch"));
 const EditSearch = lazy(() => import("./pages/EditSearch"));
 const SearchDetail = lazy(() => import("./pages/SearchDetail"));
-const Messaging = lazy(() => import("./pages/Messaging"));
 const MessagingList = lazy(() => import("./pages/MessagingList"));
 const MakeProposal = lazy(() => import("./pages/MakeProposal"));
 const EditProposal = lazy(() => import("./pages/EditProposal"));
@@ -70,7 +69,7 @@ const App = () => (
               <Route path="/recherche/:id" element={<SearchDetail />} />
               <Route path="/modifier-recherche/:id" element={<ProtectedRoute><EditSearch /></ProtectedRoute>} />
               <Route path="/messagerie" element={<ProtectedRoute><MessagingList /></ProtectedRoute>} />
-              <Route path="/messagerie/:id" element={<ProtectedRoute><Messaging /></ProtectedRoute>} />
+              <Route path="/messagerie/:id" element={<ProtectedRoute><MessagingList /></ProtectedRoute>} />
               <Route path="/proposition/:id" element={<ProtectedRoute><MakeProposal /></ProtectedRoute>} />
               <Route path="/modifier-proposition/:id" element={<ProtectedRoute><EditProposal /></ProtectedRoute>} />
               <Route path="/mes-propositions" element={<Navigate to="/mon-espace?section=propositions" replace />} />

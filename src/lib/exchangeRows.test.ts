@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { exchangeBadges, exchangePreview, formatExchangeTime, parseExchangeFilter, nextCursor, mergePages, type ExchangeRow } from "./exchangeRows";
+import { firstUnreadExchange, exchangeBadges, exchangePreview, formatExchangeTime, parseExchangeFilter, nextCursor, mergePages, type ExchangeRow } from "./exchangeRows";
 
 const base: ExchangeRow = {
   search_id: "s", search_title: "Lampe", partner_id: "p", partner_name: "Olga Martin", partner_avatar_url: null,
@@ -22,8 +22,14 @@ describe("exchangeBadges", () => {
     expect(exchangeBadges({ ...base, partner_role: "buyr", kind: "vente", state: "paye_en_attente_reception" }, fmt)[1].key).toBe("actionDropoff");
     expect(exchangeBadges({ ...base, kind: "vente", state: "expedie" }, fmt)[1].key).toBe("actionReceipt");
   });
-  it("paiement à finaliser pour une proposition acceptée non payée", () => {
-    expect(exchangeBadges({ ...base, kind: "proposition", state: "proposition_accepted_pending" }, fmt)[1]).toEqual({ key: "actionPay", amber: true });
+  it("proposition acceptée non payée : jamais « Vente en cours »", () => {
+    const r = { ...base, kind: "proposition", state: "proposition_accepted_pending", amount: 190 };
+    expect(exchangeBadges(r, fmt)).toEqual([{ key: "proposalAccepted", params: { amount: "190 €" } }, { key: "actionPay", amber: true }]);
+    expect(exchangeBadges({ ...r, partner_role: "buyr" }, fmt)).toEqual([{ key: "proposalMine", params: { amount: "190 €" } }, { key: "acceptedAwaitingPayment" }]);
+  });
+  it("litige ouvert : « Litige en cours », pas de réception à confirmer", () => {
+    const b = exchangeBadges({ ...base, kind: "vente", state: "litige" }, fmt);
+    expect(b).toEqual([{ key: "dispute", amber: true }]);
   });
   it("ventes finalisée et annulée, proposition refusée, réservation expirée", () => {
     expect(exchangeBadges({ ...base, kind: "vente", state: "termine" }, fmt)[0].key).toBe("saleDone");
@@ -76,5 +82,12 @@ describe("textes Messagerie FR/EN", () => {
     expect(fr.messagingList.intro).toBe("Tes messages, propositions et réservations, au même endroit. Les non lus passent en premier.");
     expect(fr.messagingList.empty).toBe("Aucune conversation pour le moment.");
     expect(fr.messagingList.error).toBe("Impossible de charger ta messagerie.");
+  });
+});
+
+describe("sélection à l'arrivée", () => {
+  it("premier échange non lu, sinon aucun", () => {
+    expect(firstUnreadExchange([base, { ...base, partner_id: "u", unread_count: 1 }])?.partner_id).toBe("u");
+    expect(firstUnreadExchange([base])).toBeNull();
   });
 });

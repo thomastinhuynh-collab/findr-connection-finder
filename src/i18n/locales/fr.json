@@ -1297,7 +1297,8 @@
       "plainCount": "{{count}} élément(s)",
       "mobileAccount": "Compte",
       "bottomNav": "Navigation de Mon espace",
-      "post": "Poster une recherche"
+      "post": "Poster une recherche",
+      "mobileSearches": "Recherches"
     },
     "findrProposals": {
       "browse": "Voir les recherches des buyrs",
@@ -1986,7 +1987,16 @@
       "saleDone": "Vente finalisée",
       "proposalRejected": "Proposition refusée",
       "saleCancelled": "Vente annulée",
-      "reservationExpired": "Réservation expirée"
-    }
+      "reservationExpired": "Réservation expirée",
+      "proposalAccepted": "Proposition acceptée · {{amount}}",
+      "acceptedAwaitingPayment": "acceptée · en attente de son paiement",
+      "dispute": "Litige en cours"
+    },
+    "backToList": "← Messagerie",
+    "envelopeAria_zero": "Messagerie",
+    "envelopeAria_one": "Messagerie, {{count}} conversation avec des messages non lus",
+    "envelopeAria_other": "Messagerie, {{count}} conversations avec des messages non lus",
+    "selectHint": "Choisis une conversation dans la liste.",
+    "bottomLabel": "Messagerie"
   }
 }

@@ -176,6 +176,13 @@
       "when": 1795624417221,
       "tag": "0024_exchange_filter_counts",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1795624863237,
+      "tag": "0025_exchanges_dispute_state",
+      "breakpoints": true
     }
   ]
 }

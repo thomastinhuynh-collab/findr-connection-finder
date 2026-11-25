@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Bell, Mail } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useUnreadExchanges } from "@/hooks/useUnreadExchanges";
 import {
   Popover,
   PopoverContent,
@@ -22,26 +23,6 @@ interface NotificationRow {
   link: string | null;
   is_read: boolean;
   created_at: string;
-}
-
-interface MessageRow {
-  id: string;
-  search_id: string;
-  sender_id: string;
-  receiver_id: string;
-  content: string;
-  is_read: boolean | null;
-  created_at: string;
-}
-
-interface Conversation {
-  key: string;
-  searchId: string;
-  partnerId: string;
-  partnerName: string;
-  lastContent: string;
-  lastAt: string;
-  unread: number;
 }
 
 const formatTime = (dateString: string) => {
@@ -66,9 +47,10 @@ const HeaderActions = ({ variant = "navy" }: HeaderActionsProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [msgOpen, setMsgOpen] = useState(false);
+  const unreadExchanges = useUnreadExchanges();
+  const { pathname } = useLocation();
+  const onMessaging = pathname === "/messagerie" || pathname.startsWith("/messagerie/");
 
   const color = variant === "gold" ? GOLD : NAVY;
 
@@ -83,69 +65,12 @@ const HeaderActions = ({ variant = "navy" }: HeaderActionsProps) => {
     if (data) setNotifications(data as NotificationRow[]);
   }, [user]);
 
-  const fetchConversations = useCallback(async () => {
-    if (!user) return;
-    const { data } = await supabase
-      .from("messages")
-      .select("*")
-      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-      .order("created_at", { ascending: false })
-      .limit(120);
-    if (!data) return;
-
-    const rows = data as MessageRow[];
-    const partnerIds = Array.from(
-      new Set(
-        rows.map((m) => (m.sender_id === user.id ? m.receiver_id : m.sender_id))
-      )
-    );
-
-    let names: Record<string, string> = {};
-    if (partnerIds.length > 0) {
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, full_name")
-        .in("user_id", partnerIds);
-      (profiles || []).forEach((p: any) => {
-        names[p.user_id] = p.full_name || "Utilisateur";
-      });
-    }
-
-    const map = new Map<string, Conversation>();
-    rows.forEach((m) => {
-      const partnerId = m.sender_id === user.id ? m.receiver_id : m.sender_id;
-      const key = `${m.search_id}:${partnerId}`;
-      const existing = map.get(key);
-      const isUnread = m.receiver_id === user.id && !m.is_read;
-      if (!existing) {
-        map.set(key, {
-          key,
-          searchId: m.search_id,
-          partnerId,
-          partnerName: names[partnerId] || "Utilisateur",
-          lastContent: m.content,
-          lastAt: m.created_at,
-          unread: isUnread ? 1 : 0,
-        });
-      } else if (isUnread) {
-        existing.unread += 1;
-      }
-    });
-
-    setConversations(
-      Array.from(map.values()).sort(
-        (a, b) => new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime()
-      )
-    );
-  }, [user]);
-
   useEffect(() => {
     if (!user) return;
     fetchNotifications();
-    fetchConversations();
 
     const channel = supabase
-      .channel(`header-actions-${user.id}`)
+      .channel(`header-actions-${user.id}-${Math.random().toString(36).slice(2)}`)
       .on(
         "postgres_changes",
         {
@@ -156,22 +81,12 @@ const HeaderActions = ({ variant = "navy" }: HeaderActionsProps) => {
         },
         () => fetchNotifications()
       )
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "messages",
-          filter: `receiver_id=eq.${user.id}`,
-        },
-        () => fetchConversations()
-      )
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, fetchNotifications, fetchConversations]);
+  }, [user, fetchNotifications]);
 
   const markNotificationRead = async (id: string) => {
     await supabase.from("notifications").update({ is_read: true }).eq("id", id);
@@ -193,7 +108,6 @@ const HeaderActions = ({ variant = "navy" }: HeaderActionsProps) => {
   if (!user) return null;
 
   const unreadNotifs = notifications.filter((n) => !n.is_read).length;
-  const unreadMsgs = conversations.reduce((sum, c) => sum + c.unread, 0);
 
   const iconButtonStyle: React.CSSProperties = {
     position: "relative",
@@ -233,59 +147,25 @@ const HeaderActions = ({ variant = "navy" }: HeaderActionsProps) => {
 
   return (
     <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-      {/* Messages */}
-      <Popover open={msgOpen} onOpenChange={setMsgOpen}>
-        <PopoverTrigger asChild>
-          <button style={iconButtonStyle} aria-label="Messages">
-            <Mail size={20} strokeWidth={1.6} />
-            {unreadMsgs > 0 && badge(unreadMsgs)}
-          </button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80 p-0 bg-background" align="end">
-          <div className="p-3 border-b border-border">
-             <h3 className="font-semibold text-sm text-primary">{t("headerActions.messages")}</h3>
-          </div>
-          <ScrollArea className="h-[300px]">
-            {conversations.length === 0 ? (
-              <div className="p-4 text-center text-sm text-muted-foreground">
-                 {t("headerActions.noConversation")}
-              </div>
-            ) : (
-              <div className="divide-y divide-border">
-                {conversations.map((c) => (
-                  <button
-                    key={c.key}
-                    className={`w-full text-left p-3 hover:bg-secondary/50 transition-colors ${
-                      c.unread > 0 ? "bg-accent/10" : ""
-                    }`}
-                    onClick={() => {
-                      setMsgOpen(false);
-                      navigate(`/messagerie/${c.searchId}?with=${c.partnerId}`);
-                    }}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium text-primary truncate">
-                        {c.partnerName}
-                      </span>
-                      {c.unread > 0 && (
-                        <span className="text-[10px] font-semibold text-white bg-[#E05A47] rounded-full px-1.5 py-0.5">
-                          {c.unread}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
-                      {c.lastContent}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground mt-1">
-                      {formatTime(c.lastAt)}
-                    </p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </ScrollArea>
-        </PopoverContent>
-      </Popover>
+      {/* Messagerie : lien direct, chiffre doré = conversations avec des non lus */}
+      <Link
+        to="/messagerie"
+        aria-label={t("messagingList.envelopeAria", { count: unreadExchanges })}
+        aria-current={onMessaging ? "page" : undefined}
+        className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        style={{ ...iconButtonStyle, color: onMessaging ? GOLD : color, minWidth: 44, minHeight: 44 }}
+      >
+        <Mail size={20} strokeWidth={onMessaging ? 2 : 1.6} />
+        {unreadExchanges > 0 && (
+          <span
+            aria-hidden="true"
+            style={{ position: "absolute", top: 2, right: 0, minWidth: 18, height: 18, padding: "0 4px", borderRadius: 999,
+              background: GOLD, color: NAVY, fontSize: 12, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+          >
+            {unreadExchanges > 9 ? "9+" : unreadExchanges}
+          </span>
+        )}
+      </Link>
 
       {/* Notifications */}
       <Popover open={notifOpen} onOpenChange={setNotifOpen}>

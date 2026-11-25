@@ -1,0 +1,998 @@
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Send, Loader2, CheckCheck, Check, Info, Paperclip, X, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { unreadIdsFromPartner } from "@/lib/messageRead";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
+import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
+import ContainedPhoto from "@/components/ContainedPhoto";
+
+interface SearchData {
+  id: string;
+  title: string;
+  user_id: string;
+  profiles: {
+    full_name: string | null;
+    avatar_url: string | null;
+  } | null;
+}
+
+interface Message {
+  id: string;
+  content: string;
+  sender_id: string;
+  receiver_id: string;
+  is_read: boolean;
+  created_at: string;
+  images?: string[];
+}
+
+const MAX_CHARS = 240;
+const MAX_PHOTOS = 5;
+const PAGE_SIZE = 50;
+
+const QUICK_SUGGESTIONS = [
+  "J'ai peut-être ce que tu cherches",
+  "Quel est ton budget ?",
+  "Peux-tu envoyer plus de photos ?",
+];
+
+interface ConversationViewProps {
+  searchId: string;
+  withUserId: string | null;
+  /** Affichée dans le volet droit de la Messagerie (ordinateur) : sans retour ni pied de page. */
+  embedded?: boolean;
+}
+
+/** Contenu d'une conversation : messages, pagination, suggestions, photos, saisie. */
+const ConversationView = ({ searchId, withUserId, embedded = false }: ConversationViewProps) => {
+  const id = searchId;
+  const [partnerId, setPartnerId] = useState<string | null>(null);
+  const partnerIdRef = useRef<string | null>(null);
+  partnerIdRef.current = partnerId;
+  const [partnerProfile, setPartnerProfile] = useState<{ full_name: string | null; avatar_url: string | null } | null>(null);
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const { toast } = useToast();
+  const { t } = useTranslation();
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [search, setSearch] = useState<SearchData | null>(null);
+  const [hasMoreMessages, setHasMoreMessages] = useState(false);
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Position de défilement à restaurer après l'ajout de messages plus anciens en tête de liste.
+  const prependScrollRef = useRef<{ height: number; top: number } | null>(null);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      toast({
+        title: "Connexion requise",
+        description: "Tu dois être connecté pour accéder à la messagerie.",
+        variant: "destructive",
+      });
+      navigate("/");
+    }
+  }, [user, authLoading, navigate, toast]);
+
+  useEffect(() => {
+    if (id && user) {
+      fetchSearch();
+      fetchMessages();
+    }
+  }, [id, user]);
+
+  // Real-time subscription
+  useEffect(() => {
+    if (!id || !user) return;
+
+    const channel = supabase
+      .channel(`messages-${id}-${Math.random().toString(36).slice(2)}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `search_id=eq.${id}`
+        },
+        (payload) => {
+          const newMessage = payload.new as Message;
+          setMessages((prev) => {
+            if (prev.some(m => m.id === newMessage.id)) return prev;
+            return [...prev, newMessage];
+          });
+          
+          if (newMessage.receiver_id === user.id && newMessage.sender_id === partnerIdRef.current) {
+            markAsRead(newMessage.id);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, user]);
+
+  useLayoutEffect(() => {
+    const container = messagesContainerRef.current;
+    const pending = prependScrollRef.current;
+    if (pending && container) {
+      // Messages anciens ajoutés en haut : on garde le même point de lecture.
+      container.scrollTop = container.scrollHeight - pending.height + pending.top;
+      prependScrollRef.current = null;
+      return;
+    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Lightbox keyboard navigation
+  useEffect(() => {
+    if (!lightbox) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "ArrowLeft") setLightbox((lb) => lb ? { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length } : null);
+      if (e.key === "ArrowRight") setLightbox((lb) => lb ? { ...lb, index: (lb.index + 1) % lb.images.length } : null);
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [lightbox]);
+
+  const fetchSearch = async () => {
+    const { data: searchData, error: searchError } = await supabase
+      .from("searches")
+      .select("id, title, user_id")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (searchError || !searchData) {
+      console.error("Error fetching search:", searchError);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger la conversation.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // Determine the actual conversation partner
+    let resolvedPartnerId: string | null = withUserId;
+
+    if (!resolvedPartnerId) {
+      if (user && user.id === searchData.user_id) {
+        // Buyr side: fall back to the findr of the most recent proposal
+        const { data: prop } = await supabase
+          .from("proposals")
+          .select("findr_id, created_at")
+          .eq("search_id", searchData.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        resolvedPartnerId = prop?.findr_id ?? null;
+      } else {
+        resolvedPartnerId = searchData.user_id;
+      }
+    }
+
+    setPartnerId(resolvedPartnerId);
+
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url")
+      .eq("user_id", resolvedPartnerId ?? searchData.user_id)
+      .maybeSingle();
+
+    setPartnerProfile(profileData ?? null);
+    setSearch({
+      ...searchData,
+      profiles: profileData
+    });
+    setLoading(false);
+  };
+
+  // Marque comme lus uniquement les messages de l'interlocuteur affiché, une fois
+  // celui-ci connu (évite d'effacer les non lus d'un autre interlocuteur).
+  useEffect(() => {
+    if (!partnerId) return;
+    markBatchAsRead(messages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [partnerId, messages]);
+
+  const markBatchAsRead = async (batch: Message[]) => {
+    if (!user || !partnerIdRef.current) return;
+    const unreadIds = unreadIdsFromPartner(batch, user.id, partnerIdRef.current);
+    if (unreadIds.length > 0) {
+      const { error } = await supabase.from("messages").update({ is_read: true }).in("id", unreadIds);
+      if (!error) {
+        const ids = new Set(unreadIds);
+        setMessages((prev) => prev.map((m) => (ids.has(m.id) ? { ...m, is_read: true } : m)));
+      }
+    }
+  };
+
+  const fetchMessages = async () => {
+    const { data, error } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("search_id", id)
+      .order("created_at", { ascending: false })
+      .range(0, PAGE_SIZE - 1);
+
+    if (error) {
+      console.error("Error fetching messages:", error);
+      return;
+    }
+
+    const batch = (data || []).slice().reverse();
+    setMessages(batch);
+    setHasMoreMessages((data || []).length === PAGE_SIZE);
+  };
+
+  const loadOlderMessages = async () => {
+    if (loadingOlder) return;
+    const oldest = messages[0];
+    if (!oldest) return;
+    setLoadingOlder(true);
+
+    // Pagination par curseur (date du plus ancien message affiché) : insensible aux
+    // nouveaux messages reçus en temps réel, contrairement à un offset.
+    const { data, error } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("search_id", id)
+      .lt("created_at", oldest.created_at)
+      .order("created_at", { ascending: false })
+      .limit(PAGE_SIZE);
+
+    if (error) {
+      console.error("Error fetching older messages:", error);
+      setLoadingOlder(false);
+      return;
+    }
+
+    const older = (data || []).slice().reverse();
+    const container = messagesContainerRef.current;
+    if (container) {
+      prependScrollRef.current = { height: container.scrollHeight, top: container.scrollTop };
+    }
+    setMessages((prev) => {
+      const existing = new Set(prev.map((m) => m.id));
+      return [...older.filter((m) => !existing.has(m.id)), ...prev];
+    });
+    setHasMoreMessages((data || []).length === PAGE_SIZE);
+    setLoadingOlder(false);
+  };
+
+  const markAsRead = async (messageId: string) => {
+    await supabase
+      .from("messages")
+      .update({ is_read: true })
+      .eq("id", messageId);
+  };
+
+  const handleSend = async () => {
+    if ((!message.trim() && photoFiles.length === 0) || !user || !search) return;
+
+    const actualReceiverId = partnerId && partnerId !== user.id ? partnerId : search.user_id;
+    if (!actualReceiverId || actualReceiverId === user.id) {
+      toast({
+        title: "Interlocuteur introuvable",
+        description: "Impossible d'identifier la personne à contacter.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSending(true);
+    const filesSnapshot = [...photoFiles];
+    const contentToSend = message.trim() || (filesSnapshot.length > 0 ? t("messaging.photos") : "");
+
+    // Upload attached photos to storage first
+    const uploadedUrls: string[] = [];
+    for (const file of filesSnapshot) {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/messages/${id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("search-images")
+        .upload(path, file, { contentType: file.type || "image/jpeg" });
+
+      if (uploadError) {
+        console.error("Error uploading message image:", uploadError);
+        toast({
+          title: "Erreur",
+          description: "Impossible d'envoyer les photos.",
+          variant: "destructive",
+        });
+        setSending(false);
+        return;
+      }
+
+      const { data: publicUrl } = supabase.storage.from("search-images").getPublicUrl(path);
+      uploadedUrls.push(publicUrl.publicUrl);
+    }
+
+    const { error } = await supabase
+      .from("messages")
+      .insert({
+        search_id: id,
+        sender_id: user.id,
+        receiver_id: actualReceiverId,
+        content: contentToSend,
+        images: uploadedUrls,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'envoyer le message.",
+        variant: "destructive",
+      });
+    } else {
+      // Notify the recipient of the new message
+      await supabase.rpc("create_notification", {
+        _user_id: actualReceiverId,
+        _type: "new_message",
+        _title: "Nouveau message",
+        _message: contentToSend.slice(0, 120),
+        _link: `/messagerie/${id}?with=${user.id}`,
+      });
+      setMessage("");
+      photos.forEach((url) => URL.revokeObjectURL(url));
+      setPhotos([]);
+      setPhotoFiles([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      fetchMessages();
+    }
+
+    setSending(false);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleSuggestion = (text: string) => {
+    setMessage(text);
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files || []);
+    const { valid: files, oversized } = await compressAndValidate(selected);
+    if (oversized.length > 0) {
+      toast({
+        title: "Image trop lourde",
+        description: oversizedDescription(oversized),
+        variant: "destructive",
+      });
+    }
+    if (files.length === 0) {
+      if (e.target) e.target.value = "";
+      return;
+    }
+
+    const remainingSlots = MAX_PHOTOS - photos.length;
+    const filesToAdd = files.slice(0, remainingSlots);
+
+    if (files.length > remainingSlots) {
+      toast({
+        title: "Limite atteinte",
+        description: `Maximum ${MAX_PHOTOS} photos par message.`,
+      });
+    }
+
+    const newPreviews = filesToAdd.map((f) => URL.createObjectURL(f));
+    setPhotos((prev) => [...prev, ...newPreviews]);
+    setPhotoFiles((prev) => [...prev, ...filesToAdd]);
+    if (e.target) e.target.value = "";
+  };
+
+  const removePhoto = (index: number) => {
+    setPhotos((prev) => {
+      const url = prev[index];
+      if (url) URL.revokeObjectURL(url);
+      return prev.filter((_, i) => i !== index);
+    });
+    setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return "Aujourd'hui";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return "Hier";
+    } else {
+      return date.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+    }
+  };
+
+  const visibleMessages = partnerId
+    ? messages.filter(
+        (m) => m.sender_id === partnerId || m.receiver_id === partnerId
+      )
+    : messages;
+
+  const groupedMessages = visibleMessages.reduce((groups, msg) => {
+    const date = new Date(msg.created_at).toDateString();
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(msg);
+    return groups;
+  }, {} as Record<string, Message[]>);
+
+  const remainingChars = MAX_CHARS - message.length;
+  const firstName = search?.profiles?.full_name?.split(" ")[0] || "l'utilisateur";
+
+  if (authLoading || loading) {
+    return (
+      <div className={embedded ? "h-full" : "min-h-screen"} style={{ backgroundColor: "#F5F0E8" }}>
+        <main className={`${embedded ? "py-16" : "pt-24 pb-16"} flex items-center justify-center`}>
+          <Loader2 className="w-12 h-12 animate-spin" style={{ color: "#6B7B9E" }} />
+        </main>
+        {!embedded && <Footer />}
+      </div>
+    );
+  }
+
+  if (!search) {
+    return (
+      <div className={embedded ? "h-full" : "min-h-screen"} style={{ backgroundColor: "#F5F0E8" }}>
+        <main className={embedded ? "py-16" : "pt-24 pb-16"}>
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-2xl font-serif font-bold mb-4" style={{ color: "#070E42" }}>
+              Conversation non trouvée
+            </h1>
+            <Button onClick={() => navigate("/recherches")}>
+              Retour aux recherches
+            </Button>
+          </div>
+        </main>
+        {!embedded && <Footer />}
+      </div>
+    );
+  }
+
+  return (
+    <div className={embedded ? "h-full flex flex-col" : "min-h-screen flex flex-col"} style={{ backgroundColor: "#F5F0E8" }}>
+        
+
+      <main className={embedded ? "flex-1 p-4" : "flex-1 pt-24 pb-8"}>
+        <div className={embedded ? "h-full flex flex-col" : "container mx-auto px-4 h-full flex flex-col max-w-3xl"}>
+          {!embedded && (
+            <div className="mb-4">
+              <Link to="/messagerie"
+                className="inline-flex min-h-[44px] items-center text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                style={{ color: "#070E42", outlineColor: "#070E42" }}>
+                {t("messagingList.backToList")}
+              </Link>
+            </div>
+          )}
+
+          {/* Main chat card */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="bg-white rounded-2xl overflow-hidden flex flex-col"
+            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+          >
+            {/* Conversation Header */}
+            <div
+              className="flex items-center gap-4 px-5 py-4 border-b"
+              style={{ borderColor: "#ECE6DA", backgroundColor: "#FFFFFF" }}
+            >
+              {search.profiles?.avatar_url ? (
+                <img
+                  src={search.profiles.avatar_url}
+                  alt={search.profiles.full_name || "User"}
+                  className="w-12 h-12 rounded-full object-cover border-2"
+                  loading="lazy"
+                  style={{ borderColor: "#D9BB87" }}
+                />
+              ) : (
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white"
+                  style={{ backgroundColor: "#6B7B9E" }}
+                >
+                  {search.profiles?.full_name?.charAt(0) || "U"}
+                </div>
+              )}
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold truncate" style={{ color: "#070E42" }}>
+                    {search.profiles?.full_name || "Utilisateur"}
+                  </p>
+                  <span
+                    className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: "#E6F4EA", color: "#1E7A3E" }}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    En ligne
+                  </span>
+                </div>
+                <p className="text-xs mt-0.5 truncate" style={{ color: "#8A8275" }}>
+                  Recherche : {search.title}
+                </p>
+              </div>
+
+              <button
+                onClick={() => navigate(`/recherche/${id}`)}
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8]"
+                title="Voir l'annonce"
+                aria-label="Voir l'annonce"
+              >
+                <Info className="w-5 h-5" style={{ color: "#6B7B9E" }} />
+              </button>
+            </div>
+
+            {/* Messages Area */}
+            <div
+              ref={messagesContainerRef}
+              className="flex-1 px-5 py-6 overflow-y-auto min-h-[420px] max-h-[520px]"
+              style={{ backgroundColor: "#F5F0E8" }}
+            >
+              {messages.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center px-4">
+                  {/* Minimalist chat bubbles illustration */}
+                  <svg
+                    width="96"
+                    height="80"
+                    viewBox="0 0 96 80"
+                    fill="none"
+                    className="mb-5"
+                  >
+                    <path
+                      d="M8 20a12 12 0 0 1 12-12h32a12 12 0 0 1 12 12v14a12 12 0 0 1-12 12H32l-10 8v-8h-2A12 12 0 0 1 8 34V20Z"
+                      fill="#6B7B9E"
+                      fillOpacity="0.18"
+                      stroke="#6B7B9E"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M88 38a12 12 0 0 0-12-12H54a12 12 0 0 0-12 12v10a12 12 0 0 0 12 12h18l8 6v-6h-2a12 12 0 0 0 12-12V38Z"
+                      fill="#6B7B9E"
+                      fillOpacity="0.35"
+                      stroke="#6B7B9E"
+                      strokeWidth="1.5"
+                    />
+                  </svg>
+
+                  <p className="text-lg font-semibold mb-1" style={{ color: "#070E42" }}>
+                    Commence la conversation
+                  </p>
+                  <p className="text-sm max-w-sm" style={{ color: "#6B7280" }}>
+                    Dis à {firstName} si tu as l'article qu'il recherche
+                  </p>
+
+                  {/* Quick suggestions */}
+                  <div className="flex flex-wrap justify-center gap-2 mt-6 max-w-md">
+                    {QUICK_SUGGESTIONS.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => handleSuggestion(s)}
+                        className="text-sm px-3.5 py-2 rounded-full bg-white border transition-all hover:-translate-y-0.5"
+                        style={{
+                          borderColor: "#D9D2C2",
+                          color: "#6B7B9E",
+                          boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                        }}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {hasMoreMessages && (
+                    <div className="flex justify-center">
+                      <button
+                        type="button"
+                        onClick={loadOlderMessages}
+                        disabled={loadingOlder}
+                        className="text-xs px-4 py-2 rounded-full bg-white border transition-colors disabled:opacity-60"
+                        style={{ borderColor: "#ECE6DA", color: "#6B7B9E" }}
+                      >
+                        {loadingOlder ? "Chargement..." : "Charger les messages plus anciens"}
+                      </button>
+                    </div>
+                  )}
+                  {Object.entries(groupedMessages).map(([date, dayMessages]) => (
+                    <div key={date}>
+                      <div className="flex items-center justify-center mb-4">
+                        <span
+                          className="px-3 py-1 rounded-full text-xs"
+                          style={{ backgroundColor: "#FFFFFF", color: "#8A8275", border: "1px solid #ECE6DA" }}
+                        >
+                          {formatDate(dayMessages[0].created_at)}
+                        </span>
+                      </div>
+
+                      <div className="space-y-3">
+                        {dayMessages.map((msg) => {
+                          const isMine = msg.sender_id === user?.id;
+                          const msgImages = msg.images || [];
+                          const hasImages = msgImages.length > 0;
+                          // Preserve image-only rendering for older photo messages and either locale.
+                          const photoLabels = ["\u{1F4F7} Photo(s)", t("messaging.photos", { lng: "fr" }), t("messaging.photos", { lng: "en" })];
+                          const hasText = Boolean(msg.content && !(hasImages && photoLabels.includes(msg.content)));
+                          const count = msgImages.length;
+                          const openLightbox = (idx: number) => setLightbox({ images: msgImages, index: idx });
+
+                          const renderImages = () => {
+                            if (count === 0) return null;
+
+                            // 1 photo: full format, natural ratio, contain
+                            if (count === 1) {
+                              return (
+                                <div className={`${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                  <button
+                                    type="button"
+                                    onClick={() => openLightbox(0)}
+                                    className="block w-full rounded-[12px] overflow-hidden bg-photo-backdrop"
+                                  >
+                                    <img
+                                      src={msgImages[0]}
+                                      alt="photo"
+                                      className="w-full object-contain max-h-[260px]"
+                                      loading="lazy"
+                                    />
+                                  </button>
+                                </div>
+                              );
+                            }
+
+                            // 2 photos: side by side, equal height
+                            if (count === 2) {
+                              return (
+                                <div className={`grid grid-cols-2 gap-1 ${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                  {msgImages.map((src, i) => (
+                                    <button
+                                      key={i}
+                                      type="button"
+                                      onClick={() => openLightbox(i)}
+                                      className="rounded-[12px] overflow-hidden"
+                                    >
+                                      <ContainedPhoto src={src} alt={`photo-${i}`} className="h-40" />
+                                    </button>
+                                  ))}
+                                </div>
+                              );
+                            }
+
+                            // 3 photos: large left + 2 small right
+                            if (count === 3) {
+                              return (
+                                <div className={`grid grid-cols-2 gap-1 ${hasText ? "p-1.5 pb-0" : "p-1.5"}`} style={{ gridTemplateRows: "repeat(2, 1fr)" }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => openLightbox(0)}
+                                    className="row-span-2 rounded-[12px] overflow-hidden"
+                                  >
+                                    <ContainedPhoto src={msgImages[0]} alt="photo-0" className="min-h-[200px]" />
+                                  </button>
+                                  <button type="button" onClick={() => openLightbox(1)} className="rounded-[12px] overflow-hidden">
+                                    <ContainedPhoto src={msgImages[1]} alt="photo-1" className="h-[98px]" />
+                                  </button>
+                                  <button type="button" onClick={() => openLightbox(2)} className="rounded-[12px] overflow-hidden">
+                                    <ContainedPhoto src={msgImages[2]} alt="photo-2" className="h-[98px]" />
+                                  </button>
+                                </div>
+                              );
+                            }
+
+                            // 4 photos: 2x2
+                            if (count === 4) {
+                              return (
+                                <div className={`grid grid-cols-2 gap-1 ${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                  {msgImages.map((src, i) => (
+                                    <button
+                                      key={i}
+                                      type="button"
+                                      onClick={() => openLightbox(i)}
+                                      className="rounded-[12px] overflow-hidden"
+                                    >
+                                      <ContainedPhoto src={src} alt={`photo-${i}`} className="h-32" />
+                                    </button>
+                                  ))}
+                                </div>
+                              );
+                            }
+
+                            // 5+ photos: 3 columns, "+N" overlay on last visible (5th)
+                            const visible = msgImages.slice(0, 5);
+                            const remaining = msgImages.length - 5;
+                            return (
+                              <div className={`grid grid-cols-3 gap-1 ${hasText ? "p-1.5 pb-0" : "p-1.5"}`}>
+                                {visible.map((src, i) => {
+                                  const isLast = i === 4 && remaining > 0;
+                                  return (
+                                    <button
+                                      key={i}
+                                      type="button"
+                                      onClick={() => openLightbox(i)}
+                                      className="relative rounded-[12px] overflow-hidden"
+                                    >
+                                      <ContainedPhoto src={src} alt={`photo-${i}`} className="h-24" />
+                                      {isLast && (
+                                        <div className="absolute inset-0 bg-black/55 flex items-center justify-center">
+                                          <span className="text-white font-semibold text-lg">+{remaining}</span>
+                                        </div>
+                                      )}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            );
+                          };
+
+                          return (
+                            <motion.div
+                              key={msg.id}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className={`flex ${isMine ? "justify-end" : "justify-start"}`}
+                            >
+                              <div
+                                className="max-w-[72%] overflow-hidden"
+                                style={{
+                                  borderRadius: "18px",
+                                  backgroundColor: isMine ? "#6B7B9E" : "#FFFFFF",
+                                  color: isMine ? "#FFFFFF" : "#1F2937",
+                                  border: isMine ? "none" : "1px solid #ECE6DA",
+                                  boxShadow: isMine
+                                    ? "0 1px 3px rgba(107,123,158,0.25)"
+                                    : "0 1px 3px rgba(0,0,0,0.04)",
+                                }}
+                              >
+                                {hasImages && renderImages()}
+                                <div className="px-4 py-2.5">
+                                  {hasText && (
+                                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                                      {msg.content}
+                                    </p>
+                                  )}
+                                  <div
+                                    className={`flex items-center gap-1 ${hasText || !hasImages ? "mt-1" : ""} ${
+                                      isMine ? "justify-end" : "justify-start"
+                                    }`}
+                                  >
+                                    <span
+                                      className="text-[11px]"
+                                      style={{
+                                        color: isMine ? "rgba(255,255,255,0.75)" : "#9CA3AF",
+                                      }}
+                                    >
+                                      {formatTime(msg.created_at)}
+                                    </span>
+                                    {isMine &&
+                                      (msg.is_read ? (
+                                        <CheckCheck className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.85)" }} />
+                                      ) : (
+                                        <Check className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.6)" }} />
+                                      ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={messagesEndRef} />
+                </div>
+              )}
+            </div>
+
+            {/* Input Area */}
+            <div
+              className="px-4 py-3 border-t bg-white"
+              style={{ borderColor: "#ECE6DA" }}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+
+              {photos.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  {photos.map((src, i) => (
+                    <div key={i} className="relative" style={{ width: 64, height: 64 }}>
+                      <img
+                        src={src}
+                        alt={`preview-${i}`}
+                        className="w-16 h-16 object-cover rounded-lg border"
+                        loading="lazy"
+                        style={{ borderColor: "#D9D2C2" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(i)}
+                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white border flex items-center justify-center shadow-sm hover:scale-110 transition-transform"
+                        style={{ borderColor: "#D9D2C2" }}
+                        aria-label="Supprimer la photo"
+                      >
+                        <X className="w-3 h-3" style={{ color: "#070E42" }} />
+                      </button>
+                    </div>
+                  ))}
+                  {photos.length < MAX_PHOTOS && (
+                    <button
+                      type="button"
+                      onClick={triggerFileInput}
+                      className="w-16 h-16 rounded-lg border-2 border-dashed flex items-center justify-center transition-colors hover:bg-[#F5F0E8]"
+                      style={{ borderColor: "#D9D2C2", color: "#6B7B9E" }}
+                      aria-label="Ajouter une photo"
+                    >
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+              )}
+
+              <div className="flex items-end gap-2">
+                <button
+                  type="button"
+                  onClick={triggerFileInput}
+                  disabled={photos.length >= MAX_PHOTOS}
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Joindre une photo"
+                  aria-label="Joindre une photo"
+                >
+                  <Paperclip className="w-5 h-5" style={{ color: "#6B7B9E" }} />
+                  {photos.length > 0 && (
+                    <span
+                      className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-semibold text-white flex items-center justify-center"
+                      style={{ backgroundColor: "#C9A96E" }}
+                    >
+                      {photos.length}
+                    </span>
+                  )}
+                </button>
+
+                <div className="flex-1 relative">
+                  <Textarea
+                    value={message}
+                    onChange={(e) => {
+                      if (e.target.value.length <= MAX_CHARS) setMessage(e.target.value);
+                    }}
+                    onKeyDown={handleKeyPress}
+                    placeholder={`Écris un message à ${firstName}...`}
+                    className="resize-none min-h-[48px] pr-14 rounded-2xl border bg-white"
+                    style={{ borderColor: "#D9D2C2" }}
+                    rows={1}
+                  />
+                  <span
+                    className="absolute right-3 bottom-2 text-[11px] tabular-nums"
+                    style={{
+                      color: remainingChars <= 20 ? "#C0392B" : "#9CA3AF",
+                    }}
+                  >
+                    {remainingChars}
+                  </span>
+                </div>
+
+                <Button
+                  onClick={handleSend}
+                  disabled={(!message.trim() && photos.length === 0) || sending}
+                  size="icon"
+                  className="h-11 w-11 rounded-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md flex-shrink-0" aria-label="Envoyer le message"
+                  style={{ backgroundColor: "#C9A96E" }}
+                >
+                  {sending ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </main>
+
+      {!embedded && <Footer />}
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-sm animate-in fade-in"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setLightbox(null); }}
+            className="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            aria-label="Fermer"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+
+          {lightbox.images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightbox((lb) => lb ? { ...lb, index: (lb.index - 1 + lb.images.length) % lb.images.length } : null);
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                aria-label="Précédent"
+              >
+                <ChevronLeft className="w-6 h-6 text-white" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightbox((lb) => lb ? { ...lb, index: (lb.index + 1) % lb.images.length } : null);
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                aria-label="Suivant"
+              >
+                <ChevronRight className="w-6 h-6 text-white" />
+              </button>
+            </>
+          )}
+
+          <img
+            src={lightbox.images[lightbox.index]}
+            alt={`photo-${lightbox.index}`}
+            className="max-w-[92vw] max-h-[88vh] object-contain rounded-lg shadow-2xl"
+            loading="lazy"
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          {lightbox.images.length > 1 && (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-white/15 text-white text-sm font-medium tabular-nums">
+              {lightbox.index + 1} / {lightbox.images.length}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ConversationView;

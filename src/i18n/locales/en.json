@@ -1297,7 +1297,8 @@
       "plainCount": "{{count}} item(s)",
       "mobileAccount": "Account",
       "bottomNav": "My account navigation",
-      "post": "Post a search"
+      "post": "Post a search",
+      "mobileSearches": "Searches"
     },
     "findrProposals": {
       "browse": "See buyrs' searches",
@@ -1986,7 +1987,16 @@
       "saleDone": "Sale completed",
       "proposalRejected": "Offer declined",
       "saleCancelled": "Sale cancelled",
-      "reservationExpired": "Reservation expired"
-    }
+      "reservationExpired": "Reservation expired",
+      "proposalAccepted": "Offer accepted · {{amount}}",
+      "acceptedAwaitingPayment": "accepted · awaiting their payment",
+      "dispute": "Dispute in progress"
+    },
+    "backToList": "← Messages",
+    "envelopeAria_zero": "Messages",
+    "envelopeAria_one": "Messages, {{count}} conversation with unread messages",
+    "envelopeAria_other": "Messages, {{count}} conversations with unread messages",
+    "selectHint": "Pick a conversation from the list.",
+    "bottomLabel": "Messages"
   }
 }

@@ -112,3 +112,19 @@ BEGIN
 
   RAISE EXCEPTION 'TESTS_OK';
 END $$;
+
+-- Litige ouvert sur une vente payée : état « litige », reste dans « Ventes en cours ».
+DO $$
+DECLARE b uuid := gen_random_uuid(); f uuid := gen_random_uuid(); s uuid; p uuid; r record; n int;
+BEGIN
+  INSERT INTO public.searches (user_id, title, category, budget_min, budget_max, status)
+    VALUES (b, 'zz test litige', 'autre', 0, 100, 'closed') RETURNING id INTO s;
+  INSERT INTO public.proposals (search_id, findr_id, title, proposed_price, status) VALUES (s, f, 'objet', 60, 'accepted_pending') RETURNING id INTO p;
+  INSERT INTO public.reservations (search_id, findr_id, buyr_id, justification, requested_duration_days, status, proposal_id, object_price, payment_status, dispute_open)
+    VALUES (s, f, b, 'achat', 1, 'approved', p, 60, 'livre', true);
+  PERFORM set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  PERFORM set_config('role', 'authenticated', true);
+  SELECT * INTO r FROM public.list_my_exchanges('ventes_en_cours', 100) e WHERE e.search_id = s;
+  IF r.kind IS DISTINCT FROM 'vente' OR r.state <> 'litige' OR r.needs_action THEN RAISE EXCEPTION 'ÉCHEC : litige (%)', row_to_json(r); END IF;
+  RAISE EXCEPTION 'TESTS_OK';
+END $$;

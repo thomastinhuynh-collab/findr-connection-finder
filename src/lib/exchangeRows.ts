@@ -44,6 +44,7 @@ export function exchangeBadges(r: ExchangeRow, formatAmount: (n: number) => stri
     case "vente":
       if (st === "termine") return [{ key: "saleDone" }];
       if (st === "annule" || st === "rembourse") return [{ key: "saleCancelled" }];
+      if (st === "litige") return [{ key: "dispute", amber: true }];
       {
         let action: string | null = null;
         if (iAmBuyr && (st === "paye_attente_etiquette" || st === "etiquette_refusee")) action = "actionLabel";
@@ -57,7 +58,9 @@ export function exchangeBadges(r: ExchangeRow, formatAmount: (n: number) => stri
       if (ps === "completed") return [{ key: "saleDone" }];
       if (ps === "cancelled" || ps === "expired") return [{ key: "saleCancelled" }];
       if (ps === "accepted_pending") {
-        return iAmBuyr ? [{ key: "saleOngoing" }, { key: "actionPay", amber: true }] : [{ key: "saleOngoing" }];
+        return iAmBuyr
+          ? [{ key: "proposalAccepted", params: { amount } }, { key: "actionPay", amber: true }]
+          : [{ key: "proposalMine", params: { amount } }, { key: "acceptedAwaitingPayment" }];
       }
       return iAmBuyr
         ? [{ key: "proposalReceived", params: { amount } }, { key: "toReview", amber: true }]
@@ -119,4 +122,9 @@ export function mergePages(prev: ExchangeRow[], next: ExchangeRow[]): ExchangeRo
 export function nextCursor(rows: ExchangeRow[]) {
   const last = rows[rows.length - 1];
   return last ? { _before: last.last_activity_at, _before_unread: last.unread_count > 0 } : null;
+}
+
+/** Ordinateur : l'échange à ouvrir à l'arrivée (premier non lu, sinon aucun). */
+export function firstUnreadExchange(rows: ExchangeRow[]): ExchangeRow | null {
+  return rows.find((r) => r.unread_count > 0) ?? null;
 }
