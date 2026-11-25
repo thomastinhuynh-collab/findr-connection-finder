@@ -308,9 +308,12 @@ const EditProposal = () => {
       navigate(`/recherche/${proposal.search_id}`);
     } catch (error) {
       console.error("Error updating proposal:", error);
+      const immutable = (error as { message?: string } | null)?.message?.includes("proposal_immutable");
       toast({
         title: "Erreur",
-        description: "Impossible de mettre à jour la proposition. Réessaie.",
+        description: immutable
+          ? "Cette proposition ne peut plus être modifiée : l'acheteur a commencé son paiement."
+          : "Impossible de mettre à jour la proposition. Réessaie.",
         variant: "destructive",
       });
     } finally {

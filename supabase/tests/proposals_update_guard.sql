@@ -40,6 +40,24 @@ BEGIN
   PERFORM set_config('request.jwt.claims', json_build_object('sub', f)::text, true);
   ok := false; BEGIN PERFORM public.withdraw_proposal(p); EXCEPTION WHEN raise_exception THEN ok := SQLERRM = 'checkout_in_progress'; END;
   IF NOT ok THEN RAISE EXCEPTION 'ÉCHEC annulation pendant paiement'; END IF;
+  -- paiement commencé : contenu figé même si la proposition est encore pending
+  ok := false; BEGIN UPDATE public.proposals SET title = 'Modifié' WHERE id = p; EXCEPTION WHEN raise_exception THEN ok := SQLERRM = 'proposal_immutable'; END;
+  IF NOT ok THEN RAISE EXCEPTION 'ÉCHEC titre modifié pendant paiement'; END IF;
+  ok := false; BEGIN UPDATE public.proposals SET description = 'x' WHERE id = p; EXCEPTION WHEN raise_exception THEN ok := SQLERRM = 'proposal_immutable'; END;
+  IF NOT ok THEN RAISE EXCEPTION 'ÉCHEC description modifiée pendant paiement'; END IF;
+  ok := false; BEGIN UPDATE public.proposals SET proposed_price = 99 WHERE id = p; EXCEPTION WHEN raise_exception THEN ok := SQLERRM = 'proposal_immutable'; END;
+  IF NOT ok THEN RAISE EXCEPTION 'ÉCHEC prix modifié pendant paiement'; END IF;
+  ok := false; BEGIN UPDATE public.proposals SET image_urls = ARRAY['x'] WHERE id = p; EXCEPTION WHEN raise_exception THEN ok := SQLERRM = 'proposal_immutable'; END;
+  IF NOT ok THEN RAISE EXCEPTION 'ÉCHEC photos modifiées pendant paiement'; END IF;
+  ok := false; BEGIN UPDATE public.proposals SET parcel_weight_kg = 5 WHERE id = p; EXCEPTION WHEN raise_exception THEN ok := SQLERRM = 'proposal_immutable'; END;
+  IF NOT ok THEN RAISE EXCEPTION 'ÉCHEC poids modifié pendant paiement'; END IF;
+  PERFORM set_config('request.jwt.claims', '', true);
+  DELETE FROM public.reservations WHERE proposal_id = p;
+  -- réservation sans payment_status : modification de nouveau permise
+  INSERT INTO public.reservations (search_id, findr_id, buyr_id, justification, requested_duration_days, status, proposal_id, payment_status)
+    VALUES (s, f, b, 't', 1, 'approved', p, NULL);
+  PERFORM set_config('request.jwt.claims', json_build_object('sub', f)::text, true);
+  UPDATE public.proposals SET title = 'Sans paiement' WHERE id = p;
   PERFORM set_config('request.jwt.claims', '', true);
   DELETE FROM public.reservations WHERE proposal_id = p;
 
