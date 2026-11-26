@@ -239,6 +239,13 @@
       "when": 1795709430471,
       "tag": "0033_hide_exchanges_per_user",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1795713540491,
+      "tag": "0034_reappear_hidden_exchange_on_own_message",
+      "breakpoints": true
     }
   ]
 }

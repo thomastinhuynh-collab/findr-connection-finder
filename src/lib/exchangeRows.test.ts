@@ -81,7 +81,7 @@ describe("textes Messagerie FR/EN", () => {
   it("mêmes clés et textes demandés", () => {
     const keys = (o: object): string[] => Object.entries(o).flatMap(([k, v]) => (typeof v === "object" ? keys(v).map((x) => `${k}.${x}`) : [k])).sort();
     expect(keys(en.messagingList)).toEqual(keys(fr.messagingList));
-    expect(fr.messagingList.intro).toBe("Tes messages, propositions et réservations, au même endroit. Les non lus passent en premier.");
+    expect((fr.messagingList as Record<string, unknown>).intro).toBeUndefined();
     expect(fr.messagingList.empty).toBe("Aucune conversation pour le moment.");
     expect(fr.messagingList.error).toBe("Impossible de charger ta messagerie.");
   });

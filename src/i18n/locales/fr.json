@@ -1951,17 +1951,6 @@
   },
   "messagingList": {
     "title": "Messagerie",
-    "intro": "Tes messages, propositions et réservations, au même endroit. Les non lus passent en premier.",
-    "filterGroup": "Filtrer ma messagerie",
-    "filterCount_one": "{{count}} échange",
-    "filterCount_other": "{{count}} échanges",
-    "filters": {
-      "all": "Toutes",
-      "unread": "Non lus",
-      "pending": "En attente",
-      "ongoing": "Ventes en cours",
-      "done": "Finalisées"
-    },
     "empty": "Aucune conversation pour le moment.",
     "emptyPost": "Poster une recherche",
     "emptyBrowse": "Voir les recherches des buyrs",
@@ -2005,7 +1994,20 @@
     "envelopeAria_other": "Messagerie, {{count}} conversations avec des messages non lus",
     "selectHint": "Choisis une conversation dans la liste.",
     "bottomLabel": "Messagerie",
-    "previewWithdrawn": "Proposition annulée"
+    "previewWithdrawn": "Proposition annulée",
+    "deleteExchange": {
+      "menuLabel": "Plus d'actions pour la conversation avec {{name}}",
+      "action": "Supprimer la conversation",
+      "blocked": "Impossible tant que la vente est en cours.",
+      "title": "Supprimer cette conversation ?",
+      "body": "Elle disparaît de ta messagerie. {{name}} la garde de son côté, et findr conserve les messages (litiges, obligations légales). Elle réapparaît si {{name}} t'écrit ou si une vente démarre.",
+      "confirm": "Supprimer",
+      "keep": "Garder",
+      "deleting": "Suppression…",
+      "done": "Conversation supprimée",
+      "errorGeneric": "La conversation n'a pas pu être supprimée. Réessaie dans un instant.",
+      "someone": "L'autre personne"
+    }
   },
   "exchangeCard": {
     "aria": "Résumé de l'échange",

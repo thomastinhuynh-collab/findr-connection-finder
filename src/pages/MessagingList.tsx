@@ -7,9 +7,12 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { formatPrice } from "@/lib/fees";
+import { useToast } from "@/hooks/use-toast";
+import DeleteExchangeMenu from "@/components/DeleteExchangeMenu";
+import { nextAfterDelete } from "@/lib/deleteExchange";
 import {
-  EXCHANGE_FILTERS, EXCHANGE_PAGE_SIZE, type ExchangeFilter, type ExchangeRow,
-  exchangeBadges, exchangeKey, firstUnreadExchange, exchangePreview, firstName, formatExchangeTime, mergePages, nextCursor, parseExchangeFilter,
+  EXCHANGE_PAGE_SIZE, type ExchangeRow,
+  exchangeBadges, exchangeKey, firstUnreadExchange, exchangePreview, firstName, formatExchangeTime, mergePages, nextCursor,
 } from "@/lib/exchangeRows";
 
 const NAVY = "#070E42";
@@ -19,11 +22,8 @@ const AMBER_BG = "#FDF1DC";
 const AMBER_TEXT = "#7A4B00";
 const ROW_MIN = 88;
 
-const FILTER_KEYS: Record<ExchangeFilter, string> = {
-  toutes: "all", non_lus: "unread", en_attente: "pending", ventes_en_cours: "ongoing", finalisees: "done",
-};
-
-type Counts = Partial<Record<ExchangeFilter, number>>;
+/** La liste n'a plus de filtres : le paramètre ?filtre= des anciennes adresses est ignoré. */
+const LIST_FILTER = "toutes";
 
 const WIDE_QUERY = "(min-width: 901px)";
 export function useWideMessaging() {
@@ -52,43 +52,30 @@ const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; sele
   const navigate = useNavigate();
   const { user } = useAuth();
   const uid = user?.id;
-  const [params, setParams] = useSearchParams();
-  const filter = parseExchangeFilter(params.get("filtre"));
+  const { toast } = useToast();
   const [rows, setRows] = useState<ExchangeRow[]>([]);
-  const [counts, setCounts] = useState<Counts>({});
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-  const stripRef = useRef<HTMLDivElement>(null);
-  const filterRef = useRef(filter);
-  filterRef.current = filter;
 
-  const fetchPage = useCallback(async (f: ExchangeFilter, cursor: ReturnType<typeof nextCursor>) => {
+  const fetchPage = useCallback(async (cursor: ReturnType<typeof nextCursor>) => {
     const { data, error } = await supabase.rpc("list_my_exchanges", {
-      _filter: f, _limit: EXCHANGE_PAGE_SIZE,
+      _filter: LIST_FILTER, _limit: EXCHANGE_PAGE_SIZE,
       ...(cursor ? { _before: cursor._before ?? undefined, _before_unread: cursor._before_unread } : {}),
     });
     if (error) throw error;
     return (data ?? []) as ExchangeRow[];
   }, []);
 
-  const loadCounts = useCallback(async () => {
-    const { data } = await supabase.rpc("exchange_filter_counts");
-    const c: Counts = {};
-    (data ?? []).forEach((r: { filter: string; total: number }) => { c[r.filter as ExchangeFilter] = r.total; });
-    setCounts(c);
-  }, []);
-
   const loadFirst = useCallback(async () => {
     setLoading(true); setError(false);
     try {
-      const page = await fetchPage(filter, null);
+      const page = await fetchPage(null);
       setRows(page); setHasMore(page.length === EXCHANGE_PAGE_SIZE);
     } catch { setError(true); }
     setLoading(false);
-    loadCounts();
-  }, [fetchPage, filter, loadCounts]);
+  }, [fetchPage]);
 
   useEffect(() => { if (uid) loadFirst(); }, [uid, loadFirst]);
 
@@ -113,13 +100,14 @@ const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; sele
   const loadMore = async () => {
     setLoadingMore(true);
     try {
-      const page = await fetchPage(filter, nextCursor(rows));
+      const page = await fetchPage(nextCursor(rows));
       setRows((prev) => mergePages(prev, page)); setHasMore(page.length === EXCHANGE_PAGE_SIZE);
     } catch { setError(true); }
     setLoadingMore(false);
   };
 
-  // Temps réel : chaque message reçu rafraîchit la tête de liste et les compteurs.
+  // Temps réel : message reçu ou envoyé, proposition, réservation ou vente qui démarre
+  // rafraîchissent la tête de liste ; un échange supprimé qui revient réapparaît à jour.
   useEffect(() => {
     if (!uid) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -127,35 +115,37 @@ const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; sele
       clearTimeout(timer);
       timer = setTimeout(async () => {
         try {
-          const top = await fetchPage(filterRef.current, null);
+          const top = await fetchPage(null);
           const keys = new Set(top.map(exchangeKey));
           setRows((prev) => [...top, ...prev.filter((r) => !keys.has(exchangeKey(r)))]);
         } catch { /* la liste actuelle reste affichée */ }
-        loadCounts();
       }, 400);
     };
     const channel = supabase
       .channel(`messaging-list-${uid}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `receiver_id=eq.${uid}` }, refresh)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `sender_id=eq.${uid}` }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "reservations", filter: `buyr_id=eq.${uid}` }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "reservations", filter: `findr_id=eq.${uid}` }, refresh)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${uid}` }, refresh)
       .subscribe();
     return () => { clearTimeout(timer); supabase.removeChannel(channel); };
-  }, [uid, fetchPage, loadCounts]);
+  }, [uid, fetchPage]);
 
-  // Téléphone : le filtre actif est amené en vue dans la bande.
-  useEffect(() => {
-    stripRef.current?.querySelector<HTMLElement>("[aria-pressed='true']")?.scrollIntoView({ block: "nearest", inline: "center" });
-  }, [filter]);
-
-  const setFilter = (f: ExchangeFilter) => {
-    const next = new URLSearchParams(params);
-    if (f === "toutes") next.delete("filtre"); else next.set("filtre", f);
-    setParams(next, { replace: true });
-  };
+  /** Après hide_exchange : retirer la ligne, prévenir, puis sélectionner l'échange suivant (ordinateur) ou revenir à la liste. */
+  const handleDeleted = useCallback((searchId: string, partnerId: string) => {
+    const key = exchangeKey({ search_id: searchId, partner_id: partnerId });
+    const wasSelected = searchId === selectedId && partnerId === selectedWith;
+    const next = nextAfterDelete<ExchangeRow>(rows, key, (r) => exchangeKey(r));
+    setRows((prev) => prev.filter((r) => exchangeKey(r) !== key));
+    toast({ title: t("messagingList.deleteExchange.done") });
+    if (wide && wasSelected) navigate(next ? rowHref(next) : "/messagerie", { replace: true });
+    else if (!wide && selectedId) navigate("/messagerie", { replace: true });
+  }, [rows, selectedId, selectedWith, wide, navigate, toast, t]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fmt = (n: number) => formatPrice(n, i18n.language);
   function rowHref(r: ExchangeRow) {
     const q = new URLSearchParams({ with: r.partner_id });
-    if (filter !== "toutes") q.set("filtre", filter);
     return `/messagerie/${r.search_id}?${q.toString()}`;
   }
 
@@ -165,26 +155,7 @@ const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; sele
       style={wide ? { gridTemplateColumns: "420px minmax(0,1fr)", height: "100vh" } : undefined}>
      <div className={wide ? "flex min-h-0 flex-col" : undefined}>
       <h1 className="text-3xl" style={{ fontFamily: "'Playfair Display', serif", color: NAVY }}>{t("messagingList.title")}</h1>
-      <p className="mt-2 text-sm" style={{ color: MUTED }}>{t("messagingList.intro")}</p>
-
-      <div ref={stripRef} role="group" aria-label={t("messagingList.filterGroup")}
-        className="-mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:px-0">
-        {EXCHANGE_FILTERS.map((f) => {
-          const active = f === filter;
-          const n = counts[f];
-          return (
-            <button key={f} type="button" aria-pressed={active} onClick={() => setFilter(f)}
-              className="inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-full px-4 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-              style={{ backgroundColor: active ? NAVY : "#FFFFFF", color: active ? "#F5F1E8" : NAVY, border: `1px solid ${active ? NAVY : "#D4CCBC"}`, outlineColor: NAVY }}>
-              {f === "non_lus" && (n ?? 0) > 0 && <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: GOLD }} />}
-              <span>{t(`messagingList.filters.${FILTER_KEYS[f]}`)}</span>
-              {n != null && <span aria-label={t("messagingList.filterCount", { count: n })}>{n}</span>}
-            </button>
-          );
-        })}
-      </div>
-
-      <section className={wide ? "mt-4 min-h-0 flex-1 overflow-y-auto" : "mt-4"} aria-live="polite">
+      <section className={wide ? "mt-6 min-h-0 flex-1 overflow-y-auto" : "mt-6"} aria-live="polite">
         {loading ? (
           <div role="status" aria-busy="true">
             <span className="sr-only">{t("common.loading")}</span>
@@ -233,9 +204,10 @@ const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; sele
                   unread ? t("messagingList.ariaUnread", { count: r.unread_count }) : null,
                 ].filter(Boolean).join(", ");
                 return (
-                  <li key={exchangeKey(r)}>
+                  <li key={exchangeKey(r)} className="flex items-start"
+                    style={{ backgroundColor: selected ? "#F5F1E8" : unread ? "#FBF7EE" : undefined }}>
                     <Link to={rowHref(r)} aria-label={aria} aria-current={selected ? "true" : undefined}
-                      className="flex w-full items-start gap-3 px-4 py-3 transition-colors hover:bg-[#FAF7F2] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2"
+                      className="flex min-w-0 flex-1 items-start gap-3 px-4 py-3 transition-colors hover:bg-[#FAF7F2] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2"
                       style={{ minHeight: ROW_MIN, outlineColor: NAVY, backgroundColor: selected ? "#F5F1E8" : unread ? "#FBF7EE" : undefined, boxShadow: selected ? `inset 3px 0 0 ${GOLD}` : undefined }}>
                       <span aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full text-lg font-semibold"
                         style={{ backgroundColor: "#F5F1E8", color: NAVY }}>
@@ -265,6 +237,12 @@ const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; sele
                         </span>
                       </span>
                     </Link>
+                    <div className="py-3 pr-2">
+                      <DeleteExchangeMenu searchId={r.search_id} partnerId={r.partner_id}
+                        partnerFirstName={firstName(r.partner_name?.trim() ?? "")}
+                        canDelete={r.can_delete !== false}
+                        onDeleted={() => handleDeleted(r.search_id, r.partner_id)} />
+                    </div>
                   </li>
                 );
               })}
@@ -285,7 +263,8 @@ const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; sele
       {wide && (
         <section className="min-h-0 overflow-hidden rounded-xl" style={{ border: "1px solid #E5E1D8" }}>
           {selectedId ? (
-            <ConversationView key={`${selectedId}:${selectedWith ?? ""}`} searchId={selectedId} withUserId={selectedWith} embedded />
+            <ConversationView key={`${selectedId}:${selectedWith ?? ""}`} searchId={selectedId} withUserId={selectedWith} embedded
+              onDeleted={handleDeleted} />
           ) : (
             <div className="flex h-full items-center justify-center p-8 text-sm" style={{ color: MUTED, backgroundColor: "#FAF7F2" }}>
               {t("messagingList.selectHint")}

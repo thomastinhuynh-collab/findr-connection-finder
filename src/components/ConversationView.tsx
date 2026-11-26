@@ -1,6 +1,7 @@
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import ExchangeCard from "@/components/ExchangeCard";
 import type { ExchangeCardState } from "@/lib/exchangeCard";
+import DeleteExchangeMenu from "@/components/DeleteExchangeMenu";
 import { PROPOSAL_SENT_PARAM, PROPOSAL_SENT_VALUE } from "@/lib/exchangeCard";
 import { motion } from "framer-motion";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
@@ -57,10 +58,12 @@ interface ConversationViewProps {
   withUserId: string | null;
   /** Affichée dans le volet droit de la Messagerie (ordinateur) : sans retour ni pied de page. */
   embedded?: boolean;
+  /** Fourni par la liste (ordinateur) : appelé après suppression de la conversation. */
+  onDeleted?: (searchId: string, partnerId: string) => void;
 }
 
 /** Contenu d'une conversation : messages, pagination, suggestions, photos, saisie. */
-const ConversationView = ({ searchId, withUserId, embedded = false }: ConversationViewProps) => {
+const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }: ConversationViewProps) => {
   const id = searchId;
   const [cardState, setCardState] = useState<ExchangeCardState | null>(null);
   // Bandeau « Proposition envoyée » : lu une fois dans l'adresse puis retiré.
@@ -584,6 +587,15 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
               >
                 <Info className="w-5 h-5" style={{ color: "#4A5878" }} />
               </button>
+              {user && partnerId && (
+                <DeleteExchangeMenu searchId={search.id} partnerId={partnerId} partnerFirstName={firstName}
+                  canDelete={!cardState?.saleOpen}
+                  onDeleted={() => {
+                    if (onDeleted) { onDeleted(search.id, partnerId); return; }
+                    toast({ title: t("messagingList.deleteExchange.done") });
+                    navigate("/messagerie", { replace: true });
+                  }} />
+              )}
             </div>
 
             {user && partnerId && (

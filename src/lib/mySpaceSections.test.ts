@@ -31,8 +31,8 @@ describe("rubriques de Mon espace", () => {
   });
   it("redirige ?onglet=recherches ; ?onglet=propositions et ?section=propositions vers la Messagerie « En attente »", () => {
     expect(href("/mon-espace?onglet=recherches")).toBe("/mon-espace?section=recherches");
-    expect(href("/mon-espace?onglet=propositions")).toBe("/messagerie?filtre=en_attente");
-    expect(href("/mon-espace?section=propositions")).toBe("/messagerie?filtre=en_attente");
+    expect(href("/mon-espace?onglet=propositions")).toBe("/messagerie");
+    expect(href("/mon-espace?section=propositions")).toBe("/messagerie");
   });
   it("redirige ?onglet=favoris vers compte#favoris", () => {
     expect(href("/mon-espace?onglet=favoris")).toBe("/mon-espace?section=compte#favoris");
@@ -51,7 +51,7 @@ describe("rubriques de Mon espace", () => {
   });
   it("les liens des notifications serveur restent valides", () => {
     // stripe-webhook, ProposalList : /mon-espace?onglet=propositions ; auto-release, admin : /mon-espace
-    expect(href("/mon-espace?onglet=propositions")).toBe("/messagerie?filtre=en_attente");
+    expect(href("/mon-espace?onglet=propositions")).toBe("/messagerie");
     expect(href("/mon-espace")).toBe("/mon-espace?section=aujourdhui");
   });
   it("construit les liens canoniques", () => {
@@ -64,7 +64,7 @@ describe("rubriques de Mon espace", () => {
       expect(src).not.toContain("onglet=propositions");
       expect(src).not.toContain("section=propositions");
     }
-    expect(fs.readFileSync("supabase/functions/stripe-webhook/index.ts", "utf8")).toContain('link: "/messagerie?filtre=en_attente"');
+    expect(fs.readFileSync("supabase/functions/stripe-webhook/index.ts", "utf8")).toContain('link: "/messagerie"');
   });
   it("trois rubriques seulement", () => {
     expect(MY_SPACE_SECTIONS).toEqual(["aujourdhui", "recherches", "compte"]);

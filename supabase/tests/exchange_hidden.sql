@@ -207,3 +207,27 @@ BEGIN
     RAISE EXCEPTION 'ÉCHEC : réapparition après paiement (%)', row_to_json(r); END IF;
   RAISE EXCEPTION 'TESTS_OK';
 END $$;
+
+-- Un message envoyé par l'utilisateur lui-même après masquage fait réapparaître l'échange.
+DO $$
+DECLARE
+  b uuid := gen_random_uuid(); f uuid := gen_random_uuid(); s uuid; n int;
+BEGIN
+  INSERT INTO public.searches (user_id, title, category, budget_min, budget_max, status)
+    VALUES (b, 'zz test retour message envoyé', 'autre', 0, 100, 'active') RETURNING id INTO s;
+  INSERT INTO public.messages (search_id, sender_id, receiver_id, content, is_read, created_at)
+    VALUES (s, f, b, 'ancien message', false, now() - interval '1 hour');
+  PERFORM set_config('request.jwt.claims', json_build_object('sub', b, 'role', 'authenticated')::text, true);
+  PERFORM set_config('role', 'authenticated', true);
+  PERFORM public.hide_exchange(s, f);
+  SELECT count(*) INTO n FROM public.list_my_exchanges('toutes', 100) e WHERE e.search_id = s;
+  IF n <> 0 THEN RAISE EXCEPTION 'ÉCHEC : échange masqué encore visible'; END IF;
+  PERFORM set_config('role', 'postgres', true);
+  INSERT INTO public.messages (search_id, sender_id, receiver_id, content, is_read, created_at)
+    VALUES (s, b, f, 'je relance', false, now() + interval '1 second');
+  PERFORM set_config('role', 'authenticated', true);
+  SELECT count(*) INTO n FROM public.list_my_exchanges('toutes', 100) e WHERE e.search_id = s AND e.partner_id = f;
+  IF n <> 1 THEN RAISE EXCEPTION 'ÉCHEC : échange non réapparu après message envoyé'; END IF;
+  IF public.unread_exchanges_count() <> 0 THEN RAISE EXCEPTION 'ÉCHEC : non lu compté pour son propre message'; END IF;
+  RAISE EXCEPTION 'TESTS_OK';
+END $$;

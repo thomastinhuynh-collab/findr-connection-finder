@@ -1,5 +1,6 @@
 // Carte épinglée en haut d'une conversation : situation et action unique de l'échange.
 // Les actions reprennent les règles du bloc « À faire maintenant » (todoActions / TodoNowBlock).
+import { isSaleOpen } from "./deleteExchange";
 import { PAID_STATUSES, computeSaleSteps, type SaleStepRow } from "./saleSteps";
 
 export interface CardProposal { id: string; status: string | null; proposed_price: number | null; created_at: string; image_urls?: string[] | null; title?: string | null }
@@ -25,6 +26,8 @@ export interface ExchangeCardState {
   withdrawn?: boolean;
   /** findr, proposition en attente : peut l'annuler (withdraw_proposal). */
   withdrawableId?: string | null;
+  /** Vente payée non finalisée : la conversation ne peut pas être supprimée. */
+  saleOpen?: boolean;
 }
 
 const SALE_STATUSES = [...PAID_STATUSES, "annule", "rembourse"];
@@ -63,6 +66,7 @@ export function exchangeCardState(input: {
       step: PAID_STATUSES.includes(ps) ? { index: idx + 1, total: s.keys.length, key: s.keys[idx], labelFlow: s.labelFlow } : undefined,
       action: { key, href: tx },
       multipleProposals,
+      saleOpen: isSaleOpen(ps),
     };
   }
 

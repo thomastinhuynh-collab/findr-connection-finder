@@ -1951,17 +1951,6 @@
   },
   "messagingList": {
     "title": "Messages",
-    "intro": "Your messages, offers and reservations, in one place. Unread ones come first.",
-    "filterGroup": "Filter my messages",
-    "filterCount_one": "{{count}} conversation",
-    "filterCount_other": "{{count}} conversations",
-    "filters": {
-      "all": "All",
-      "unread": "Unread",
-      "pending": "Pending",
-      "ongoing": "Ongoing sales",
-      "done": "Completed"
-    },
     "empty": "No conversations yet.",
     "emptyPost": "Post a search",
     "emptyBrowse": "Browse buyrs' searches",
@@ -2005,7 +1994,20 @@
     "envelopeAria_other": "Messages, {{count}} conversations with unread messages",
     "selectHint": "Pick a conversation from the list.",
     "bottomLabel": "Messages",
-    "previewWithdrawn": "Offer cancelled"
+    "previewWithdrawn": "Offer cancelled",
+    "deleteExchange": {
+      "menuLabel": "More actions for the conversation with {{name}}",
+      "action": "Delete conversation",
+      "blocked": "Not possible while the sale is in progress.",
+      "title": "Delete this conversation?",
+      "body": "It disappears from your messages. {{name}} keeps it on their side, and findr keeps the messages (disputes, legal obligations). It comes back if {{name}} writes to you or if a sale starts.",
+      "confirm": "Delete",
+      "keep": "Keep",
+      "deleting": "Deleting…",
+      "done": "Conversation deleted",
+      "errorGeneric": "The conversation could not be deleted. Try again in a moment.",
+      "someone": "The other person"
+    }
   },
   "exchangeCard": {
     "aria": "Exchange summary",

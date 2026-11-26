@@ -2,7 +2,7 @@
 export type MySpaceSection = "aujourdhui" | "recherches" | "compte";
 export const MY_SPACE_SECTIONS: MySpaceSection[] = ["aujourdhui", "recherches", "compte"];
 /** L'ancienne rubrique « Mes propositions » est remplacée par la Messagerie, filtre « En attente ». */
-export const PROPOSALS_REDIRECT = "/messagerie?filtre=en_attente";
+export const PROPOSALS_REDIRECT = "/messagerie";
 export const DEFAULT_SECTION: MySpaceSection = "aujourdhui";
 
 const LEGACY_TABS: Record<string, { section: MySpaceSection; hash?: string }> = {
