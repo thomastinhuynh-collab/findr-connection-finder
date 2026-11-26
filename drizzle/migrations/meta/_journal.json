@@ -232,6 +232,13 @@
       "when": 1795703681593,
       "tag": "0032_warning_text_without_suspension",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1795709430471,
+      "tag": "0033_hide_exchanges_per_user",
+      "breakpoints": true
     }
   ]
 }

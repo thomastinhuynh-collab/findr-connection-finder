@@ -1,3 +1,9 @@
+# Masquage personnel des échanges
+
+- [x] Table privée et fonction de masquage, interdite pendant une vente en cours.
+- [x] Réapparition, compteurs et indicateur de suppression sans toucher aux échanges de l'autre personne.
+- [x] Tests SQL fictifs annulés, compilation et tests du site, sans vérification écran.
+
 # Contrôle des numéros de suivi
 
 # Notifications de messages et email regroupé

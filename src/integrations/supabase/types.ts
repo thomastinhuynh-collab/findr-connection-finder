@@ -85,6 +85,27 @@ export type Database = {
           },
         ]
       }
+      exchange_hidden: {
+        Row: {
+          hidden_at: string
+          partner_id: string
+          search_id: string
+          user_id: string
+        }
+        Insert: {
+          hidden_at?: string
+          partner_id: string
+          search_id: string
+          user_id: string
+        }
+        Update: {
+          hidden_at?: string
+          partner_id?: string
+          search_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -1143,6 +1164,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      hide_exchange: {
+        Args: { _partner_id: string; _search_id: string }
+        Returns: undefined
+      }
       hide_message: {
         Args: { _message_id: string; _reason: string }
         Returns: undefined
@@ -1156,6 +1181,7 @@ export type Database = {
         }
         Returns: {
           amount: number
+          can_delete: boolean
           expires_at: string
           kind: string
           last_activity_at: string

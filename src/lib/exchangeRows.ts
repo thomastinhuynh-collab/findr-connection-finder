@@ -25,6 +25,7 @@ export interface ExchangeRow {
   expires_at: string | null;
   last_activity_at: string | null;
   needs_action: boolean;
+  can_delete: boolean;
 }
 
 export interface Badge { key: string; params?: Record<string, string | number>; amber?: boolean }

@@ -5,6 +5,7 @@ const base: ExchangeRow = {
   search_id: "s", search_title: "Lampe", partner_id: "p", partner_name: "Olga Martin", partner_avatar_url: null,
   partner_role: "findr", last_message_preview: null, last_message_at: null, unread_count: 0, kind: "message",
   state: "message", amount: null, expires_at: null, last_activity_at: "2026-11-25T10:00:00Z", needs_action: false,
+  can_delete: true,
 };
 const fmt = (n: number) => `${n} €`;
 
