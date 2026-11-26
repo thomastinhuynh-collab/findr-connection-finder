@@ -96,6 +96,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [reportTarget, setReportTarget] = useState<{ id: string; content: string } | null>(null);
+  const reportTriggerRef = useRef<HTMLButtonElement | null>(null);
   const [guardOpen, setGuardOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // Position de défilement à restaurer après l'ajout de messages plus anciens en tête de liste.
@@ -486,11 +487,9 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
     return (
       <div className={embedded ? "h-full" : "min-h-screen"} style={{ backgroundColor: "#F5F0E8" }}>
         <main className={`${embedded ? "py-16" : "pt-24 pb-16"} flex items-center justify-center`}>
-          <Loader2 className="w-12 h-12 animate-spin" style={{ color: "#6B7B9E" }} />
+          <Loader2 className="w-12 h-12 animate-spin" style={{ color: "#4A5878" }} />
         </main>
         {!embedded && <Footer />}
-
-      <ReportMessageDialog message={reportTarget} onClose={() => setReportTarget(null)} />
       </div>
     );
   }
@@ -503,7 +502,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
             <h1 className="text-2xl font-serif font-bold mb-4" style={{ color: "#070E42" }}>
               Conversation non trouvée
             </h1>
-            <Button onClick={() => navigate("/recherches")}>
+            <Button className="min-h-[44px]" onClick={() => navigate("/recherches")}>
               Retour aux recherches
             </Button>
           </div>
@@ -553,7 +552,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
               ) : (
                 <div
                   className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white"
-                  style={{ backgroundColor: "#6B7B9E" }}
+                  style={{ backgroundColor: "#4A5878" }}
                 >
                   {search.profiles?.full_name?.charAt(0) || "U"}
                 </div>
@@ -572,18 +571,18 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                     En ligne
                   </span>
                 </div>
-                <p className="text-xs mt-0.5 truncate" style={{ color: "#8A8275" }}>
+                <p className="text-xs mt-0.5 truncate" style={{ color: "#6B6458" }}>
                   Recherche : {search.title}
                 </p>
               </div>
 
               <button
                 onClick={() => navigate(`/recherche/${id}`)}
-                className="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8]"
+                className="w-11 h-11 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] focus-visible:outline focus-visible:outline-2"
                 title="Voir l'annonce"
                 aria-label="Voir l'annonce"
               >
-                <Info className="w-5 h-5" style={{ color: "#6B7B9E" }} />
+                <Info className="w-5 h-5" style={{ color: "#4A5878" }} />
               </button>
             </div>
 
@@ -625,16 +624,16 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                   >
                     <path
                       d="M8 20a12 12 0 0 1 12-12h32a12 12 0 0 1 12 12v14a12 12 0 0 1-12 12H32l-10 8v-8h-2A12 12 0 0 1 8 34V20Z"
-                      fill="#6B7B9E"
+                      fill="#4A5878"
                       fillOpacity="0.18"
-                      stroke="#6B7B9E"
+                      stroke="#4A5878"
                       strokeWidth="1.5"
                     />
                     <path
                       d="M88 38a12 12 0 0 0-12-12H54a12 12 0 0 0-12 12v10a12 12 0 0 0 12 12h18l8 6v-6h-2a12 12 0 0 0 12-12V38Z"
-                      fill="#6B7B9E"
+                      fill="#4A5878"
                       fillOpacity="0.35"
-                      stroke="#6B7B9E"
+                      stroke="#4A5878"
                       strokeWidth="1.5"
                     />
                   </svg>
@@ -642,7 +641,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                   <p className="text-lg font-semibold mb-1" style={{ color: "#070E42" }}>
                     Commence la conversation
                   </p>
-                  <p className="text-sm max-w-sm" style={{ color: "#6B7280" }}>
+                  <p className="text-sm max-w-sm" style={{ color: "#4B5563" }}>
                     Dis à {firstName} si tu as l'article qu'il recherche
                   </p>
 
@@ -652,10 +651,10 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                       <button
                         key={s}
                         onClick={() => handleSuggestion(s)}
-                        className="text-sm px-3.5 py-2 rounded-full bg-white border transition-all hover:-translate-y-0.5"
+                        className="min-h-[44px] text-sm px-3.5 py-2 rounded-full bg-white border transition-all hover:-translate-y-0.5"
                         style={{
                           borderColor: "#D9D2C2",
-                          color: "#6B7B9E",
+                          color: "#4A5878",
                           boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
                         }}
                       >
@@ -672,8 +671,8 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                         type="button"
                         onClick={loadOlderMessages}
                         disabled={loadingOlder}
-                        className="text-xs px-4 py-2 rounded-full bg-white border transition-colors disabled:opacity-60"
-                        style={{ borderColor: "#ECE6DA", color: "#6B7B9E" }}
+                        className="min-h-[44px] text-xs px-4 py-2 rounded-full bg-white border transition-colors disabled:opacity-60"
+                        style={{ borderColor: "#ECE6DA", color: "#4A5878" }}
                       >
                         {loadingOlder ? "Chargement..." : "Charger les messages plus anciens"}
                       </button>
@@ -684,7 +683,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                       <div className="flex items-center justify-center mb-4">
                         <span
                           className="px-3 py-1 rounded-full text-xs"
-                          style={{ backgroundColor: "#FFFFFF", color: "#8A8275", border: "1px solid #ECE6DA" }}
+                          style={{ backgroundColor: "#FFFFFF", color: "#6B6458", border: "1px solid #ECE6DA" }}
                         >
                           {formatDate(dayMessages[0].created_at)}
                         </span>
@@ -820,7 +819,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                                 className="max-w-[72%] overflow-hidden"
                                 style={{
                                   borderRadius: "18px",
-                                  backgroundColor: isMine ? "#6B7B9E" : "#FFFFFF",
+                                  backgroundColor: isMine ? "#4A5878" : "#FFFFFF",
                                   color: isMine ? "#FFFFFF" : "#1F2937",
                                   border: isMine ? "none" : "1px solid #ECE6DA",
                                   boxShadow: isMine
@@ -846,9 +845,9 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                                     }`}
                                   >
                                     <span
-                                      className="text-[11px]"
+                                      className="text-xs"
                                       style={{
-                                        color: isMine ? "rgba(255,255,255,0.75)" : "#9CA3AF",
+                                        color: isMine ? "rgba(255,255,255,0.9)" : "#6B7280",
                                       }}
                                     >
                                       {formatTime(msg.created_at)}
@@ -856,7 +855,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                                     {!isMine && !isHidden && (
                                       <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                          <button type="button" aria-label={t("messageReport.moreActions")}
+                                          <button type="button" aria-label={t("messageReport.moreActions")} onFocus={(e) => { reportTriggerRef.current = e.currentTarget; }}
                                             className="-my-3 -mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full text-base leading-none hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                             style={{ color: "#4B5563" }}>
                                             <span aria-hidden="true">⋯</span>
@@ -930,7 +929,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                       type="button"
                       onClick={triggerFileInput}
                       className="w-16 h-16 rounded-lg border-2 border-dashed flex items-center justify-center transition-colors hover:bg-[#F5F0E8]"
-                      style={{ borderColor: "#D9D2C2", color: "#6B7B9E" }}
+                      style={{ borderColor: "#D9D2C2", color: "#4A5878" }}
                       aria-label="Ajouter une photo"
                     >
                       <Plus className="w-5 h-5" />
@@ -959,11 +958,11 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                   type="button"
                   onClick={triggerFileInput}
                   disabled={photos.length >= MAX_PHOTOS}
-                  className="relative w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative w-11 h-11 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Joindre une photo"
                   aria-label="Joindre une photo"
                 >
-                  <Paperclip className="w-5 h-5" style={{ color: "#6B7B9E" }} />
+                  <Paperclip className="w-5 h-5" style={{ color: "#4A5878" }} />
                   {photos.length > 0 && (
                     <span
                       className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-semibold text-white flex items-center justify-center"
@@ -989,9 +988,9 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                     rows={1}
                   />
                   <span
-                    className="absolute right-3 bottom-2 text-[11px] tabular-nums"
+                    className="absolute right-3 bottom-2 text-xs tabular-nums"
                     style={{
-                      color: remainingChars <= 20 ? "#C0392B" : "#9CA3AF",
+                      color: remainingChars <= 20 ? "#B03A2E" : "#6B7280",
                     }}
                   >
                     {remainingChars}
@@ -1076,6 +1075,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
           )}
         </div>
       )}
+      <ReportMessageDialog message={reportTarget} onClose={() => setReportTarget(null)} returnFocusRef={reportTriggerRef} />
     </div>
   );
 };

@@ -80,6 +80,11 @@ BEGIN
       RAISE EXCEPTION 'digest must not show hidden text';
     END IF;
 
+    -- Warning notification text: no suspension mention.
+    SELECT prosrc INTO snap FROM (SELECT to_jsonb(prosrc) AS prosrc FROM pg_proc WHERE proname = 'handle_message_report') x;
+    IF position('récidive' IN snap #>> '{}') > 0 OR position('suspendu' IN snap #>> '{}') > 0 THEN RAISE EXCEPTION 'warning must not mention suspension'; END IF;
+    IF position('Un de tes messages a été signalé et ne respecte pas les règles de findr. Reste courtois et ne propose jamais de payer en dehors de findr.''' IN snap #>> '{}') = 0 THEN RAISE EXCEPTION 'warning text mismatch'; END IF;
+
     RAISE EXCEPTION 'rollback_ok';
   EXCEPTION WHEN OTHERS THEN
     IF SQLERRM <> 'rollback_ok' THEN RAISE; END IF;

@@ -225,6 +225,13 @@
       "when": 1795701870092,
       "tag": "0031_message_reports_and_moderation",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1795703681593,
+      "tag": "0032_warning_text_without_suspension",
+      "breakpoints": true
     }
   ]
 }

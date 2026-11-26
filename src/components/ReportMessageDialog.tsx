@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type React from "react";
 import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -24,9 +25,16 @@ const MAX_COMMENT = 240;
 interface Props {
   message: { id: string; content: string } | null;
   onClose: () => void;
+  /** Élément qui reçoit le focus à la fermeture (bouton « ⋯ »). */
+  returnFocusRef?: React.RefObject<HTMLElement>;
 }
 
-const ReportMessageDialog = ({ message, onClose }: Props) => {
+const ReportMessageDialog = ({ message, onClose, returnFocusRef }: Props) => {
+  const restoreFocus = (e: Event) => {
+    if (!returnFocusRef?.current) return;
+    e.preventDefault();
+    returnFocusRef.current.focus();
+  };
   const { t } = useTranslation();
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -99,7 +107,7 @@ const ReportMessageDialog = ({ message, onClose }: Props) => {
   if (isMobile) {
     return (
       <Sheet open={!!message} onOpenChange={(o) => !o && onClose()}>
-        <SheetContent side="bottom" className="max-h-[90vh] overflow-y-auto rounded-t-2xl">
+        <SheetContent side="bottom" onCloseAutoFocus={restoreFocus} className="max-h-[90vh] overflow-y-auto rounded-t-2xl">
           <SheetHeader className="mb-4 text-left">
             <SheetTitle>{t("messageReport.reportTitle")}</SheetTitle>
             <SheetDescription className="sr-only">{t("messageReport.reportNotice")}</SheetDescription>
@@ -112,7 +120,7 @@ const ReportMessageDialog = ({ message, onClose }: Props) => {
   }
   return (
     <Dialog open={!!message} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md" onCloseAutoFocus={restoreFocus}>
         <DialogHeader>
           <DialogTitle>{t("messageReport.reportTitle")}</DialogTitle>
           <DialogDescription className="sr-only">{t("messageReport.reportNotice")}</DialogDescription>
