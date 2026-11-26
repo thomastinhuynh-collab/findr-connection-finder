@@ -1971,6 +1971,7 @@
     "yesterday": "Hier",
     "someone": "Utilisateur",
     "previewPhoto": "Photo",
+    "previewHidden": "Message masqué par l'équipe findr",
     "previewProposal": "Proposition envoyée",
     "previewReservation": "Réservation de sa recherche",
     "ariaRow": "Conversation avec {{name}}, {{role}}, à propos de {{title}}",
@@ -2041,5 +2042,48 @@
       "errorNotPending": "Cette proposition ne peut plus être annulée.",
       "errorGeneric": "L'annulation n'a pas abouti. Réessaie dans un instant."
     }
+  },
+  "messageReport": {
+    "hidden": "Message masqué par l'équipe findr",
+    "moreActions": "Plus d'actions pour ce message",
+    "reportAction": "Signaler ce message",
+    "reportTitle": "Signaler un message",
+    "reportReasonLegend": "Motif du signalement",
+    "reasons": {
+      "insultes_harcelement": "Insultes ou harcèlement",
+      "arnaque_lien_suspect": "Arnaque ou lien suspect",
+      "paiement_hors_findr": "Demande de payer hors de findr",
+      "contenu_interdit": "Contenu interdit",
+      "autre": "Autre"
+    },
+    "reportComment": "Commentaire (facultatif)",
+    "reportNotice": "Notre équipe examine chaque signalement. Le message signalé et la conversation lui sont transmis.",
+    "reportSubmit": "Envoyer le signalement",
+    "reportCancel": "Annuler",
+    "reportThanks": "Merci, nous allons l'examiner.",
+    "reportRateLimited": "Tu as envoyé beaucoup de signalements. Réessaie dans une heure.",
+    "reportError": "Le signalement n'a pas pu être envoyé. Réessaie.",
+    "guardTitle": "Reste sur findr pour être protégé",
+    "guardText": "En dehors de findr, ni le paiement ni la livraison ne sont protégés. Évite d'échanger un numéro de téléphone, un lien ou un moyen de paiement.",
+    "guardEdit": "Modifier mon message",
+    "guardSendAnyway": "Envoyer quand même"
+  },
+  "adminReports": {
+    "title": "Signalements de messages",
+    "link": "Signalements",
+    "empty": "Aucun signalement ouvert.",
+    "reportedMessage": "Message signalé",
+    "context": "Conversation au moment du signalement",
+    "reporter": "Signalé par",
+    "author": "Auteur",
+    "comment": "Commentaire",
+    "dismiss": "Classer sans suite",
+    "warn": "Avertir",
+    "hide": "Masquer le message",
+    "hidden": "Message masqué",
+    "done": "Signalement traité",
+    "error": "Action impossible. Réessaie.",
+    "loadMore": "Charger plus",
+    "disputesLink": "Litiges"
   }
 }

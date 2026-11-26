@@ -170,9 +170,14 @@ const AdminDisputes = () => {
               {disputes.length > 1 ? "s" : ""} — les plus récents en premier.
             </p>
           </div>
-          <Button asChild variant="outline" size="sm">
-            <Link to="/admin/tarifs-port">{t("adminShipping.link")}</Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/admin/signalements">{t("adminReports.link")}</Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/admin/tarifs-port">{t("adminShipping.link")}</Link>
+            </Button>
+          </div>
         </header>
 
         {disputes.length === 0 ? (

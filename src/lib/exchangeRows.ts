@@ -83,8 +83,12 @@ export function firstName(name: string | null): string {
 }
 
 /** Aperçu : début du dernier message, « Photo », ou texte selon le type d'échange (clé i18n). */
+/** Valeur renvoyée par list_my_exchanges à la place du texte d'un message masqué par l'équipe. */
+export const HIDDEN_MESSAGE_PREVIEW = "__hidden__";
+
 export function exchangePreview(r: ExchangeRow): { text: string } | { key: string } {
   if (r.last_message_at) {
+    if (r.last_message_preview === HIDDEN_MESSAGE_PREVIEW) return { key: "previewHidden" };
     const txt = (r.last_message_preview ?? "").trim();
     return txt ? { text: txt.slice(0, 80) } : { key: "previewPhoto" };
   }

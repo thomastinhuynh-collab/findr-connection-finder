@@ -21,3 +21,10 @@
 - [x] Tester les règles de destination et les parcours sans session sur ordinateur et navigateur mobile intégré simulé.
 - [ ] Vérification réelle Google, clic de confirmation d’email et application de messagerie native : nécessite une connexion Google interactive et un appareil avec client mail ; les retours de session et le navigateur intégré simulé sont vérifiés.
 - [x] Vérifier à l’écran /admin/tarifs-port (non-admin) — fait FR/EN ; bouton litiges vérifié par Thomas
+
+# Signalement de messages et avertissement avant l'envoi
+
+- [x] Masquage administrateur sans modifier le contenu, aperçus et email regroupé protégés.
+- [x] Signalements (règles, limite horaire, capture, email à l'équipe) et page /admin/signalements.
+- [x] Bouton « ⋯ », fenêtre/feuille de signalement, avertissement avant l'envoi, FR/EN et tests.
+- [ ] Suspension de compte : aucune action existante, bouton non affiché ; attend une décision de Thomas.

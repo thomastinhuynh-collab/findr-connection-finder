@@ -15,6 +15,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { compressAndValidate, oversizedDescription } from "@/lib/fileValidation";
 import ContainedPhoto from "@/components/ContainedPhoto";
+import ReportMessageDialog from "@/components/ReportMessageDialog";
+import { detectOffPlatformContact } from "@/lib/messageGuard";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface SearchData {
   id: string;
@@ -36,6 +39,7 @@ interface Message {
   is_read: boolean;
   created_at: string;
   images?: string[];
+  hidden_at?: string | null;
 }
 
 const MAX_CHARS = 240;
@@ -91,6 +95,9 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [reportTarget, setReportTarget] = useState<{ id: string; content: string } | null>(null);
+  const [guardOpen, setGuardOpen] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   // Position de défilement à restaurer après l'ajout de messages plus anciens en tête de liste.
   const prependScrollRef = useRef<{ height: number; top: number } | null>(null);
 
@@ -302,8 +309,14 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
       .eq("id", messageId);
   };
 
-  const handleSend = async () => {
+  const handleSend = async (force = false) => {
     if ((!message.trim() && photoFiles.length === 0) || !user || !search) return;
+    // Local check only: nothing about this detection is stored or sent.
+    if (!force && detectOffPlatformContact(message)) {
+      setGuardOpen(true);
+      return;
+    }
+    setGuardOpen(false);
 
     const actualReceiverId = partnerId && partnerId !== user.id ? partnerId : search.user_id;
     if (!actualReceiverId || actualReceiverId === user.id) {
@@ -476,6 +489,8 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
           <Loader2 className="w-12 h-12 animate-spin" style={{ color: "#6B7B9E" }} />
         </main>
         {!embedded && <Footer />}
+
+      <ReportMessageDialog message={reportTarget} onClose={() => setReportTarget(null)} />
       </div>
     );
   }
@@ -682,7 +697,8 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                           const hasImages = msgImages.length > 0;
                           // Preserve image-only rendering for older photo messages and either locale.
                           const photoLabels = ["\u{1F4F7} Photo(s)", t("messaging.photos", { lng: "fr" }), t("messaging.photos", { lng: "en" })];
-                          const hasText = Boolean(msg.content && !(hasImages && photoLabels.includes(msg.content)));
+                          const isHidden = Boolean(msg.hidden_at);
+                          const hasText = !isHidden && Boolean(msg.content && !(hasImages && photoLabels.includes(msg.content)));
                           const count = msgImages.length;
                           const openLightbox = (idx: number) => setLightbox({ images: msgImages, index: idx });
 
@@ -812,8 +828,13 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                                     : "0 1px 3px rgba(0,0,0,0.04)",
                                 }}
                               >
-                                {hasImages && renderImages()}
+                                {hasImages && !isHidden && renderImages()}
                                 <div className="px-4 py-2.5">
+                                  {isHidden && (
+                                    <p className="text-sm italic" style={{ color: isMine ? "#FFFFFF" : "#4B5563" }}>
+                                      {t("messageReport.hidden")}
+                                    </p>
+                                  )}
                                   {hasText && (
                                     <p className="text-sm whitespace-pre-wrap leading-relaxed">
                                       {msg.content}
@@ -832,6 +853,22 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                                     >
                                       {formatTime(msg.created_at)}
                                     </span>
+                                    {!isMine && !isHidden && (
+                                      <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                          <button type="button" aria-label={t("messageReport.moreActions")}
+                                            className="-my-3 -mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full text-base leading-none hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                            style={{ color: "#4B5563" }}>
+                                            <span aria-hidden="true">⋯</span>
+                                          </button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="start">
+                                          <DropdownMenuItem className="min-h-[44px]" onSelect={() => setReportTarget({ id: msg.id, content: msg.content })}>
+                                            {t("messageReport.reportAction")}
+                                          </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                      </DropdownMenu>
+                                    )}
                                     {isMine &&
                                       (msg.is_read ? (
                                         <CheckCheck className="w-3.5 h-3.5" style={{ color: "rgba(255,255,255,0.85)" }} />
@@ -902,6 +939,21 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                 </div>
               )}
 
+              {guardOpen && (
+                <div role="alert" className="mb-3 rounded-xl border px-4 py-3" style={{ backgroundColor: "#FEF3C7", borderColor: "#F59E0B" }}>
+                  <p className="text-sm font-semibold" style={{ color: "#78350F" }}>{t("messageReport.guardTitle")}</p>
+                  <p className="mt-1 text-sm" style={{ color: "#78350F" }}>{t("messageReport.guardText")}</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Button type="button" variant="outline" className="min-h-[44px]" onClick={() => { setGuardOpen(false); textareaRef.current?.focus(); }}>
+                      {t("messageReport.guardEdit")}
+                    </Button>
+                    <Button type="button" className="min-h-[44px]" onClick={() => handleSend(true)} disabled={sending}>
+                      {t("messageReport.guardSendAnyway")}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-end gap-2">
                 <button
                   type="button"
@@ -924,8 +976,10 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
 
                 <div className="flex-1 relative">
                   <Textarea
+                    ref={textareaRef}
                     value={message}
                     onChange={(e) => {
+                      if (guardOpen) setGuardOpen(false);
                       if (e.target.value.length <= MAX_CHARS) setMessage(e.target.value);
                     }}
                     onKeyDown={handleKeyPress}
@@ -945,7 +999,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false }: Conversati
                 </div>
 
                 <Button
-                  onClick={handleSend}
+                  onClick={() => handleSend()}
                   disabled={(!message.trim() && photos.length === 0) || sending}
                   size="icon"
                   className="h-11 w-11 rounded-full text-white transition-all hover:-translate-y-0.5 hover:shadow-md flex-shrink-0" aria-label="Envoyer le message"

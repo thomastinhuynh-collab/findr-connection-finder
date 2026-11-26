@@ -161,6 +161,7 @@ export function renderEmail(block: Block): string {
 
 export type EmailType =
   | "message_digest"
+  | "message_report"
   | "welcome"
   | "new_proposal"
   | "proposal_accepted"
@@ -823,6 +824,22 @@ export function buildEmail(
           title: "Nouveau compte : invitation envoyée",
           paragraphs: [`Nouveau compte : invitation envoyée à ${esc(data.email ?? "")}.`],
           facts: [{ label: "Email", value: data.email ?? "—" }],
+        }),
+      };
+
+    case "message_report":
+      return {
+        subject: `Nouveau signalement de message : ${esc(data.reasonLabel ?? "")}`,
+        html: renderEmail({
+          eyebrow: "Modération",
+          title: "Un message a été signalé",
+          paragraphs: ["Un utilisateur vient de signaler un message reçu dans la Messagerie."],
+          facts: [
+            { label: "Motif", value: String(data.reasonLabel ?? "—") },
+            { label: "Message", value: Array.from(String(data.content ?? "")).slice(0, 500).join("") || "—" },
+            ...(data.comment ? [{ label: "Commentaire", value: String(data.comment) }] : []),
+          ],
+          cta: { label: "Ouvrir les signalements", url: `${SITE_URL}/admin/signalements` },
         }),
       };
 

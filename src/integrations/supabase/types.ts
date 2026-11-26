@@ -182,11 +182,60 @@ export type Database = {
         }
         Relationships: []
       }
+      message_reports: {
+        Row: {
+          comment: string | null
+          context_snapshot: Json
+          created_at: string
+          handled_at: string | null
+          handled_by: string | null
+          id: string
+          message_id: string
+          reason: string
+          reporter_id: string
+          status: string
+        }
+        Insert: {
+          comment?: string | null
+          context_snapshot?: Json
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          message_id: string
+          reason: string
+          reporter_id: string
+          status?: string
+        }
+        Update: {
+          comment?: string | null
+          context_snapshot?: Json
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          message_id?: string
+          reason?: string
+          reporter_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reports_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
           created_at: string
           email_notified_at: string | null
+          hidden_at: string | null
+          hidden_reason: string | null
           id: string
           images: string[] | null
           is_read: boolean | null
@@ -198,6 +247,8 @@ export type Database = {
           content: string
           created_at?: string
           email_notified_at?: string | null
+          hidden_at?: string | null
+          hidden_reason?: string | null
           id?: string
           images?: string[] | null
           is_read?: boolean | null
@@ -209,6 +260,8 @@ export type Database = {
           content?: string
           created_at?: string
           email_notified_at?: string | null
+          hidden_at?: string | null
+          hidden_reason?: string | null
           id?: string
           images?: string[] | null
           is_read?: boolean | null
@@ -1079,12 +1132,20 @@ export type Database = {
         }
       }
       get_waitlist_count: { Args: never; Returns: number }
+      handle_message_report: {
+        Args: { _action: string; _report_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      hide_message: {
+        Args: { _message_id: string; _reason: string }
+        Returns: undefined
       }
       list_my_exchanges: {
         Args: {
@@ -1121,6 +1182,10 @@ export type Database = {
       }
       message_email_rollout_at: { Args: never; Returns: string }
       purge_reservation_ship_from: { Args: never; Returns: number }
+      report_message: {
+        Args: { _comment?: string; _message_id: string; _reason: string }
+        Returns: string
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       tracking_carrier_key: { Args: { value: string }; Returns: string }

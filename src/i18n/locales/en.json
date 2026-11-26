@@ -1971,6 +1971,7 @@
     "yesterday": "Yesterday",
     "someone": "User",
     "previewPhoto": "Photo",
+    "previewHidden": "Message hidden by the findr team",
     "previewProposal": "Offer sent",
     "previewReservation": "Reservation of their search",
     "ariaRow": "Conversation with {{name}}, {{role}}, about {{title}}",
@@ -2041,5 +2042,48 @@
       "errorNotPending": "This offer can no longer be cancelled.",
       "errorGeneric": "The cancellation didn't go through. Try again in a moment."
     }
+  },
+  "messageReport": {
+    "hidden": "Message hidden by the findr team",
+    "moreActions": "More actions for this message",
+    "reportAction": "Report this message",
+    "reportTitle": "Report a message",
+    "reportReasonLegend": "Reason for reporting",
+    "reasons": {
+      "insultes_harcelement": "Insults or harassment",
+      "arnaque_lien_suspect": "Scam or suspicious link",
+      "paiement_hors_findr": "Request to pay outside findr",
+      "contenu_interdit": "Prohibited content",
+      "autre": "Other"
+    },
+    "reportComment": "Comment (optional)",
+    "reportNotice": "Our team reviews every report. The reported message and the conversation are shared with it.",
+    "reportSubmit": "Send report",
+    "reportCancel": "Cancel",
+    "reportThanks": "Thank you, we will look into it.",
+    "reportRateLimited": "You have sent many reports. Try again in an hour.",
+    "reportError": "The report could not be sent. Try again.",
+    "guardTitle": "Stay on findr to stay protected",
+    "guardText": "Outside findr, neither payment nor delivery is protected. Avoid sharing a phone number, a link or a payment method.",
+    "guardEdit": "Edit my message",
+    "guardSendAnyway": "Send anyway"
+  },
+  "adminReports": {
+    "title": "Message reports",
+    "link": "Reports",
+    "empty": "No open reports.",
+    "reportedMessage": "Reported message",
+    "context": "Conversation at the time of the report",
+    "reporter": "Reported by",
+    "author": "Author",
+    "comment": "Comment",
+    "dismiss": "Dismiss",
+    "warn": "Warn",
+    "hide": "Hide message",
+    "hidden": "Message hidden",
+    "done": "Report handled",
+    "error": "Action failed. Try again.",
+    "loadMore": "Load more",
+    "disputesLink": "Disputes"
   }
 }

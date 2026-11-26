@@ -49,6 +49,7 @@ describe("exchangePreview", () => {
   it("photo seule, proposition sans message, réservation sans message, 80 caractères", () => {
     expect(exchangePreview({ ...base, last_message_at: "x", last_message_preview: "" })).toEqual({ key: "previewPhoto" });
     expect(exchangePreview({ ...base, kind: "proposition" })).toEqual({ key: "previewProposal" });
+    expect(exchangePreview({ ...base, last_message_at: "x", last_message_preview: "__hidden__" })).toEqual({ key: "previewHidden" });
     expect(exchangePreview({ ...base, kind: "reservation" })).toEqual({ key: "previewReservation" });
     expect((exchangePreview({ ...base, last_message_at: "x", last_message_preview: "a".repeat(120) }) as { text: string }).text).toHaveLength(80);
   });
