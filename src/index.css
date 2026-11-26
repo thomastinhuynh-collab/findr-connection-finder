@@ -4,6 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* A bounded conversation keeps the composer outside both scrollable regions. */
+.conversation-embedded { height: 100%; }
+.conversation-fullscreen { position: fixed; inset-inline: 0; overflow: hidden; }
+.conversation-chat, .conversation-composer { background: hsl(var(--success-foreground)); }
+.conversation-context { max-height: 40%; flex-shrink: 1; }
+.conversation-fullscreen .conversation-composer { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+@media (max-width: 900px) {
+  .conversation-guard p { font-size: 12px; line-height: 16px; }
+  .conversation-guard button { flex: 1; min-width: 0; white-space: normal; font-size: 12px; line-height: 16px; padding-inline: 8px; }
+}
+
 @layer base {
   :root {
     /* Findr Brand Colors - Official Palette */

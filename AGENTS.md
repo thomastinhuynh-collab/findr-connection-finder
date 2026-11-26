@@ -1,5 +1,7 @@
 # Architecture rules
 
+- ConversationView owns a bounded flex-column viewport (VisualViewport on full screen); only messages and the capped sale context scroll, so composer growth never clips sending controls. ParcelTrackingCard collapsibility is an optional conversation-only prop, leaving transaction rendering unchanged.
+
 Subdirectories have their own `AGENTS.md` (e.g. `supabase/functions/`); read it before changing files there.
 
 - Tracking validation is shared from `supabase/functions/_shared/trackingValidation.ts`; recognition comes only from official 17TRACK evidence and is server-owned. The existing lifecycle job performs per-parcel checks at 24 h, 48 h and daily thereafter, and a persistent tracking-review marker prevents automatic payout retries from bypassing manual review.

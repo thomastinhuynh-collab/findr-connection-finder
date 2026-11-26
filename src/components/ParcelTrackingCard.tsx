@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { trackingUrl } from "@/lib/tracking";
 import { parcelSummary } from "@/lib/parcelSummary";
 
@@ -28,13 +29,16 @@ interface Props {
   refreshKey?: number;
   /** Variante conversation : dernier événement mis en avant, repliable sur téléphone. */
   conversation?: boolean;
+  collapsible?: boolean;
 }
 
-export default function ParcelTrackingCard({ reservationId, carrier, trackingNumber, children, refreshKey, conversation = false }: Props) {
+export default function ParcelTrackingCard({ reservationId, carrier, trackingNumber, children, refreshKey, conversation = false, collapsible = false }: Props) {
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState<TrackingEvent[] | null>(null);
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
+  const mobile = useIsMobile();
+  const canCollapse = collapsible || mobile;
   const timer = useRef<ReturnType<typeof setTimeout>>();
   useEffect(() => () => clearTimeout(timer.current), []);
 
@@ -82,14 +86,14 @@ export default function ParcelTrackingCard({ reservationId, carrier, trackingNum
     const bodyId = `parcel-body-${reservationId}`;
     return (
       <section className="rounded-2xl p-4" style={{ border: `1px solid ${GOLD}`, backgroundColor: "#FFFFFF" }} aria-label={t("parcelTracking.title")}>
-        <button type="button" className="flex min-h-[44px] w-full items-center justify-between gap-2 text-left text-sm sm:hidden focus-visible:outline focus-visible:outline-2"
-          style={{ color: NAVY, outlineColor: NAVY }} aria-expanded={open} aria-controls={bodyId}
+        {canCollapse && <Button variant="ghost" type="button" className="h-auto min-h-[44px] w-full justify-between gap-2 whitespace-normal px-0 text-left text-sm focus-visible:outline focus-visible:outline-2"
+          aria-expanded={open} aria-controls={bodyId}
           aria-label={`${open ? t("parcelTracking.toggleHide") : t("parcelTracking.toggleShow")} — ${summaryText}`}
           onClick={() => setOpen((o) => !o)}>
           <span className="min-w-0 flex-1 font-medium">{summaryText}</span>
           <span aria-hidden="true">{open ? "−" : "+"}</span>
-        </button>
-        <div id={bodyId} className={`${open ? "block mt-3" : "hidden"} sm:block sm:mt-0 space-y-3`}>
+        </Button>}
+        <div id={bodyId} className={`${!canCollapse || open ? "block" : "hidden"} space-y-3`}>
           <h2 className="hidden sm:block font-display font-medium text-base" style={{ color: NAVY }}>{t("parcelTracking.title")}</h2>
           <dl className="text-sm space-y-1">
             <div className="flex flex-wrap gap-x-2">

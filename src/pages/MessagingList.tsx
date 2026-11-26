@@ -151,8 +151,8 @@ const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; sele
 
   return (
     <>
-    <main className={wide ? "mx-auto grid w-full max-w-7xl gap-6 px-6 pb-8 pt-24" : "mx-auto w-full max-w-3xl px-4 pt-24 sm:px-6 pb-[calc(88px+env(safe-area-inset-bottom))] min-[641px]:pb-16"}
-      style={wide ? { gridTemplateColumns: "420px minmax(0,1fr)", height: "100vh" } : undefined}>
+    <main className={wide ? "mx-auto grid min-h-0 min-w-0 w-full max-w-7xl gap-6 px-6 pb-4 pt-24" : "mx-auto w-full max-w-3xl px-4 pt-24 sm:px-6 pb-[calc(88px+env(safe-area-inset-bottom))] min-[641px]:pb-16"}
+      style={wide ? { gridTemplateColumns: "minmax(280px,420px) minmax(0,1fr)", height: "100dvh" } : undefined}>
      <div className={wide ? "flex min-h-0 flex-col" : undefined}>
       <h1 className="text-3xl" style={{ fontFamily: "'Playfair Display', serif", color: NAVY }}>{t("messagingList.title")}</h1>
       <section className={wide ? "mt-6 min-h-0 flex-1 overflow-y-auto" : "mt-6"} aria-live="polite">
@@ -261,7 +261,7 @@ const MessagingList = ({ wide, selectedId, selectedWith }: { wide: boolean; sele
       </section>
      </div>
       {wide && (
-        <section className="min-h-0 overflow-hidden rounded-xl" style={{ border: "1px solid #E5E1D8" }}>
+        <section className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-lg" style={{ border: "1px solid #E5E1D8" }}>
           {selectedId ? (
             <ConversationView key={`${selectedId}:${selectedWith ?? ""}`} searchId={selectedId} withUserId={selectedWith} embedded
               onDeleted={handleDeleted} />

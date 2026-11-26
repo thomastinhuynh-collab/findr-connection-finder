@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { formatPrice } from "@/lib/fees";
 import ContainedPhoto from "@/components/ContainedPhoto";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -25,10 +26,12 @@ interface Props {
   partnerFirstName: string;
   /** Prévient la conversation qu'une proposition existe (suggestions et champ adaptés). */
   onState?: (s: ExchangeCardState | null) => void;
+  compact?: boolean;
+  collapsibleTracking?: boolean;
 }
 
 /** Carte épinglée en haut d'une conversation : objet, prix, situation, une seule action. */
-const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAmBuyr, partnerFirstName, onState }: Props) => {
+const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAmBuyr, partnerFirstName, onState, compact = false, collapsibleTracking = false }: Props) => {
   const { t, i18n } = useTranslation();
   const [state, setState] = useState<ExchangeCardState | null>(null);
   const [image, setImage] = useState<string | null>(searchImage);
@@ -37,6 +40,7 @@ const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAm
   const [withdrawError, setWithdrawError] = useState<string | null>(null);
   const [withdrawnBanner, setWithdrawnBanner] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [expanded, setExpanded] = useState(false);
 
   // Retour sur l'onglet : on relit la vente et le suivi, sans recharger les messages.
   useEffect(() => {
@@ -108,12 +112,20 @@ const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAm
 
   return (
     <>
-    <section aria-label={t("exchangeCard.aria")} className="flex items-center gap-3 border-b px-4 py-3" style={{ borderColor: "#ECE6DA", backgroundColor: "#FFFFFF" }}>
+    {compact && (
+      <Button variant="ghost" className="h-auto min-h-[44px] w-full justify-between gap-2 rounded-none px-3 text-left text-xs"
+        aria-expanded={expanded} aria-controls={`exchange-details-${searchId}`} onClick={() => setExpanded((value) => !value)}>
+        <span className="min-w-0 flex-1 break-words">{situation || searchTitle}</span>
+        <span className="shrink-0">{t(expanded ? "exchangeCard.collapse" : "exchangeCard.expand")} <span aria-hidden="true">{expanded ? "−" : "+"}</span></span>
+      </Button>
+    )}
+    <div id={`exchange-details-${searchId}`} className={compact && !expanded ? "hidden" : undefined}>
+    <section aria-label={t("exchangeCard.aria")} className="flex flex-wrap items-center gap-3 border-b px-4 py-3" style={{ borderColor: "#ECE6DA", backgroundColor: "#FFFFFF" }}>
       <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg" style={{ backgroundColor: "#F5F1E8" }}>
         {image && <ContainedPhoto src={image} alt={searchTitle} className="h-full w-full" />}
       </div>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold" style={{ color: NAVY }}>{searchTitle}</p>
+      <div className="min-w-0 flex-1 basis-32">
+        <p className="break-words text-sm font-semibold" style={{ color: NAVY }}>{searchTitle}</p>
         {state.price != null && (
           <p className="text-sm" style={{ color: NAVY }}>
             {fmt(Number(state.price))}
@@ -151,9 +163,11 @@ const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAm
           trackingNumber={state.tracking.trackingNumber}
           refreshKey={refreshKey}
           conversation
+          collapsible={collapsibleTracking}
         />
       </div>
     )}
+    </div>
     {withdrawError && (
       <p role="alert" className="border-b px-4 py-3 text-sm" style={{ borderColor: "#F3D3C4", backgroundColor: "#FEF1EA", color: "#7A2E14" }}>{withdrawError}</p>
     )}

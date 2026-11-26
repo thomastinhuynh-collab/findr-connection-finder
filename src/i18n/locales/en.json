@@ -2023,6 +2023,8 @@
     }
   },
   "exchangeCard": {
+    "expand": "Details",
+    "collapse": "Collapse",
     "aria": "Exchange summary",
     "step": "Step {{index}} of {{total}}: {{name}}",
     "saleClosed": "Sale closed",

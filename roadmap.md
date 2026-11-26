@@ -1,3 +1,9 @@
+# Saisie visible dans la conversation
+
+- [x] Recomposer les volets et le plein écran, limiter les cartes et préserver le défilement des messages.
+- [x] Vérifier les six formats avec historique, vente, suivi, photos et avertissement sans écriture réelle.
+- [x] Tests et compilation ; compte rendu des résultats et limites.
+
 # Masquage personnel des échanges
 
 - [x] Table privée et fonction de masquage, interdite pendant une vente en cours.

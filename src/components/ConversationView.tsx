@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Loader2, CheckCheck, Check, Info, Paperclip, X, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { unreadIdsFromPartner } from "@/lib/messageRead";
+import { conversationScrollTop } from "@/lib/conversationScroll";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -102,6 +103,27 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
   const reportTriggerRef = useRef<HTMLButtonElement | null>(null);
   const [guardOpen, setGuardOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
+  const [shortPane, setShortPane] = useState(false);
+  const [viewport, setViewport] = useState({ height: window.visualViewport?.height ?? window.innerHeight, top: window.visualViewport?.offsetTop ?? 0 });
+  useLayoutEffect(() => {
+    const update = () => setViewport({ height: window.visualViewport?.height ?? window.innerHeight, top: window.visualViewport?.offsetTop ?? 0 });
+    window.visualViewport?.addEventListener("resize", update);
+    window.visualViewport?.addEventListener("scroll", update);
+    window.addEventListener("resize", update);
+    return () => {
+      window.visualViewport?.removeEventListener("resize", update);
+      window.visualViewport?.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+  useLayoutEffect(() => {
+    const pane = chatRef.current;
+    if (!pane) return;
+    const observer = new ResizeObserver(() => setShortPane(pane.clientHeight < 800));
+    observer.observe(pane);
+    return () => observer.disconnect();
+  }, [loading]);
   // Position de défilement à restaurer après l'ajout de messages plus anciens en tête de liste.
   const prependScrollRef = useRef<{ height: number; top: number } | null>(null);
 
@@ -165,8 +187,18 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
       prependScrollRef.current = null;
       return;
     }
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (container) container.scrollTop = conversationScrollTop(container.scrollHeight, container.clientHeight, null);
+  }, [messages, loading, partnerId]);
+
+  useLayoutEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+    const observer = new ResizeObserver(() => {
+      container.scrollTop = conversationScrollTop(container.scrollHeight, container.clientHeight, null);
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [loading]);
 
   // Lightbox keyboard navigation
   useEffect(() => {
@@ -516,13 +548,14 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
   }
 
   return (
-    <div className={embedded ? "h-full flex flex-col" : "min-h-screen flex flex-col"} style={{ backgroundColor: "#F5F0E8" }}>
+    <div className={`conversation-view ${embedded ? "conversation-embedded" : "conversation-fullscreen"} min-h-0 min-w-0 flex flex-col bg-background`}
+      style={embedded ? undefined : { height: viewport.height, top: viewport.top }}>
         
 
-      <main className={embedded ? "flex-1 p-4" : "flex-1 pt-24 pb-8"}>
-        <div className={embedded ? "h-full flex flex-col" : "container mx-auto px-4 h-full flex flex-col max-w-3xl"}>
+      <main className={embedded ? "min-h-0 min-w-0 flex-1 p-2" : "min-h-0 min-w-0 flex-1 pt-[88px]"}>
+        <div className={embedded ? "h-full min-h-0 min-w-0 flex flex-col" : "mx-auto px-2 h-full min-h-0 min-w-0 flex flex-col max-w-3xl"}>
           {!embedded && (
-            <div className="mb-4">
+            <div className="shrink-0">
               <Link to="/messagerie"
                 className="inline-flex min-h-[44px] items-center text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                 style={{ color: "#070E42", outlineColor: "#070E42" }}>
@@ -533,28 +566,28 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
 
           {/* Main chat card */}
           <motion.div
+            ref={chatRef}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="bg-white rounded-2xl overflow-hidden flex flex-col"
-            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+            className="conversation-chat min-h-0 min-w-0 flex-1 rounded-lg overflow-hidden flex flex-col"
           >
             {/* Conversation Header */}
             <div
-              className="flex items-center gap-4 px-5 py-4 border-b"
+              className="conversation-header shrink-0 flex items-center gap-2 px-3 py-2 border-b"
               style={{ borderColor: "#ECE6DA", backgroundColor: "#FFFFFF" }}
             >
               {search.profiles?.avatar_url ? (
                 <img
                   src={search.profiles.avatar_url}
                   alt={search.profiles.full_name || "User"}
-                  className="w-12 h-12 rounded-full object-cover border-2"
+                  className="w-10 h-10 shrink-0 rounded-full object-cover border-2"
                   loading="lazy"
                   style={{ borderColor: "#D9BB87" }}
                 />
               ) : (
                 <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold text-white"
+                  className="w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-lg font-bold text-white"
                   style={{ backgroundColor: "#4A5878" }}
                 >
                   {search.profiles?.full_name?.charAt(0) || "U"}
@@ -567,7 +600,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
                     {search.profiles?.full_name || "Utilisateur"}
                   </p>
                   <span
-                    className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full"
+                    className="hidden sm:inline-flex shrink-0 items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full"
                     style={{ backgroundColor: "#E6F4EA", color: "#1E7A3E" }}
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -581,7 +614,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
 
               <button
                 onClick={() => navigate(`/recherche/${id}`)}
-                className="w-11 h-11 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] focus-visible:outline focus-visible:outline-2"
+                className="w-11 h-11 shrink-0 rounded-full flex items-center justify-center transition-colors hover:bg-[#F5F0E8] focus-visible:outline focus-visible:outline-2"
                 title="Voir l'annonce"
                 aria-label="Voir l'annonce"
               >
@@ -598,6 +631,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
               )}
             </div>
 
+            <div className="conversation-context min-h-0 shrink-0 overflow-y-auto overscroll-contain">
             {user && partnerId && (
               <ExchangeCard
                 searchId={search.id}
@@ -608,6 +642,8 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
                 iAmBuyr={user.id === search.user_id}
                 partnerFirstName={firstName}
                 onState={setCardState}
+                compact={!embedded}
+                collapsibleTracking={shortPane}
               />
             )}
             {sentBannerOpen && (
@@ -617,11 +653,13 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
                   className="inline-flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2" style={{ outlineColor: "#14532D" }}>×</button>
               </div>
             )}
+            </div>
 
             {/* Messages Area */}
             <div
               ref={messagesContainerRef}
-              className="flex-1 px-5 py-6 overflow-y-auto min-h-[420px] max-h-[520px]"
+              data-conversation-messages
+              className="min-h-0 min-w-0 flex-1 px-3 py-3 overflow-y-auto overscroll-contain"
               style={{ backgroundColor: "#F5F0E8" }}
             >
               {messages.length === 0 ? (
@@ -847,7 +885,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
                                     </p>
                                   )}
                                   {hasText && (
-                                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                                    <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
                                       {msg.content}
                                     </p>
                                   )}
@@ -902,7 +940,8 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
 
             {/* Input Area */}
             <div
-              className="px-4 py-3 border-t bg-white"
+              data-conversation-composer
+              className="conversation-composer shrink-0 min-w-0 px-3 py-2 border-t"
               style={{ borderColor: "#ECE6DA" }}
             >
               <input
@@ -915,13 +954,13 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
               />
 
               {photos.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2 mb-3">
+                <div className="conversation-photos flex items-center gap-2 mb-2 overflow-x-auto py-2">
                   {photos.map((src, i) => (
-                    <div key={i} className="relative" style={{ width: 64, height: 64 }}>
+                     <div key={i} className="relative h-12 w-12 shrink-0">
                       <img
                         src={src}
                         alt={`preview-${i}`}
-                        className="w-16 h-16 object-cover rounded-lg border"
+                        className="w-12 h-12 object-cover rounded-lg border"
                         loading="lazy"
                         style={{ borderColor: "#D9D2C2" }}
                       />
@@ -940,7 +979,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
                     <button
                       type="button"
                       onClick={triggerFileInput}
-                      className="w-16 h-16 rounded-lg border-2 border-dashed flex items-center justify-center transition-colors hover:bg-[#F5F0E8]"
+                      className="w-12 h-12 shrink-0 rounded-lg border-2 border-dashed flex items-center justify-center transition-colors hover:bg-[#F5F0E8]"
                       style={{ borderColor: "#D9D2C2", color: "#4A5878" }}
                       aria-label="Ajouter une photo"
                     >
@@ -951,10 +990,10 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
               )}
 
               {guardOpen && (
-                <div role="alert" className="mb-3 rounded-xl border px-4 py-3" style={{ backgroundColor: "#FEF3C7", borderColor: "#F59E0B" }}>
+                <div role="alert" className="conversation-guard mb-2 rounded-lg border px-2 py-2" style={{ backgroundColor: "#FEF3C7", borderColor: "#F59E0B" }}>
                   <p className="text-sm font-semibold" style={{ color: "#78350F" }}>{t("messageReport.guardTitle")}</p>
                   <p className="mt-1 text-sm" style={{ color: "#78350F" }}>{t("messageReport.guardText")}</p>
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <div className="mt-2 flex gap-2">
                     <Button type="button" variant="outline" className="min-h-[44px]" onClick={() => { setGuardOpen(false); textareaRef.current?.focus(); }}>
                       {t("messageReport.guardEdit")}
                     </Button>
@@ -985,7 +1024,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
                   )}
                 </button>
 
-                <div className="flex-1 relative">
+                <div className="min-w-0 flex-1 relative">
                   <Textarea
                     ref={textareaRef}
                     value={message}
@@ -995,7 +1034,7 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
                     }}
                     onKeyDown={handleKeyPress}
                     placeholder={findrWithProposal ? t("exchangeCard.placeholder", { name: firstName }) : `Écris un message à ${firstName}...`}
-                    className="resize-none min-h-[48px] pr-14 rounded-2xl border bg-white"
+                    className="resize-none min-h-[48px] pr-10 rounded-lg border bg-white"
                     style={{ borderColor: "#D9D2C2" }}
                     rows={1}
                   />
@@ -1027,8 +1066,6 @@ const ConversationView = ({ searchId, withUserId, embedded = false, onDeleted }:
           </motion.div>
         </div>
       </main>
-
-      {!embedded && <Footer />}
 
       {/* Lightbox */}
       {lightbox && (
