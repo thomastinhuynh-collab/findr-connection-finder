@@ -8,6 +8,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import ParcelTrackingCard from "@/components/ParcelTrackingCard";
 import { exchangeCardState, withdrawErrorKey, type CardProposal, type CardReservation, type ExchangeCardState } from "@/lib/exchangeCard";
 
 const NAVY = "#070E42";
@@ -35,6 +36,14 @@ const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAm
   const [withdrawing, setWithdrawing] = useState(false);
   const [withdrawError, setWithdrawError] = useState<string | null>(null);
   const [withdrawnBanner, setWithdrawnBanner] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Retour sur l'onglet : on relit la vente et le suivi, sans recharger les messages.
+  useEffect(() => {
+    const onVisible = () => { if (document.visibilityState === "visible") setRefreshKey((k) => k + 1); };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -43,7 +52,7 @@ const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAm
         supabase.from("proposals").select("id, status, proposed_price, created_at, image_urls, title")
           .eq("search_id", searchId).eq("findr_id", findrId),
         supabase.from("reservations")
-          .select("id, status, proposal_id, expires_at, object_price, total_buyr_amount, findr_payout_amount, dispute_open, created_at, payment_status, delivery_type, label_provided_at, shipped_at, delivered_at, tracking_review_notified_at")
+          .select("id, status, proposal_id, expires_at, object_price, total_buyr_amount, findr_payout_amount, dispute_open, created_at, payment_status, delivery_type, label_provided_at, shipped_at, delivered_at, tracking_review_notified_at, tracking_number, carrier, label_tracking_number, label_carrier")
           .eq("search_id", searchId).eq("findr_id", findrId).eq("buyr_id", buyrId),
       ]);
       if (!alive) return;
@@ -55,7 +64,7 @@ const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAm
     })();
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchId, findrId, buyrId, iAmBuyr]);
+  }, [searchId, findrId, buyrId, iAmBuyr, refreshKey]);
 
   const withdraw = async () => {
     if (!state?.withdrawableId) return;
@@ -78,7 +87,9 @@ const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAm
   const fmt = (n: number) => formatPrice(n, i18n.language);
 
   let situation = "";
-  if (state.kind === "vente" && state.step) {
+  if (state.kind === "vente" && state.awaitingReceipt) {
+    situation = t("exchangeCard.deliveredAwaiting", { name: partnerFirstName });
+  } else if (state.kind === "vente" && state.step) {
     situation = t("exchangeCard.step", {
       index: state.step.index, total: state.step.total,
       name: t(`saleSteps.${state.step.labelFlow ? "label" : "legacy"}.${state.step.key}`),
@@ -132,6 +143,17 @@ const ExchangeCard = ({ searchId, searchTitle, searchImage, buyrId, findrId, iAm
         </div>
       )}
     </section>
+    {state.kind === "vente" && state.tracking && (
+      <div className="border-b px-4 py-3" style={{ borderColor: "#ECE6DA", backgroundColor: "#FFFFFF" }}>
+        <ParcelTrackingCard
+          reservationId={state.tracking.reservationId}
+          carrier={state.tracking.carrier}
+          trackingNumber={state.tracking.trackingNumber}
+          refreshKey={refreshKey}
+          conversation
+        />
+      </div>
+    )}
     {withdrawError && (
       <p role="alert" className="border-b px-4 py-3 text-sm" style={{ borderColor: "#F3D3C4", backgroundColor: "#FEF1EA", color: "#7A2E14" }}>{withdrawError}</p>
     )}

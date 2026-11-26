@@ -1862,7 +1862,20 @@
     "openCarrier": "Suivre sur le site du transporteur",
     "history": "Étapes du transporteur",
     "noEvents": "Aucune information du transporteur pour le moment.",
-    "testEvent": "test"
+    "testEvent": "test",
+    "awaitingPickup": "En attente de la prise en charge par le transporteur.",
+    "latest": "Dernier événement",
+    "toggleShow": "Afficher le suivi du colis",
+    "toggleHide": "Masquer le suivi du colis",
+    "summary": "{{status}} · mis à jour le {{date}}",
+    "status": {
+      "awaiting": "En attente de prise en charge",
+      "InTransit": "Colis en transit",
+      "AvailableForPickup": "Colis en point relais",
+      "OutForDelivery": "Colis en cours de livraison",
+      "Delivered": "Colis livré",
+      "other": "Colis en route"
+    }
   },
   "todoNow": {
     "count_one": "1 chose t'attend.",
@@ -2043,7 +2056,8 @@
       "errorCheckout": "{{name}} est en train de payer : tu ne peux plus annuler. Écris-lui si besoin.",
       "errorNotPending": "Cette proposition ne peut plus être annulée.",
       "errorGeneric": "L'annulation n'a pas abouti. Réessaie dans un instant."
-    }
+    },
+    "deliveredAwaiting": "Colis livré · en attente de la confirmation de {{name}}"
   },
   "messageReport": {
     "hidden": "Message masqué par l'équipe findr",

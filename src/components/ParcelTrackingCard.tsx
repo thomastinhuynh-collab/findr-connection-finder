@@ -5,6 +5,7 @@ import { ExternalLink } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { trackingUrl } from "@/lib/tracking";
+import { parcelSummary } from "@/lib/parcelSummary";
 
 const NAVY = "#070E42";
 const GOLD = "#D9BB87";
@@ -23,12 +24,17 @@ interface Props {
   carrier: string | null;
   trackingNumber: string;
   children?: ReactNode;
+  /** Change pour relire les événements (retour sur l'onglet). */
+  refreshKey?: number;
+  /** Variante conversation : dernier événement mis en avant, repliable sur téléphone. */
+  conversation?: boolean;
 }
 
-export default function ParcelTrackingCard({ reservationId, carrier, trackingNumber, children }: Props) {
+export default function ParcelTrackingCard({ reservationId, carrier, trackingNumber, children, refreshKey, conversation = false }: Props) {
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState<TrackingEvent[] | null>(null);
   const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>();
   useEffect(() => () => clearTimeout(timer.current), []);
 
@@ -45,7 +51,7 @@ export default function ParcelTrackingCard({ reservationId, carrier, trackingNum
     return () => {
       active = false;
     };
-  }, [reservationId]);
+  }, [reservationId, refreshKey]);
 
   const url = trackingUrl(carrier, trackingNumber);
 
@@ -64,6 +70,67 @@ export default function ParcelTrackingCard({ reservationId, carrier, trackingNum
     dateStyle: "medium",
     timeStyle: "short",
   });
+
+  if (conversation) {
+    const summary = parcelSummary(events ?? []);
+    const statusLabel = t(`parcelTracking.status.${summary.key}`);
+    const short = new Intl.DateTimeFormat(i18n.language?.startsWith("en") ? "en-GB" : "fr-FR", {
+      day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+    });
+    const updatedAt = summary.latest?.occurred_at ?? events?.[0]?.occurred_at ?? null;
+    const summaryText = updatedAt ? t("parcelTracking.summary", { status: statusLabel, date: short.format(new Date(updatedAt)) }) : statusLabel;
+    const bodyId = `parcel-body-${reservationId}`;
+    return (
+      <section className="rounded-2xl p-4" style={{ border: `1px solid ${GOLD}`, backgroundColor: "#FFFFFF" }} aria-label={t("parcelTracking.title")}>
+        <button type="button" className="flex min-h-[44px] w-full items-center justify-between gap-2 text-left text-sm sm:hidden focus-visible:outline focus-visible:outline-2"
+          style={{ color: NAVY, outlineColor: NAVY }} aria-expanded={open} aria-controls={bodyId}
+          aria-label={`${open ? t("parcelTracking.toggleHide") : t("parcelTracking.toggleShow")} — ${summaryText}`}
+          onClick={() => setOpen((o) => !o)}>
+          <span className="min-w-0 flex-1 font-medium">{summaryText}</span>
+          <span aria-hidden="true">{open ? "−" : "+"}</span>
+        </button>
+        <div id={bodyId} className={`${open ? "block mt-3" : "hidden"} sm:block sm:mt-0 space-y-3`}>
+          <h2 className="hidden sm:block font-display font-medium text-base" style={{ color: NAVY }}>{t("parcelTracking.title")}</h2>
+          <dl className="text-sm space-y-1">
+            <div className="flex flex-wrap gap-x-2">
+              <dt style={{ color: "#666666" }}>{t("parcelTracking.carrier")} :</dt>
+              <dd className="font-medium" style={{ color: NAVY }}>{carrier || t("parcelTracking.unknownCarrier")}</dd>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <dt style={{ color: "#666666" }}>{t("parcelTracking.number")} :</dt>
+              <dd className="font-medium break-all" style={{ color: NAVY }}>{trackingNumber}</dd>
+              <Button type="button" size="sm" variant="outline" className="min-h-[44px]" onClick={copy}
+                aria-label={t("parcelTracking.copyLabel", { value: trackingNumber })}>
+                {copied ? t("parcelTracking.copied") : t("parcelTracking.copy")}
+              </Button>
+              <span className="sr-only" aria-live="polite">{copied ? t("parcelTracking.copied") : ""}</span>
+            </div>
+          </dl>
+          {events !== null && (summary.latest ? (
+            <div className="text-sm border-l-2 pl-3" style={{ borderColor: GOLD }}>
+              <p className="text-xs font-semibold" style={{ color: NAVY }}>{statusLabel}</p>
+              <p className="text-xs" style={{ color: "#666666" }}>
+                {dateFormat.format(new Date(summary.latest.occurred_at))}
+                {summary.latest.is_test ? ` — ${t("parcelTracking.testEvent")}` : ""}
+              </p>
+              <p style={{ color: NAVY }}>{summary.latest.description || summary.latest.status}</p>
+              {summary.latest.location && <p className="text-xs" style={{ color: "#666666" }}>{summary.latest.location}</p>}
+            </div>
+          ) : (
+            <p className="text-sm" style={{ color: "#666666" }}>{t("parcelTracking.awaitingPickup")}</p>
+          ))}
+          {url && (
+            <Button asChild variant="default" className="min-h-[44px]">
+              <a href={url} target="_blank" rel="noopener noreferrer">
+                {t("parcelTracking.openCarrier")}
+                <ExternalLink className="w-4 h-4 ml-2" aria-hidden="true" />
+              </a>
+            </Button>
+          )}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section

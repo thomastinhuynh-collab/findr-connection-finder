@@ -49,3 +49,30 @@ describe("carte épinglée", () => {
     expect(proposalSentUrl("s", "b")).toBe("/messagerie/s?with=b&proposition=envoyee");
   });
 });
+
+describe("suivi du colis dans la conversation", () => {
+  const base = { searchId: "s", proposals: [] };
+  it("pas de numéro de suivi : pas de carte", () => {
+    expect(exchangeCardState({ ...base, iAmBuyr: true, reservations: [sale()] })!.tracking).toBeNull();
+  });
+  it("numéro de l'étiquette : carte visible pour buyr et findr", () => {
+    const r = sale({ payment_status: "paye_en_attente_reception", label_tracking_number: "6A123", label_carrier: "Colissimo" });
+    for (const iAmBuyr of [true, false])
+      expect(exchangeCardState({ ...base, iAmBuyr, reservations: [r] })!.tracking).toEqual({ reservationId: "r1", carrier: "Colissimo", trackingNumber: "6A123" });
+  });
+  it("vente annulée : pas de suivi", () => {
+    expect(exchangeCardState({ ...base, iAmBuyr: true, reservations: [sale({ payment_status: "annule", tracking_number: "X1" })] })!.tracking).toBeNull();
+  });
+  it("sans vente : pas de carte épinglée de vente ni de suivi", () => {
+    const c = exchangeCardState({ ...base, iAmBuyr: true, proposals: [prop()], reservations: [] })!;
+    expect(c.kind).toBe("proposition");
+    expect(c.tracking).toBeUndefined();
+  });
+  it("livré : buyr confirme la réception, findr attend la confirmation", () => {
+    const r = sale({ payment_status: "livre", tracking_number: "X1", shipped_at: "x", delivered_at: "x", label_provided_at: "x" });
+    expect(exchangeCardState({ ...base, iAmBuyr: true, reservations: [r] })!.action!.key).toBe("confirmReceipt");
+    const f = exchangeCardState({ ...base, iAmBuyr: false, reservations: [r] })!;
+    expect(f.awaitingReceipt).toBe(true);
+    expect(exchangeCardState({ ...base, iAmBuyr: true, reservations: [r] })!.awaitingReceipt).toBe(false);
+  });
+});

@@ -8,6 +8,7 @@ export interface CardReservation extends SaleStepRow {
   id: string; status: string | null; proposal_id?: string | null; expires_at?: string | null;
   object_price?: number | null; total_buyr_amount?: number | null; findr_payout_amount?: number | null; dispute_open?: boolean | null;
   created_at: string;
+  tracking_number?: string | null; carrier?: string | null; label_tracking_number?: string | null; label_carrier?: string | null;
 }
 
 export type CardActionKey = "pay" | "provideLabel" | "confirmReceipt" | "viewLabel" | "viewSale" | "viewProposal" | "editProposal";
@@ -28,6 +29,10 @@ export interface ExchangeCardState {
   withdrawableId?: string | null;
   /** Vente payée non finalisée : la conversation ne peut pas être supprimée. */
   saleOpen?: boolean;
+  /** Vente payée avec un numéro de suivi : carte de suivi sous la carte épinglée. */
+  tracking?: { reservationId: string; carrier: string | null; trackingNumber: string } | null;
+  /** findr : colis livré, en attente de la confirmation du buyr. */
+  awaitingReceipt?: boolean;
 }
 
 const SALE_STATUSES = [...PAID_STATUSES, "annule", "rembourse"];
@@ -67,6 +72,8 @@ export function exchangeCardState(input: {
       action: { key, href: tx },
       multipleProposals,
       saleOpen: isSaleOpen(ps),
+      tracking: saleTracking(sale),
+      awaitingReceipt: !iAmBuyr && ps === "livre" && !sale.dispute_open,
     };
   }
 
@@ -101,4 +108,12 @@ export const PROPOSAL_SENT_PARAM = "proposition";
 export const PROPOSAL_SENT_VALUE = "envoyee";
 export function proposalSentUrl(searchId: string, buyrId: string) {
   return `/messagerie/${searchId}?with=${buyrId}&${PROPOSAL_SENT_PARAM}=${PROPOSAL_SENT_VALUE}`;
+}
+
+/** Suivi affiché seulement pour une vente payée ayant un numéro de suivi (étiquette fournie ou saisi). */
+export function saleTracking(sale: CardReservation): ExchangeCardState["tracking"] {
+  if (!PAID_STATUSES.includes(sale.payment_status ?? "")) return null;
+  const trackingNumber = (sale.tracking_number || sale.label_tracking_number || "").trim();
+  if (!trackingNumber) return null;
+  return { reservationId: sale.id, carrier: sale.carrier || sale.label_carrier || null, trackingNumber };
 }

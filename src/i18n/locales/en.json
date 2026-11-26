@@ -1862,7 +1862,20 @@
     "openCarrier": "Track on the carrier's website",
     "history": "Carrier updates",
     "noEvents": "No information from the carrier yet.",
-    "testEvent": "test"
+    "testEvent": "test",
+    "awaitingPickup": "Waiting for the carrier to pick up the parcel.",
+    "latest": "Latest event",
+    "toggleShow": "Show parcel tracking",
+    "toggleHide": "Hide parcel tracking",
+    "summary": "{{status}} · updated {{date}}",
+    "status": {
+      "awaiting": "Waiting for pickup",
+      "InTransit": "Parcel in transit",
+      "AvailableForPickup": "Parcel at pickup point",
+      "OutForDelivery": "Parcel out for delivery",
+      "Delivered": "Parcel delivered",
+      "other": "Parcel on its way"
+    }
   },
   "todoNow": {
     "count_one": "1 thing is waiting for you.",
@@ -2043,7 +2056,8 @@
       "errorCheckout": "{{name}} is paying right now: you can no longer cancel. Message them if needed.",
       "errorNotPending": "This offer can no longer be cancelled.",
       "errorGeneric": "The cancellation didn't go through. Try again in a moment."
-    }
+    },
+    "deliveredAwaiting": "Parcel delivered · waiting for {{name}} to confirm"
   },
   "messageReport": {
     "hidden": "Message hidden by the findr team",
