@@ -864,6 +864,7 @@
     "add": "Ajouter aux favoris"
   },
   "notifications": {
+    "newMessage": "Nouveau message",
     "title": "Notifications",
     "markAllRead": "Tout marquer lu",
     "empty": "Aucune notification",
@@ -1344,6 +1345,9 @@
       "empty": "Aucune proposition ici pour l'instant."
     },
     "account": {
+      "notificationsTitle": "Notifications",
+      "messageEmails": "Recevoir un email quand on m'écrit (un seul email regroupé)",
+      "messageEmailsError": "Impossible d'enregistrer ton choix. Réessaie.",
       "aboutTitle": "À propos de toi",
       "noBio": "Tu n'as pas encore écrit de description.",
       "completion": "Profil complété à {{n}} %",

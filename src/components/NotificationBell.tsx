@@ -206,7 +206,9 @@ const NotificationContent = ({
 }: { 
   notification: Notification; 
   formatTime: (date: string) => string;
-}) => (
+}) => {
+  const { t } = useTranslation();
+  return (
   <div className="flex gap-3">
     <div
       className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
@@ -214,7 +216,7 @@ const NotificationContent = ({
       }`}
     />
     <div className="flex-1 min-w-0">
-      <p className="text-sm font-medium text-primary">{notification.title}</p>
+      <p className="text-sm font-medium text-primary">{notification.type === "new_message" ? t("notifications.newMessage") : notification.title}</p>
       {notification.message && (
         <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
           {notification.message}
@@ -225,6 +227,7 @@ const NotificationContent = ({
       </p>
     </div>
   </div>
-);
+  );
+};
 
 export default NotificationBell;

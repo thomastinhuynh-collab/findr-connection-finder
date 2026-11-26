@@ -40,6 +40,7 @@ import BuyrSearchesPanel from "@/components/BuyrSearchesPanel";
 import { useUnreadExchanges } from "@/hooks/useUnreadExchanges";
 import { todoNavCount } from "@/lib/todoActions";
 import { classifySearchTab, excludeWithdrawn } from "@/lib/buyrSearchRows";
+import MessageEmailPreference from "@/components/MessageEmailPreference";
 
 type StripeSyncStatus = { complete: boolean; details_submitted: boolean; payouts_enabled: boolean; transfers: string | null };
 const FindrEmptyState = ({ text }: { text: string }) => {
@@ -57,6 +58,7 @@ const FindrEmptyState = ({ text }: { text: string }) => {
 
 interface Profile {
   id: string;
+  notify_message_emails?: boolean;
   full_name: string | null;
   ship_from_first_name?: string | null;
   ship_from_last_name?: string | null;
@@ -1241,6 +1243,8 @@ const MySpace = () => {
                 <section id="adresse" className="scroll-mt-28">
                   <ShipFromCard key={profile.ship_from_updated_at ?? "new"} profile={profile} onSaved={fetchProfile} />
                 </section>
+
+                <MessageEmailPreference enabled={profile.notify_message_emails ?? true} onSaved={fetchProfile} />
 
                 <section id="favoris" aria-labelledby="fav-section-heading" className={card} style={cardStyle}>
                   <h2 id="fav-section-heading" className="mb-4" style={h2}>{t("mySpace.account.favTitle")}</h2>

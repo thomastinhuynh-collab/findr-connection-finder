@@ -186,6 +186,7 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          email_notified_at: string | null
           id: string
           images: string[] | null
           is_read: boolean | null
@@ -196,6 +197,7 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string
+          email_notified_at?: string | null
           id?: string
           images?: string[] | null
           is_read?: boolean | null
@@ -206,6 +208,7 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
+          email_notified_at?: string | null
           id?: string
           images?: string[] | null
           is_read?: boolean | null
@@ -269,6 +272,7 @@ export type Database = {
           is_premium: boolean | null
           level: number | null
           negative_balance: number
+          notify_message_emails: boolean
           payout_hold: boolean
           preferred_relay_point: Json | null
           ship_from_city: string | null
@@ -296,6 +300,7 @@ export type Database = {
           is_premium?: boolean | null
           level?: number | null
           negative_balance?: number
+          notify_message_emails?: boolean
           payout_hold?: boolean
           preferred_relay_point?: Json | null
           ship_from_city?: string | null
@@ -323,6 +328,7 @@ export type Database = {
           is_premium?: boolean | null
           level?: number | null
           negative_balance?: number
+          notify_message_emails?: boolean
           payout_hold?: boolean
           preferred_relay_point?: Json | null
           ship_from_city?: string | null
@@ -1015,6 +1021,9 @@ export type Database = {
           user_id: string
         }[]
       }
+      cleanup_message_email_markers:
+        | { Args: { _at?: string }; Returns: number }
+        | { Args: { _at: string; _recipient: string }; Returns: number }
       create_notification: {
         Args: {
           _link?: string
@@ -1046,6 +1055,7 @@ export type Database = {
           is_premium: boolean | null
           level: number | null
           negative_balance: number
+          notify_message_emails: boolean
           payout_hold: boolean
           preferred_relay_point: Json | null
           ship_from_city: string | null
@@ -1101,11 +1111,24 @@ export type Database = {
           unread_count: number
         }[]
       }
+      message_digest_recipients: {
+        Args: { _after?: string; _at?: string }
+        Returns: string[]
+      }
+      message_digest_snapshot: {
+        Args: { _at?: string; _recipient: string }
+        Returns: Json
+      }
+      message_email_rollout_at: { Args: never; Returns: string }
       purge_reservation_ship_from: { Args: never; Returns: number }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       tracking_carrier_key: { Args: { value: string }; Returns: string }
       unread_exchanges_count: { Args: never; Returns: number }
+      update_message_email_preference: {
+        Args: { _enabled: boolean }
+        Returns: boolean
+      }
       update_ship_from: {
         Args: {
           _city: string

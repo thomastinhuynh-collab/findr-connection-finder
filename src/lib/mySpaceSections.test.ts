@@ -11,6 +11,10 @@ const href = (url: string) => {
 };
 
 describe("rubriques de Mon espace", () => {
+  it("ouvre Mon compte depuis l'ancre notifications de l'email", () => {
+    expect(href("/mon-espace#notifications")).toBe("/mon-espace?section=compte#notifications");
+    expect(href("/mon-espace?section=compte#notifications")).toBe("/mon-espace?section=compte#notifications");
+  });
   it("ouvre « Aujourd'hui » par défaut", () => {
     expect(href("/mon-espace")).toBe("/mon-espace?section=aujourdhui");
     expect(r("", "").redirect).toBe(true);

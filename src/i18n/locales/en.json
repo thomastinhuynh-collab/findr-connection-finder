@@ -864,6 +864,7 @@
     "add": "Add to favorites"
   },
   "notifications": {
+    "newMessage": "New message",
     "title": "Notifications",
     "markAllRead": "Mark all as read",
     "empty": "No notifications",
@@ -1344,6 +1345,9 @@
       "empty": "No proposals here yet."
     },
     "account": {
+      "notificationsTitle": "Notifications",
+      "messageEmails": "Receive an email when someone writes to me (one grouped email)",
+      "messageEmailsError": "Your choice couldn't be saved. Please try again.",
       "aboutTitle": "About you",
       "noBio": "You haven't written a description yet.",
       "completion": "Profile {{n}}% complete",

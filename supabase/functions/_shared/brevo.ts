@@ -2,6 +2,8 @@
 // Toutes les erreurs sont loguées et jamais propagées : un échec d'email
 // ne doit jamais interrompre l'action métier en cours.
 import { buildEmail, SENDER, type EmailType } from "./emails.ts";
+// Module-local typing allows isolated mocked tests without adding browser globals.
+declare const Deno: { env: { get(name: string): string | undefined } };
 
 const BREVO_URL = "https://api.brevo.com/v3/smtp/email";
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/brevo/smtp/email";
@@ -22,6 +24,7 @@ export async function sendEmailTo(
   data: Data = {},
   sender: { name: string; email: string } = SENDER,
   attachments?: EmailAttachment[],
+  idempotencyKey?: string,
 ): Promise<boolean> {
   const key = Deno.env.get("BREVO_API_KEY");
   if (!key) {
@@ -40,6 +43,7 @@ export async function sendEmailTo(
     subject,
     htmlContent: html,
     tags: [type],
+    ...(idempotencyKey ? { headers: { idempotencyKey } } : {}),
     ...(attachments?.length ? { attachment: attachments } : {}),
   };
 
@@ -52,6 +56,13 @@ export async function sendEmailTo(
     });
     const body = await res.text();
     if (!res.ok) {
+      // Brevo already accepted this exact snapshot: acknowledge it rather than retry forever.
+      if (idempotencyKey && res.status === 400) {
+        try {
+          const error = JSON.parse(body);
+          if (error.code === "duplicate_parameter" && /idempotency/i.test(String(error.message))) return true;
+        } catch { /* All other provider failures remain failures. */ }
+      }
       console.error(`[email] ${type} -> ${to} échec ${res.status}: ${body}`);
       return false;
     }

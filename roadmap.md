@@ -1,5 +1,13 @@
 # Contrôle des numéros de suivi
 
+# Notifications de messages et email regroupé
+
+- [x] Notifications atomiques, colonnes privées et protection des messages.
+- [x] Email regroupé, préférence Mon compte et textes FR/EN.
+- [x] Tâche protégée toutes les 5 minutes, laissée inactive pour éviter tout envoi réel.
+- [x] Tests fictifs annulés et tests du site, sans vérification écran ni email réel.
+- [ ] Activation réelle : attend l'accord de Thomas ; tâche en pause et envoi serveur désactivé.
+
 - [x] Validation partagée, unicité et colonnes de reconnaissance sans modifier les lignes existantes.
 - [x] Reconnaissance 17TRACK, revérifications et alertes avec versements protégés.
 - [x] Affichage FR/EN et annulation à 7 jours pour un suivi non confirmé.

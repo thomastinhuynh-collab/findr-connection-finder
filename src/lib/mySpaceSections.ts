@@ -45,7 +45,7 @@ export function resolveMySpaceLocation(search: string, hash: string): MySpaceLoc
   }
   if (LEGACY_ADDRESS_HASHES.includes(h)) { section = "compte"; h = "adresse"; }
   if (LEGACY_PAYMENT_HASHES.includes(h)) { section = "compte"; h = "paiements"; }
-  if (h === "adresse" || h === "paiements" || h === "favoris") section = "compte";
+  if (h === "adresse" || h === "paiements" || h === "favoris" || h === "notifications") section = "compte";
   // Retour de l'inscription Stripe : la carte « Paiements » est dans « Mon compte ».
   if (!section && params.get("stripe")) { section = "compte"; if (!h) h = "paiements"; }
   if (!section) section = DEFAULT_SECTION;

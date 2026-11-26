@@ -2,6 +2,7 @@
 // Aucun web font : le logo est une image PNG hébergée sur le site publié.
 
 import { trackingUrl } from "./tracking.ts";
+import type { DigestExchange } from "./messageDigest.ts";
 import {
   buyrPaymentSubject,
   buyrPaymentText,
@@ -36,6 +37,9 @@ const esc = (v: unknown) =>
     .replace(/"/g, "&quot;");
 
 interface Block {
+  lang?: "fr" | "en";
+  /** Custom, escaped footer for message digests only. */
+  messageFooter?: { label: string; url: string; address: string };
   /** surtitre doré — omis pour les emails minimalistes */
   eyebrow?: string;
   /** titre serif — omis pour les emails minimalistes */
@@ -115,7 +119,7 @@ export function renderEmail(block: Block): string {
     : "";
 
   return `<!DOCTYPE html>
-<html lang="fr"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(
+<html lang="${block.lang ?? "fr"}"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>${esc(
     block.title ?? block.documentTitle ?? "Findr",
   )}</title></head>
 <body style="margin:0;padding:0;background:${CREAM};">
@@ -141,12 +145,14 @@ export function renderEmail(block: Block): string {
       ${block.footnote ? `<p style="margin:18px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#6B7280;">${esc(block.footnote)}</p>` : ""}
     </td></tr>
     <tr><td bgcolor="${CREAM}" style="padding:20px 24px;text-align:center;">
+      ${block.messageFooter ? `<p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:12px;"><a href="${esc(block.messageFooter.url)}" style="color:${NAVY};">${esc(block.messageFooter.label)}</a></p><p style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:${NAVY};">${esc(block.messageFooter.address)}</p>` : `
       <p style="margin:0 0 6px 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B7280;">Findr — L'objet que tu cherches existe quelque part.</p>
       <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#9CA3AF;">
         <a href="mailto:${CONTACT_EMAIL}" style="color:#9CA3AF;text-decoration:underline;">${CONTACT_EMAIL}</a>
         &nbsp;·&nbsp;
         <a href="${SITE_URL}/mon-espace" style="color:#9CA3AF;text-decoration:underline;">Mon espace</a>
       </p>
+      `}
     </td></tr>
   </table>
 </td></tr></table>
@@ -154,6 +160,7 @@ export function renderEmail(block: Block): string {
 }
 
 export type EmailType =
+  | "message_digest"
   | "welcome"
   | "new_proposal"
   | "proposal_accepted"
@@ -216,6 +223,36 @@ export function buildEmail(
   const shipFromUrl = `${SITE_URL}${SHIP_FROM_PATH}`;
 
   switch (type) {
+    case "message_digest": {
+      const en = data.locale === "en";
+      const count = Math.max(0, Number(data.count) || 0);
+      const subject = en
+        ? `You have ${count} new message${count === 1 ? "" : "s"} on findr`
+        : `Tu as ${count} nouveau${count === 1 ? "" : "x"} message${count === 1 ? "" : "s"} sur findr`;
+      const exchanges = (Array.isArray(data.exchanges) ? data.exchanges : []) as DigestExchange[];
+      const otherCount = Math.max(0, Number(data.otherCount) || 0) + Math.max(0, exchanges.length - 5);
+      return {
+        subject,
+        html: renderEmail({
+          lang: en ? "en" : "fr",
+          title: subject,
+          paragraphs: [
+            en ? `Hello${first ? ` ${first}` : ""},` : `Bonjour${first ? ` ${first}` : ""},`,
+            ...exchanges.slice(0, 5).map((e) => `${esc(e.name || (en ? "User" : "Utilisateur"))} — ${e.role === "buyr" ? "buyr" : "findr"} — ${esc(e.title)}<br />${esc(Array.from(String(e.preview ?? "")).slice(0, 80).join(""))}<br />${Math.max(0, Number(e.count) || 0)} message${Number(e.count) === 1 ? "" : "s"}`),
+            ...(otherCount ? [en ? `and ${otherCount} more` : `et ${otherCount} autres`] : []),
+            en
+              ? "For your safety, always reply through findr: do not reply to this email, and never pay outside the platform."
+              : "Pour ta sécurité, réponds toujours depuis findr : ne réponds pas à cet email, et ne paie jamais en dehors de la plateforme.",
+          ],
+          cta: { label: en ? "Reply on findr" : "Répondre sur findr", url: `${SITE_URL}/messagerie` },
+          messageFooter: {
+            label: en ? "Manage my message emails" : "Gérer mes emails de messages",
+            url: `${SITE_URL}/mon-espace?section=compte#notifications`,
+            address: "FINDR APP SAS — 4 rue du Perche, 75003 Paris, France",
+          },
+        }),
+      };
+    }
     case "welcome":
       return {
         subject: `Bienvenue sur Findr${first ? `, ${first}` : ""} !`,
